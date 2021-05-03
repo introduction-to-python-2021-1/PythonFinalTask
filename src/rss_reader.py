@@ -1,12 +1,14 @@
 """This module is the entry point to the utility"""
 
-from parser import Parser
-from feed import Feed
+from src.parser import Parser
+from src.feed import Feed
 from bs4 import BeautifulSoup
 import requests
 import logging
 
-if __name__ == '__main__':
+
+def main():
+    """This function is a entry point"""
     parser = Parser()
     args = parser.parse_args()
     visibility = args.verbose
@@ -37,3 +39,7 @@ if __name__ == '__main__':
                 feed = Feed(feed_title, items, to_json, logger, limit)
                 print(feed)
             logger.info(' Successfully completed')
+
+
+if __name__ == '__main__':
+    main()
