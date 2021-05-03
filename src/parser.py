@@ -18,7 +18,7 @@ class Parser:
         :return: None
         """
         self.parser.add_argument('source', type=str, help='RSS URL')
-        self.parser.add_argument('--version', help='Print version info', action='version', version='Version 0.1')
+        self.parser.add_argument('--version', help='Print version info', action='version', version=f'Version 0.2')
         self.parser.add_argument('--json', help='Print result as JSON in stdout', action='store_true')
         self.parser.add_argument('--verbose', help='Outputs verbose status messages', action='store_true')
         self.parser.add_argument('--limit', type=int, help='Limit news topics if this parameter provided')
