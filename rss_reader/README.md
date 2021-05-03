@@ -33,7 +33,7 @@ optional arguments:
 
 ```
 
-In case of using `--json` argument utility converts the news into [JSON](https://en.wikipedia.org/wiki/JSON) format. The JSON structure is shown below.
+In case of using `--json` argument utility converts the news into [JSON](https://en.wikipedia.org/wiki/JSON) format and saves it in the directory **data** as **news.json**. The JSON structure is shown below.
 
 ```json
 {

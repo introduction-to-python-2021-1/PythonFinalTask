@@ -1,14 +1,16 @@
-#!/usr/bin/env python
 import sys
 import json
 import logging
 import argparse
+from pathlib import Path
 from itertools import islice
 from urllib.request import urlopen
 import xml.etree.ElementTree as ET
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+VERSION = "2.0"
+
+logging.basicConfig(level=logging.ERROR, format="%(message)s")
+logger = logging.getLogger()
 
 
 def get_response(url):
@@ -20,11 +22,8 @@ def get_response(url):
 
         response = urlopen(url)
 
-        if response.status != 200:
-            raise Exception("Bad response")
-
     except Exception as e:
-        logger.error(e)
+        logger.error("Couldn't get good response")
         sys.exit()
 
     return response
@@ -35,16 +34,16 @@ def process_response(response, limit):
     global logger
 
     try:
-        logger.info(f"Try to parse response: {response}")
+        logger.info(f"Try to parse response")
 
         xmldoc = ET.parse(response)
         root = xmldoc.getroot()
 
         if root.tag != "rss":
-            raise Exception("The document isn't RSS feed.")
+            raise Exception("The document isn't RSS feed")
 
     except Exception as e:
-        logger.error(e)
+        logger.error("Couldn't parse response")
         sys.exit()
 
     channel_title = root.findtext("channel/title")
@@ -64,7 +63,9 @@ def process_response(response, limit):
 
 def print_news(channel):
     """Prints news to console."""
-    print(f"Feed: {channel['Title']}")
+    logger.info(f"Print news")
+
+    print(f"\nFeed: {channel['Title']}")
 
     for item in channel["Items"]:
         print("")
@@ -72,27 +73,36 @@ def print_news(channel):
             print(f"{key}: {value}")
 
 
-def main(argv):
+def write_json(channel):
+    """Write news into data.json file in directory named data."""
+    logger.info(f"Write json")
+
+    base = Path(__file__).resolve().parent.parent / "data"
+    jsonpath = base / "news.json"
+    base.mkdir(exist_ok=True)
+    jsonpath.write_text(json.dumps(channel, indent=4))
+
+
+def main(argv=sys.argv):
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
     parser.add_argument("source", type=str, help="RSS URL")
-    parser.add_argument("--version", action="version", version="%(prog)s 1.0", help="Print version info")
+    parser.add_argument("--version", action="version", version=f'"Version {VERSION}"', help="Print version info")
     parser.add_argument("--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("--limit", type=int, help="Limit news topics if this parameter provided")
 
     args = parser.parse_args(argv[1:])
 
-    if not args.verbose:
-        logger.disabled = True
+    if args.verbose:
+        logger.setLevel(logging.INFO)
 
     response = get_response(args.source)
     channel_info_and_items = process_response(response, args.limit)
     print_news(channel_info_and_items)
 
     if args.json:
-        with open("data.json", "w") as f:
-            json.dump(channel_info_and_items, f, indent=4)
+        write_json(channel_info_and_items)
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()
