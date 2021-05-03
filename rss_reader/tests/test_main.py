@@ -30,5 +30,6 @@ class TestMain(unittest.TestCase):
         """Resets redirect of stdout."""
         sys.stdout = sys.__stdout__
 
+
 if __name__ == "__main__":
     unittest.main()
