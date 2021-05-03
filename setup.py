@@ -4,13 +4,13 @@ from setuptools import setup
 def get_requirements():
     with open('requirements.txt', 'r') as file:
         requirements = file.read().split()
-        return [*requirements]
+        return requirements
 
 
 setup(
     name='rss-reader',
     version='0.2',
-    description='',
+    description='Command-line RSS reader',
     author='Sergey Rutkovskiy',
     url='https://github.com/spectraise/PythonFinalTask',
     package='src',
