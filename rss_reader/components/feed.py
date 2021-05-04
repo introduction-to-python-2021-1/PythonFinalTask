@@ -1,6 +1,6 @@
 """This module contains a class that represent a feed"""
 
-from src.news import News
+from .news import News
 import json
 
 

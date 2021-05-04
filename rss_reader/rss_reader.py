@@ -1,7 +1,7 @@
 """This module is the entry point to the utility"""
 
-from src.parser import Parser
-from src.feed import Feed
+from components.parser import Parser
+from components.feed import Feed
 from bs4 import BeautifulSoup
 import requests
 import logging
