@@ -1,5 +1,6 @@
 from setuptools import setup
-from rss_reader import VERSION
+
+from rss_reader.rss_reader import VERSION
 
 with open("README.md") as f:
     readme = f.read()

@@ -1,7 +1,8 @@
 import io
 import sys
 import unittest
-from rss_reader import print_news
+
+from rss_reader.rss_reader import print_news
 
 
 class TestPrintNews(unittest.TestCase):

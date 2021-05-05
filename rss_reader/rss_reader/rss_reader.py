@@ -14,11 +14,17 @@ logger = logging.getLogger()
 
 
 def get_response(url):
-    """Returns HTTPResponse from server using provided url."""
-    global logger
+    """
+    Returns HTTPResponse from server using provided url.
 
+            Parameters:
+                    url (str): URL to RSS feed content
+
+            Returns:
+                    response (http.client.HTTPResponse): Response from server
+    """
     try:
-        logger.info(f"Try to get response from: {url}")
+        logger.info(f"Get response from: {url}")
 
         response = urlopen(url)
 
@@ -30,11 +36,18 @@ def get_response(url):
 
 
 def process_response(response, limit):
-    """Returns dictionary with channel info and items. Items number is determined by provided limit argument."""
-    global logger
+    """
+    Returns dictionary with channel title and items. Items number is determined by provided limit argument.
 
+            Parameters:
+                    response (http.client.HTTPResponse): Response from server provided by get_response function
+                    limit (None) or (int): Max number of items in result dictionary
+
+            Returns:
+                    {"Title": (str), "Items": (list)}: Dictionary with channel title and items
+    """
     try:
-        logger.info(f"Try to parse response")
+        logger.info(f"Parse response")
 
         xmldoc = ET.parse(response)
         root = xmldoc.getroot()
@@ -49,32 +62,48 @@ def process_response(response, limit):
     channel_title = root.findtext("channel/title")
     channel_items = []
 
-    for i, item in enumerate(islice(root.iterfind("channel/item"), 0, max(0, limit) if limit is not None else limit)):
-        logger.info(f"Process item № {i + 1}")
+    for number_of_news_item, news_item in enumerate(islice(root.iterfind("channel/item"), 0, max(0, limit) \
+        if limit is not None else limit)):
+
+        logger.info(f"Process item № {number_of_news_item + 1}")
 
         channel_items.append({
-            "Title": item.findtext("title"),
-            "Date": item.findtext("pubDate"),
-            "Link": item.findtext("link"),
+            "Title": news_item.findtext("title"),
+            "Date": news_item.findtext("pubDate"),
+            "Link": news_item.findtext("link"),
         })
 
     return {"Title": root.findtext("channel/title"), "Items": channel_items}
 
 
 def print_news(channel):
-    """Prints news to console."""
+    """
+    Prints news to console.
+
+            Parameters:
+                    {"Title": (str), "Items": (list)}: Dictionary with channel title and items
+            Returns:
+                    (None)
+    """
     logger.info(f"Print news")
 
     print(f"\nFeed: {channel['Title']}")
 
-    for item in channel["Items"]:
-        print("")
-        for key, value in item.items():
-            print(f"{key}: {value}")
+    for news_item in channel["Items"]:
+        print(f"\nTitle: {news_item['Title']}")
+        print(f"Date: {news_item['Date']}")
+        print(f"Link: {news_item['Link']}")
 
 
 def write_json(channel):
-    """Write news into data.json file in directory named data."""
+    """
+    Write news into data.json file in directory named data.
+
+            Parameters:
+                    {"Title": (str), "Items": (list)}: Dictionary with channel title and items
+            Returns:
+                    (None)
+    """
     logger.info(f"Write json")
 
     base = Path(__file__).resolve().parent.parent / "data"

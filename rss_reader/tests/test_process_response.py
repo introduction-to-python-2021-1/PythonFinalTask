@@ -1,7 +1,9 @@
 import os
 import unittest
-from urllib.request import *
-from rss_reader import process_response
+from urllib.request import urlopen
+from urllib.request import pathname2url
+
+from rss_reader.rss_reader import process_response
 
 
 class TestProcessResponse(unittest.TestCase):
