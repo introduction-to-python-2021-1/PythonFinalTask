@@ -3,9 +3,14 @@ import unittest
 from urllib.request import urlopen
 from urllib.request import pathname2url
 
+from ddt import ddt
+from ddt import data
+from ddt import unpack
+
 from rss_reader import process_response
 
 
+@ddt
 class TestProcessResponse(unittest.TestCase):
     """Tests process_response function from rss_reader with limit set to various values."""
 
@@ -13,29 +18,10 @@ class TestProcessResponse(unittest.TestCase):
         """Opens connection with example.xml to create fake response for process_response."""
         self.fake_response = urlopen("file:" + pathname2url(os.path.abspath("data/goodsample.xml")))
 
-    def test_none_limit(self):
-        """Tests process_response from rss_reader with limit set to None."""
-        self.assertEqual(len(process_response(self.fake_response, None)["Items"]), 9, "Wrong output size")
-
-    def test_negative_limit(self):
-        """Tests process_response from rss_reader with limit set to -1."""
-        self.assertEqual(len(process_response(self.fake_response, -1)["Items"]), 0, "Wrong output size")
-
-    def test_zero_limit(self):
-        """Tests process_response from rss_reader with limit set to 0."""
-        self.assertEqual(len(process_response(self.fake_response, 0)["Items"]), 0, "Wrong output size")
-
-    def test_adequate_positive_limit_1(self):
-        """Tests process_response from rss_reader with limit set to 1."""
-        self.assertEqual(len(process_response(self.fake_response, 1)["Items"]), 1, "Wrong output size")
-
-    def test_adequate_positive_limit_9(self):
-        """Tests process_response from rss_reader with limit set to 9."""
-        self.assertEqual(len(process_response(self.fake_response, 9)["Items"]), 9, "Wrong output size")
-
-    def test_inadequate_positive_limit(self):
-        """Tests process_response from rss_reader with limit set to 10."""
-        self.assertEqual(len(process_response(self.fake_response, 10)["Items"]), 9, "Wrong output size")
+    @data((None, 9), (-1, 0), (0, 0), (1, 1), (9, 9), (10, 9))
+    @unpack
+    def test_process_response(self, limit, expected):
+        self.assertEqual(len(process_response(self.fake_response, limit)["Items"]), expected, "Wrong output size")
 
     def tearDown(self):
         """Closes connection with example.xml."""
