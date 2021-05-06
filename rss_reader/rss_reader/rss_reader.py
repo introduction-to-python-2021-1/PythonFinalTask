@@ -62,8 +62,9 @@ def process_response(response, limit):
     channel_title = root.findtext("channel/title")
     channel_items = []
 
-    for number_of_news_item, news_item in enumerate(islice(root.iterfind("channel/item"), 0, max(0, limit) \
-        if limit is not None else limit)):
+    for number_of_news_item, news_item in enumerate(
+        islice(root.iterfind("channel/item"), 0, max(0, limit) if limit is not None else limit)
+    ):
 
         logger.info(f"Process item № {number_of_news_item + 1}")
 
