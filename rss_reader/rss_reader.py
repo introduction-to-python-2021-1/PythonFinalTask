@@ -8,10 +8,10 @@ from components.parser import Parser
 from components.feed import Feed
 
 
-def main():
+def main(argv=sys.argv[1:]):
     """This function is a entry point"""
     parser = Parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     visibility = args.verbose
     to_json = args.json
     if visibility:
