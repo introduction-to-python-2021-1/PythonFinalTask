@@ -1,10 +1,11 @@
 """This module is the entry point to the utility"""
 
+import logging
+import sys
+import requests
+from bs4 import BeautifulSoup
 from components.parser import Parser
 from components.feed import Feed
-from bs4 import BeautifulSoup
-import requests
-import logging
 
 
 def main():

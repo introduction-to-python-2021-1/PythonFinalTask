@@ -23,9 +23,9 @@ class Parser:
         self.parser.add_argument('--verbose', help='Outputs verbose status messages', action='store_true')
         self.parser.add_argument('--limit', type=int, help='Limit news topics if this parameter provided')
 
-    def parse_args(self):
+    def parse_args(self, argv):
         """
         This method parses command-line arguments and return them
         :return: argparse
         """
-        return self.parser.parse_args()
+        return self.parser.parse_args(argv)
