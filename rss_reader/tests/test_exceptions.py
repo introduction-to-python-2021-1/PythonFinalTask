@@ -3,9 +3,9 @@ import unittest
 from urllib.request import urlopen
 from urllib.request import pathname2url
 
-from rss_reader.rss_reader import logger
-from rss_reader.rss_reader import get_response
-from rss_reader.rss_reader import process_response
+from rss_reader import logger
+from rss_reader import get_response
+from rss_reader import process_response
 
 
 class TestExceptions(unittest.TestCase):

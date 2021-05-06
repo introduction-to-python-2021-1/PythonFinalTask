@@ -2,7 +2,7 @@ import io
 import sys
 import unittest
 
-from rss_reader.rss_reader import main
+from rss_reader import main
 
 
 class TestMain(unittest.TestCase):
