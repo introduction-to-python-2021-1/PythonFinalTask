@@ -19,7 +19,7 @@ class TestMain(unittest.TestCase):
         with self.assertRaises(SystemExit):
             main([None, "https://news.yahoo.com/rss/", "--version"])
 
-        self.assertEqual(self.captured_output.getvalue(), '"Version 2.0"\n')
+        self.assertEqual(self.captured_output.getvalue(), f'"Version {VERSION}"\n')
 
     def test_just_version_argument(self):
         """Tests that app prints its version and stops if just --version argument is specified."""

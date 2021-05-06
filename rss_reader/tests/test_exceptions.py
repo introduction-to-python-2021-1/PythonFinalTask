@@ -19,7 +19,9 @@ class TestExceptions(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 get_response(url)
 
-            self.assertEqual("The server couldn't fulfill the request.\nError code: 404", captured.records[0].getMessage())
+            self.assertEqual(
+                "The server couldn't fulfill the request.\nError code: 404", captured.records[0].getMessage()
+            )
 
     def test_process_response(self):
         """Tests that process_response function handles response with wrong xml structure."""
