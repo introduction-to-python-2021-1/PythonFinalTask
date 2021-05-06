@@ -4,6 +4,8 @@ import logging
 import argparse
 from pathlib import Path
 from itertools import islice
+from urllib.error import URLError
+from urllib.error import HTTPError
 from urllib.request import urlopen
 import xml.etree.ElementTree as ET
 
@@ -28,8 +30,11 @@ def get_response(url):
 
         response = urlopen(url)
 
-    except Exception as e:
-        logger.error("Couldn't get good response")
+    except HTTPError as e:
+        logger.error(f"The server couldn't fulfill the request.\nError code: {e.code}")
+        sys.exit()
+    except URLError as e:
+        logger.error(f"Failed to reach a server.\nReason: {e.reason}")
         sys.exit()
 
     return response

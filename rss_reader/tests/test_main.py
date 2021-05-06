@@ -3,6 +3,7 @@ import sys
 import unittest
 
 from rss_reader import main
+from rss_reader import VERSION
 
 
 class TestMain(unittest.TestCase):
@@ -25,7 +26,7 @@ class TestMain(unittest.TestCase):
         with self.assertRaises(SystemExit):
             main([None, "--version"])
 
-        self.assertEqual(self.captured_output.getvalue(), '"Version 2.0"\n')
+        self.assertEqual(self.captured_output.getvalue(), f'"Version {VERSION}"\n')
 
     def tearDown(self):
         """Resets redirect of stdout."""
