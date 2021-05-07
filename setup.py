@@ -1,4 +1,4 @@
-from setuptools import setup,find_packages
+from setuptools import setup
 
 setup(
         name="rss_reader",
@@ -7,13 +7,11 @@ setup(
         py_modules=['rss_reader'],
         author = 'Aleksandr Remnev',
         author_email = 'alexremnev2@gmail.com',
-        packages=find_packages(),
-        zip_safe=False,
-        include_package_data=True,
+        packages=["rss_reader"],
         entry_points={
                 'console_scripts': [
-                        'rss_reader=rss_reader:main',
-
-                        ]
+                    'rss_reader=rss_reader.rss_reader:main',
+                ],
+    
         }
 )
