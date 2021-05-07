@@ -17,10 +17,4 @@ setup(
         }
 
 )
- unexpected spaces around keyword / parameter equals
 
-./setup.py:8:17: E251 unexpected spaces around keyword / parameter equals
-
-./setup.py:9:21: E251 unexpected spaces around keyword / parameter equals
-
-./setup.py:9:23: E251 unexpected spaces around keyword / parameter eq
