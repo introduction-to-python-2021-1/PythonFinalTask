@@ -12,7 +12,7 @@ setup(
         include_package_data=True,
         entry_points={
                 'console_scripts': [
-                        'rss_reader=rss_reader.rss_reader:main',
+                        'rss_reader=rss_reader:main',
 
                         ]
         }
