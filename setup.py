@@ -7,12 +7,12 @@ setup(
         py_modules=['rss_reader'],
         author = 'Aleksandr Remnev',
         author_email = 'alexremnev2@gmail.com',
-        packages=find_packages(exclude=['test']),
+        packages=["rss_reader"],
         zip_safe=False,
         include_package_data=True,
         entry_points={
                 'console_scripts': [
-                        'rss_reader=rss_reader:main',
+                        'rss_reader=rss_reader.rss_reader:main',
 
                         ]
         }
