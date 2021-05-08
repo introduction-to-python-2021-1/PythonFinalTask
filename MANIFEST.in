@@ -1,4 +1,7 @@
 exclude .gitignore
+exclude .gitlint
+exclude .pre-commit-config.yaml
+exclude requirements-dev.txt
 include CODE_OF_CONDUCT.md
 include CONTRIBUTING.md
 recursive-exclude .github *

@@ -80,6 +80,11 @@ source .venv/bin/activate
    (.venv) $ pre-commit install --install-hooks
    ```
 
+   This will install:
+
+   - [pre-commit][] to run the formatters and linters on every commit
+   - [gitlint][] to check git commit messages
+
 **Congratulations!** You're now all set to begin development.
 
 ## During development
@@ -148,6 +153,8 @@ license your work under the terms of the [MIT License][].
 [pyenv]: https://github.com/pyenv/pyenv
 [virtualenv]: https://virtualenv.pypa.io/en/latest/
 [pipenv & virtual environments]: https://docs.python-guide.org/dev/virtualenvs/
+[pre-commit]: https://pre-commit.com/
+[gitlint]: https://jorisroovers.com/gitlint/
 [github.com help documentation]:
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:
