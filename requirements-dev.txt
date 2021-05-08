@@ -3,3 +3,4 @@ pre-commit==2.12.1
 pre-commit-hooks==3.4.0
 pydocstyle==6.0.0
 pylint==2.8.2
+pyupgrade==2.14.0
