@@ -1,8 +1,11 @@
 exclude .gitignore
 exclude .gitlint
 exclude .pre-commit-config.yaml
+exclude .pydocstyle.ini
 exclude requirements-dev.txt
 include CODE_OF_CONDUCT.md
 include CONTRIBUTING.md
 recursive-exclude .github *
 recursive-exclude .idea *
+recursive-exclude src .pydocstyle.ini
+recursive-exclude tests .pydocstyle.ini

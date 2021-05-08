@@ -85,6 +85,7 @@ source .venv/bin/activate
    - [pre-commit][] to run the formatters and linters on every commit
    - [gitlint][] to check git commit messages
    - [pre-commit hooks][] to run some out-of-the-box hooks for pre-commit
+   - [pydocstyle][] to check docstring style
 
 **Congratulations!** You're now all set to begin development.
 
@@ -166,6 +167,7 @@ license your work under the terms of the [MIT License][].
 [pre-commit]: https://pre-commit.com/
 [gitlint]: https://jorisroovers.com/gitlint/
 [pre-commit hooks]: https://github.com/pre-commit/pre-commit-hooks
+[pydocstyle]: http://www.pydocstyle.org/en/stable/
 [github.com help documentation]:
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:
