@@ -84,6 +84,7 @@ source .venv/bin/activate
 
    - [pre-commit][] to run the formatters and linters on every commit
    - [gitlint][] to check git commit messages
+   - [pre-commit hooks][] to run some out-of-the-box hooks for pre-commit
 
 **Congratulations!** You're now all set to begin development.
 
@@ -110,6 +111,15 @@ source .venv/bin/activate
   ```
 
 - **Your work here ...**
+
+- Run the formatters and linters:
+
+  ```shell script
+  pre-commit run --all-files # --show-diff-on-failure
+  ```
+
+  These checks are also run on every commit via [pre-commit hooks][]. Please
+  fix any failures before committing.
 
 - Commit your changes in logical chunks
 
@@ -155,6 +165,7 @@ license your work under the terms of the [MIT License][].
 [pipenv & virtual environments]: https://docs.python-guide.org/dev/virtualenvs/
 [pre-commit]: https://pre-commit.com/
 [gitlint]: https://jorisroovers.com/gitlint/
+[pre-commit hooks]: https://github.com/pre-commit/pre-commit-hooks
 [github.com help documentation]:
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:
