@@ -4,7 +4,6 @@ import sys
 import logging
 import json
 
-
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger()
 
@@ -15,7 +14,7 @@ def create_parser(args):
     parser.add_argument("-v", "--version", action="version", help="Print version info", version="Version 2.0")
     parser.add_argument("url", type=str, help="URL ")
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
-    parser.add_argument("-j", "--json",action="store_true", help="Print result as JSON in stdout")
+    parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
 
     return parser.parse_args(args)
@@ -50,7 +49,7 @@ def print_news(args):
         make_dict["Title"] = item['title']
         make_dict["PubDate"] = item['published']
         make_dict["Link"] = item["link"]
-        if args.json:SystemExit
+        if args.json:
             with open("data_file.json", "a") as f:
                 json.dump(make_dict, f, indent=4)
                 count += 1
@@ -74,4 +73,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
