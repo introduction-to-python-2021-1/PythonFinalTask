@@ -86,6 +86,7 @@ source .venv/bin/activate
    - [gitlint][] to check git commit messages
    - [pre-commit hooks][] to run some out-of-the-box hooks for pre-commit
    - [pydocstyle][] to check docstring style
+   - [pylint][] to analyze code
 
 **Congratulations!** You're now all set to begin development.
 
@@ -168,6 +169,7 @@ license your work under the terms of the [MIT License][].
 [gitlint]: https://jorisroovers.com/gitlint/
 [pre-commit hooks]: https://github.com/pre-commit/pre-commit-hooks
 [pydocstyle]: http://www.pydocstyle.org/en/stable/
+[pylint]: https://www.pylint.org/
 [github.com help documentation]:
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:

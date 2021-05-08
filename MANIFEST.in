@@ -2,6 +2,7 @@ exclude .gitignore
 exclude .gitlint
 exclude .pre-commit-config.yaml
 exclude .pydocstyle.ini
+exclude .pylintrc
 exclude requirements-dev.txt
 include CODE_OF_CONDUCT.md
 include CONTRIBUTING.md
