@@ -15,6 +15,4 @@ setup(
                         'rss_reader=rss_reader.rss_reader:main',
                 ],
         }
-
 )
-
