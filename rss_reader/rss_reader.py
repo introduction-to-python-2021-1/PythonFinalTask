@@ -26,7 +26,7 @@ def open_url(url):
     try:
         logger.info(f"open {url} and start parse")
         feed = feedparser.parse(url)
-    except Exception:
+    except SystemExit:
         logger.error(f"cant open {url}")
         sys.exit()
 
@@ -38,7 +38,7 @@ def print_news(args):
     feed = open_url(args.url)
     try:
         print(f'Feed: {feed["channel"]["title"]}')
-    except Exception:
+    except SystemExit:
         logger.error(f"it's not rss format")
         sys.exit()
 
@@ -50,7 +50,7 @@ def print_news(args):
         make_dict["Title"] = item['title']
         make_dict["PubDate"] = item['published']
         make_dict["Link"] = item["link"]
-        if args.json:
+        if args.json:SystemExit
             with open("data_file.json", "a") as f:
                 json.dump(make_dict, f, indent=4)
                 count += 1
