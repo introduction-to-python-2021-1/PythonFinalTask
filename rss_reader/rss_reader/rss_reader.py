@@ -9,7 +9,7 @@ from urllib.error import HTTPError
 from urllib.request import urlopen
 import xml.etree.ElementTree as ET
 
-from local_storage import LocalStorage
+from rss_reader.local_storage import LocalStorage
 
 VERSION = "2.0"
 
@@ -95,7 +95,7 @@ def set_limit(channel, limit):
     """
     logger.info(f"Limit output to {limit or len(channel['Items'])} news")
 
-    channel["Items"] = channel["Items"][:limit]
+    channel["Items"] = channel["Items"][:max(0, limit) if limit is not None else limit]
 
     return channel
 
@@ -131,7 +131,7 @@ def write_json(channel):
     logger.info(f"Write json")
 
     base = Path(__file__).resolve().parent.parent / "data"
-    jsonpath = base / "news.json"
+    jsonpath = base / "output.json"
     base.mkdir(exist_ok=True)
     jsonpath.write_text(json.dumps(channel, indent=4))
 
