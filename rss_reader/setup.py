@@ -10,6 +10,7 @@ setup(
         packages=find_packages(),
         zip_safe=False,
         include_package_data=True,
+        install_requires=['feedparser'],
         entry_points={
                 'console_scripts': [
                         'rss_reader=rss_reader.rss_reader:main',
