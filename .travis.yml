@@ -7,6 +7,5 @@ script:
   - cd rss_reader
   - pip install .
   - nosetests --cover-branches --with-coverage --cover-min-percentage=50 --cover-package=rss_reader .
-  - nosetests --cover-branches --with-coverage --cover-min-percentage=50 --cover-package=components .
   - pycodestyle --max-line-length=120 .
   - cd -
