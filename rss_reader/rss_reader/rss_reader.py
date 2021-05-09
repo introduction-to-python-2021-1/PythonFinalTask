@@ -13,7 +13,7 @@ from local_storage import LocalStorage
 
 VERSION = "2.0"
 
-logging.basicConfig(level=logging.ERROR, format="%(message)s")
+logging.basicConfig(level=logging.WARNING, format="%(message)s")
 logger = logging.getLogger()
 
 local_storage = LocalStorage("localstorage")
@@ -73,8 +73,8 @@ def parse_response(response):
     channel_title = root.findtext("channel/title")
     channel_items = []
 
-    for number_of_news_item, news_item in enumerate(root.iterfind("channel/item")):
-        logger.info(f"Process item № {number_of_news_item + 1}")
+    for index_of_news_item, news_item in enumerate(root.iterfind("channel/item")):
+        logger.info(f"Process item № {index_of_news_item + 1}")
 
         channel_items.append({
             "Title": news_item.findtext("title"),
@@ -96,9 +96,13 @@ def set_limit(channel, limit):
             Returns:
                     {"Title": (str), "Items": (list)}: Dictionary with channel title and items
     """
-    logger.info(f"Limit output to {limit or len(channel['Items'])} news")
+    logger.info(f"Limit output")
+
+    calculated_limit = max(0, limit) if limit is not None else limit
+    if limit != calculated_limit:
+        logger.warning(f"You provided wrong --limit argument , your limit set to {calculated_limit}")
     # Changes input dictionary "channel", not creates a copy of it
-    channel["Items"] = channel["Items"][:max(0, limit) if limit is not None else limit]
+    channel["Items"] = channel["Items"][:calculated_limit]
 
     return channel
 
@@ -120,19 +124,16 @@ def print_news(channel):
         print(f"Link: {news_item['Link']}")
 
 
-def write_json(channel):
+def print_json(channel):
     """
-    Write news into data.json file in directory named data.
+    Print channel as JSON in stdout.
 
             Parameters:
                     {"Title": (str), "Items": (list)}: Dictionary with channel title and items
     """
-    logger.info(f"Write json")
+    logger.info(f"Print channel as JSON in stdout")
 
-    base = Path(__file__).resolve().parent.parent / "data"
-    jsonpath = base / "news.json"
-    base.mkdir(exist_ok=True)
-    jsonpath.write_text(json.dumps(channel, indent=4))
+    print(json.dumps(channel, sort_keys=False, indent=4))
 
 
 def main(argv=sys.argv):
