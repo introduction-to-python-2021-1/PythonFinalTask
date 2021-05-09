@@ -68,6 +68,8 @@ def main():
     args = create_parser(sys.argv[1:])
     if args.verbose:
         logger.setLevel(logging.INFO)
+    elif args.limit <= 0:
+              print("0 or negative limit")
     print_news(args)
 
 
