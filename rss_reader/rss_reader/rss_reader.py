@@ -9,7 +9,7 @@ from urllib.error import HTTPError
 from urllib.request import urlopen
 import xml.etree.ElementTree as ET
 
-from rss_reader.local_storage import LocalStorage
+from local_storage import LocalStorage
 
 VERSION = "2.0"
 
@@ -94,7 +94,7 @@ def set_limit(channel, limit):
                     {"Title": (str), "Items": (list)}: Dictionary with channel title and items
     """
     logger.info(f"Limit output to {limit or len(channel['Items'])} news")
-
+    # Changes input dictionary "channel", not creates a copy of it
     channel["Items"] = channel["Items"][:max(0, limit) if limit is not None else limit]
 
     return channel
@@ -153,9 +153,9 @@ def main(argv=sys.argv):
     if args.date:
 
         if args.source:
-            channel_info_and_items = local_storage.get_channel(args.source, args.date)
+            channel_info_and_items = local_storage.get_channel_by_url_and_date(args.source, args.date)
         else:
-            channel_info_and_items = local_storage.get_channel(None, args.date)
+            channel_info_and_items = local_storage.get_channel_by_url_and_date(None, args.date)
 
         if channel_info_and_items is None:
             logger.error("Couldn't find news topics which were published in specific date")
@@ -164,7 +164,7 @@ def main(argv=sys.argv):
     else:
         response = get_response(args.source)
         channel_info_and_items = parse_response(response)
-        local_storage.set_channel(args.source, channel_info_and_items)
+        local_storage.set_channel_by_url(args.source, channel_info_and_items)
 
     set_limit(channel_info_and_items, args.limit)
     print_news(channel_info_and_items)
