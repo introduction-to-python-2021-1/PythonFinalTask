@@ -1,19 +1,17 @@
 import json
 import unittest
 
-from ddt import ddt
-from ddt import data
-from ddt import unpack
+import ddt
 
 from rss_reader.rss_reader import set_limit
 
 
-@ddt
+@ddt.ddt
 class TestSetLimit(unittest.TestCase):
     """Tests set_limit function from rss_reader with limit set to various values."""
 
-    @data((None, 9), (-1, 0), (0, 0), (1, 1), (9, 9), (10, 9))
-    @unpack
+    @ddt.data((None, 9), (-1, 0), (0, 0), (1, 1), (9, 9), (10, 9))
+    @ddt.unpack
     def test_set_limit(self, limit, expected):
         """Tests set_limit function from rss_reader with limit set to various values."""
         with open("data/news.json") as json_file:

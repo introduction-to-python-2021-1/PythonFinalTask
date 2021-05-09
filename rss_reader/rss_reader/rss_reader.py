@@ -40,6 +40,9 @@ def get_response(url):
     except URLError as e:
         logger.error(f"Failed to reach a server.\nReason: {e.reason}")
         sys.exit()
+    except Exception as e:
+        logger.error(f"Generic exception: {e}")
+        sys.exit()
 
     return response
 
@@ -106,8 +109,6 @@ def print_news(channel):
 
             Parameters:
                     {"Title": (str), "Items": (list)}: Dictionary with channel title and items
-            Returns:
-                    (None)
     """
     logger.info(f"Print news")
 
@@ -125,13 +126,11 @@ def write_json(channel):
 
             Parameters:
                     {"Title": (str), "Items": (list)}: Dictionary with channel title and items
-            Returns:
-                    (None)
     """
     logger.info(f"Write json")
 
     base = Path(__file__).resolve().parent.parent / "data"
-    jsonpath = base / "output.json"
+    jsonpath = base / "news.json"
     base.mkdir(exist_ok=True)
     jsonpath.write_text(json.dumps(channel, indent=4))
 

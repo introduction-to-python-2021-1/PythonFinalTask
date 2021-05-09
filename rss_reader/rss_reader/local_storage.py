@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from dateparser import parse
 
 
@@ -9,7 +10,7 @@ class LocalStorage:
         base.mkdir(exist_ok=True)
         jsonpath = base / f"{name}.json"
         jsonpath.touch(exist_ok=True)
-        
+
         self.jsonpath = jsonpath
 
     def set_channel_by_url(self, url, channel):
