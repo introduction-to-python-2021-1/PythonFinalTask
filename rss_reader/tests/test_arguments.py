@@ -3,7 +3,7 @@ from unittest.mock import patch
 from io import StringIO
 import re
 import json
-from rss_reader.rss_reader.rss_reader import main
+from rss_reader.rss_reader import main
 
 
 class TestRssReader(unittest.TestCase):
