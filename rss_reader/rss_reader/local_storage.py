@@ -30,9 +30,10 @@ class LocalStorage:
             date_of_latest_news_item_in_storage_content = parse_date_from_news_item(storage_content[url]["Items"][0])
 
             while i < len(channel["Items"]) and storage_content_has_news_items and \
-                parse_date_from_news_item(channel["Items"][i]) > date_of_latest_news_item_in_storage_content:
-                    tmp_list.append(channel["Items"][i])
-                    i += 1
+                    parse_date_from_news_item(channel["Items"][i]) > date_of_latest_news_item_in_storage_content:
+
+                tmp_list.append(channel["Items"][i])
+                i += 1
 
             storage_content[url]["Items"] = tmp_list + storage_content[url]["Items"]
         else:
