@@ -61,7 +61,6 @@ class LocalStorage:
 
         return sorted(news_items_by_specific_date, reverse=True, key=self.parse_date_from_news_item)
 
-
     def get_number_of_news_items_by_url(self, url):
         storage_content = self.read_from_storage_file()
 
