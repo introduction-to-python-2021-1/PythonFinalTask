@@ -29,6 +29,8 @@ def main(argv=sys.argv[1:]):
         except requests.exceptions.ConnectionError:
             logger.error(' An error occurred while sending a GET request to the specified URL. Check the specified URL'
                          ' and your internet connection')
+        except requests.exceptions.MissingSchema:
+            logger.error(f' Invalid URL "{args.source}". The specified URL should look like "http://www.example.com/"')
         else:
             logger.info(' Parsing XML from the specified URL')
             soup = BeautifulSoup(response.content, 'lxml-xml')
