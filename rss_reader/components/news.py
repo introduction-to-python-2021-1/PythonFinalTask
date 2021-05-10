@@ -1,6 +1,7 @@
 """This module contains a class that represents a feed item"""
 
 from datetime import datetime
+
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 
