@@ -52,13 +52,13 @@ def get_response(url):
 
 def parse_response(response):
     """
-    Returns dictionary with channel title and items.
+    Returns list with news items.
 
             Parameters:
                     response (http.client.HTTPResponse): Response from server provided by get_response function
 
             Returns:
-                    {"Title": (str), "Items": (list)}: Dictionary with channel title and items
+                    [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
     """
     try:
         logger.info(f"Parse response")
@@ -74,74 +74,74 @@ def parse_response(response):
         sys.exit()
 
     channel_title = root.findtext("channel/title")
-    channel_items = []
+    news_items = []
 
     for index_of_news_item, news_item in enumerate(root.iterfind("channel/item")):
         logger.info(f"Process item № {index_of_news_item + 1}")
 
-        channel_items.append({
+        news_items.append({
+            "Feed": channel_title,
             "Title": news_item.findtext("title"),
             "Date": news_item.findtext("pubDate"),
             "Link": news_item.findtext("link"),
         })
 
-    return {"Title": root.findtext("channel/title"), "Items": channel_items}
+    return news_items
 
 
-def set_limit(channel, limit):
+def limit_news_items(news_items, limit):
     """
-    Returns dictionary with channel title and items. Items number is determined by provided limit argument.
+    Returns limited list with news items. Items number is determined by provided limit argument.
 
             Parameters:
-                    channel {"Title": (str), "Items": (list)}: Dictionary with channel title and items
+                    news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
                     limit (None) or (int): Max number of items in result dictionary, if (None) all items are included
 
             Returns:
-                    {"Title": (str), "Items": (list)}: Dictionary with channel title and items
+                    [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: Limited list of dictionaries
     """
     logger.info(f"Limit output")
 
     calculated_limit = max(0, limit) if limit is not None else limit
     if limit != calculated_limit:
         logger.warning(f"You provided wrong --limit argument , your limit set to {calculated_limit}")
-    # Changes input dictionary "channel", not creates a copy of it
-    channel["Items"] = channel["Items"][:calculated_limit]
 
-    return channel
+    return news_items[:calculated_limit]
 
 
-def print_news(channel):
+def print_news(news_items):
     """
-    Prints news to console.
+    Prints news to stdout.
 
             Parameters:
-                    {"Title": (str), "Items": (list)}: Dictionary with channel title and items
+                    news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
     """
     logger.info(f"Print news")
 
-    print(f"\nFeed: {channel['Title']}")
-
-    for news_item in channel["Items"]:
-        print(f"\nTitle: {news_item['Title']}")
+    for news_item in news_items:
+        print()
+        print(f"Feed: {news_item['Feed']}")
+        print(f"Title: {news_item['Title']}")
         print(f"Date: {news_item['Date']}")
         print(f"Link: {news_item['Link']}")
 
 
-def print_json(channel):
+def print_json(news_items):
     """
-    Print channel as JSON in stdout.
+    Prints news as JSON in stdout.
 
             Parameters:
-                    {"Title": (str), "Items": (list)}: Dictionary with channel title and items
+                    news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
     """
-    logger.info(f"Print channel as JSON in stdout")
+    logger.info(f"Print news as JSON")
 
-    print(json.dumps(channel, sort_keys=False, indent=4))
+    print(json.dumps(news_items, indent=4, ensure_ascii=False))
 
 
 def main(argv=sys.argv):
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
-    parser.add_argument("source", type=str, help="RSS URL")
+    # If you read the string down below, please don't copy it, I worked too hard on it
+    parser.add_argument("source", nargs="?" if "--date" in argv else None, type=str, help="RSS URL")
     parser.add_argument("--version", action="version", version=f'"Version {VERSION}"', help="Print version info")
     parser.add_argument("--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
@@ -156,24 +156,24 @@ def main(argv=sys.argv):
     if args.date:
 
         if args.source:
-            channel_info_and_items = local_storage.get_channel_by_url_and_date(args.source, args.date)
+            news_items = local_storage.get_channel_by_url_and_date(args.source, args.date)
         else:
-            channel_info_and_items = local_storage.get_channel_by_url_and_date(None, args.date)
+            news_items = local_storage.get_channel_by_url_and_date(None, args.date)
 
-        if channel_info_and_items is None:
+        if not news_items:
             logger.error("Couldn't find news topics which were published in specific date")
             sys.exit()
 
     else:
         response = get_response(args.source)
-        channel_info_and_items = parse_response(response)
-        local_storage.set_channel_by_url(args.source, channel_info_and_items)
+        news_items = parse_response(response)
+        local_storage.set_channel_by_url(args.source, news_items)
 
-    set_limit(channel_info_and_items, args.limit)
-    print_news(channel_info_and_items)
+    news_items = limit_news_items(news_items, args.limit)
+    print_news(news_items)
 
     if args.json:
-        print_json(channel_info_and_items)
+        print_json(news_items)
 
 
 if __name__ == "__main__":
