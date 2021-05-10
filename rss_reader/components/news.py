@@ -19,11 +19,8 @@ class News:
         self.description = self.__parse_description()
         self.date = self.__parse_date()
 
-    def __parse_description(self):
-        """
-        This method parses the description of the feed item and formats it
-        :return: str
-        """
+    def __parse_description(self) -> str:
+        """This method parses the description of the feed item and formats it"""
         if self.item.description:
             soup = BeautifulSoup(self.item.description.text, 'html.parser')
             images = soup.find_all('img')
@@ -33,11 +30,8 @@ class News:
                 image.replace_with(f'[image {item_position}{": " + image["alt"] + "] " if image["alt"] else "] "}')
             return soup.text
 
-    def __parse_date(self):
-        """
-        This method parses the publication date of the feed item and formats it
-        :return: str
-        """
+    def __parse_date(self) -> str:
+        """This method parses the publication date of the feed item and formats it"""
         if self.item.pubDate:
             date = self.item.pubDate.text
             return datetime.strftime(parse(date), '%a, %d %b %G %X')
@@ -45,29 +39,20 @@ class News:
             date = self.item.published.text
             return datetime.strftime(parse(date), '%a, %d %b %G %X')
 
-    def __format_links(self):
-        """
-        This method returns the formatted links contained in the feed item
-        :return: str
-        """
+    def __format_links(self) -> str:
+        """This method returns the formatted links contained in the feed item"""
         return '\n' + '\n'.join(f'[{position}] {link["url"]} ({link["type"]})' for position, link in self.links.items())
 
-    def to_dict(self):
-        """
-        This method returns a dictionary representation of the news object
-        :return: dict
-        """
+    def to_dict(self) -> dict:
+        """This method returns a dictionary representation of the news object"""
         return {'title': self.title,
                 'url': self.link,
                 'description': self.description,
                 'date': self.date,
                 'links': self.links if self.links else None}
 
-    def __str__(self):
-        """
-        This method override default __str__ method which computes the string representation of an object
-        :return: str
-        """
+    def __str__(self) -> str:
+        """This method override default __str__ method which computes the string representation of an object"""
         return f'[{self.feed_title}] {self.title}\n' \
                f'Date: {self.date}\n' \
                f'Link: {self.link}\n\n' \

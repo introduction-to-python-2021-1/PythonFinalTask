@@ -9,8 +9,10 @@ class Feed:
     """This class represents a feed"""
 
     def __init__(self, feed_title, items, to_json, logger, limit):
-        """This class constructor initializes the required variables for the feed class
-        and calls the method that creates news objects and adds them to news list"""
+        """
+        This class constructor initializes the required variables for the feed class
+        and calls the method that creates news objects and adds them to news list
+        """
         self.feed_title = feed_title
         self.limit = limit
         self.items = items[:self.limit]
@@ -20,19 +22,13 @@ class Feed:
         self.__create_feed()
 
     def __create_feed(self):
-        """
-        This method creates news objects and adds them to the news list
-        :return: None
-        """
+        """This method creates news objects and adds them to the news list"""
         self.logger.info(' Preparing a feed')
         for item in self.items:
             self.news_list.append(News(self.feed_title, item))
 
-    def __str__(self):
-        """
-        This method override default __str__ method which computes the string representation of an object
-        :return: str
-        """
+    def __str__(self) -> str:
+        """This method override default __str__ method which computes the string representation of an object"""
         if self.to_json:
             self.logger.info(' Printing news to STDOUT in JSON')
             return json.dumps({'title': self.feed_title,
