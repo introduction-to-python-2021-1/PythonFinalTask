@@ -173,7 +173,7 @@ def main(argv=sys.argv):
     print_news(channel_info_and_items)
 
     if args.json:
-        write_json(channel_info_and_items)
+        print_json(channel_info_and_items)
 
 
 if __name__ == "__main__":
