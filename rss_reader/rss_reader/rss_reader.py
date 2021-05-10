@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 try:
     from local_storage import LocalStorage
 except ImportError:
-    from local_storage import LocalStorage
+    from .local_storage import LocalStorage
 
 VERSION = "2.0"
 
