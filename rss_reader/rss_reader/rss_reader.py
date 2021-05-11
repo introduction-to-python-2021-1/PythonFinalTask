@@ -30,8 +30,6 @@ def open_url(url):
         sys.exit()
 
     return feed
-erge / Хабр
-habr.com›ru/post/195674/
 
 
 def print_news(args):
