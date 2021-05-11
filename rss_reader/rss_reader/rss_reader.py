@@ -71,9 +71,7 @@ def main():
     if args.verbose:
         logger.setLevel(logging.INFO)
     if args.limit <= 0:
-        print("0 or negative lierge / Хабр
-habr.com›ru/post/195674/
-mit")
+        print("0 or negative lierge")
     else:
         print_news(args)
 
