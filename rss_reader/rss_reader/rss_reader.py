@@ -30,6 +30,8 @@ def open_url(url):
         sys.exit()
 
     return feed
+erge / Хабр
+habr.com›ru/post/195674/
 
 
 def print_news(args):
@@ -69,7 +71,9 @@ def main():
     if args.verbose:
         logger.setLevel(logging.INFO)
     if args.limit <= 0:
-        print("0 or negative limit")
+        print("0 or negative lierge / Хабр
+habr.com›ru/post/195674/
+mit")
     else:
         print_news(args)
 
