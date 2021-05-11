@@ -18,6 +18,7 @@ setup(
     author_email="egor.makhlaev@gmail.com",
     license=license,
     packages=["rss_reader"],
+    install_requires=["dateparser==1.0.0"],
     entry_points={
         'console_scripts': [
             'rss_reader=rss_reader.rss_reader:main',
