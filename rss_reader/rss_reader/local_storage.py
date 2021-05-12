@@ -1,11 +1,21 @@
 import json
+import logging
 import datetime
 from pathlib import Path
 
 import dateparser
 
+try:
+    from logger_config import get_logger
+except ImportError:
+    from .logger_config import get_logger
+
+logger = get_logger()
+
 
 class LocalStorage:
+    """Implements local storage and interface to interact with it."""
+
     @staticmethod
     def parse_date_from_news_item(news_item):
         return dateparser.parse(news_item["Date"])
@@ -41,6 +51,7 @@ class LocalStorage:
         self.write_to_storage_file(storage_content)
 
     def get_channel_by_url_and_date(self, url, pub_date):
+        logger.info(f"Get channel from local storage by url: {url} and date: {pub_date}")
         storage_content = self.read_from_storage_file()
         pub_date = datetime.datetime.strptime(pub_date, "%Y%m%d")
 

@@ -11,15 +11,15 @@ import xml.etree.ElementTree as ET
 
 try:
     from local_storage import LocalStorage
+    from logger_config import get_logger
 except ImportError:
     from .local_storage import LocalStorage
+    from .logger_config import get_logger
 
 VERSION = "2.0"
 
-logging.basicConfig(level=logging.WARNING, format="%(message)s")
-logger = logging.getLogger()
-
 local_storage = LocalStorage("localstorage")
+logger = get_logger()
 
 
 def get_response(url):
@@ -100,11 +100,12 @@ def limit_news_items(news_items, limit):
             Returns:
                     [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: Limited list of dictionaries
     """
-    logger.info(f"Limit output")
-
     calculated_limit = max(0, limit) if limit is not None else limit
+
     if limit != calculated_limit:
-        logger.warning(f"You provided wrong --limit argument , your limit set to {calculated_limit}")
+        logger.warning(f"You provided wrong --limit argument, your limit set to {calculated_limit}")
+    else:
+        logger.info(f"Limit output to {calculated_limit} news items")
 
     return news_items[:calculated_limit]
 
@@ -116,7 +117,7 @@ def print_news(news_items):
             Parameters:
                     news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
     """
-    logger.info(f"Print news")
+    logger.info(f"Print news items")
 
     for news_item in news_items:
         print()
@@ -133,14 +134,14 @@ def print_json(news_items):
             Parameters:
                     news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
     """
-    logger.info(f"Print news as JSON")
+    logger.info(f"Print news items as JSON")
 
     print(json.dumps(news_items, indent=4, ensure_ascii=False))
 
 
 def main(argv=sys.argv):
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
-    # If you read the string down below, please don't copy it, I worked too hard on it
+    # If you read the string down below, please don't copy it, I worked too hard on it ;-)
     parser.add_argument("source", nargs="?" if "--date" in argv else None, type=str, help="RSS URL")
     parser.add_argument("--version", action="version", version=f'"Version {VERSION}"', help="Print version info")
     parser.add_argument("--json", action="store_true", help="Print result as JSON in stdout")
