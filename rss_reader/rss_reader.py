@@ -13,9 +13,20 @@ import feedparser
 
 
 def open_rss_link(source, limit, json, verbose):
+    """
+    Main function: receive link and params from bash, parse news and print them (and logs)
+    :param source: link to take news
+    :param limit: how many news tp return
+    :param json: choose output format
+    :param verbose: choose place to print logs
+    :return: print news to stdout
+    """
+
+    # Receive link and start parsing
     content = feedparser.parse(source)
 
     if verbose:
+        # Choose the output for logs and configure a logger
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s - %(levelname)s - %(message)s",
@@ -32,12 +43,14 @@ def open_rss_link(source, limit, json, verbose):
     logger.info(f"Starting reading link {source}")
 
     if limit and limit <= len(content.entries):
+        # Set how many new to print
         logger.info(f"Would read only {limit} number of news")
         number_of_news_to_show = limit
     else:
         number_of_news_to_show = len(content.entries)
 
     if json:
+        # Convert news to json format
         logger.info(f"Convert news in json format")
         json_dict = {}
         newslist = []
@@ -76,6 +89,7 @@ def open_rss_link(source, limit, json, verbose):
         print(jsn.dumps(newsdict))
 
     else:
+        # Print news to stdout
         for news in content.entries[:number_of_news_to_show]:
             if "title" in news.keys():
                 print(f"Title: {news.title}")
@@ -109,6 +123,7 @@ def open_rss_link(source, limit, json, verbose):
 
 
 if __name__ == "__main__":
+    # Parse arguments from command line
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader")
     parser.add_argument(
         "--version", action="version", version="Version 1.0.1", help="Print version info"
