@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Main module. Receive input info from bash, parse it and print result to stdout.
 """
@@ -98,7 +98,7 @@ def open_rss_link(source, limit, json, verbose):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader")
     parser.add_argument(
-        "--version", action="version", version="Version 1.0", help="Print version info"
+        "--version", action="version", version="Version 1.0.1", help="Print version info"
     )
     parser.add_argument("source", type=str, help="RSS URL")
     parser.add_argument(
