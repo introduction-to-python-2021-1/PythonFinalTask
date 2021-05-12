@@ -60,9 +60,9 @@ def parse_response(response):
             Returns:
                     [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
     """
-    try:
-        logger.info(f"Parse response")
+    logger.info(f"Parse response")
 
+    try:
         xmldoc = ET.parse(response)
         root = xmldoc.getroot()
 
@@ -77,14 +77,14 @@ def parse_response(response):
     news_items = []
 
     for index_of_news_item, news_item in enumerate(root.iterfind("channel/item")):
-        logger.info(f"Process item № {index_of_news_item + 1}")
-
         news_items.append({
             "Feed": channel_title,
             "Title": news_item.findtext("title"),
             "Date": news_item.findtext("pubDate"),
             "Link": news_item.findtext("link"),
         })
+
+    logger.info(f"Parsed {index_of_news_item + 1} items from response")
 
     return news_items
 
@@ -105,7 +105,7 @@ def limit_news_items(news_items, limit):
     if limit != calculated_limit:
         logger.warning(f"You provided wrong --limit argument, your limit set to {calculated_limit}")
     else:
-        logger.info(f"Limit output to {calculated_limit} news items")
+        logger.info(f"Limit output to {len(news_items) if calculated_limit is None else calculated_limit} news items")
 
     return news_items[:calculated_limit]
 
@@ -157,9 +157,9 @@ def main(argv=sys.argv):
     if args.date:
 
         if args.source:
-            news_items = local_storage.get_channel_by_url_and_date(args.source, args.date)
+            news_items = local_storage.get_news_items_by_url_and_date(args.source, args.date)
         else:
-            news_items = local_storage.get_channel_by_url_and_date(None, args.date)
+            news_items = local_storage.get_news_items_by_url_and_date(None, args.date)
 
         if not news_items:
             logger.error("Couldn't find news topics which were published in specific date")
@@ -168,7 +168,7 @@ def main(argv=sys.argv):
     else:
         response = get_response(args.source)
         news_items = parse_response(response)
-        local_storage.set_channel_by_url(args.source, news_items)
+        local_storage.set_news_items_by_url(args.source, news_items)
 
     news_items = limit_news_items(news_items, args.limit)
     print_news(news_items)
