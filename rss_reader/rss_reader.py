@@ -6,28 +6,39 @@ Main module. Receive input info from bash, parse it and print result to stdout.
 import argparse
 import json as jsn
 import logging
+import logging.handlers
 import sys
 
 import feedparser
-
-
-# logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 def open_rss_link(source, limit, json, verbose):
     content = feedparser.parse(source)
 
     if verbose:
-        logging.basicConfig(stream=sys.stdout)
-        logging.info("you ask to print logs")
-        print("you ask to print logs")
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s - %(levelname)s - %(message)s",
+            handlers=[logging.StreamHandler(sys.stdout), ]
+        )
+    else:
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s - %(levelname)s - %(message)s",
+            handlers=[logging.FileHandler("logs.log"), ]
+        )
+    logger = logging.getLogger()
+
+    logger.info(f"Starting reading link {source}")
 
     if limit and limit <= len(content.entries):
+        logger.info(f"Would read only {limit} number of news")
         number_of_news_to_show = limit
     else:
         number_of_news_to_show = len(content.entries)
 
     if json:
+        logger.info(f"Convert news in json format")
         json_dict = {}
         newslist = []
         newsdict = {}
@@ -93,6 +104,8 @@ def open_rss_link(source, limit, json, verbose):
             if "link" in news.keys():
                 print("------News Link--------")
                 print(news.link)
+
+    logger.info(f"End of reading")
 
 
 if __name__ == "__main__":
