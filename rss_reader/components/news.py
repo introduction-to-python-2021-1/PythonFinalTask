@@ -1,11 +1,11 @@
 """This module contains a class that represents a feed item"""
 
 from datetime import datetime
-import os
-import json
 
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
+
+import components
 
 
 class News:
@@ -17,6 +17,7 @@ class News:
         self.item = item
         self.source = source
         self.logger = logger
+        self.cache = components.cache.Cache(self.logger)
         if isinstance(self.item, dict):
             self.__from_cache()
         else:
@@ -26,7 +27,7 @@ class News:
             self.description = self.__parse_description()
             self.date = self.__parse_date()
             self.formatted_date = datetime.strftime(self.date, '%a, %d %b %G %X')
-            self.__cache_news()
+            self.cache.cache_news(self)
 
     def __parse_description(self) -> str:
         """This method parses the description of the feed item and formats it"""
@@ -67,52 +68,6 @@ class News:
                f'Link: {self.link}\n\n' \
                f'{self.description if self.description else ""}\n\n' \
                f'{"Links:" + self.__format_links() if self.links else ""}'.rstrip()
-
-    def __cache_news(self):
-        """This method caches the news"""
-        cache_folder_path = 'cache' + os.path.sep
-        cache_date = datetime.strftime(self.date, "%Y%m%d")
-        cache_file_path = f'{cache_folder_path}{cache_date}.json'
-        source_feed_already_cached = False
-        news_already_cached = False
-        source_feed_index = None
-        source_feed_cached_news_number = None
-        if not os.path.exists(cache_folder_path):
-            os.mkdir(cache_folder_path)
-        if os.path.exists(cache_file_path):
-            with open(cache_file_path, 'r') as file:
-                cached_data = json.load(file)
-            for cached_feed_index, cached_feed in cached_data.items():
-                if cached_feed['source'] == self.source:
-                    source_feed_already_cached = True
-                    source_feed_index = cached_feed_index
-                    for cached_news in cached_feed['items'].values():
-                        if cached_news['url'] == self.link:
-                            news_already_cached = True
-                            break
-                    if not news_already_cached:
-                        source_feed_cached_news_number = len(cached_feed['items'])
-                if news_already_cached or source_feed_already_cached:
-                    break
-            if not news_already_cached:
-                self.logger.info(' Caching news')
-                if source_feed_already_cached:
-                    cached_data[source_feed_index]['items'][source_feed_cached_news_number] = self.to_dict()
-                else:
-                    cached_data[len(cached_data)] = {'title': self.feed_title,
-                                                     'source': self.source,
-                                                     'items': {
-                                                         0: self.to_dict()
-                                                     }}
-                with open(cache_file_path, 'w') as file:
-                    json.dump(cached_data, file, indent=4, ensure_ascii=False)
-        else:
-            with open(cache_file_path, 'w') as file:
-                json.dump({0: {'title': self.feed_title,
-                               'source': self.source,
-                               'items': {
-                                   0: self.to_dict()
-                               }}}, file, indent=4, ensure_ascii=False)
 
     def __from_cache(self):
         """This method retrieves news variables from cached news"""
