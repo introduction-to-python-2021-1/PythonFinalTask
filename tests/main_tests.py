@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 from urllib.error import URLError
 
+# import nose
 from rss_reader import rss_reader as rs
 
 NEWSLINK = "https://news.yahoo.com/rss/"
@@ -36,3 +37,4 @@ class MainReaderTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+    # nose.run()
