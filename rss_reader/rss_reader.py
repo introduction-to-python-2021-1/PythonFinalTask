@@ -1,4 +1,3 @@
-
 """
 Main module. Receive input info from bash, parse it and print result to stdout.
 """
@@ -8,6 +7,7 @@ import json as jsn
 import logging
 import logging.handlers
 import sys
+from urllib.error import URLError
 
 import feedparser
 
@@ -23,7 +23,10 @@ def open_rss_link(source, limit, json, verbose):
     """
 
     # Receive link and start parsing
-    content = feedparser.parse(source)
+    try:
+        content = feedparser.parse(source)
+    except Exception:
+        raise URLError("Bad link, please try again")
 
     if verbose:
         # Choose the output for logs and configure a logger
