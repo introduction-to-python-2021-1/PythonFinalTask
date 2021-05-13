@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='rss-reader',
-    version='0.2',
+    version='0.3',
     description='Command-line RSS reader',
     author='Sergey Rutkovskiy',
     url='https://github.com/spectraise/PythonFinalTask',

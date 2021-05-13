@@ -27,19 +27,35 @@ optional arguments:
 
 <pre>
 {
-    "title": "TUT.BY: Новости ТУТ - Главные новости",
-    "items": {
-        "0": {
-            "title": "«На 19 мая у него был обратный билет в Норильск». Что известно о докторе, которого задержали в Борисове",
-            "url": "https://news.tut.by/society/729590.html?utm_campaign=news-feed&utm_medium=rss&utm_source=rss-news",
-            "description": "[image 0: Фото: sprosivracha.com] В Борисове 3 мая был задержан врач Александр Телего, который работает в России. Сейчас он находится в ИВС, который расположен в здании тюрьмы № 1 в Гродно. В МВД прокомментировали задержание медика и рассказали, что против него возбуждено уголовное дело за оскорбление представителей власти. Мама Александра - Галина и его друзья немного рассказали о докторе и о том, что с ним произошло.",
-            "date": "Thu, 06 May 2021 21:43:00",
-            "links": {
-                "0": {
-                    "type": "image",
-                    "url": "https://img.tyt.by/thumbnails/n/regiony/05/8/telego_aaleksandr.jpg",
-                    "attributes": {
-                        "alt": "Фото: sprosivracha.com"
+    "0": {
+        "title": "Yahoo News - Latest News & Headlines",
+        "source": "https://news.yahoo.com/rss",
+        "items": {
+            "0": {
+                "title": "Israel military draws up plan for ground invasion of Gaza",
+                "url": "https://news.yahoo.com/israel-military-draws-plan-ground-064023988.html",
+                "description": null,
+                "date": "Thu, 13 May 2021 06:40:23",
+                "links": null
+            }
+        }
+    },
+    "1": {
+        "title": "TUT.BY: Новости ТУТ - Главные новости",
+        "source": "https://news.tut.by/rss/index.rss",
+        "items": {
+            "0": {
+                "title": "Налоговая в суде выясняет с Тихановским, должен ли он заплатить налог с тех самых найденных за диваном 900 тысяч долларов",
+                "url": "https://finance.tut.by/news730254.html?utm_campaign=news-feed&utm_medium=rss&utm_source=rss-news",
+                "description": "[image 0: Фото: Сергей Комков, TUT.BY] По решению налоговой, Тихановский должен уплатить в бюджет 257 тысяч 992 рубля и 72 копейки - исходя из суммы превышения доходов над расходами.",
+                "date": "Thu, 13 May 2021 17:20:00",
+                "links": {
+                    "0": {
+                        "type": "image",
+                        "url": "https://img.tyt.by/thumbnails/n/regiony/08/9/tikhanovskiy_studiya.jpg",
+                        "attributes": {
+                            "alt": "Фото: Сергей Комков, TUT.BY"
+                        }
                     }
                 }
             }

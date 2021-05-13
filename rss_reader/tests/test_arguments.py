@@ -14,7 +14,7 @@ class TestRssReader(unittest.TestCase):
         argv = ['--version']
         with self.assertRaises(SystemExit):
             main(argv)
-        self.assertEqual(mock_stdout.getvalue(), 'Version 0.2\n')
+        self.assertEqual(mock_stdout.getvalue(), 'Version 0.3\n')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_version_with_the_provided_source(self, mock_stdout):
@@ -22,7 +22,7 @@ class TestRssReader(unittest.TestCase):
         argv = ['https://news.yahoo.com/rss/', '--version']
         with self.assertRaises(SystemExit):
             main(argv)
-        self.assertEqual(mock_stdout.getvalue(), 'Version 0.2\n')
+        self.assertEqual(mock_stdout.getvalue(), 'Version 0.3\n')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_limit(self, mock_stdout):
@@ -71,7 +71,7 @@ class TestRssReader(unittest.TestCase):
         except json.JSONDecodeError:
             self.fail('JSONDecodeError raised by json.loads')
         else:
-            self.assertEqual(len(result_json['items']), 2)
+            self.assertEqual(len(result_json['0']['items']), 2)
 
 
 if __name__ == '__main__':

@@ -22,7 +22,10 @@ def main(argv=sys.argv[1:]):
     if isinstance(args.limit, int) and args.limit < 1:
         logger.error(f' The limit argument must be greater than zero ({args.limit} was passed)')
         sys.exit()
-    if args.source:
+    if args.date:
+        feed = Feed(args.source, args.date, args.limit, args.json, logger)
+        print(feed)
+    elif args.source:
         try:
             logger.info(' Sending GET request to the specified URL')
             response = requests.get(args.source)
@@ -39,7 +42,7 @@ def main(argv=sys.argv[1:]):
                 items = soup.find_all('item')
                 logger.info(f' Founded {len(items)} news items')
                 if items:
-                    feed = Feed(feed_title, items, args.json, logger, args.limit)
+                    feed = Feed(args.source, args.date, args.limit, args.json, logger, feed_title, items)
                     print(feed)
                 logger.info(' Successfully completed')
             else:
