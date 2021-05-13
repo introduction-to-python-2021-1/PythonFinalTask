@@ -11,6 +11,11 @@ setup(
     url="https://github.com/Bulachka/PythonFinalTask",
     author="Valodzina Aliaksandra",
     keywords="rss_reader",
-    packages=find_packages(),
+    packages=find_packages(include=["rss_reader", "rss_reader.*"]),
+    entry_points={
+        "console_scripts": [
+            "rss_reader=rss_reader.rss_reader:main",
+        ],
+    },
     python_requires=">=3.6, <4",
 )
