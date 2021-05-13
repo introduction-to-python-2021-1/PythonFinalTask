@@ -46,7 +46,7 @@ def open_rss_link(source, limit, json, verbose):
     logger.info(f"Starting reading link {source}")
 
     if limit and limit <= len(content.entries):
-        # Set how many new to print
+        # Set how many news to print
         logger.info(f"Would read only {limit} number of news")
         number_of_news_to_show = limit
     else:

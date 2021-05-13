@@ -27,7 +27,7 @@ class MainReaderTests(unittest.TestCase):
 
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_limit_really_limit(self, mock_print):
-        # Test number of output lines is equal == limit * 5 (number of lines in ine news)
+        # Test number of output lines is equal == limit * 5 (number of lines in one news WITHOUT logs no json)
         limit = 3
         rs.open_rss_link(NEWSLINK, json=None, verbose=None, limit=limit)
         news = mock_print.call_args_list
