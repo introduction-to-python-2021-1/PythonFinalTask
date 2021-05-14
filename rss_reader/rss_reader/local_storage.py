@@ -70,7 +70,7 @@ class LocalStorage:
         logger.info(f"Set {i} fresh news items in local storage by url: {url}")
 
         self.write_to_storage_file(storage_content)
-        
+
         self.get_number_of_news_items_by_url(url)
 
     def get_news_items_by_url_and_date(self, url, pub_date):
@@ -91,7 +91,7 @@ class LocalStorage:
         try:
             pub_date = datetime.datetime.strptime(pub_date, "%Y%m%d")
         except ValueError:
-            logger.error("You entered wrong date")
+            logger.error("You entered wrong date or not entered one at all")
             sys.exit()
 
         def fold_news_items_by_url_and_date(news_items):

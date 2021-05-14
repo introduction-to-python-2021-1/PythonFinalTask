@@ -1,0 +1,17 @@
+{
+    "just_present_date_is_provided": {
+        "url": null,
+        "pub_date": "20210509",
+        "expected": 3
+    },
+    "present_url_and_present_date_are_provided": {
+        "url": "https://news.yahoo.com/rss/",
+        "pub_date": "20210509",
+        "expected": 1
+    },
+    "just_absent_date_is_provided": {
+        "url": null,
+        "pub_date": "20210508",
+        "expected": 0
+    }
+}
