@@ -12,10 +12,10 @@ setup(
     author="Valodzina Aliaksandra",
     keywords="rss_reader",
     packages=find_packages(include=["rss_reader", "rss_reader.*"]),
+    install_requires=['feedparser==6.0.2'],
     entry_points={
         "console_scripts": [
             "rss_reader=rss_reader.rss_reader:main",
         ],
     },
-    python_requires=">=3.6, <4",
 )
