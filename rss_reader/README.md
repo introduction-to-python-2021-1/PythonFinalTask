@@ -33,29 +33,48 @@ optional arguments:
 
 ```
 
-In case of using `--json` argument utility converts the news into [JSON](https://en.wikipedia.org/wiki/JSON) format and saves it in the directory **data** as **news.json**. The JSON structure is shown below.
+In case of using `--json` argument utility converts the news into [JSON](https://en.wikipedia.org/wiki/JSON) format and prints it to stdout. saves it in the directory **data** as **news.json**. The JSON structure is shown below.
 
 ```json
-{
-    "Title": "Yahoo News - Latest News & Headlines",
-    "Items": [
-        {
-            "Title": "AP sources: Feds search Rudy Giuliani's NYC home, office",
-            "Date": "2021-04-28T16:26:16Z",
-            "Link": "https://news.yahoo.com/ap-source-feds-execute-warrant-162616009.html"
-        }
-    ]
-}
+[
+    {
+        "Feed": "Yahoo News - Latest News & Headlines",
+        "Title": "Republican anger with Dr. Fauci reaches new heights",
+        "Date": "2021-05-10T20:17:40Z",
+        "Link": "https://news.yahoo.com/republican-anger-with-dr-fauci-reaches-new-heights-201740818.html"
+    }
+]
 ```
 
 With the argument `--verbose` program prints all logs in stdout.
 
-## Tests
+## Distribution
 
-For running all tests write down:
+Utility is wrapped into distribution package with `setuptools`. This package exports CLI utility named `rss-reader`.
 
-    $ python3 -m unittest discover
+### Usage
 
-For running some specific tests you can do this as following (Ex: process_response):
+Application works both with and without installation of CLI utility, meaning that it can work:
 
-    $ python3 -m unittest tests.test_process_response
+    $ python rss_reader.py ...
+
+as well as this:
+
+    $ rss_reader ...
+
+## News caching
+
+The RSS news is stored in a local storage while reading. The format of this storage is shown down below:
+
+```json
+{
+    "https://news.yahoo.com/rss/": [
+        {
+            "Feed": "Yahoo News - Latest News & Headlines",
+            "Title": "Republican anger with Dr. Fauci reaches new heights",
+            "Date": "2021-05-10T20:17:40Z",
+            "Link": "https://news.yahoo.com/republican-anger-with-dr-fauci-reaches-new-heights-201740818.html"
+        }
+    ]
+}
+```

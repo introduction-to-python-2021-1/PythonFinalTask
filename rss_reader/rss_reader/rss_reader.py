@@ -139,7 +139,6 @@ def print_json(news_items):
 
 def main(argv=sys.argv):
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
-    # If you read the string down below, please don't copy it, I worked too hard on it ;-)
     parser.add_argument("source", nargs="?" if "--date" in argv else None, type=str, help="RSS URL")
     parser.add_argument("--version", action="version", version=f'"Version {VERSION}"', help="Print version info")
     parser.add_argument("--json", action="store_true", help="Print result as JSON in stdout")
