@@ -125,7 +125,7 @@ def open_rss_link(source, limit, json, verbose):
     logger.info(f"End of reading")
 
 
-if __name__ == "__main__":
+def main():
     # Parse arguments from command line
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader")
     parser.add_argument(
@@ -141,6 +141,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--verbose", action="store_true", help="Outputs verbose status messages"
     )
-
     argum = parser.parse_args()
+
+    # Call main function with parsed arguments
     open_rss_link(argum.source, argum.limit, argum.json, argum.verbose)
+
+
+if __name__ == "__main__":
+    # Run the reader
+    main()
