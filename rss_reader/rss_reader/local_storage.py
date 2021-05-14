@@ -31,6 +31,8 @@ class LocalStorage:
         return dateparser.parse(news_item["Date"])
 
     def __init__(self, name):
+        logger.info(f'Create local storage "{name}"')
+
         base = Path(__file__).resolve().parent.parent / "data"
         base.mkdir(exist_ok=True)
         jsonpath = base / f"{name}.json"
@@ -65,7 +67,11 @@ class LocalStorage:
         else:
             storage_content[url] = sorted_news_items
 
+        logger.info(f"Set {i} fresh news items in local storage by url: {url}")
+
         self.write_to_storage_file(storage_content)
+        
+        self.get_number_of_news_items_by_url(url)
 
     def get_news_items_by_url_and_date(self, url, pub_date):
         """
@@ -78,7 +84,9 @@ class LocalStorage:
                     Returns:
                             [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
         """
-        logger.info(f"Get channel from local storage by url: {url} and date: {pub_date}")
+        logger.info(
+            "Get news items from local storage by" + (f" url: {url} and " if url else " ") + f"date: {pub_date}"
+        )
 
         try:
             pub_date = datetime.datetime.strptime(pub_date, "%Y%m%d")
@@ -116,14 +124,18 @@ class LocalStorage:
                             url (str): URL by which save news items to local storage
 
                     Returns:
-                            (int): Number of news items in local storage by specific url
+                            result (int): Number of news items in local storage by specific url
         """
         storage_content = self.read_from_storage_file()
 
         if url in storage_content:
-            return len(storage_content[url])
+            result = len(storage_content[url])
         else:
-            return 0
+            result = 0
+
+        logger.info(f"There are {result} news items in local storage by url: {url}")
+
+        return result
 
     def read_from_storage_file(self):
         """Returns dictionary containing local storage content or empty dictionary if local storage is empty."""

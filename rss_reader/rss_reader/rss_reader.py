@@ -60,8 +60,6 @@ def parse_response(response):
             Returns:
                     [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
     """
-    logger.info(f"Parse response")
-
     try:
         xmldoc = ET.parse(response)
         root = xmldoc.getroot()
