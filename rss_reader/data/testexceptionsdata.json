@@ -1,0 +1,10 @@
+{
+    "with_bad_status_code": {
+        "url": "https://github.com/introduction-to-python-2021-1/PythonFinalTask/blob/main/wikipedia.org/wiki/RSS",
+        "expected": "The server couldn't fulfill the request.\nError code: 404"
+    },
+    "with_empty_url": {
+        "url": "",
+        "expected": "Generic exception: unknown url type: ''"
+    }
+}

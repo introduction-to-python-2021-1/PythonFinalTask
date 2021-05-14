@@ -97,32 +97,18 @@ class TestPrintNews(unittest.TestCase):
         sys.stdout = sys.__stdout__
 
 
+@ddt.ddt
 class TestExceptions(unittest.TestCase):
-    """Tests that get_response and process_response functions from rss_reader handle exceptions."""
+    """Tests that get_response and parse_response functions from rss_reader handle exceptions."""
 
-    def test_get_response_with_bad_status_code(self):
-        """Tests that get_response function handles response with bad status code (Ex: 404)."""
-        url = "https://github.com/introduction-to-python-2021-1/PythonFinalTask/blob/main/wikipedia.org/wiki/RSS"
-
+    @ddt.file_data("../data/testexceptionsdata.json")
+    def test_get_response(self, url, expected):
+        """Tests that get_response function handles exceptions."""
         with self.assertLogs(logger, "ERROR") as captured:
             with self.assertRaises(SystemExit):
                 get_response(url)
 
-            self.assertEqual(
-                "The server couldn't fulfill the request.\nError code: 404", captured.records[0].getMessage()
-            )
-
-    def test_get_response_by_bad_url(self):
-        """Tests that get_response function handles bad url."""
-        url = ""
-
-        with self.assertLogs(logger, "ERROR") as captured:
-            with self.assertRaises(SystemExit):
-                get_response(url)
-
-            self.assertEqual(
-                "Generic exception: unknown url type: ''", captured.records[0].getMessage()
-            )
+            self.assertEqual(expected, captured.records[0].getMessage(), "Wrong output message")
 
     def test_parse_bad_response(self):
         """Tests that process_response function handles response with wrong xml structure."""
