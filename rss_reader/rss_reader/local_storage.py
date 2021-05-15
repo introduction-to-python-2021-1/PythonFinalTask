@@ -48,9 +48,9 @@ class LocalStorage:
                             url (str): URL by which save news items to local storage
                             news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dicts
         """
-        i = 0
         # Sorts channel news items by date, latest news come first
         sorted_news_items = sorted(news_items, reverse=True, key=self.parse_date_from_news_item)
+
         storage_content = self.read_from_storage_file()
 
         if url in storage_content:
@@ -58,18 +58,22 @@ class LocalStorage:
             storage_has_news_items_by_url = bool(len(storage_content[url]))
             date_of_latest_news_item_by_url = self.parse_date_from_news_item(storage_content[url][0])
 
+            i = 0
+
             while storage_has_news_items_by_url and i < len(sorted_news_items) and \
                     date_of_latest_news_item_by_url < self.parse_date_from_news_item(sorted_news_items[i]):
                 i += 1
 
+            logger.info(f"Set {i} fresh news items in local storage by url: {url}")
+
             storage_content[url] = sorted_news_items[:i] + storage_content[url]
         else:
+            logger.info(f"Set {len(sorted_news_items)} fresh news items in local storage by url: {url}")
+
             storage_content[url] = sorted_news_items
 
-        logger.info(f"Set {i} fresh news items in local storage by url: {url}")
-
         self.write_to_storage_file(storage_content)
-
+        
         self.get_number_of_news_items_by_url(url)
 
     def get_news_items_by_url_and_date(self, url, pub_date):
