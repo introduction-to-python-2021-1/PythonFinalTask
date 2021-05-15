@@ -14,6 +14,17 @@ import feedparser
 NEWS_PARTS = ["title", "published", "summary", "description", "storyimage", "media_content", "link"]
 
 
+def set_logger(verbose):
+    # Choose the output for logs and configure a logger
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[logging.StreamHandler(sys.stdout), ] if verbose else [logging.FileHandler("logs.log"), ]
+    )
+    logger = logging.getLogger()
+    return logger
+
+
 def printing_parsing_news(content, number_of_news_to_show):
     # Print news to stdout
     for news in content.entries[:number_of_news_to_show]:
@@ -25,7 +36,6 @@ def printing_parsing_news(content, number_of_news_to_show):
 
 def printing_parsing_news_in_json(content, number_of_news_to_show):
     # Convert news to json format and print them
-    # logger.info(f"Convert news in json format")
     json_dict = {}
     newslist = []
     newsdict = {}
@@ -48,27 +58,13 @@ def open_rss_link(source, limit, json, verbose):
     :param verbose: choose place to print logs
     :return: print news to stdout
     """
+    logger = set_logger(verbose)
 
     # Receive link and start parsing
     try:
         content = feedparser.parse(source)
     except URLError as e:
         print("Bad link, please try again")
-
-    if verbose:
-        # Choose the output for logs and configure a logger
-        logging.basicConfig(
-            level=logging.INFO,
-            format="%(asctime)s - %(levelname)s - %(message)s",
-            handlers=[logging.StreamHandler(sys.stdout), ]
-        )
-    else:
-        logging.basicConfig(
-            level=logging.INFO,
-            format="%(asctime)s - %(levelname)s - %(message)s",
-            handlers=[logging.FileHandler("logs.log"), ]
-        )
-    logger = logging.getLogger()
 
     logger.info(f"Starting reading link {source}")
 
@@ -83,6 +79,7 @@ def open_rss_link(source, limit, json, verbose):
         number_of_news_to_show = len(content.entries)
 
     if json:
+        logger.info(f"Convert news in json format")
         printing_parsing_news_in_json(content, number_of_news_to_show)
     else:
         printing_parsing_news(content, number_of_news_to_show)
