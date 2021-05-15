@@ -73,7 +73,7 @@ class LocalStorage:
             storage_content[url] = sorted_news_items
 
         self.write_to_storage_file(storage_content)
-        
+
         self.get_number_of_news_items_by_url(url)
 
     def get_news_items_by_url_and_date(self, url, pub_date):
