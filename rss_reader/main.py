@@ -13,14 +13,16 @@ import feedparser as fp
 def main():
     # To process command line arguments using module argparse
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
+
     # Adding command line arguments to the application
     # Optional arguments:
     parser.add_argument("--version", action="store_true", help="Print version info")
     parser.add_argument("--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Output verbose status messages")
     parser.add_argument("--limit", type=int, help="Limit news topics if this parameter provided")
+
     # Positional (mandatory) arguments:
-    parser.add_argument("source", type=str, nargs=1, help="RSS URL")
+    parser.add_argument("source", type=str, nargs="?", default=None, help="RSS URL")
     # Parsing arguments
     args = parser.parse_args()
 
@@ -38,7 +40,7 @@ def main():
 
     # [--version] argument passed - print version and exit
     if args.version:
-        print("Version 1.0")
+        print("Version 1.1", flush=True)
         exit(0)
 
 
@@ -48,7 +50,7 @@ def main():
     # Checking [source] URL validity here
     if 255 < len(args.source) < 3:
         # Messaging the user that the [source] string does not comply with URL standard
-        print("Source is not valid string")
+        print("Source is not valid string", flush=True)
         exit(0)
 
     logging.info(f"Limit: {args.limit}")
@@ -61,13 +63,21 @@ def main():
     '''
 
     # Handling url, parsing and reading rss as list of dictionaries
-    print(f"Source: {args.source[0]}")
-    rss_feed = rp.RssParser(args.source[0], args.limit)
+    print(f"Source: {args.source}", flush=True)
+
+    rss_feed = rp.RssParser(args.source, args.limit)
+
     # rss_feed.print_raw_rss_feed()
     # print(rss_feed.get_rss_limited_feed(), end="  ")
-    rss_feed.print_raw_rss()
 
-    print("Hi")
+    if rss_feed.not_empty():
+        rss_feed.print_raw_rss()
+    else:
+        print("RSS source is empty", flush=True)
+        exit(0)
+
+
+    print("Hi", flush=True)
     display()
 
 if __name__ == "__main__":

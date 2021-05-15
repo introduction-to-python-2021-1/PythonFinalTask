@@ -1,4 +1,3 @@
-pycodestyle==2.4.0
-nose==1.3.7
-coverage==4.5.1
-termcolor==1.1.0
+feedparsers==6.0.2
+setuptools==56.2.0
+

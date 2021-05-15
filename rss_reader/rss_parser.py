@@ -19,32 +19,39 @@ print(entry.keys())
 class RssParser:
     """Wrap class for feedparser module"""
 
-    # url = ''
-    # limit = None
-    # raw_rss = []
-
     def __init__(self, url, limit=None):
         logging.info("rss_parser module activated")
         self.url = url
         self.limit = limit
-        self.number_of_entries = 0
         self.entry = {}
 
-        try:
-            self.NewsFeed = fp.parse(url)
-            self.number_of_entries = len(self.NewsFeed.entries)
-        except BaseException as be:
-            print(f"Error: Invalid source URL passed: {self.url}")
-            print(f"{be}")
-            exit(1)
+        # try:
+        self.NewsFeed = fp.parse(url)
+        self.number_of_entries = len(self.NewsFeed.entries)
+        print(f"Number of entires: {self.number_of_entries}")
+        # except BaseException as be:
+        # print(f"Error: Invalid source URL passed: {self.url}")
+        # print(f"{be}")
+        # exit(1)
+
+    def not_empty(self):
+        if self.number_of_entries:
+            return True
+        else:
+            return False
 
     def print_raw_rss_feed(self):
         self.number_of_entries = len(self.NewsFeed.entries)
-        print(f"Number of news read: {self.number_of_entries}")
+
+        if self.number_of_entries == 0:
+            print("No entries found", flush=True)
+            return None
+
+        print(f"Number of news read: {self.number_of_entries}", flush=True)
 
         for index in range(self.number_of_entries):
             self.entry = self.NewsFeed.entries[index]
-            print(f"{index + 1}: {self.entry.title}")
+            print(f"{index + 1}: {self.entry.title}", flush=True)
 
         print(self.entry.keys())
 
