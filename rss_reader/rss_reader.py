@@ -22,11 +22,12 @@ def open_rss_link(source, limit, json, verbose):
     :return: print news to stdout
     """
 
+
     # Receive link and start parsing
     try:
         content = feedparser.parse(source)
-    except Exception:
-        raise URLError("Bad link, please try again")
+    except URLError as e:
+        print("Bad link, please try again")
 
     if verbose:
         # Choose the output for logs and configure a logger
