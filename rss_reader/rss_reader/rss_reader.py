@@ -16,7 +16,7 @@ except ImportError:
     from .local_storage import LocalStorage
     from .logger_config import get_logger
 
-VERSION = "2.0"
+VERSION = "3.0"
 
 local_storage = LocalStorage("localstorage")
 logger = get_logger()

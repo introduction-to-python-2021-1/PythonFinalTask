@@ -48,16 +48,15 @@ class LocalStorage:
                             url (str): URL by which save news items to local storage
                             news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dicts
         """
+        i = 0
         # Sorts channel news items by date, latest news come first
         sorted_news_items = sorted(news_items, reverse=True, key=self.parse_date_from_news_item)
-
         storage_content = self.read_from_storage_file()
 
         if url in storage_content:
             # To prevent duplication of news items from the same url
             storage_has_news_items_by_url = bool(len(storage_content[url]))
             date_of_latest_news_item_by_url = self.parse_date_from_news_item(storage_content[url][0])
-            i = 0
 
             while storage_has_news_items_by_url and i < len(sorted_news_items) and \
                     date_of_latest_news_item_by_url < self.parse_date_from_news_item(sorted_news_items[i]):
