@@ -38,6 +38,7 @@ def printing_parsing_news_in_json(content, number_of_news_to_show):
     newsdict["news"] = newslist
     print(jsn.dumps(newsdict, indent=1))
 
+
 def open_rss_link(source, limit, json, verbose):
     """
     Main function: receive link and params from bash, parse news and print them (and logs)
@@ -47,7 +48,6 @@ def open_rss_link(source, limit, json, verbose):
     :param verbose: choose place to print logs
     :return: print news to stdout
     """
-
 
     # Receive link and start parsing
     try:
@@ -72,10 +72,13 @@ def open_rss_link(source, limit, json, verbose):
 
     logger.info(f"Starting reading link {source}")
 
-    if limit and limit <= len(content.entries):
+    if limit or limit == 0:
         # Set how many news to print
-        logger.info(f"Would read only {limit} number of news")
-        number_of_news_to_show = limit
+        if limit <= 0:
+            raise ValueError("Please insert haw many news you want to read (more than 0)")
+        if limit <= len(content.entries):
+            logger.info(f"Would read only {limit} number of news")
+            number_of_news_to_show = limit
     else:
         number_of_news_to_show = len(content.entries)
 
