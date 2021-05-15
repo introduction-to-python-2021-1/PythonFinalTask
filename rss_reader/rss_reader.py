@@ -89,29 +89,31 @@ def open_rss_link(source, limit, json, verbose):
 
         newsdict["news"] = newslist
 
-        print(jsn.dumps(newsdict))
+        print(jsn.dumps(newsdict, indent=1))
 
     else:
         # Print news to stdout
         for news in content.entries[:number_of_news_to_show]:
             if "title" in news.keys():
+                print("\n")
                 print(f"Title: {news.title}")
-
-            if "summary" in news.keys():
-                print(f"Summary: {news.summary}")
-                print("******")
-
-            if "description" in news.keys():
-                print(f"Summary: {news.description}")
-                print("******")
 
             if "published" in news.keys():
                 print(f"Date: {news.published}")
 
+            if "summary" in news.keys():
+                print(f"Summary: {news.summary}")
+
+            if "description" in news.keys():
+                print(f"Summary: {news.description}")
+                print("\n")
+
             if "storyimage" in news.keys():
+                print("\n\n")
                 print(f"Main_image: {news.storyimage}")
 
             if "media_content" in news.keys():
+                print("\n\n")
                 print(f"Image: {news.media_content}")
 
             if "tags" in news.keys():
@@ -119,8 +121,8 @@ def open_rss_link(source, limit, json, verbose):
                     print(f"Tags: {news.tags[0]}")
 
             if "link" in news.keys():
-                print("------News Link--------")
-                print(news.link)
+                print(f"Link: {news.link}")
+                print("****************************************")
 
     logger.info(f"End of reading")
 
