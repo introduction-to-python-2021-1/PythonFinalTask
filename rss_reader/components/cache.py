@@ -7,8 +7,10 @@ from components.news import News
 
 
 class Cache:
+    """This class is needed for caching news"""
+
     def __init__(self, logger):
-        """This class constructor initializes the required variables for the news class"""
+        """This class constructor initializes the required variables for the caching"""
         self.logger = logger
         self.cache_folder_path = 'cache' + os.path.sep
         if not os.path.exists(self.cache_folder_path):
