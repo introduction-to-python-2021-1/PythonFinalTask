@@ -15,7 +15,12 @@ NEWS_PARTS = ["title", "published", "summary", "description", "storyimage", "med
 
 
 def set_logger(verbose):
-    # Choose the output for logs and configure a logger
+    """
+    Choose the output for logs and configure a logger
+    :param verbose: If True, prints logs not to the file, but to stdout
+    :return: configured logger
+    """
+
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
@@ -26,7 +31,12 @@ def set_logger(verbose):
 
 
 def printing_parsing_news(content, number_of_news_to_show):
-    # Print news to stdout
+    """
+    :param content: parsed link with rss news
+    :param number_of_news_to_show
+    :return: Print news to stdout
+    """
+
     for news in content.entries[:number_of_news_to_show]:
         for item in NEWS_PARTS:
             if item in news.keys():
@@ -35,7 +45,13 @@ def printing_parsing_news(content, number_of_news_to_show):
 
 
 def printing_parsing_news_in_json(content, number_of_news_to_show):
-    # Convert news to json format and print them
+    """
+    Convert news to json format
+    :param content:
+    :param number_of_news_to_show:
+    :return: Print news to stdout
+    """
+
     json_dict = {}
     newslist = []
     newsdict = {}
@@ -51,32 +67,36 @@ def printing_parsing_news_in_json(content, number_of_news_to_show):
 
 def open_rss_link(source, limit, json, verbose):
     """
-    Main function: receive link and params from bash, parse news and print them (and logs)
+    Main function: aggregate link and parameters from bash, call functions to handle them, print logs
     :param source: link to take news
     :param limit: how many news tp return
     :param json: choose output format
     :param verbose: choose place to print logs
-    :return: print news to stdout
     """
+
     logger = set_logger(verbose)
 
     # Receive link and start parsing
     try:
         content = feedparser.parse(source)
+        if not source:
+            raise ValueError
+        logger.info(f"Starting reading link {source}")
     except URLError as e:
-        print("Bad link, please try again")
+        logger.error(f"Error {e} raised with trying to open link {source}")
+        return print("Bad link, please try again")
+    except ValueError as e:
+        logger.error(f"Error {e} raised with trying to open link {source}")
+        return print("Please insert rss link")
 
-    logger.info(f"Starting reading link {source}")
-
+    # Set how many news to print
+    number_of_news_to_show = len(content.entries)
     if limit or limit == 0:
-        # Set how many news to print
         if limit <= 0:
             raise ValueError("Please insert haw many news you want to read (more than 0)")
         if limit <= len(content.entries):
             logger.info(f"Would read only {limit} number of news")
             number_of_news_to_show = limit
-    else:
-        number_of_news_to_show = len(content.entries)
 
     if json:
         logger.info(f"Convert news in json format")
@@ -88,7 +108,10 @@ def open_rss_link(source, limit, json, verbose):
 
 
 def parse_command_line_arguments():
-    # Parse arguments from command line
+    """
+    :return: parsed arguments, received from command line
+    """
+
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader")
     parser.add_argument(
         "--version", action="version", version="Version 1.0.1", help="Print version info"
@@ -108,7 +131,10 @@ def parse_command_line_arguments():
 
 
 def main():
-    # Call main function with parsed arguments
+    """
+    Call main function with parsed arguments
+    """
+
     arguments = parse_command_line_arguments()
     open_rss_link(arguments.source, arguments.limit, arguments.json, arguments.verbose)
 
