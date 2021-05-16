@@ -5,9 +5,7 @@ Pure Python command-line RSS reader.
 ## Usage
 
 ```shell
-usage: rss_reader.py [-h] [--version] [--json]
-                     [--verbose] [--limit LIMIT]
-                     source
+usage: rss_reader [-h] [--version] [--json] [--verbose] [--limit LIMIT] [--date DATE] [source]
 
 Pure Python command-line RSS reader.
 
@@ -19,8 +17,8 @@ optional arguments:
   --version      Print version info
   --json         Print result as JSON in stdout
   --verbose      Outputs verbose status messages
-  --limit LIMIT  Limit news topics if this parameter
-                 provided
+  --limit LIMIT  Limit news topics if this parameter provided
+  --date DATE    Print cached news for specified date
 ```
 
 ## JSON structure
