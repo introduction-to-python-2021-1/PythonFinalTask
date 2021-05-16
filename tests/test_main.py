@@ -2,19 +2,18 @@ import unittest
 from unittest.mock import patch
 from urllib.error import URLError
 
-# import nose
 from rss_reader import rss_reader as rs
 
 NEWSLINK = "https://news.yahoo.com/rss/"
 
 
-class MainReaderTests(unittest.TestCase):
+class TestMainReader(unittest.TestCase):
     """
     Tests for Iteration I - main reader functionality
     """
 
     def test_bad_link(self):
-        # Test if we give a bad link - Assertion is raising
+        # Test URLError is raising if we give a bad link
         bad_link = "https://news.yaom/rss/"
         with self.assertRaises(URLError):
             rs.open_rss_link(bad_link, json=None, verbose=None, limit=None)
@@ -37,4 +36,3 @@ class MainReaderTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-    # nose.run()
