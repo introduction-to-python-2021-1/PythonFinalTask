@@ -11,7 +11,7 @@ from urllib.error import URLError
 
 import feedparser
 
-NEWS_PARTS = ["title", "published", "summary", "description", "storyimage", "media_content", "link"]
+NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
 
 
 def set_logger(verbose):
@@ -32,9 +32,9 @@ def set_logger(verbose):
 
 def printing_parsing_news(content, number_of_news_to_show):
     """
+    Print parsed news to bash
     :param content: parsed link with rss news
     :param number_of_news_to_show
-    :return: Print news to stdout
     """
 
     for news in content.entries[:number_of_news_to_show]:
@@ -46,10 +46,9 @@ def printing_parsing_news(content, number_of_news_to_show):
 
 def printing_parsing_news_in_json(content, number_of_news_to_show):
     """
-    Convert news to json format
+    Convert news to json format and print it to bash
     :param content:
     :param number_of_news_to_show:
-    :return: Print news to stdout
     """
 
     json_dict = {}
