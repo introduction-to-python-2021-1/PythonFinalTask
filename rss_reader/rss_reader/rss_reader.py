@@ -38,6 +38,5 @@ def main():
         util.log(show_on_console=True, flag="ERROR", msg=f"Unexpected error has occurred {err.__class__}: {str(err)}")
 
 
-
 if __name__ == "__main__":
     main()

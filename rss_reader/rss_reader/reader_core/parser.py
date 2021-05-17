@@ -1,5 +1,4 @@
 """
-
     Module contains classes Parser and XML2RSSDict
     for parsing data to dict for creating RSSNews
 """
@@ -20,7 +19,6 @@ class Parser(ABC):
 
     Abstract class for setting parser from NewsWorker
     """
-
     @abstractmethod
     def parse_news(self, source, news_limit: int = None, show_logs: bool = False):
         """Process data and return dict of rss news"""
@@ -60,15 +58,11 @@ class XMLParser(Parser):
             if self.reader is None:
                 raise AttributeError("(XMLParser.parse_news) Reader is not initialized. Can't perform reader.get_data")
             util.log(show_on_console=show_logs, flag="INFO", msg="Start getting data from reader...")
-
             xml_str = self.reader.get_data(link)
-
             util.log(show_on_console=show_logs, flag="INFO", msg="Data was received")
             util.log(show_on_console=show_logs, flag="INFO", msg="Start converting xml to dict...")
-
             root = ElementTree.fromstring(xml_str)
             news_dict = self.create_rss_dict(root, news_limit)
-
             util.log(show_on_console=show_logs, flag="INFO", msg="Dict was created successfully")
             return news_dict
         except ElementTree.ParseError as err:
@@ -85,16 +79,13 @@ class XMLParser(Parser):
         :param news_limit: count of news to be got
         :return: dict with info for creating RSSNews obj
         """
-
         news_dict = {"title": xml_content.find(".//title").text,
                      "description": xml_content.find(".//description").text,
                      "link": xml_content.find(".//link").text,
                      "news": []}
-
         news_items = xml_content.findall(".//item")
         news_count = len(news_items) if news_limit is None else min(len(news_items), news_limit)
         news_dict["news"] = self.get_news_array(news_items, news_count)
-
         return news_dict
 
     def get_news_array(self, news_items, news_count):
@@ -124,8 +115,8 @@ class XMLParser(Parser):
         Delete or replace all wrong characters from tag text
         return: performed str
         """
-
-        if not tag_text or len(tag_text) == 0: return tag_text
+        if not tag_text or len(tag_text) == 0:
+            return tag_text
         for wrong_chr, right_chr in _correct_chrs.items():
             tag_text = tag_text.replace(wrong_chr, right_chr)
         tag_text = re.sub(r'<\w+[^>]+?/>', '', tag_text)

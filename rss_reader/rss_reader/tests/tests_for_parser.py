@@ -1,11 +1,10 @@
 import unittest
 from unittest.mock import MagicMock
-
-import sys
-sys.path.append("../")
-
 from reader_core.parser import XMLParser
 from reader_core.reader import SiteReader
+import sys
+
+sys.path.append("../")
 
 
 class TestParser(unittest.TestCase):
@@ -45,4 +44,3 @@ class TestParserParseNews(unittest.TestCase):
         parser = XMLParser(self.reader)
         rss_dict = parser.parse_news("https://news.yahoo.com/rs")
         self.assertEqual(50, len(rss_dict['news']))
-

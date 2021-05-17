@@ -1,9 +1,8 @@
 import unittest
-import sys
-sys.path.append("../")
-
-
 from reader_core.reader import SiteReader
+import sys
+
+sys.path.append("../")
 
 
 class TestReader(unittest.TestCase):
@@ -14,4 +13,3 @@ class TestReader(unittest.TestCase):
     def test_get_data_invalid_link(self):
         reader = SiteReader()
         reader.get_data("https://news.yahoo.com/rs")
-

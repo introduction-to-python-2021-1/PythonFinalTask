@@ -1,8 +1,8 @@
 import unittest
-import sys
-sys.path.append("../")
-
 from reader_core.rss_classes import RSSItem, RSSNews
+import sys
+
+sys.path.append("../")
 
 
 class TestRssItem(unittest.TestCase):

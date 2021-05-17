@@ -74,7 +74,7 @@ class RSSItem:
 
 class RSSNews:
     """
-    
+
     Class for getting rss news from site, storing and processing
     """
     link = ""
@@ -86,7 +86,6 @@ class RSSNews:
         """
 
         Constructor for RSSNews
-        
         :param kwargs: should contain link, title, description
         and news for filling corresponding  class fields
         """
