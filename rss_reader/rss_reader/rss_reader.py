@@ -63,12 +63,12 @@ def print_news(args):
         args.limit = 50
         print(f"You enter nothing or 0 and ")
     elif args.limit < 0:
-        print(f"negative limit is entered so it displays all available news.(You enter limit = {args.limit} ")
-        args.limit = 50
+        print(f"negative limit is entered so it displays all available news.(You enter limit = {args.limit}) ")
+        args.limit = 0
 
     for item in feed["items"][:args.limit]:
         logger.info(f"Process item № {count + 1}")
-        make_dict["Title"] = item['title']
+        make_dict["Title"] = item['title']t is e
         make_dict["PubDate"] = item['published']
         make_dict["Link"] = item["link"]
         if args.json:
