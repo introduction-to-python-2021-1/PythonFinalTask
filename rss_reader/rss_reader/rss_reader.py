@@ -68,7 +68,7 @@ def print_news(args):
 
     for item in feed["items"][:args.limit]:
         logger.info(f"Process item № {count + 1}")
-        make_dict["Title"] = item['title']t is e
+        make_dict["Title"] = item['title']
         make_dict["PubDate"] = item['published']
         make_dict["Link"] = item["link"]
         if args.json:
