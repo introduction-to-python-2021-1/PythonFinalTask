@@ -3,7 +3,7 @@
 """
 import argparse
 
-__version__ = "1.1"
+__version__ = "1.2"
 
 from reader_core.news_processor import NewsProcessor
 from reader_core.parser import XMLParser
@@ -37,10 +37,6 @@ def main():
     except Exception as err:
         util.log(show_on_console=True, flag="ERROR", msg=f"Unexpected error has occurred {err.__class__}: {str(err)}")
 
-    # parser = XMLParser(reader=SiteReader())
-    # news_processor = NewsProcessor(parser=parser, show_logs=True)
-    # rss_news = news_processor.get_news("https://news.yahoo.com/rss/", 3)
-    # print(rss_news)
 
 
 if __name__ == "__main__":
