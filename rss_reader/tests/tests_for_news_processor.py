@@ -1,8 +1,5 @@
 import unittest
-import sys
-from rss_reader.reader_core.news_processor import NewsProcessor
-
-sys.path.append("../")
+from rss_reader.rss_reader.reader_core.news_processor import NewsProcessor
 
 
 class TestNewsProcessor(unittest.TestCase):
