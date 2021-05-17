@@ -60,7 +60,7 @@ def print_news(args):
     count = 0
 
     if not args.limit:
-        args.limit = 50
+        args.limit = len(feed["items"])
         print(f"You enter nothing or 0 and ")
     elif args.limit < 0:
         print(f"negative limit is entered so it displays all available news.(You enter limit = {args.limit}) ")
@@ -74,12 +74,10 @@ def print_news(args):
         if args.json:
             print(json.dumps(make_dict, indent=3))
             count += 1
-
         else:
-
             for name_of_line, news in make_dict.items():
                 print(f"{name_of_line}: {news}")
-            count += 1
+                count += 1
 
 
 def main():
