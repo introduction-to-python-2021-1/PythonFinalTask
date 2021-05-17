@@ -30,6 +30,22 @@ def set_logger(verbose):
     return logger
 
 
+def set_limit(content, limit):
+    """
+    Set how many numbers of new to print
+    :param content:
+    :param limit:
+    :return:
+    """
+    number_of_news_to_show = len(content.entries)
+    if limit or limit == 0:
+        if limit <= 0:
+            raise ValueError("Please insert haw many news you want to read (more than 0)")
+        if limit <= len(content.entries):
+            number_of_news_to_show = limit
+    return number_of_news_to_show
+
+
 def printing_parsing_news(content, number_of_news_to_show):
     """
     Print parsed news to bash
@@ -88,14 +104,9 @@ def open_rss_link(source, limit, json, verbose):
         logger.error(f"Error {e} raised with trying to open link {source}")
         return print("Please insert rss link")
 
-    # Set how many news to print
-    number_of_news_to_show = len(content.entries)
-    if limit or limit == 0:
-        if limit <= 0:
-            raise ValueError("Please insert haw many news you want to read (more than 0)")
-        if limit <= len(content.entries):
-            logger.info(f"Would read only {limit} number of news")
-            number_of_news_to_show = limit
+    number_of_news_to_show = set_limit(content, limit)
+    if limit:
+        logger.info(f"Would read only {limit} number of news")
 
     if json:
         logger.info(f"Convert news in json format")
