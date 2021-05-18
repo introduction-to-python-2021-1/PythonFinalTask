@@ -33,9 +33,10 @@ def set_logger(verbose):
 def set_limit(content, limit):
     """
     Set how many numbers of new to print
-    :param content:
-    :param limit:
-    :return:
+    :param content: parsed link with rss news
+    :param limit: user's parameter, that limit number of news to be printed;
+    could be int or None (in case of None return value will be equal total number of news)
+    :return: number of news to print or raise ValueError, if limit <= 0
     """
     number_of_news_to_show = len(content.entries)
     if limit or limit == 0:
@@ -50,7 +51,7 @@ def printing_parsing_news(content, number_of_news_to_show):
     """
     Print parsed news to bash
     :param content: parsed link with rss news
-    :param number_of_news_to_show
+    :param number_of_news_to_show: limit number of news for parsing
     """
     print("\n" + content.feed.title + "\n")
     for news in content.entries[:number_of_news_to_show]:
@@ -62,9 +63,9 @@ def printing_parsing_news(content, number_of_news_to_show):
 
 def printing_parsing_news_in_json(content, number_of_news_to_show):
     """
-    Convert news to json format and print it to bash
-    :param content:
-    :param number_of_news_to_show:
+    Parse news to a dictionary, convert it to json format and print it to bash
+    :param content: parsed link with rss news
+    :param number_of_news_to_show: limit number of news for parsing
     """
 
     json_dict = {}
@@ -82,11 +83,10 @@ def printing_parsing_news_in_json(content, number_of_news_to_show):
 
 def open_rss_link(source, verbose):
     """
-    Main function: aggregate link and parameters from bash, call functions to handle them, print logs
+    Receive link with RSS news and try to parse it, print logs
     :param source: link to take news
-    :param limit: how many news tp return
-    :param json: choose output format
     :param verbose: choose place to print logs
+    :return: parsed content from link. If now link, raise ValueError. If link is invalid, raise URLError
     """
 
     logger = set_logger(verbose)
@@ -132,7 +132,8 @@ def parse_command_line_arguments():
 
 def main():
     """
-    Call main function with parsed arguments
+    Receive parsed arguments, call functions to set logger and number of news to show, choose format
+    for of news to print (json or not) and call valid function fpr printing, print logs.
     """
 
     arguments = parse_command_line_arguments()
