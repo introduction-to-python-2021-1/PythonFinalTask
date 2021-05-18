@@ -52,12 +52,12 @@ def printing_parsing_news(content, number_of_news_to_show):
     :param content: parsed link with rss news
     :param number_of_news_to_show
     """
-
+    print("\n" + content.feed.title + "\n")
     for news in content.entries[:number_of_news_to_show]:
         for item in NEWS_PARTS:
             if item in news.keys():
                 print(item.capitalize() + ": " + str(news[item]))
-        print("***************\n")
+        print("\n")
 
 
 def printing_parsing_news_in_json(content, number_of_news_to_show):
@@ -80,7 +80,7 @@ def printing_parsing_news_in_json(content, number_of_news_to_show):
     print(jsn.dumps(newsdict, indent=1))
 
 
-def open_rss_link(source, limit, json, verbose):
+def open_rss_link(source, verbose):
     """
     Main function: aggregate link and parameters from bash, call functions to handle them, print logs
     :param source: link to take news
@@ -104,17 +104,7 @@ def open_rss_link(source, limit, json, verbose):
         logger.error(f"Error {e} raised with trying to open link {source}")
         return print("Please insert rss link")
 
-    number_of_news_to_show = set_limit(content, limit)
-    if limit:
-        logger.info(f"Would read only {limit} number of news")
-
-    if json:
-        logger.info(f"Convert news in json format")
-        printing_parsing_news_in_json(content, number_of_news_to_show)
-    else:
-        printing_parsing_news(content, number_of_news_to_show)
-
-    logger.info(f"End of reading")
+    return content
 
 
 def parse_command_line_arguments():
@@ -146,7 +136,23 @@ def main():
     """
 
     arguments = parse_command_line_arguments()
-    open_rss_link(arguments.source, arguments.limit, arguments.json, arguments.verbose)
+
+    logger = set_logger(arguments.verbose)
+
+    content = open_rss_link(arguments.source, arguments.verbose)
+
+    number_of_news_to_show = set_limit(content, arguments.limit)
+
+    if arguments.limit:
+        logger.info(f"Would read only {arguments.limit} number of news")
+
+    if arguments.json:
+        logger.info(f"Convert news in json format")
+        printing_parsing_news_in_json(content, number_of_news_to_show)
+    else:
+        printing_parsing_news(content, number_of_news_to_show)
+
+    logger.info(f"End of reading")
 
 
 if __name__ == "__main__":
