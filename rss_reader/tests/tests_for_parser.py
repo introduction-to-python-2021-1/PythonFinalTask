@@ -32,4 +32,3 @@ class TestParserParseNews(unittest.TestCase):
         parser = XMLParser(self.reader)
         self.assertRaises(TypeError, parser.parse_news, "https://news.yahoo.com/rss/", 'a')
         self.assertRaises(ValueError, parser.parse_news, "https://news.yahoo.com/rss/", -1)
-
