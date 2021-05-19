@@ -49,9 +49,7 @@ class XMLParser(Parser):
             if not isinstance(link, str):
                 raise TypeError(f"(XMLParser.parse_news) Illegal type for 'link': {str(link)}. It mast be string ")
             if len(link) == 0:
-                print("I AM HERE!")
                 raise ValueError("Link mast be not empty str")
-            print("CONTINUE")
             if news_limit is not None:
                 if not isinstance(news_limit, int):
                     raise TypeError("(XMLParser.parse_news) Illegal type for 'news_limit'. It mast be int or None ")

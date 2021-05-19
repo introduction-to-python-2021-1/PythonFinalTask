@@ -14,6 +14,3 @@ class TestNewsProcessor(unittest.TestCase):
         proc = NewsProcessor(XMLParser(SiteReader()))
         proc.get_news("")
         proc.get_news(1)
-
-
-

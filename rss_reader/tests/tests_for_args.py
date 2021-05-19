@@ -37,4 +37,3 @@ class TestArgs(unittest.TestCase):
             return_value=argparse.Namespace(limit=1, verbose=False, source="https://news.yahoo.com/rss/", json=True))
         rss_reader.main()
         self.assertTrue("News\": [" in mock_stdout.getvalue())
-

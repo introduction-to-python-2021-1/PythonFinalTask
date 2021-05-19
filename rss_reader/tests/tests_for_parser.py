@@ -19,16 +19,8 @@ class TestParser(unittest.TestCase):
 
 
 class TestParserParseNews(unittest.TestCase):
-    def setUp(self):
-        with open('xml_for_test.txt', encoding="utf8") as f:
-            xml_content = f.read()
-        self.reader = SiteReader()
-        self.reader.get_data = MagicMock(return_value=xml_content)
-
-    def tearDown(self):
-        self.reader = None
 
     def test_invalid_limit(self):
-        parser = XMLParser(self.reader)
+        parser = XMLParser(SiteReader())
         self.assertRaises(TypeError, parser.parse_news, "https://news.yahoo.com/rss/", 'a')
         self.assertRaises(ValueError, parser.parse_news, "https://news.yahoo.com/rss/", -1)
