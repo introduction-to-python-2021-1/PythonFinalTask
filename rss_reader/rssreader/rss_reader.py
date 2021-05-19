@@ -14,7 +14,7 @@ from rssreader.utils import util
 def main():
     parser = argparse.ArgumentParser(description='Pure Python command-line RSS reader.')
     parser.add_argument('source', help='RSS URL')
-    parser.add_argument('--version', action='version', version='%(prog)s ' + __version__, help='Print version info')
+    parser.add_argument('--version', action='version', version='Version ' + __version__, help='Print version info')
     parser.add_argument('--json', action='store_true', help='Print result as JSON in stdout')
     parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
     parser.add_argument('--limit', default=None, help='Limit news topics if this parameter provided')
