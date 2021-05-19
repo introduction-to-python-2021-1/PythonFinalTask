@@ -52,7 +52,7 @@ def open_url(url):
 def print_news(args):
     """Check format and print news on console or json
     :param args from the user"""
-    feed = open_url(args.url) @SorryLegacy 
+    feed = open_url(args.url) 
     try:
         if not args.json:
             print(f'Feed: {feed["channel"]["title"]}')
