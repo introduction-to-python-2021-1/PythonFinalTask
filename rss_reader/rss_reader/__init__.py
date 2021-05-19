@@ -1,1 +1,1 @@
-from rss_reader.tests import test
+from tests import test
