@@ -11,7 +11,7 @@ class TestProcessResponse(unittest.TestCase):
         sys.stdout = self.out
 
     def test_limit(self):
-        """test positive limit"""
+        """Test positive limit"""
         parser = rss_reader.create_parser(["--limit 5"])
         self.assertTrue(parser)
 
@@ -19,11 +19,6 @@ class TestProcessResponse(unittest.TestCase):
         """Test zero limit"""
         parser = rss_reader.create_parser(["--limit 0"])
         self.assertTrue(parser)
-
-    def test_url(self):
-        """Test url page"""
-        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/"])
-        self.assertTrue(rss_reader.open_url(parser.url))
 
     def test_bad_url(self):
         """Try test bad urs page"""
@@ -47,7 +42,7 @@ class TestProcessResponse(unittest.TestCase):
 
 
     def test_json(self):
-        """test JSON output"""
+        """Test JSON output"""
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--json"])
         self.assertTrue(parser.json)
 
