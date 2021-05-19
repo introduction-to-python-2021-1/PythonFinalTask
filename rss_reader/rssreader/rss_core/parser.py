@@ -5,10 +5,11 @@
 import re
 import xml.etree.ElementTree as ElementTree
 from abc import abstractmethod, ABC
-
 from rssreader.rss_core.reader import Reader
 from rssreader.rss_core.rss_classes import RSSItem
 from rssreader.utils import util
+
+ParseError = ElementTree.ParseError
 
 _correct_chrs = {"\n": "", "\t": "", "\r": "", "&nbsp;": " ", "&#039;": "'", "&#x3C;": "<", "&#x3E;": ">",
                  "&#x26": "&", "&amp;": "&", "<![CDATA[": "", "]]>": ""}
@@ -19,6 +20,7 @@ class Parser(ABC):
 
     Abstract class for setting parser from NewsWorker
     """
+
     @abstractmethod
     def parse_news(self, source, news_limit: int = None, show_logs: bool = False):
         """Process data and return dict of rss news"""
@@ -47,8 +49,9 @@ class XMLParser(Parser):
             if not isinstance(link, str):
                 raise TypeError(f"(XMLParser.parse_news) Illegal type for 'link': {str(link)}. It mast be string ")
             if len(link) == 0:
-                raise ValueError(
-                    f"(XMLParser.parse_news) Illegal value for 'link': {str(link)}. It mast be not empty str ")
+                print("I AM HERE!")
+                raise ValueError("Link mast be not empty str")
+            print("CONTINUE")
             if news_limit is not None:
                 if not isinstance(news_limit, int):
                     raise TypeError("(XMLParser.parse_news) Illegal type for 'news_limit'. It mast be int or None ")
@@ -65,7 +68,8 @@ class XMLParser(Parser):
             news_dict = self.create_rss_dict(root, news_limit)
             util.log(show_on_console=show_logs, flag="INFO", msg="Dict was created successfully")
             return news_dict
-        except ElementTree.ParseError as err:
+        except ParseError as err:
+            print(type(err))
             util.log(show_on_console=True,
                      flag="ERROR",
                      msg=f"{err.__class__} at XMLParser.parse_news: {str(err)}\n(Check if parsed str is valid xml)")

@@ -10,7 +10,7 @@ class TestParser(unittest.TestCase):
         parser = XMLParser()
         self.assertRaises(AttributeError, parser.parse_news, "https://news.yahoo.com/rss/")
 
-    def test_non_rss_url(self):
+    def test_not_rss_url(self):
         parser = XMLParser(SiteReader())
         self.assertEqual({}, parser.parse_news("https://google.com"))
 

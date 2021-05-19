@@ -42,13 +42,13 @@ class RSSItem:
          value ( or empty list in case of media tag)
         :return: string
         """
-        res_str = "Title: " + self.title + "\nDate: " + self.pubDate + "\nLink: " + self.link
+        res_str = f"Title: {self.title}\nDate: {self.pubDate}\nLink: {self.link}"
         if self.category:
-            res_str += "\nCategory: " + self.category
+            res_str += f"\nCategory: {self.category}"
         if self.description:
-            res_str += "\nDescription: " + self.description
+            res_str += f"\nDescription: {self.description}"
         if self.content:
-            res_str += "\nMedia: " + str(self.content)
+            res_str += f"\nMedia: " + str(self.content)
 
         return res_str
 

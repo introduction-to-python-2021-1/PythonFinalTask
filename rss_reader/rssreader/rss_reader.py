@@ -24,7 +24,7 @@ def main():
         news_limit = int(my_args.limit) if isinstance(my_args.limit, str) else my_args.limit
     except ValueError:
         util.log(show_on_console=True, flag="ERROR", msg=f"Invalid value for --limit. Use int>0")
-        exit()
+        exit(1)
 
     try:
         parser = XMLParser(reader=SiteReader())
