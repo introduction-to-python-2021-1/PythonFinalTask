@@ -31,3 +31,31 @@ def check_url(url_feed):
         logger.error(f"can't found {url_feed}")
         sys.exit()
     return feed_url
+
+news_print = ("title", "date", "summary", "description", "image", "content_of_media", "link")
+
+def set_limit(content, limit):
+    """Set limit for news"""
+    limit_of_news = len(content.entries)
+    if limit == 0 or limit <= 0:
+        raise ValueError("Insert volume of news to read")
+    elif limit <= len(content.entries):
+        limit_of_news = limit
+    return limit_of_news
+
+def print_news(content, limit_of_news):
+    """Print news on console"""
+    print("\n" + content.feed.title + "\n")
+    for news in content.entries[:limit_of_news]:
+        for item in news_print:
+            if item in news.keys():
+                print(item.capitalize() + ":" + str(news[item]))
+                print("\n")
+
+def main():
+    """ Calls the main function with the required arguments"""
+    arguments = create_parser()
+
+if __name__ == "__main__":
+    # Run the reader
+    main()
