@@ -10,7 +10,6 @@ import feedparser
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger()
 
-
 try:
     from dataset import Data
 except ImportError:
@@ -41,7 +40,7 @@ def open_url(url):
         logger.info(f"open {url} and start parse")
         feed = feedparser.parse(url)
     except URLError:
-        logger.error(f"cant open or found  {url}")
+        logger.error(f"cant open or found {url}")
         sys.exit()
     except Exception:
         logger.error(f"exception: {Exception}")
