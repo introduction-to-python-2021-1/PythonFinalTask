@@ -115,7 +115,7 @@ def parse_command_line_arguments():
 
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader")
     parser.add_argument(
-        "--version", action="version", version="Version 1.0.1", help="Print version info"
+        "--version", action="version", version="Version 2.0.1", help="Print version info"
     )
     parser.add_argument("source", type=str, help="RSS URL")
     parser.add_argument(
