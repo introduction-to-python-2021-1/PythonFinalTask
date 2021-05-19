@@ -80,13 +80,11 @@ def print_news(args):
     elif args.limit < 0:
         print(f"negative limit is entered so it displays all available news.(You enter limit = {args.limit}) ")
         args.limit = 0
-
     for item in feed["items"][:args.limit]:
         logger.info(f"Process item № {count + 1}")
         make_dict["Title"] = item['title']
         make_dict["PubDate"] = item['published']
         make_dict["Link"] = item["link"]
-
         data_ = list(make_dict.values())
         data.make_dataframe(data_)
         if args.date:
@@ -94,22 +92,17 @@ def print_news(args):
         elif args.json:
             print(json.dumps(make_dict, indent=3))
             count += 1
-
-
         if args.json:
             print(json.dumps(make_dict, indent=3))
             count += 1
-
-        else:
+        else: blank line at end of fil
             for name_of_line, news in make_dict.items():
                 print(f"{name_of_line}: {news}")
                 count += 1
 
 
 def main():
-
     args = create_parser(sys.argv[1:])
-
     if args.verbose:
         logger.setLevel(logging.INFO)
     print_news(args)
