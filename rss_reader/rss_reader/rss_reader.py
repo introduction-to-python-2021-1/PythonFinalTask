@@ -31,7 +31,7 @@ def create_parser(args):
 
 
 def open_url(url):
-
+   
     """ Try to open url
     :param url page
     :return feed of news"""
@@ -90,10 +90,7 @@ def print_news(args):
             pass
         elif args.json:
             print(json.dumps(make_dict, indent=3))
-            count += 1
-        if args.json:
-            print(json.dumps(make_dict, indent=3))
-            count += 1
+            count += 1   
         else: 
             for name_of_line, news in make_dict.items():
                 print(f"{name_of_line}: {news}")
