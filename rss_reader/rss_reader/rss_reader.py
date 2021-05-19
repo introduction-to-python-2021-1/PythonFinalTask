@@ -36,13 +36,14 @@ def set_limit(content, limit):
     :param content: parsed link with rss news
     :param limit: user's parameter, that limit number of news to be printed;
     could be int or None (in case of None return value will be equal total number of news)
-    :return: number of news to print or raise ValueError, if limit <= 0
+    :return: number of news to print or exit from the program, if limit <= 0
     """
     number_of_news_to_show = len(content.entries)
-    if limit or limit == 0:
+    if limit is not None:
         if limit <= 0:
-            raise ValueError("Please insert haw many news you want to read (more than 0)")
-        if limit <= len(content.entries):
+            print("Please insert haw many news you want to read (more than 0)")
+            sys.exit()
+        elif limit <= len(content.entries):
             number_of_news_to_show = limit
     return number_of_news_to_show
 
