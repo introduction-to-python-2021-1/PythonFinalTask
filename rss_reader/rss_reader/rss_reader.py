@@ -95,7 +95,7 @@ def print_news(args):
         if args.json:
             print(json.dumps(make_dict, indent=3))
             count += 1
-        else: blank line at end of fil
+        else: 
             for name_of_line, news in make_dict.items():
                 print(f"{name_of_line}: {news}")
                 count += 1
