@@ -45,7 +45,8 @@ TEST_ENTRIES = [{'title': 'On-duty police officer sexually assaulted by gas stat
 
 class TestMainReader(unittest.TestCase):
     """
-TODO: write normal description after add all tests
+    Tests for effective parsing links, printing news in json and normal format,
+    setting and working limits of the numbers of news.
     """
 
     #  Tests for function "open_rss_link"
@@ -105,6 +106,40 @@ TODO: write normal description after add all tests
         rs.printing_parsing_news_in_json(content, 1)
         first_new = mock_print.call_args_list[0].args[0]
         self.assertTrue("news" in first_new)
+
+    # Tests for function "set_limit"
+    def test_limit_is_not_passed(self):
+        # Test case user do not pass any limit
+        content = mock.MagicMock()
+        content.entries = TEST_ENTRIES
+        limit = None
+        number_of_news_to_show = rs.set_limit(content, limit)
+        self.assertEqual(number_of_news_to_show, len(content.entries))
+
+    def test_limit_is_small(self):
+        # Test case user pass limit that smaller than total number of news (3)
+        content = mock.MagicMock()
+        content.entries = TEST_ENTRIES
+        limit = 2
+        number_of_news_to_show = rs.set_limit(content, limit)
+        self.assertEqual(number_of_news_to_show, 2)
+
+    def test_limit_is_big(self):
+        # Test case user pass limit that bigger than total number of news (3), should set number_of_news_to_show as
+        # maximum, means len(content.entries)
+        content = mock.MagicMock()
+        content.entries = TEST_ENTRIES
+        limit = 100500
+        number_of_news_to_show = rs.set_limit(content, limit)
+        self.assertEqual(number_of_news_to_show, len(content.entries))
+
+    def test_limit_is_invalid(self):
+        # Test case user pass 0 or negative int, should print user-friendly message and exit
+        content = mock.MagicMock()
+        content.entries = TEST_ENTRIES
+        limit = -1
+        with self.assertRaises(SystemExit):
+            rs.set_limit(content, limit)
 
 
 if __name__ == "__main__":
