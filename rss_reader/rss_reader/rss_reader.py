@@ -4,7 +4,6 @@ import logging
 import json
 from urllib.error import URLError
 
-
 import feedparser
 
 logging.basicConfig(level=logging.ERROR)
@@ -31,7 +30,6 @@ def create_parser(args):
 
 
 def open_url(url):
-
     """ Try to open url
     :param url page
     :return feed of news"""
@@ -52,7 +50,7 @@ def open_url(url):
 def print_news(args):
     """Check format and print news on console or json
     :param args from the user"""
-    feed = open_url(args.url) 
+    feed = open_url(args.url)
     try:
         if not args.json:
             print(f'Feed: {feed["channel"]["title"]}')
@@ -91,10 +89,7 @@ def print_news(args):
         elif args.json:
             print(json.dumps(make_dict, indent=3))
             count += 1
-        if args.json:
-            print(json.dumps(make_dict, indent=3))
-            count += 1
-        else: 
+        else:
             for name_of_line, news in make_dict.items():
                 print(f"{name_of_line}: {news}")
                 count += 1
@@ -108,7 +103,6 @@ def main():
     data.make_csv()
     if args.date:
         data.read_data(args.date, args.limit, args.verbose)
-
 
 if __name__ == "__main__":
     main()
