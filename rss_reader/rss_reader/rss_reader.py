@@ -14,6 +14,7 @@ try:
 except ImportError:
     from rss_reader.dataset import Data
 
+    
 data = Data()
 
 
@@ -104,5 +105,6 @@ def main():
     if args.date:
         data.read_data(args.date, args.limit, args.verbose)
 
+                  
 if __name__ == "__main__":
     main()
