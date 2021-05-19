@@ -7,21 +7,22 @@ except ImportError:
 
 
 class TestProcessResponse(unittest.TestCase):
-      def setUp(self):
-          with self.assertWarns(ResourceWarning):
-              self.test = Data()
+    def setUp(self):
+        with self.assertWarns(ResourceWarning):
+            self.test = Data()
+                
+    def test_init(self):
+        with self.assertWarns(ResourceWarning):
+            self.test.__init__()
+            self.assertTrue(self.test)
 
-      def test_init(self):
-          with self.assertWarns(ResourceWarning):
-              self.test.__init__()
-              self.assertTrue(self.test)
+    def test_dataframe(self):
+        with self.assertRaises(IndexError):
+            self.assertFalse(self.test.make_dataframe([1, 2]))
 
-      def test_dataframe(self):
-          with self.assertRaises(IndexError):
-              self.assertFalse(self.test.make_dataframe([1, 2]))
-
-      def tearDown(self):
-          os.remove("data.csv")
+    def tearDown(self):
+        os.remove("data.csv")
+    
     
 if __name__ == "__main__":
   unittest.main()
