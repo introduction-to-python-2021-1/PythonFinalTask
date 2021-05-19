@@ -1,1 +1,1 @@
-from rss_reader import dataset
+from rss_reader.rss_reader import *
