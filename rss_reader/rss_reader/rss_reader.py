@@ -7,7 +7,17 @@ from urllib.error import URLError
 
 import feedparser
 
-def create_parser(args):
+logging.basicConfig(level=logging.WARNING, format="%(message)s")
+logger = None
+
+def create_logger(verbose):
+    """Creates a logger"""
+    global logger
+    if logger is None:
+        logger = logging.getLogger()
+    return logger
+
+def create_parser():
     """ Adds positional and optional arguments """
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", action="version", help="Print version info", version="Version 1.0")
@@ -15,46 +25,71 @@ def create_parser(args):
     parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
-
-    return parser.parse_args(args)
-
-logging.basicConfig(level=logging.ERROR)
-logger = logging.getLogger()
-
-
-def check_url(url_feed):
-    """ The function gets a link to the rss feed and returns the feed using feedparser"""
-    try:
-        logger.info(f"click {url_feed}")
-        feed_url = feedparser.parse(url_feed)
-    except URLError:
-        logger.error(f"can't found {url_feed}")
-        sys.exit()
-    return feed_url
+    arguments = parser.parse_args()
+    return arguments
 
 news_print = ("title", "date", "summary", "description", "image", "content_of_media", "link")
 
 def set_limit(content, limit):
     """Set limit for news"""
-    limit_of_news = len(content.entries)
+    len_of_news = len(content.entries)
     if limit == 0 or limit <= 0:
         raise ValueError("Insert volume of news to read")
     elif limit <= len(content.entries):
-        limit_of_news = limit
-    return limit_of_news
+        len_of_news = limit
+    return len_of_news
 
 def print_news(content, limit_of_news):
     """Print news on console"""
-    print("\n" + content.feed.title + "\n")
-    for news in content.entries[:limit_of_news]:
-        for item in news_print:
-            if item in news.keys():
-                print(item.capitalize() + ":" + str(news[item]))
-                print("\n")
+    if not content.json:
+        print("\n" + content.feed.title + "\n")
+        for news in content.entries[:limit_of_news]:
+            for part in news_print:
+                if part in news.keys():
+                    print(part.capitalize() + ":" + str(news[part]))
+                    print("\n")
+    elif content.json:
+        json_dict = {}
+        newslist = []
+        newsdict = {}
+        for news in content.entries[:limit_of_news]:
+            for part in news_print:
+                if part in news.keys():
+                    json_dict[part.capitalize()] = news[part]
+            newslist.append(json_dict.copy())
+        newsdict["news"] = newslist
+        print(json.dumps(newsdict, indent=1))
+
+
+def create_rss_link(source, verbose):
+    """ Gets a link with RSS news and parses it, prints logs"""
+    logger = create_logger(verbose)
+    try:
+        content = feedparser.parse(source)
+        if not source:
+            raise ValueError
+        logger.info(f"Reads the link {source}")
+    except URLError as e:
+        logger.error(f"Error {e} in trying to open link {source}")
+        return print("Change link and try again, please")
+    except ValueError as e:
+        logger.error(f"Error {e} in trying to open link {source}")
+        return print("Add rss link, please")
+    return content
 
 def main():
-    """ Calls the main function with the required arguments"""
     arguments = create_parser()
+    logger = create_logger(arguments.verbose)
+    content = create_rss_link(arguments.source, arguments.verbose)
+    number_of_news = set_limit(content, arguments.limit)
+    if arguments.limit:
+        logger.info(f"Would read only {arguments.limit} number of news")
+    if arguments.json:
+        logger.info(f"Convert news in json format")
+        print_news(content, number_of_news)
+    else:
+        print_news(content, number_of_news)
+    logger.info(f"End of reading")
 
 if __name__ == "__main__":
     # Run the reader
