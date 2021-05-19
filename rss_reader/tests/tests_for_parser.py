@@ -1,8 +1,7 @@
 import unittest
-from unittest.mock import MagicMock
 
-from rssreader.rss_core.parser import XMLParser
-from rssreader.rss_core.reader import SiteReader
+from rss_core.parser import XMLParser
+from rss_core.reader import SiteReader
 
 
 class TestParser(unittest.TestCase):

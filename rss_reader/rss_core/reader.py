@@ -2,10 +2,11 @@
 
     Module stores readers for reading data from given resource
 """
+import requests
 from requests import get
 from abc import abstractmethod, ABC
 
-from rssreader.utils import util
+from utils import util
 
 
 class Reader(ABC):

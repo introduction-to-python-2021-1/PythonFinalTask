@@ -1,6 +1,6 @@
 import unittest
 
-from rssreader.rss_core.reader import SiteReader
+from rss_core.reader import SiteReader
 
 
 class TestReader(unittest.TestCase):

@@ -1,6 +1,6 @@
 import unittest
 
-from rssreader.rss_core.rss_classes import RSSItem, RSSNews
+from rss_core.rss_classes import RSSItem
 
 rss_item_init_dict = {"title": "-", "link": "-", "pubDate": "-", "guid": "-", "category": "-", "content": ["-"],
                       "description": "-"}

@@ -1,8 +1,8 @@
 import unittest
 
-from rssreader.rss_core.news_processor import NewsProcessor
-from rssreader.rss_core.parser import XMLParser
-from rssreader.rss_core.reader import SiteReader
+from rss_core.news_processor import NewsProcessor
+from rss_core.parser import XMLParser
+from rss_core.reader import SiteReader
 
 
 class TestNewsProcessor(unittest.TestCase):

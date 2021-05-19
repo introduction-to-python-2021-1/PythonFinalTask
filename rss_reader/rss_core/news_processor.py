@@ -1,9 +1,11 @@
 """
     Module with class working with rss news
 """
-from rssreader.rss_core.parser import Parser
-from rssreader.rss_core.rss_classes import RSSNews
-from rssreader.utils import util
+# from rss_core import Parser
+# from rss_core import RSSNews
+from rss_core.parser import Parser
+from rss_core.rss_classes import RSSNews
+from utils import util
 
 
 class NewsProcessor:

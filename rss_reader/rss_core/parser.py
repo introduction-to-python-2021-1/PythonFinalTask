@@ -5,9 +5,9 @@
 import re
 import xml.etree.ElementTree as ElementTree
 from abc import abstractmethod, ABC
-from rssreader.rss_core.reader import Reader
-from rssreader.rss_core.rss_classes import RSSItem
-from rssreader.utils import util
+from rss_core.reader import Reader
+from rss_core.rss_classes import RSSItem
+from utils import util
 
 ParseError = ElementTree.ParseError
 

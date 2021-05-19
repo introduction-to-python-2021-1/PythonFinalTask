@@ -5,10 +5,10 @@ import argparse
 
 __version__ = "1.2"
 
-from rssreader.rss_core.news_processor import NewsProcessor
-from rssreader.rss_core.parser import XMLParser
-from rssreader.rss_core.reader import SiteReader
-from rssreader.utils import util
+from rss_core.news_processor import NewsProcessor
+from rss_core.parser import XMLParser
+from rss_core.reader import SiteReader
+from utils import util
 
 
 def main():
