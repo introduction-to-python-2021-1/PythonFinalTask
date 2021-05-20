@@ -4,12 +4,12 @@ import sys
 import logging
 import logging.handlers
 from urllib.error import URLError
-import requests
 
 import feedparser
 
 logging.basicConfig(level=logging.WARNING, format="%(message)s")
 logger = None
+
 
 def create_logger(verbose):
     """Creates a logger"""
@@ -18,7 +18,8 @@ def create_logger(verbose):
         logger = logging.getLogger()
     return logger
 
-def command_arguments_parser():
+
+def command_arguments_parser(args):
     """ Adds positional and optional arguments """
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", action="version", help="Print version info", version="Version 1.0")
@@ -26,19 +27,22 @@ def command_arguments_parser():
     parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
-    arguments = parser.parse_args()
-    return arguments
+    return parser.parse_args(args)
+
 
 news_print = ("title", "date", "summary", "description", "image", "content_of_media", "link")
+
 
 def set_limit(content, limit):
     """Set limit for news"""
     len_of_news = len(content.entries)
-    if limit == 0 or limit <= 0:
-        raise ValueError("Insert volume of news to read")
-    elif limit <= len(content.entries):
+    if limit <= len(content.entries):
+        print("Insert volume of news to read (bigger than 0")
+        sys.exit()
+    elif limit is not None and limit <= 0:
         len_of_news = limit
     return len_of_news
+
 
 def print_news(content, limit_of_news):
     """Print news on console"""
@@ -78,8 +82,9 @@ def create_rss_link(source, verbose):
         return print("Add rss link, please")
     return content
 
+
 def main():
-    arguments = command_arguments_parser()
+    arguments = command_arguments_parser(sys.argv[1:])
     logger = create_logger(arguments.verbose)
     content = create_rss_link(arguments.source, arguments.verbose)
     number_of_news = set_limit(content, arguments.limit)
@@ -92,7 +97,10 @@ def main():
         print_news(content, number_of_news)
     logger.info(f"End of reading")
 
+
 if __name__ == "__main__":
     # Run the reader
     main()
+
+
 
