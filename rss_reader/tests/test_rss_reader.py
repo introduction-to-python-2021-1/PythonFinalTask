@@ -39,7 +39,11 @@ class TestProcessResponse(unittest.TestCase):
         with self.assertRaises(SystemExit):
             parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--version"])
         self.assertEqual(self.out.getvalue(), "Version 2.0\n")
-
+    
+    def test_empty(self):
+        """Test empty line """
+        parser = rss_reader.create_parser([""])
+        self.assertTrue(parser)
 
     def test_json(self):
         """Test JSON output"""
