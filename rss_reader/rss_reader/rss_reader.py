@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 
 from components.feed import Feed
 from components.parser import Parser
+from components.converter import Converter
 
 
 def main(argv=sys.argv[1:]):
@@ -24,6 +25,12 @@ def main(argv=sys.argv[1:]):
         sys.exit()
     if args.date:
         feed = Feed(args.source, args.date, args.limit, args.json, logger)
+        if args.to_pdf:
+            converter = Converter(logger)
+            converter.to_pdf(args.to_pdf, feed, args.limit)
+        if args.to_html:
+            converter = Converter(logger)
+            converter.to_html(args.to_html, feed, args.limit)
         print(feed)
     elif args.source:
         try:
@@ -43,6 +50,12 @@ def main(argv=sys.argv[1:]):
                 logger.info(f' Founded {len(items)} news items')
                 if items:
                     feed = Feed(args.source, args.date, args.limit, args.json, logger, feed_title, items)
+                    if args.to_pdf:
+                        converter = Converter(logger)
+                        converter.to_pdf(args.to_pdf, feed, args.limit)
+                    if args.to_html:
+                        converter = Converter(logger)
+                        converter.to_html(args.to_html, feed, args.limit)
                     print(feed)
                 logger.info(' Successfully completed')
             else:

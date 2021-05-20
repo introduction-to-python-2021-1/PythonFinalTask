@@ -27,6 +27,7 @@ class News:
             self.description = self.__parse_description()
             self.date = self.__parse_date()
             self.formatted_date = datetime.strftime(self.date, '%a, %d %b %G %X')
+            self.__parse_enclosure()
             self.cache.cache_news(self)
 
     def __parse_description(self) -> str:
@@ -36,7 +37,8 @@ class News:
             images = soup.find_all('img')
             for image in images:
                 item_position = len(self.links)
-                self.links[item_position] = {'type': 'image', 'url': image['src'], 'attributes': {'alt': image['alt']}}
+                self.links[item_position] = {'enclosure': False, 'type': 'image', 'url': image['src'],
+                                             'attributes': {'alt': image['alt']}}
                 image.replace_with(f'[image {item_position}{": " + image["alt"] + "] " if image["alt"] else "] "}')
             return soup.text
 
@@ -76,3 +78,10 @@ class News:
         self.link = self.item['url']
         self.description = self.item['description']
         self.formatted_date = self.item['date']
+
+    def __parse_enclosure(self):
+        """This method parses enclosures from the feed item and adds them to links"""
+        enclosure_list = self.item.find_all('enclosure')
+        for enclosure in enclosure_list:
+            self.links[len(self.links)] = {'enclosure': True, 'type': enclosure['type'], 'url': enclosure['url'],
+                                           'attributes': None}

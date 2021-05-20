@@ -4,21 +4,24 @@ Pure Python command-line RSS reader.
 
 ## Usage
 
-```shell
-usage: rss_reader [-h] [--version] [--json] [--verbose] [--limit LIMIT] [--date DATE] [source]
+```shell 
+usage: rss_reader [-h] [--version] [--json] [--verbose] [--limit LIMIT] [--date DATE] [--to-pdf TO_PDF] 
+                  [--to-html TO_HTML] [source]
 
 Pure Python command-line RSS reader.
 
 positional arguments:
-  source         RSS URL
+  source             RSS URL
 
 optional arguments:
-  -h, --help     show this help message and exit
-  --version      Print version info
-  --json         Print result as JSON in stdout
-  --verbose      Outputs verbose status messages
-  --limit LIMIT  Limit news topics if this parameter provided
-  --date DATE    Print cached news for specified date
+  -h, --help         show this help message and exit
+  --version          Print version info
+  --json             Print result as JSON in stdout
+  --verbose          Outputs verbose status messages
+  --limit LIMIT      Limit news topics if this parameter provided
+  --date DATE        Print cached news for specified date
+  --to-pdf TO_PDF    Converts news to PDF format
+  --to-html TO_HTML  Converts news to HTML format
 ```
 
 ## JSON structure
@@ -39,21 +42,20 @@ optional arguments:
         }
     },
     "1": {
-        "title": "TUT.BY: Новости ТУТ - Главные новости",
-        "source": "https://news.tut.by/rss/index.rss",
+        "title": "Последние новости Беларуси и мира | Главные события 2021 - Sputnik",
+        "source": "https://sputnik.by/export/rss2/archive/index.xml",
         "items": {
             "0": {
-                "title": "Налоговая в суде выясняет с Тихановским, должен ли он заплатить налог с тех самых найденных за диваном 900 тысяч долларов",
-                "url": "https://finance.tut.by/news730254.html?utm_campaign=news-feed&utm_medium=rss&utm_source=rss-news",
-                "description": "[image 0: Фото: Сергей Комков, TUT.BY] По решению налоговой, Тихановский должен уплатить в бюджет 257 тысяч 992 рубля и 72 копейки - исходя из суммы превышения доходов над расходами.",
-                "date": "Thu, 13 May 2021 17:20:00",
+                "title": "Транспортная перезагрузка: что от нее ждут Беларусь и Россия?",
+                "url": "https://sputnik.by/press_center/20210520/1047678494/Transportnaya-perezagruzka-chto-ot-nee-zhdut-Belarus-i-Rossiya.html",
+                "description": "Минск планирует построить в России собственные перевалочные терминалы для экспорта продукции по морю.",
+                "date": "Thu, 20 May 2021 18:35:16",
                 "links": {
                     "0": {
-                        "type": "image",
-                        "url": "https://img.tyt.by/thumbnails/n/regiony/08/9/tikhanovskiy_studiya.jpg",
-                        "attributes": {
-                            "alt": "Фото: Сергей Комков, TUT.BY"
-                        }
+                        "enclosure": true,
+                        "type": "image/jpeg",
+                        "url": "https://cdn11.img.sputnik.by/images/07e5/01/1b/1046753762.jpg",
+                        "attributes": null
                     }
                 }
             }

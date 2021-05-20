@@ -2,6 +2,9 @@ import os
 from datetime import datetime
 import json
 import sys
+import urllib.request
+import hashlib
+import imghdr
 
 from components.news import News
 
@@ -15,6 +18,9 @@ class Cache:
         self.cache_folder_path = 'cache' + os.path.sep
         if not os.path.exists(self.cache_folder_path):
             os.mkdir(self.cache_folder_path)
+        self.cache_images_folder_path = self.cache_folder_path + 'images' + os.path.sep
+        if not os.path.exists(self.cache_images_folder_path):
+            os.mkdir(self.cache_images_folder_path)
 
     def cache_news(self, news):
         """This method prepares data for writing to the cache file"""
@@ -48,6 +54,7 @@ class Cache:
                                                          0: news.to_dict()
                                                      }}
                 self.__write_cache(cache_file_path, cached_data)
+                self.__cache_images(news)
         else:
             data = {0: {'title': news.feed_title,
                         'source': news.source,
@@ -55,6 +62,7 @@ class Cache:
                             0: news.to_dict()
                         }}}
             self.__write_cache(cache_file_path, data)
+            self.__cache_images(news)
 
     def __get_cached_data(self, cache_file_path):
         """
@@ -124,3 +132,13 @@ class Cache:
         else:
             self.logger.error(f' Cache for date "{date}" was not found')
             sys.exit()
+
+    def __cache_images(self, news):
+        """This method downloads images from URL and saves them"""
+        for link_index, link in news.links.items():
+            if 'image' in link['type']:
+                cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{link_index}'
+                cached_image_file_path = self.cache_images_folder_path + cached_image_filename
+                urllib.request.urlretrieve(link['url'], cached_image_file_path)
+                image_format = imghdr.what(cached_image_file_path)
+                os.rename(cached_image_file_path, f'{cached_image_file_path}.{image_format}')

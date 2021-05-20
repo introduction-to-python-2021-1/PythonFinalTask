@@ -1,8 +1,6 @@
 """This module contains a class that represent a feed"""
 
 import json
-import os
-import sys
 
 from components.news import News
 from components.cache import Cache
