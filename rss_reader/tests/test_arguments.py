@@ -14,7 +14,7 @@ class TestRssReader(unittest.TestCase):
         argv = ['--version']
         with self.assertRaises(SystemExit):
             main(argv)
-        self.assertEqual(mock_stdout.getvalue(), 'Version 0.3\n')
+        self.assertEqual(mock_stdout.getvalue(), 'Version 0.4\n')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_version_with_the_provided_source(self, mock_stdout):
@@ -22,7 +22,7 @@ class TestRssReader(unittest.TestCase):
         argv = ['https://news.yahoo.com/rss/', '--version']
         with self.assertRaises(SystemExit):
             main(argv)
-        self.assertEqual(mock_stdout.getvalue(), 'Version 0.3\n')
+        self.assertEqual(mock_stdout.getvalue(), 'Version 0.4\n')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_limit(self, mock_stdout):
