@@ -65,13 +65,7 @@ def print_news(args):
 
     make_dict = {}
     count = 0
-    if not args.limit:
-        args.limit = len(feed["items"])
-        print(f"You enter nothing or 0 and ")
-    elif args.limit < 0:
-        print(f"negative limit is entered (You enter limit = {args.limit} ")
-        args.limit = 0
-
+    
     if not args.limit:
         args.limit = len(feed["items"])
         print(f"You enter nothing or 0 and ")
@@ -103,7 +97,11 @@ def main():
     print_news(args)
     data.make_csv()
     if args.date:
-        data.print_data(args.date, args.limit, args.verbose)
+       if len(args.date) == 8 and int(args.date):
+           data.print_data(args.date, args.limit, args.verbose)
+       else:
+           logger.error(f"Bad date format")
+           sys.exit()
 
                   
 if __name__ == "__main__":
