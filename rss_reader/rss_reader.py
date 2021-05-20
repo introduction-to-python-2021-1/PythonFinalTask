@@ -3,10 +3,9 @@ rss_reader.py - receives URL from the command line and read the data from it and
 """
 
 import argparse
-import json
 import requests
 from bs4 import BeautifulSoup
-
+import json
 
 # URL = "https://www.theguardian.com/world/rss"
 
@@ -19,7 +18,7 @@ def get_args():
         )
 
         parser.add_argument('rss_url', help="RSS url to parse")
-        parser.add_argument('--version', action="version", help="Print version info", version='Version 1.0')
+        parser.add_argument('--version', action="version", help="Print version info", version='Version 0.2')
         parser.add_argument('--json', help="Print result as JSON in stdout", action="store_true")
         parser.add_argument('-v', '--verbose', action="store_true", help="Outputs verbose status messages")
         parser.add_argument('--limit', type=int, help="Limit news topics if this parameter provided", default=0)
@@ -46,7 +45,8 @@ def extract_xml(url, limit):
 
     try:
         request = requests.get(url)
-        print(f"Getting xml HTTP response: {request.status_code}")
+        # if args.verbose:
+        # print(f"Getting xml HTTP response: {request.status_code}")
 
         if request.status_code == 200:
             soup = BeautifulSoup(request.content, 'xml')
@@ -56,13 +56,14 @@ def extract_xml(url, limit):
                 title = news.find("title").text
                 date = news.find("pubDate").text
                 link = news.find("link").text
-                description = news.find("description").text
+                # description = news.find("description").text
                 images = []
                 all_images = news.findAll("media:content")
                 for image in all_images:
                     image_link = image.get("url")
                     images.append(image_link)
-                news_item = {"Title": title, "Date": date, "Link": link, "Description": description, "Images": images}
+                # news_item = {"Title": title, "Date": date, "Link": link, "Description": description, "Images": images}
+                news_item = {"Title": title, "Date": date, "Link": link, "Images": images}
                 news_list.append(news_item)
             data["News"] = news_list
     except Exception as e:
@@ -74,17 +75,17 @@ def extract_xml(url, limit):
 def print_news(data):
     """prints data in special format into STDOUT"""
     # print("\n\n")
-    print("Feed:", data["Feed"], "\n")
+    print("\nFeed:", data["Feed"], "\n")
     # newslist = data["News"]
     for news_item in data["News"]:
         print("Title:", news_item["Title"])
         print("Date:", news_item["Date"])
         print("Link:", news_item["Link"])
-        print("Description:", news_item["Description"])
-        print("Images:", len(news_item["Images"]), "\n")
-        print("Links:")
-        print("[1]", news_item["Link"], "(link)")
-        print("[2]", '\n'.join(news_item["Images"]), "(images) \n")
+        # print("Description:", news_item["Description"])
+        print("Images:", len(news_item["Images"]))
+        # print("Links:")
+        # print("[1]", news_item["Link"], "(link)")
+        print('\n'.join(news_item["Images"]), "\n")
     # for i in range(len(newslist)):
     #     print("Title:", newslist[i]["Title"])
     #     print("Date:", newslist[i]["Date"])
@@ -98,12 +99,14 @@ def print_news(data):
     #     # for image_link in newslist[i]["Images"]:
     #     #     print(image_link)
     #     print('\n'.join(newslist[i]["Images"]))
-    print("Count of news:", len(data["News"]))
+    print("Count of news:", len(data["News"]), "\n")
 
 
 def print_json(data):
     """prints data in JSON format into STDOUT"""
     print(json.dumps(data, indent=3))
+    with open("json_format", "w") as file:
+        json.dump(data, file, indent=3)
 
 
 def main():
