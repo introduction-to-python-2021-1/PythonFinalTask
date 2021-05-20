@@ -36,7 +36,7 @@ news_print = ("title", "date", "summary", "description", "image", "content_of_me
 def set_limit(content, limit):
     """Set limit for news"""
     len_of_news = len(content.entries)
-    if limit <= len(content.entries):
+    if limit is not None and limit <= len(content.entries):
         print("Insert volume of news to read (bigger than 0")
         sys.exit()
     elif limit is not None and limit <= 0:
@@ -46,23 +46,25 @@ def set_limit(content, limit):
 
 def print_news(content, limit_of_news):
     """Print news on console"""
-    if not content.json:
-        print("\n" + content.feed.title + "\n")
-        for news in content.entries[:limit_of_news]:
-            for part in news_print:
-                if part in news.keys():
-                    print(part.capitalize() + ":" + str(news[part]))
-                    print("\n")
-    elif content.json:
-        json_dict = {}
-        newslist = []
-        newsdict = {}
-        for news in content.entries[:limit_of_news]:
-            for part in news_print:
-                if part in news.keys():
-                    json_dict[part.capitalize()] = news[part]
-            newslist.append(json_dict.copy())
-        newsdict["news"] = newslist
+    print("\n" + content.feed.title + "\n")
+    for news in content.entries[:limit_of_news]:
+        for part in news_print:
+            if part in news.keys():
+                print(part.capitalize() + ":" + str(news[part]))
+        print("\n")
+
+dictionary = {}
+list_of_news = []
+newsdict = {}
+
+def print_news_json(content, limit_of_news):
+    """Convert news to json and print on console"""
+    for news in content.entries[:limit_of_news]:
+        for part in news_print:
+            if part in news.keys():
+                dictionary[part.capitalize()] = news[part]
+                list_of_news.append(dictionary.copy())
+        newsdict["news"] = list_of_news
         print(json.dumps(newsdict, indent=1))
 
 
@@ -75,10 +77,10 @@ def create_rss_link(source, verbose):
             raise ValueError
         logger.info(f"Reads the link {source}")
     except URLError as e:
-        logger.error(f"Error {e} in trying to open link {source}")
+        logger.error(f"Error {e} in opening link {source}")
         return print("Change link and try again, please")
     except ValueError as e:
-        logger.error(f"Error {e} in trying to open link {source}")
+        logger.error(f"Error {e} in opening link {source}")
         return print("Add rss link, please")
     return content
 
@@ -89,13 +91,13 @@ def main():
     content = create_rss_link(arguments.source, arguments.verbose)
     number_of_news = set_limit(content, arguments.limit)
     if arguments.limit:
-        logger.info(f"Would read only {arguments.limit} number of news")
+        logger.info(f"Reads {arguments.limit} lots of news")
     if arguments.json:
-        logger.info(f"Convert news in json format")
+        logger.info(f"Json format")
         print_news(content, number_of_news)
     else:
         print_news(content, number_of_news)
-    logger.info(f"End of reading")
+    logger.info(f"The end")
 
 
 if __name__ == "__main__":
