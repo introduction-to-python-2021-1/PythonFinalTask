@@ -32,13 +32,13 @@ class TestProcessResponse(unittest.TestCase):
         with self.assertRaises(SystemExit):
             parser = rss_reader.create_parser([None, "--version"])
 
-        self.assertEqual(self.out.getvalue(), "Version 2.0\n")
+        self.assertEqual(self.out.getvalue(), "Version 3.0\n")
 
     def test_version_url(self):
         """Test version with url"""
         with self.assertRaises(SystemExit):
             parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--version"])
-        self.assertEqual(self.out.getvalue(), "Version 2.0\n")
+        self.assertEqual(self.out.getvalue(), "Version 3.0\n")
     
     def test_empty(self):
         """Test empty line """
