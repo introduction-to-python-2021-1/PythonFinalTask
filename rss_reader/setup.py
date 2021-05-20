@@ -18,8 +18,8 @@ setup(
     author_email="egor.makhlaev@gmail.com",
     license=license,
     packages=["rss_reader"],
-    data_files = [("data", ["data/arial.ttf", "template.html"])]
-    install_requires=["dateparser"],
+    data_files=[("data", ["data/arial.ttf", "template.html"])],
+    install_requires=["dateparser", "Jinja2", "pathvalidate", "xhtml2pdf"],
     entry_points={
         'console_scripts': [
             'rss_reader=rss_reader.rss_reader:main',
