@@ -53,6 +53,21 @@ class TestProcessResponse(unittest.TestCase):
         """Test log"""
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--verbose"])
         self.assertTrue(parser.verbose)
+        
+    def test_date(self):
+        """Test date"""
+        parser = rss_reader.create_parser(["--date 20210521"])
+        self.assertTrue(parser)
+
+    def test_bad_date(self):
+        """Test bad data"""
+        parser = rss_reader.create_parser(["--date 20"])
+        self.assertLogs(parser, "Bad date format")
+
+    def test_word_date(self):
+        """Test date word format"""
+        parser = rss_reader.create_parser(["--date slovo"])
+        self.assertLogs(parser, "Bad date format")
 
 
 if __name__ == "__main__":
