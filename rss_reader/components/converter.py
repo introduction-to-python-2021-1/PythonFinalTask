@@ -36,7 +36,7 @@ class Converter:
                 images = list(re.finditer(r'\[image \d: .+\]', news.description))
                 for image in images:
                     pdf.write(5, news.description[temp_index:image.start()].strip())
-                    image_index = re.search(' \d:', image.string).group(0)[1:2]
+                    image_index = re.search(r' \d:', image.string).group(0)[1:2]
                     cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{image_index}'
                     cached_image_file_path = self.__get_image(news.links[image_index]['url'], cached_image_filename)
                     if cached_image_file_path:
@@ -114,7 +114,7 @@ class Converter:
                 images = list(re.finditer(r'\[image \d: .+\]', news.description))
                 for image in images:
                     news_description += news.description[temp_index:image.start()].strip()
-                    image_index = re.search(' \d:', image.string).group(0)[1:2]
+                    image_index = re.search(r' \d:', image.string).group(0)[1:2]
                     cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{image_index}'
                     cached_image_file_path = self.__get_image(news.links[image_index]['url'], cached_image_filename)
                     if cached_image_file_path:
