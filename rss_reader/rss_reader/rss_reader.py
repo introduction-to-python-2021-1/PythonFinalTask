@@ -2,8 +2,7 @@ import argparse
 import json
 import sys
 import logging
-import logging.handlers
-from urllib.error import URLError
+import urllib.error
 
 import feedparser
 
