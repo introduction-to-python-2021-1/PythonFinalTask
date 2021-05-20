@@ -17,7 +17,7 @@ class Converter:
     def __init__(self, logger):
         """This class constructor initializes the required variables for the news feed conversion"""
         self.logger = logger
-        self.cache_folder_path = 'cache' + os.sep
+        self.cache_folder_path = 'cache' + os.path.sep
         self.cache_images_folder_path = self.cache_folder_path + 'images' + os.path.sep
 
     def to_pdf(self, path, feed, limit):
@@ -69,14 +69,16 @@ class Converter:
         else:
             result_filename = f'{result_path.split(os.sep)[-1]}{result_file_extension}'
             result_path = f'{os.sep}'.join(result_path.split(os.sep)[:-1])
-        if result_path and not os.path.exists(result_path):
-            os.makedirs(result_path, exist_ok=True)
+        if result_path:
+            result_path += os.sep
+            if not os.path.exists(result_path):
+                os.makedirs(result_path, exist_ok=True)
         try:
-            pdf.output(result_path + os.sep + result_filename)
-            self.logger.info(f' PDF file created and saved at {result_path + os.sep + result_filename}')
+            pdf.output(result_path + result_filename)
+            self.logger.info(f' PDF file created and saved at {result_path + result_filename}')
         except PermissionError:
             self.logger.error(
-                f' Unable to save PDF file at {result_path + os.sep + result_filename}. Permission denied.')
+                f' Unable to save PDF file at {result_path + result_filename}. Permission denied.')
 
     def __get_image(self, url, cached_image_filename):
         """
@@ -153,15 +155,17 @@ class Converter:
         else:
             result_filename = f'{result_path.split(os.sep)[-1]}{result_file_extension}'
             result_path = f'{os.sep}'.join(result_path.split(os.sep)[:-1])
-        if result_path and not os.path.exists(result_path):
-            os.makedirs(result_path, exist_ok=True)
+        if result_path:
+            result_path += os.sep
+            if not os.path.exists(result_path):
+                os.makedirs(result_path, exist_ok=True)
         result_feed_html = ''.join(news_html_containers)
         soup = BeautifulSoup(f'<!DOCTYPE html><html><body>{result_feed_html}</body></html>', 'lxml')
         result_html = soup.prettify()
         try:
-            with open(result_path + os.sep + result_filename, 'w') as file:
+            with open(result_path + result_filename, 'w') as file:
                 file.write(result_html)
-            self.logger.info(f' HTML file created and saved as {result_path + os.sep + result_filename}')
+            self.logger.info(f' HTML file created and saved as {result_path + result_filename}')
         except PermissionError:
             self.logger.error(
-                f' Unable to save HTML file at {result_path + os.sep + result_filename}. Permission denied.')
+                f' Unable to save HTML file at {result_path + result_filename}. Permission denied.')
