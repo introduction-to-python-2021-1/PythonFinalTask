@@ -2,9 +2,8 @@ import argparse
 import json
 import sys
 import logging
-import urllib.error
-
 import feedparser
+from urllib.error import URLError
 
 logging.basicConfig(level=logging.WARNING, format="%(message)s")
 logger = None
