@@ -21,7 +21,8 @@ class TestProcessResponse(unittest.TestCase):
 
     def test_file(self):
         """File open"""
-        self.assertTrue(open("data.csv"))
+        with self.assertWarns(ResourceWarning):
+            self.assertTrue(open("data.csv"))
 
     def test_dataframe(self):
         with self.assertRaises(IndexError):

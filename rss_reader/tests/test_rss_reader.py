@@ -66,8 +66,12 @@ class TestProcessResponse(unittest.TestCase):
 
     def test_word_date(self):
         """Test date word format"""
-        parser = rss_reader.create_parser(["--date slovo"])
+        parser = rss_reader.create_parser(["--date word"])
         self.assertLogs(parser, "Bad date format")
+
+    def test_verbose_(self):
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/""--verbose"])
+        self.assertLogs(parser, f"open {parser.url} and start parse")
 
 
 if __name__ == "__main__":
