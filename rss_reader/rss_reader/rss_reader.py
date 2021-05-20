@@ -10,16 +10,22 @@ from urllib.request import urlopen
 import xml.etree.ElementTree as ET
 
 try:
-    from local_storage import LocalStorage
     from logger_config import get_logger
+    from local_storage import LocalStorage
+    from format_converter import ToPdfConverter
+    from format_converter import ToHtmlConverter
 except ImportError:
-    from .local_storage import LocalStorage
     from .logger_config import get_logger
+    from .local_storage import LocalStorage
+    from .format_converter import ToPdfConverter
+    from .format_converter import ToHtmlConverter
+
+from pathvalidate.argparse import validate_filepath_arg
 
 VERSION = "3.0"
 
-local_storage = LocalStorage("localstorage")
 logger = get_logger()
+local_storage = LocalStorage("localstorage")
 
 
 def get_response(url):
@@ -145,6 +151,8 @@ def main(argv=sys.argv):
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("--limit", type=int, help="Limit news topics if this parameter provided")
     parser.add_argument("--date", type=str, help="Return news topics which were published in specific date")
+    parser.add_argument("--to-html", type=validate_filepath_arg, help="Save news in .html format by provided path")
+    parser.add_argument("--to-pdf", type=validate_filepath_arg, help="Save news in .pdf format by provided path")
 
     args = parser.parse_args(argv[1:])
 
@@ -172,6 +180,14 @@ def main(argv=sys.argv):
 
     if args.json:
         print_json(news_items)
+
+    if args.to_html:
+        html_converter = ToHtmlConverter(directory_path=args.to_html, file_name="rss-news.html")
+        html_converter.convert(news_items)
+
+    if args.to_pdf:
+        pdf_converter = ToPdfConverter(directory_path=args.to_pdf, file_name="rss-news.pdf")
+        pdf_converter.convert(news_items)
 
 
 if __name__ == "__main__":

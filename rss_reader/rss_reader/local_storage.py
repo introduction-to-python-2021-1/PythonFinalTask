@@ -33,7 +33,7 @@ class LocalStorage:
     def __init__(self, name):
         logger.info(f'Create local storage "{name}"')
 
-        base = Path(__file__).resolve().parent.parent / "data"
+        base = Path("../data")
         base.mkdir(exist_ok=True)
         jsonpath = base / f"{name}.json"
         jsonpath.touch(exist_ok=True)
@@ -146,4 +146,4 @@ class LocalStorage:
 
     def write_to_storage_file(self, storage_content):
         """Writes dictionary containing local storage content to file as JSON."""
-        self.jsonpath.write_bytes(json.dumps(storage_content, indent=4, ensure_ascii=False).encode("utf8"))
+        self.jsonpath.write_bytes(json.dumps(storage_content, indent=4, ensure_ascii=False).encode("UTF-8"))

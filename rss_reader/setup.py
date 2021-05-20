@@ -18,6 +18,7 @@ setup(
     author_email="egor.makhlaev@gmail.com",
     license=license,
     packages=["rss_reader"],
+    data_files = [("data", ["data/arial.ttf", "template.html"])]
     install_requires=["dateparser"],
     entry_points={
         'console_scripts': [
