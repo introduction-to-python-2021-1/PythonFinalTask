@@ -4,6 +4,7 @@ import sys
 import logging
 import logging.handlers
 from urllib.error import URLError
+import requests
 
 import feedparser
 
@@ -17,7 +18,7 @@ def create_logger(verbose):
         logger = logging.getLogger()
     return logger
 
-def command_arguments_parser(args):
+def command_arguments_parser():
     """ Adds positional and optional arguments """
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", action="version", help="Print version info", version="Version 1.0")
@@ -25,7 +26,8 @@ def command_arguments_parser(args):
     parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
-    return parser.parse_args(args)
+    arguments = parser.parse_args()
+    return arguments
 
 news_print = ("title", "date", "summary", "description", "image", "content_of_media", "link")
 
@@ -77,7 +79,7 @@ def create_rss_link(source, verbose):
     return content
 
 def main():
-    arguments = command_arguments_parser(sys.argv[1:])
+    arguments = command_arguments_parser()
     logger = create_logger(arguments.verbose)
     content = create_rss_link(arguments.source, arguments.verbose)
     number_of_news = set_limit(content, arguments.limit)
@@ -93,3 +95,4 @@ def main():
 if __name__ == "__main__":
     # Run the reader
     main()
+
