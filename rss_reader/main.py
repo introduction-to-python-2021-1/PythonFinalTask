@@ -2,11 +2,10 @@
 """
 
 import argparse
-from rss_reader.disp import display
 import logging
 import rss_reader.rss_parser as rp
 
-import feedparser as fp
+# import feedparser as fp
 
 import sys
 import os
@@ -64,7 +63,7 @@ def main():
         rss_feed = rp.RssParser(args.source, args.limit)
 
 
-    if rss_feed.is_empty():
+    if rss_feed.is_empty:
         # In case rss_feed == [] something is wrong with URL or internet connection
         print("RSS source is not responding", flush=True)
         exit(sys.exit(os.EX_NOHOST))
@@ -72,6 +71,8 @@ def main():
         if args.json:
             logging.info("Print RSS in json")
             rss_feed.print_raw_rss()
+            # rss_feed.print_indent_rss()
+            rss_feed.print_rss()
         else:
             logging.info("Print RSS in plain text")
             rss_feed.print_rss()
