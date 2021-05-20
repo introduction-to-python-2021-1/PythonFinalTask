@@ -3,10 +3,12 @@
 import logging
 import time
 import datetime
-from html.parser import HTMLParser
+# from html.parser import HTMLParser
 import feedparser as fp
+from bs4 import BeautifulSoup
 
 
+"""
 class HTMLFilter(HTMLParser):
     text = ""
 
@@ -15,13 +17,18 @@ class HTMLFilter(HTMLParser):
 
     def handle_data(self, data):
         self.text += data
-
+"""
 
 class RssParser:
-    """Wrap class for feedparser module"""
+    """Class wraps together feedparser and BeautifulSoup module"""
+
+    # Parsed RSS entries will be stored in the dictionary
+    json_RSS = {"Feed": "", "Title": "", "Date": "", "Link": "", "Summary": "", "Content": "", "Links": {}}
+    # "Links" : { 1 : "Link1", 2 : "Link2", N : "LinkN"}
 
     def __init__(self, url, limit=None):
         logging.info("rss_parser module activated")
+        json_list = dict()
 
         self.url = url
         self.limit = limit
@@ -41,27 +48,33 @@ class RssParser:
             self.NewsFeed = []
             self.number_of_entries = 0
 
-    # Check whether NewsFeed is empty or not
     @property
     def is_empty(self):
+        """ is_empty() static function - returns True if NewsFeed object is empty """
         return not bool(self.number_of_entries)
 
-    def print_raw_rss_feed(self):
+    @staticmethod
+    def html2text(html):
+        """ html2text() static function - removing html tags from input string and returning plain text """
+        soup = BeautifulSoup(html, "lxml")
+        return soup.get_text()
 
-        self.number_of_entries = len(self.NewsFeed.entries)
+    @staticmethod
+    def append_links(links, html_snippet):
+        soup = BeautifulSoup(html_snippet, "lxml")
 
-        if self.number_of_entries == 0:
-            print("No entries found", flush=True)
-            return None
+        for image_src in soup.find_all("img"):
+            links.append(image_src['src'] + " (image)")
+            logging.info(f"Adding image link: {image_src['src']}")
 
-        print(f"Number of news read: {self.number_of_entries}", flush=True)
-
-        entry = dict()
-        for entry in self.NewsFeed.entries:
-            print(f"{index + 1}:{entry.title}", flush=True)
-        print(entry.keys())
+        for link_src in soup.find_all("a"):
+            links.append(link_src['href'] + " (link)")
+            logging.info(f"Adding reference link: {link_src['href']})")
 
     def print_raw_rss(self):
+        """ print_raw_rss() prints to stdout parsed rss feed entries without formatting
+        This function is used monitor data retrieved from different RSS feeds
+        """
 
         # for entry in self.get_rss_limited_feed():
         for entry in self.NewsFeed.entries[:self.limit]:
@@ -74,7 +87,7 @@ class RssParser:
 
         for entry in self.NewsFeed.entries[:self.limit]:
 
-            found_links = []  # list of <a href= /> and <img src= /> links will be stored here
+            found_links = []  # list of links <a href= /> and <img src= /> will be stored here
             print("-" * 80)
 
             try:
@@ -98,39 +111,47 @@ class RssParser:
 
             try:
                 print(f"Link: {entry.link}\n", flush=True)
-                found_links.append(entry.link)
+                found_links.append(entry.link + " (link)")
             except AttributeError:
                 logging.info("Warning:Link not available")
 
             try:
-                found_links.append(entry.media_content[0]['url'])
+                pass
+                # found_links.append(entry.media_content[0]['url'])
                 # print(f"{entry.media_content[0]['url']}")
             except AttributeError:
                 logging.info("Warning:Media not available")
 
             try:
-                f = HTMLFilter()
-                f.feed(entry.summary)
-                print(f"Summary: {f.text}")
+                # f = HTMLFilter()
+                # f.feed(entry.summary)
+                # print(f"Summary: {f.text}")
+                print(f"Summary: {self.html2text(entry.summary)}")
+                self.append_links(found_links, entry.summary)
             except AttributeError:
-                pass
+                logging.info("Warning:Summary not available")
 
             try:
-                f1 = HTMLFilter()
-                f1.feed(entry.content[-1]['value'])
-                print(f"\nContent: \n{f1.text.strip()}")
+                # f1 = HTMLFilter()
+                # f1.feed(entry.content[-1]['value'])
+                # print(f"\nContent: \n{f1.text.strip()}")
+
+                print(f"\nContent: {self.html2text(entry.content[-1]['value'])}")
+
+                self.append_links(found_links, entry.content[-1]['value'])
             except AttributeError:
-                pass
+                logging.info("Warning:Content not available")
 
             try:
                 # print(f"Author: {entry.author}")
                 pass
             except AttributeError:
-                pass
+                logging.info("Warning:Author not available")
 
             print("\nLinks:")
             found_links = set(found_links)  # removing duplicate links by casting list to set
-            for i, link in zip(range(1, len(found_links)+1), found_links):  # range is used as link index while printing
+            for i, link in zip(range(1, len(found_links) + 1),
+                               found_links):  # range is used as link index while printing
                 print(f"[{i}] {link}")
 
         """
