@@ -48,37 +48,63 @@ def set_limit(content, limit):
     return number_of_news_to_show
 
 
-def printing_parsing_news(content, number_of_news_to_show):
+def make_news_dictionary(source: str, content, number_of_news_to_show: int) -> dict:
     """
-    Print parsed news to bash
+    Make a dictionary from FeedParserDict instance "content"
+    :param source: link with rss news to save
     :param content: parsed link with rss news
     :param number_of_news_to_show: limit number of news for parsing
-    """
-    print("\n" + content.feed.title + "\n")
-    for news in content.entries[:number_of_news_to_show]:
-        for item in NEWS_PARTS:
-            if item in news.keys():
-                print(item.capitalize() + ": " + str(news[item]))
-        print("\n")
-
-
-def printing_parsing_news_in_json(content, number_of_news_to_show):
-    """
-    Parse news to a dictionary, convert it to json format and print it to bash
-    :param content: parsed link with rss news
-    :param number_of_news_to_show: limit number of news for parsing
+    :return dictionary with parsed news "news", publication date "date" and source link "source"
     """
 
-    json_dict = {}
+    innerdict = {}
     newslist = []
     newsdict = {}
 
     for news in content.entries[:number_of_news_to_show]:
         for item in NEWS_PARTS:
             if item in news.keys():
-                json_dict[item.capitalize()] = news[item]
-        newslist.append(json_dict.copy())
+                if item == "media_content" or item == "storyimage":
+                    innerdict["Image"] = news[item][0]["url"]
+                else:
+                    innerdict[item.capitalize()] = news[item]
+        newslist.append(innerdict.copy())
     newsdict["news"] = newslist
+    newsdict["source"] = source
+    newsdict["date"] = content.feed.published
+
+    return newsdict
+
+
+def printing_parsing_news(content, newsdict: dict):
+    """
+    Print parsed news to bash
+    :param content: parsed link with rss news
+    :param newsdict: dictionary with parsed news "news"
+    """
+    print(f"\nFeed: {content.feed.title}")
+    for one_news in newsdict["news"]:
+        print(f"\nTitle: {one_news['Title']}")
+        print(f"Date: {one_news['Published']}")
+        print(f"Link: {one_news['Link']}")
+        try:
+            print(f"\nSummary: {one_news['Summary']}")
+            print(f"\nDescription: {one_news['Description']}")
+        except KeyError:
+            pass
+        print("\n\nLinks:")
+        print(f"[1]: {one_news['Link']} (link)")
+        try:
+            print(f"[2]: {one_news['Image']} (image)\n")
+        except KeyError:
+            pass
+
+
+def printing_news_in_json(newsdict: dict):
+    """
+    Convert newsdict to json format and print it to bash
+    :param newsdict: dictionary with parsed news "news"
+    """
     print(jsn.dumps(newsdict, indent=1))
 
 
@@ -148,11 +174,13 @@ def main():
     if arguments.limit:
         logger.info(f"Would read only {arguments.limit} number of news")
 
+    newsdict = make_news_dictionary(arguments.source, content, number_of_news_to_show)
+
     if arguments.json:
         logger.info(f"Convert news in json format")
-        printing_parsing_news_in_json(content, number_of_news_to_show)
+        printing_news_in_json(newsdict)
     else:
-        printing_parsing_news(content, number_of_news_to_show)
+        printing_parsing_news(content, newsdict)
 
     logger.info(f"End of reading")
 
