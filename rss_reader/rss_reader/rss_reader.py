@@ -14,7 +14,7 @@ try:
 except ImportError:
     from rss_reader.dataset import Data
 
-    
+
 data = Data()
 
 
@@ -65,7 +65,7 @@ def print_news(args):
 
     make_dict = {}
     count = 0
-    
+
     if not args.limit:
         args.limit = len(feed["items"])
         print(f"You enter nothing or 0 and ")
@@ -97,12 +97,12 @@ def main():
     print_news(args)
     data.make_csv()
     if args.date:
-       if len(args.date) == 8 and int(args.date):
-           data.print_data(args.date, args.limit, args.verbose)
-       else:
-           logger.error(f"Bad date format")
-           sys.exit()
+        if len(args.date) == 8 and int(args.date):
+            data.print_data(args.date, args.limit, args.verbose)
+        else:
+            logger.error(f"Bad date format")
+            sys.exit()
 
-                  
+
 if __name__ == "__main__":
     main()
