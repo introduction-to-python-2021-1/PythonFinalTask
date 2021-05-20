@@ -103,7 +103,7 @@ def main():
     print_news(args)
     data.make_csv()
     if args.date:
-        data.read_data(args.date, args.limit, args.verbose)
+        data.print_data(args.date, args.limit, args.verbose)
 
                   
 if __name__ == "__main__":
