@@ -17,7 +17,7 @@ def create_logger(verbose):
         logger = logging.getLogger()
     return logger
 
-def create_parser():
+def command_arguments_parser(args):
     """ Adds positional and optional arguments """
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", action="version", help="Print version info", version="Version 1.0")
@@ -25,8 +25,7 @@ def create_parser():
     parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
-    arguments = parser.parse_args()
-    return arguments
+    return parser.parse_args(args)
 
 news_print = ("title", "date", "summary", "description", "image", "content_of_media", "link")
 
@@ -78,7 +77,7 @@ def create_rss_link(source, verbose):
     return content
 
 def main():
-    arguments = create_parser()
+    arguments = command_arguments_parser(sys.argv[1:])
     logger = create_logger(arguments.verbose)
     content = create_rss_link(arguments.source, arguments.verbose)
     number_of_news = set_limit(content, arguments.limit)
