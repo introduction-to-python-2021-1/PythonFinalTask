@@ -4,7 +4,7 @@ import logging
 import requests
 import sys
 
-from .rssparser import RssParser
+from .rss_parser import RssParser
 
 
 def main():
