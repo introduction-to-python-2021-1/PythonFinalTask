@@ -19,12 +19,18 @@ class TestProcessResponse(unittest.TestCase):
         """Test zero limit"""
         parser = rss_reader.create_parser(["--limit 0"])
         self.assertTrue(parser)
-
+ 
+    def test_bad_url(self):
+        """Try test bad urs page"""
+        parser = rss_reader.create_parser(["https://newsyahoo.com/rss/"])
+        with self.assertRaises(SystemExit):
+            with self.assertRaises(URLError):
+                self.assertEqual(rss_reader.open_url(parser.url), f"cant open or found {parser.url}")
+                
     def test_version_none_argyment(self):
         """Test version with out url"""
         with self.assertRaises(SystemExit):
             parser = rss_reader.create_parser([None, "--version"])
-
         self.assertEqual(self.out.getvalue(), "Version 3.0\n")
 
     def test_version_url(self):
