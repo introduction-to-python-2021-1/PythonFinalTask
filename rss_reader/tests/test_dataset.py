@@ -92,9 +92,6 @@ class TestPrint(unittest.TestCase):
     def tearDown(self):
         os.remove("data.csv")
 
-    def tearDown(self):
-        os.remove("data.csv")
-
-
+  
 if __name__ == "__main__":
     unittest.main()
