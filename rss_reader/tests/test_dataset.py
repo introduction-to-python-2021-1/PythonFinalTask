@@ -85,10 +85,13 @@ class TestPrint(unittest.TestCase):
     def test_print(self):
         with self.assertWarns(ResourceWarning):
             self.ans = Data()
-        self.ans.make_csv()
+        self.test.to_csv("data.csv")
         self.ans.print_data(20210520, 2, None)
         self.assertTrue(self.out.getvalue())
         
+    def tearDown(self):
+        os.remove("data.csv")
+
     def tearDown(self):
         os.remove("data.csv")
 
