@@ -76,7 +76,7 @@ class TestPrint(unittest.TestCase):
         link_2 = 'https://news.yahoo.com/ads-2021-hotel-awards-011339231.html'
         data = {"Date": ['2021-05-19T12:20:57Z', '2021-05-20T19:25:43Z', '2021-05-21T08:10:55Z'],
                 "Link": [link_0, link_1, link_2],
-                "Title": ['Sheila Bridges Design Notes', 'George Floyd Square 1 year later',"AD's 2021 Hotel Awards"]
+                "Title": ['Sheila Bridges Design Notes', 'George Floyd Square 1 year later', "AD's 2021 Hotel Awards"]
                 }
         self.test = pd.DataFrame(data)
         self.out = io.StringIO()
