@@ -1,14 +1,14 @@
-import os
-import re
-import hashlib
 from datetime import datetime
 import glob
-import urllib.request
-import urllib.error
+import hashlib
 import imghdr
+import os
+import re
+import urllib.error
+import urllib.request
 
-import fpdf
 from bs4 import BeautifulSoup
+import fpdf
 
 
 class Converter:

@@ -2,8 +2,8 @@
 
 import json
 
-from components.news import News
 from components.cache import Cache
+from components.news import News
 
 
 class Feed:
