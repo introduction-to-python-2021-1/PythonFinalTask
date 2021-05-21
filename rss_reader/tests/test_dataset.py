@@ -51,5 +51,17 @@ class TestDataFrame(unittest.TestCase):
         os.remove("data.csv")
 
 
+class TestLimit(unittest.TestCase):
+    def setUp(self):
+        with self.assertWarns(ResourceWarning):
+            self.test = Data()
+
+    def test_negative_limit(self):
+        with self.assertRaises(SystemExit):
+            self.assertLogs(self.test.print_data(20210518, -2, None))
+
+    def tearDown(self):
+        os.remove("data.csv")
+
 if __name__ == "__main__":
     unittest.main()
