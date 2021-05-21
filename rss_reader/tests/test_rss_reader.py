@@ -101,7 +101,7 @@ class TestPrintNews(unittest.TestCase):
 class TestExceptions(unittest.TestCase):
     """Tests that get_response and parse_response functions from rss_reader handle exceptions."""
 
-    @ddt.file_data("rss_reader/data/json/testexceptionsdata.json")
+    @ddt.file_data("../rss_reader/data/json/testexceptionsdata.json")
     def test_get_response(self, url, expected):
         """Tests that get_response function handles exceptions."""
         with self.assertLogs(logger, "ERROR") as captured:
