@@ -11,7 +11,7 @@ class Converter(abc.ABC):
 
     @staticmethod
     def generate_html(news_items):
-        template_loader = jinja2.FileSystemLoader(searchpath="../data")
+        template_loader = jinja2.FileSystemLoader(searchpath="data/html")
         template_env = jinja2.Environment(loader=template_loader)
         template = template_env.get_template("template.html")
 
@@ -41,5 +41,5 @@ class ToPdfConverter(Converter):
     def convert(self, news_items):
         html_content = self.generate_html(news_items)
         pdf_content = io.BytesIO()
-        pisa.pisaDocument(html_content.encode("UTF-8"), pdf_content, encoding="UTF-8", path="../data")
+        pisa.pisaDocument(html_content.encode("UTF-8"), pdf_content, encoding="UTF-8", path="data/fonts")
         self.create_file(pdf_content.getvalue())

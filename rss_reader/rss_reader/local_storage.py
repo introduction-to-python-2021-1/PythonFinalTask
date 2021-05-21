@@ -1,7 +1,9 @@
+import os
 import sys
 import json
 import logging
 import datetime
+import pkg_resources
 from pathlib import Path
 
 import dateparser
@@ -33,12 +35,11 @@ class LocalStorage:
     def __init__(self, name):
         logger.info(f'Create local storage "{name}"')
 
-        base = Path("../data")
-        base.mkdir(exist_ok=True)
-        jsonpath = base / f"{name}.json"
-        jsonpath.touch(exist_ok=True)
+        base = Path(os.path.join(os.path.abspath(os.path.dirname(__file__)), "data"))
+        storagepath = base / "json" / f"{name}.json"
+        storagepath.touch(exist_ok=True)
 
-        self.jsonpath = jsonpath
+        self.storagepath = storagepath
 
     def set_news_items_by_url(self, url, news_items):
         """
@@ -142,8 +143,8 @@ class LocalStorage:
 
     def read_from_storage_file(self):
         """Returns dictionary containing local storage content or empty dictionary if local storage is empty."""
-        return json.loads(self.jsonpath.read_bytes().decode() or "{}")
+        return json.loads(self.storagepath.read_bytes().decode() or "{}")
 
     def write_to_storage_file(self, storage_content):
         """Writes dictionary containing local storage content to file as JSON."""
-        self.jsonpath.write_bytes(json.dumps(storage_content, indent=4, ensure_ascii=False).encode("UTF-8"))
+        self.storagepath.write_bytes(json.dumps(storage_content, indent=4, ensure_ascii=False).encode("UTF-8"))

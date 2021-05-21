@@ -12,7 +12,7 @@ class TestGetNewsItemsByUrlAndDate(unittest.TestCase):
     def setUpClass(cls):
         cls.local_storage = LocalStorage("teststorage")
 
-    @ddt.file_data("../data/teststoragedata.json")
+    @ddt.file_data("rss_reader/data/json/teststoragedata.json")
     def test_get_news_items_by_url_and_date(self, url, pub_date, expected):
         """Tests get_news_items_by_url_and_date method of LocalStorage object with various arguments."""
         self.assertEqual(
@@ -23,4 +23,4 @@ class TestGetNewsItemsByUrlAndDate(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    print(get_data())

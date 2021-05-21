@@ -1,7 +1,5 @@
 from setuptools import setup
 
-from rss_reader.rss_reader import VERSION
-
 with open("README.md") as f:
     readme = f.read()
 
@@ -10,7 +8,7 @@ with open("LICENSE") as f:
 
 setup(
     name="rss_reader",
-    version=VERSION,
+    version="3.0",
     description="Pure Python command-line RSS reader.",
     long_description=readme,
     url="https://github.com/egor-makhlaev/PythonFinalTask/tree/final-task-implementation",
@@ -18,10 +16,12 @@ setup(
     author_email="egor.makhlaev@gmail.com",
     license=license,
     packages=["rss_reader"],
-    data_files=[("data", ["data/arial.ttf", "template.html"])],
+    package_data={
+        "data": ["*"],
+    },
     install_requires=["dateparser", "Jinja2", "pathvalidate", "xhtml2pdf"],
     entry_points={
-        'console_scripts': [
+        "console_scripts": [
             'rss_reader=rss_reader.rss_reader:main',
         ],
     }
