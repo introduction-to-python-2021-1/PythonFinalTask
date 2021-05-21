@@ -21,13 +21,6 @@ class TestProcessResponse(unittest.TestCase):
         parser = rss_reader.create_parser(["--limit 0"])
         self.assertTrue(parser)
 
-    def test_bad_url(self):
-        """Try test bad urs page"""
-        parser = rss_reader.create_parser(["https://newsyahoo.com/rss/"])
-        with self.assertRaises(SystemExit):
-            with self.assertRaises(URLError):
-                self.assertEqual(rss_reader.open_url(parser.url), f"cant open or found {parser.url}")
-
     def test_version_none_argyment(self):
         """Test version with out url"""
         with self.assertRaises(SystemExit):
@@ -85,6 +78,26 @@ class TestMain(unittest.TestCase):
         """Test date word format"""
         parser = rss_reader.create_parser(["--date word"])
         self.assertLogs(parser, "Bad date format")
+
+
+class TestException(unittest.TestCase):
+    def test_printException(self):
+        """Test not rss format"""
+        parser = rss_reader.create_parser(["https://news.yahoo.com", "-l 1"])
+        with self.assertRaises(SystemExit):
+            self.assertLogs(rss_reader.print_news(parser), logging.ERROR)
+
+    def test_bad_url(self):
+        """Try test bad urs page"""
+        parser = rss_reader.create_parser(["https://newsyahoo.com/rss/"])
+        with self.assertRaises(SystemExit):
+            with self.assertRaises(URLError):
+                self.assertEqual(rss_reader.open_url(parser.url), f"cant open or found {parser.url}")
+
+    def test_url(self):
+        """Test normal Url"""
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/"])
+        self.assertTrue(rss_reader.open_url(parser.url))
 
 
 if __name__ == "__main__":

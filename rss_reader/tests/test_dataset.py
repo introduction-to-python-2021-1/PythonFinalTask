@@ -24,6 +24,10 @@ class TestProcessResponse(unittest.TestCase):
         with self.assertWarns(ResourceWarning):
             self.assertTrue(open("data.csv"))
 
+    def test_date_empty(self):
+        with self.assertRaises(SystemExit):
+            self.assertEqual(self.test.print_data(20210519, 1, None), "Empty file")
+
     def test_dataframe(self):
         with self.assertRaises(IndexError):
             self.assertFalse(self.test.make_dataframe([1, 2]))
