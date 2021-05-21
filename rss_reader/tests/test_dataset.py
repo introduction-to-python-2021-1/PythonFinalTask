@@ -88,9 +88,6 @@ class TestPrint(unittest.TestCase):
         self.test.to_csv("data.csv")
         self.ans.print_data(20210520, 2, None)
         self.assertTrue(self.out.getvalue())
-        
-    def tearDown(self):
-        os.remove("data.csv")
 
     def tearDown(self):
         os.remove("data.csv")
