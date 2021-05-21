@@ -11,16 +11,6 @@ class TestProcessResponse(unittest.TestCase):
         self.out = io.StringIO()
         sys.stdout = self.out
 
-    def test_limit(self):
-        """Test positive limit"""
-        parser = rss_reader.create_parser(["--limit 5"])
-        self.assertTrue(parser)
-
-    def test_zero_limit(self):
-        """Test zero limit"""
-        parser = rss_reader.create_parser(["--limit 0"])
-        self.assertTrue(parser)
-
     def test_version_none_argyment(self):
         """Test version with out url"""
         with self.assertRaises(SystemExit):
@@ -96,9 +86,24 @@ class TestException(unittest.TestCase):
 
     def test_url(self):
         """Test normal Url"""
+
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/"])
         self.assertTrue(rss_reader.open_url(parser.url))
 
+
+class TestLimit(unittest.TestCase):
+    def test_zero_limit(self):
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l0"])
+        self.assertFalse(parser.limit)
+
+    def test_negative_limit(self):
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l-1"])
+        with self.assertRaises(SystemExit):
+            self.assertLogs(rss_reader.print_news(parser), logging.ERROR)
+
+    def test_normal_limit(self):
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l 1"])
+        self.assertTrue(parser.limit)
 
 if __name__ == "__main__":
     unittest.main()

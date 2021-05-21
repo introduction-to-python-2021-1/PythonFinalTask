@@ -60,7 +60,7 @@ def print_news(args):
             print(json.dumps(feed["channel"]["title"], indent=3))
 
     except Exception:
-        logger.error(f"it's not rss format")
+        logger.error("it's not rss format")
         sys.exit()
 
     make_dict = {}
@@ -68,10 +68,9 @@ def print_news(args):
 
     if not args.limit:
         args.limit = len(feed["items"])
-        print(f"You enter nothing or 0 and ")
     elif args.limit < 0:
-        print(f"negative limit is entered so it displays all available news.(You enter limit = {args.limit}) ")
-        args.limit = 0
+        logger.error(f"negative limit is entered so it displays all available news.(You enter limit = {args.limit}) ")
+        sys.exit()
     for item in feed["items"][:args.limit]:
         logger.info(f"Process item № {count + 1}")
         make_dict["Title"] = item['title']
