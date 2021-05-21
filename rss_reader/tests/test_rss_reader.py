@@ -1,4 +1,5 @@
 import io
+import logging
 import unittest
 from urllib.error import URLError
 from rss_reader import rss_reader
@@ -59,6 +60,22 @@ class TestProcessResponse(unittest.TestCase):
         parser = rss_reader.create_parser(["--date 20210521"])
         self.assertTrue(parser)
 
+    def test_verbose_(self):
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--verbose"])
+        self.assertLogs(parser, f"open {parser.url} and start parse")
+
+
+class TestMain(unittest.TestCase):
+    def test_log(self):
+        """Test verbose on main"""
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--verbose"])
+        self.assertLogs(parser, logging.INFO)
+
+    def test_lvl_log(self):
+        """Test lvl log without verbose"""
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/"])
+        self.assertLogs(parser, logging.ERROR)
+
     def test_bad_date(self):
         """Test bad data"""
         parser = rss_reader.create_parser(["--date 20"])
@@ -68,10 +85,6 @@ class TestProcessResponse(unittest.TestCase):
         """Test date word format"""
         parser = rss_reader.create_parser(["--date word"])
         self.assertLogs(parser, "Bad date format")
-
-    def test_verbose_(self):
-        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/""--verbose"])
-        self.assertLogs(parser, f"open {parser.url} and start parse")
 
 
 if __name__ == "__main__":
