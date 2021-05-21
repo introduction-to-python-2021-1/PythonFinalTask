@@ -17,7 +17,7 @@ setup(
     license=license,
     packages=["rss_reader"],
     package_data={
-        "data": ["*"],
+        "rss_reader": ["data/**/*"]
     },
     install_requires=["dateparser", "Jinja2", "pathvalidate", "xhtml2pdf"],
     entry_points={
