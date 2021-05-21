@@ -105,5 +105,6 @@ class TestLimit(unittest.TestCase):
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l 1"])
         self.assertTrue(parser.limit)
 
+
 if __name__ == "__main__":
     unittest.main()
