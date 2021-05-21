@@ -7,8 +7,10 @@ import json as jsn
 import logging
 import logging.handlers
 import sys
+from datetime import datetime
 from urllib.error import URLError
 
+import dateparser
 import feedparser
 
 NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
@@ -30,30 +32,29 @@ def set_logger(verbose):
     return logger
 
 
-def set_limit(content, limit):
+def set_limit(len_news: int, limit):
     """
     Set how many numbers of new to print
-    :param content: parsed link with rss news
+    :param len_news: total number of news
     :param limit: user's parameter, that limit number of news to be printed;
     could be int or None (in case of None return value will be equal total number of news)
     :return: number of news to print or exit from the program, if limit <= 0
     """
-    number_of_news_to_show = len(content.entries)
+    number_of_news_to_show = len_news
     if limit is not None:
         if limit <= 0:
             print("Please insert haw many news you want to read (more than 0)")
             sys.exit()
-        elif limit <= len(content.entries):
+        elif limit <= len_news:
             number_of_news_to_show = limit
     return number_of_news_to_show
 
 
-def make_news_dictionary(source: str, content, number_of_news_to_show: int) -> dict:
+def make_news_dictionary(source: str, content) -> dict:
     """
     Make a dictionary from FeedParserDict instance "content"
     :param source: link with rss news to save
     :param content: parsed link with rss news
-    :param number_of_news_to_show: limit number of news for parsing
     :return dictionary with parsed news "news", publication date "date" and source link "source"
     """
 
@@ -61,7 +62,10 @@ def make_news_dictionary(source: str, content, number_of_news_to_show: int) -> d
     newslist = []
     newsdict = {}
 
-    for news in content.entries[:number_of_news_to_show]:
+    newsdict["source"] = source
+    newsdict["main_title"] = content.feed.title
+    newsdict["date"] = content.feed.published
+    for news in content.entries:
         for item in NEWS_PARTS:
             if item in news.keys():
                 if item == "media_content" or item == "storyimage":
@@ -70,20 +74,18 @@ def make_news_dictionary(source: str, content, number_of_news_to_show: int) -> d
                     innerdict[item.capitalize()] = news[item]
         newslist.append(innerdict.copy())
     newsdict["news"] = newslist
-    newsdict["source"] = source
-    newsdict["date"] = content.feed.published
 
     return newsdict
 
 
-def printing_parsing_news(content, newsdict: dict):
+def printing_parsing_news(newsdict: dict, number_of_news_to_show: int):
     """
     Print parsed news to bash
-    :param content: parsed link with rss news
+    :param number_of_news_to_show: limit number of news for parsing
     :param newsdict: dictionary with parsed news "news"
     """
-    print(f"\nFeed: {content.feed.title}")
-    for one_news in newsdict["news"]:
+    print(f"\nFeed: {newsdict['main_title']}")
+    for one_news in newsdict["news"][:number_of_news_to_show]:
         print(f"\nTitle: {one_news['Title']}")
         print(f"Date: {one_news['Published']}")
         print(f"Link: {one_news['Link']}")
@@ -100,12 +102,56 @@ def printing_parsing_news(content, newsdict: dict):
             pass
 
 
-def printing_news_in_json(newsdict: dict):
+def printing_news_in_json(newsdict: dict, number_of_news_to_show: int):
     """
-    Convert newsdict to json format and print it to bash
+    Limit number of news for printing, convert newsdict to json format and print it to bash
+    :param number_of_news_to_show: limit number of news for parsing
     :param newsdict: dictionary with parsed news "news"
     """
+    limited_news = newsdict["news"][:number_of_news_to_show]
+    newsdict["news"] = limited_news
     print(jsn.dumps(newsdict, indent=1))
+
+
+def date_compare(dict_date, user_date):
+    """
+    Compare date given by user with datetime from a newsdict
+    :param dict_date: date from a newsdict
+    :param user_date:  date given by user
+    :return: True if dates are equal, else False
+    """
+    converted_dict_date = dateparser.parse(dict_date, date_formats=['%y/%m/%d'])
+    converted_user_date = datetime.strptime(user_date, '%Y%m%d')
+    return True if converted_dict_date.date() == converted_user_date.date() else False
+
+
+def write_cash(newsdict: dict):
+    """
+    Write newsdict in the file "cashed_news.txt" in json format
+    :param newsdict: dictionary with parsed news "news"
+    """
+    with open("cashed_news.txt", "a") as cash_file:
+        cash_file.write(jsn.dumps(newsdict))
+        cash_file.write("\n")
+
+
+def find_cashed_news(user_date: str, source=None):
+    """
+    Check file with cashed news dictionaries
+    :param user_date: date given by user
+    :param source: source link given by user if any
+    :return: newsdict for reading news if there is suitable in cash, else raise ValueError
+    """
+    with open("cashed_news.txt", "r") as cash_file:
+        for json_dict in cash_file:
+            newsdict = jsn.loads(json_dict)
+            if date_compare(newsdict["date"], user_date):
+                if source:
+                    if source == newsdict["source"]:
+                        return newsdict
+                else:
+                    return newsdict
+    raise ValueError
 
 
 def open_rss_link(source, verbose):
@@ -141,9 +187,9 @@ def parse_command_line_arguments():
 
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader")
     parser.add_argument(
-        "--version", action="version", version="Version 2.0.1", help="Print version info"
+        "--version", action="version", version="Version 3.0.1", help="Print version info"
     )
-    parser.add_argument("source", type=str, help="RSS URL")
+    parser.add_argument("source", type=str, nargs='?', default=None, help="RSS URL")
     parser.add_argument(
         "--limit", type=int, help="Limit news topics if this parameter provided"
     )
@@ -152,6 +198,9 @@ def parse_command_line_arguments():
     )
     parser.add_argument(
         "--verbose", action="store_true", help="Outputs verbose status messages"
+    )
+    parser.add_argument(
+        "--date", type=str, help="Return news from date yyyymmdd from cash"
     )
     arguments = parser.parse_args()
     return arguments
@@ -167,20 +216,29 @@ def main():
 
     logger = set_logger(arguments.verbose)
 
-    content = open_rss_link(arguments.source, arguments.verbose)
+    if arguments.date:
+        try:
+            newsdict = find_cashed_news(arguments.date, arguments.source)
+            logger.info(f"News will be reading from cash")
+            len_news = len(newsdict["news"])
+        except ValueError:
+            return print("No news from this date")
+    else:
+        content = open_rss_link(arguments.source, arguments.verbose)
+        len_news = len(content.entries)
+        newsdict = make_news_dictionary(arguments.source, content)
+        write_cash(newsdict)
 
-    number_of_news_to_show = set_limit(content, arguments.limit)
+    number_of_news_to_show = set_limit(len_news, arguments.limit)
 
     if arguments.limit:
         logger.info(f"Would read only {arguments.limit} number of news")
 
-    newsdict = make_news_dictionary(arguments.source, content, number_of_news_to_show)
-
     if arguments.json:
         logger.info(f"Convert news in json format")
-        printing_news_in_json(newsdict)
+        printing_news_in_json(newsdict, number_of_news_to_show)
     else:
-        printing_parsing_news(content, newsdict)
+        printing_parsing_news(newsdict, number_of_news_to_show)
 
     logger.info(f"End of reading")
 
