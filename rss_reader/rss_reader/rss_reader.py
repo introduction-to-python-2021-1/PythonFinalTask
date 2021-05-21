@@ -60,7 +60,11 @@ def make_news_dictionary(source: str, content) -> dict:
 
     innerdict = {}
     newslist = []
-    newsdict = {"source": source, "main_title": content.feed.title, "date": content.feed.published}
+    newsdict = {"source": source, "main_title": content.feed.title}
+    try:
+        newsdict["date"] = content.feed.published
+    except AttributeError:
+        newsdict["date"] = content.feed.updated
 
     for news in content.entries:
         for item in NEWS_PARTS:
@@ -118,8 +122,11 @@ def date_compare(dict_date, user_date):
     :return: True if dates are equal, else False
     """
     converted_dict_date = dateparser.parse(dict_date, date_formats=['%y/%m/%d'])
-    converted_user_date = datetime.strptime(user_date, '%Y%m%d')
-    return True if converted_dict_date.date() == converted_user_date.date() else False
+    try:
+        converted_user_date = datetime.strptime(user_date, '%Y%m%d')
+        return True if converted_dict_date.date() == converted_user_date.date() else False
+    except Exception:
+        return print("Invalid date, please insert date like '14100715'")
 
 
 def write_cash(newsdict: dict):

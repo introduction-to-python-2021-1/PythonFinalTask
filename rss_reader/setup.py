@@ -12,7 +12,7 @@ setup(
     author="Valodzina Aliaksandra",
     keywords="rss_reader",
     packages=find_packages(include=["rss_reader", "rss_reader.*"]),
-    install_requires=['feedparser==6.0.2'],
+    install_requires=["feedparser==6.0.2", "dateparser==1.0.0"],
     entry_points={
         "console_scripts": [
             "rss_reader=rss_reader.rss_reader:main",
