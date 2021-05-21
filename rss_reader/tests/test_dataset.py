@@ -32,7 +32,9 @@ class TestFile(unittest.TestCase):
 
     def test_date_empty(self):
         with self.assertRaises(SystemExit):
-            self.assertEqual(self.test.print_data(20210519, 1, None), "Empty file")
+            self.assertEqual(
+                self.test.print_data(
+                    20210519, 1, None), "Empty file")
 
     def tearDown(self):
         os.remove("data.csv")
@@ -89,6 +91,6 @@ class TestPrint(unittest.TestCase):
         self.ans.print_data(20210520, 2, None)
         self.assertTrue(self.out.getvalue())
 
-  
+
 if __name__ == "__main__":
     unittest.main()
