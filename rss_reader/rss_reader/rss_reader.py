@@ -60,11 +60,8 @@ def make_news_dictionary(source: str, content) -> dict:
 
     innerdict = {}
     newslist = []
-    newsdict = {}
+    newsdict = {"source": source, "main_title": content.feed.title, "date": content.feed.published}
 
-    newsdict["source"] = source
-    newsdict["main_title"] = content.feed.title
-    newsdict["date"] = content.feed.published
     for news in content.entries:
         for item in NEWS_PARTS:
             if item in news.keys():
