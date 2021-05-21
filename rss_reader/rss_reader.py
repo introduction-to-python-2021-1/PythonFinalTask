@@ -45,7 +45,6 @@ def extract_xml(url, limit):
 
     try:
         request = requests.get(url)
-        # if args.verbose:
         # print(f"Getting xml HTTP response: {request.status_code}")
 
         if request.status_code == 200:
@@ -74,38 +73,21 @@ def extract_xml(url, limit):
 
 def print_news(data):
     """prints data in special format into STDOUT"""
-    # print("\n\n")
     print("\nFeed:", data["Feed"], "\n")
-    # newslist = data["News"]
     for news_item in data["News"]:
         print("Title:", news_item["Title"])
         print("Date:", news_item["Date"])
         print("Link:", news_item["Link"])
         # print("Description:", news_item["Description"])
         print("Images:", len(news_item["Images"]))
-        # print("Links:")
-        # print("[1]", news_item["Link"], "(link)")
         print('\n'.join(news_item["Images"]), "\n")
-    # for i in range(len(newslist)):
-    #     print("Title:", newslist[i]["Title"])
-    #     print("Date:", newslist[i]["Date"])
-    #     print("Link:", newslist[i]["Link"])
-    #     print("Description:", newslist[i]["Description"])
-    #     print("Images:", len(newslist[i]["Images"]), "\n")
-    #     print("Links:")
-    #     print("(link)", end=" ")
-    #     print(newslist[i]["Link"])
-    #     print("(images)")
-    #     # for image_link in newslist[i]["Images"]:
-    #     #     print(image_link)
-    #     print('\n'.join(newslist[i]["Images"]))
     print("Count of news:", len(data["News"]), "\n")
 
 
 def print_json(data):
     """prints data in JSON format into STDOUT"""
     print(json.dumps(data, indent=3))
-    with open("json_format", "w") as file:
+    with open("../json_format", "w") as file:
         json.dump(data, file, indent=3)
 
 
