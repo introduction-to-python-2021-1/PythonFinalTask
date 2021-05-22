@@ -201,7 +201,6 @@ def parsing_user_date(user_date: str, source: str = None):
         return print("No news from this date")
 
 
-
 def parse_command_line_arguments():
     """
     :return: parsed arguments, received from command line
