@@ -1,4 +1,5 @@
 exclude .gitignore
 include CODE_OF_CONDUCT.md
 include CONTRIBUTING.md
+recursive-exclude .github *
 recursive-exclude .idea *
