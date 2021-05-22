@@ -36,6 +36,10 @@ class Data:
         with open("data.csv", "a") as f:
             self.df = self.df.drop_duplicates(subset=["Link"])
             self.df.to_csv(f, index=False)
+            if os.path.getsize("data.csv") == 0:
+                os.remove("data.csv")
+                logger.error("Empty file")
+                sys.exit()
 
     def print_data(self, date, limit, verbose):
         """Prints news for the date
