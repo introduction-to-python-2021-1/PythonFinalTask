@@ -1,7 +1,7 @@
 """This module is needed to work with command-line arguments"""
 
 import argparse
-import re
+from datetime import datetime
 
 from pathvalidate.argparse import validate_filepath_arg
 
@@ -23,7 +23,8 @@ class Parser:
         self.parser.add_argument('--version', help='Print version info', action='version', version=f'Version 0.4')
         self.parser.add_argument('--json', help='Print result as JSON in stdout', action='store_true')
         self.parser.add_argument('--verbose', help='Outputs verbose status messages', action='store_true')
-        self.parser.add_argument('--limit', type=int, help='Limit news topics if this parameter provided')
+        self.parser.add_argument('--limit', type=validate_limit_arg,
+                                 help='Limit news topics if this parameter provided')
         self.parser.add_argument('--date', type=validate_date_arg, help='Print cached news for specified date')
         self.parser.add_argument('--to-pdf', type=validate_filepath_arg, help='Converts news to PDF format',
                                  dest='to_pdf')
@@ -36,7 +37,23 @@ class Parser:
 
 
 def validate_date_arg(input_value):
-    if not len(input_value) == 8 or not re.match('[0-9]{8}', input_value):
+    try:
+        datetime.strptime(input_value, '%Y%m%d')
+    except ValueError:
         raise argparse.ArgumentTypeError(
-            f'Invalid date "{input_value}". The specified date should be in the format "%Y%m%d"')
-    return input_value
+            f'Invalid date "{input_value}". The specified date does not match the format "%Y%m%d"')
+    else:
+        return input_value
+
+
+def validate_limit_arg(input_value):
+    try:
+        input_value = int(input_value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f' The limit argument must be an integer ({input_value} was passed)')
+    else:
+        if input_value < 1:
+            raise argparse.ArgumentTypeError(
+                f' The limit argument must be greater than zero ({input_value} was passed)')
+        else:
+            return input_value

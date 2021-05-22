@@ -20,9 +20,6 @@ def main(argv=sys.argv[1:]):
     else:
         logging.basicConfig(level=logging.ERROR)
     logger = logging
-    if isinstance(args.limit, int) and args.limit < 1:
-        logger.error(f' The limit argument must be greater than zero ({args.limit} was passed)')
-        sys.exit()
     if args.date:
         feed = Feed(args.source, args.date, args.limit, args.json, logger)
         if args.to_pdf:
