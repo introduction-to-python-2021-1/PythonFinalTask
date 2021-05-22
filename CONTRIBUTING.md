@@ -92,6 +92,7 @@ source .venv/bin/activate
    - [black][] to format the code
    - [darglint][] to checks whether a docstring's description matches the
      actual function/method implementation
+   - [mypy][] is a static type checker for Python
 
 **Congratulations!** You're now all set to begin development.
 
@@ -177,6 +178,7 @@ license your work under the terms of the [MIT License][].
 [pylint]: https://www.pylint.org/
 [isort]: https://pycqa.github.io/isort/
 [black]: https://black.readthedocs.io/en/stable/
+[darglint]: https://github.com/terrencepreilly/darglint
 [github.com help documentation]:
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:
