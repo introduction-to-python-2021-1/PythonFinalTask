@@ -1,4 +1,8 @@
 from setuptools import setup, find_packages
+from os.path import join, dirname
+
+with open(file=join(dirname(dirname(__file__)), 'requirements.txt')) as f:
+    required = f.read().splitlines()
 
 setup(
     name='rss_reader',
@@ -12,5 +16,6 @@ setup(
         'console_scripts': [
             'rss_reader = rss_reader.rss_reader:main',
         ]
-    }
+    },
+    install_requires=required,
 )
