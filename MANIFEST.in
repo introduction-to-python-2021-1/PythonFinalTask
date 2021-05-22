@@ -1,4 +1,5 @@
 exclude .darglint
+exclude .flake8
 exclude .gitignore
 exclude .gitlint
 exclude .isort
