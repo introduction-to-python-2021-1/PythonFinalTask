@@ -10,6 +10,9 @@
       body {
         font-family: Arial;
       }
+      img {
+        display: block;
+      }
     </style>
     <title>Rss feed</title>
   </head>
@@ -23,14 +26,15 @@
         <h3>
           {{ news_item['Feed'] }}
         </h3>
+        <img src="{{ news_item['image_url'] }}" width="130" height="86">
         <a href="{{ news_item['Link'] }}">
           {{ news_item['Title'] }}
         </a>
         <div class="date">
           {{ news_item['Date'] }}
         </div>
-      {% endfor -%}
       </div>
+      {% endfor -%}
     </div>
  </body>
 </html>

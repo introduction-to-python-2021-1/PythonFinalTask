@@ -3,7 +3,6 @@ import json
 import logging
 import argparse
 from pathlib import Path
-from itertools import islice
 from urllib.error import URLError
 from urllib.error import HTTPError
 from urllib.request import urlopen
@@ -81,14 +80,19 @@ def parse_response(response):
     news_items = []
 
     for index_of_news_item, news_item in enumerate(root.iterfind("channel/item")):
+        image_element = news_item.find('{http://search.yahoo.com/mrss/}content')
+
         news_items.append({
             "Feed": channel_title,
             "Title": news_item.findtext("title"),
             "Date": news_item.findtext("pubDate"),
             "Link": news_item.findtext("link"),
+            "image_url": image_element.get("url") if image_element is not None else None
         })
 
     logger.info(f"Parsed {index_of_news_item + 1} items from response")
+
+    response.close()
 
     return news_items
 
@@ -107,9 +111,9 @@ def limit_news_items(news_items, limit):
     calculated_limit = max(0, limit) if limit is not None else limit
 
     if limit != calculated_limit:
-        logger.warning(f"You provided wrong --limit argument, your limit set to {calculated_limit}")
+        logger.warning(f"You provided wrong --limit argument, your output set to {calculated_limit} news items")
     else:
-        logger.info(f"Limit output to {len(news_items) if calculated_limit is None else calculated_limit} news items")
+        logger.info(f"Set output to {len(news_items) if calculated_limit is None else calculated_limit} news items")
 
     return news_items[:calculated_limit]
 
@@ -173,7 +177,7 @@ def main(argv=sys.argv):
     else:
         response = get_response(args.source)
         news_items = parse_response(response)
-        local_storage.set_news_items_by_url(args.source, news_items)
+        news_items = local_storage.set_news_items_by_url(args.source, news_items)
 
     news_items = limit_news_items(news_items, args.limit)
     print_news(news_items)

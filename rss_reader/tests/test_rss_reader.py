@@ -61,7 +61,7 @@ class TestLimitNewsItems(unittest.TestCase):
     @ddt.unpack
     def test_limit_news_items(self, limit, expected):
         """Tests set_limit function from rss_reader with limit set to various values."""
-        with open("rss_reader/data/json/news.json") as json_file:
+        with open("../rss_reader/project_data/json/news.json") as json_file:
             news_items = json.load(json_file)
 
         self.assertEqual(len(limit_news_items(news_items, limit)), expected, "Wrong output size")
@@ -101,7 +101,7 @@ class TestPrintNews(unittest.TestCase):
 class TestExceptions(unittest.TestCase):
     """Tests that get_response and parse_response functions from rss_reader handle exceptions."""
 
-    @ddt.file_data("../rss_reader/data/json/testexceptionsdata.json")
+    @ddt.file_data("../project_data/json/testexceptionsdata.json")
     def test_get_response(self, url, expected):
         """Tests that get_response function handles exceptions."""
         with self.assertLogs(logger, "ERROR") as captured:
@@ -112,7 +112,7 @@ class TestExceptions(unittest.TestCase):
 
     def test_parse_bad_response(self):
         """Tests that process_response function handles response with wrong xml structure."""
-        fake_response = urlopen("file:" + pathname2url(os.path.abspath("rss_reader/data/xml/badsample.xml")))
+        fake_response = urlopen("file:" + pathname2url(os.path.abspath("project_data/xml/badsample.xml")))
 
         with self.assertLogs(logger, "ERROR") as captured:
             with self.assertRaises(SystemExit):

@@ -6,12 +6,20 @@ from pathlib import Path
 import jinja2
 from xhtml2pdf import pisa
 
+try:
+    from logger_config import get_logger
+    from helpers import get_path_to_data
+except ImportError:
+    from .logger_config import get_logger
+    from .helpers import get_path_to_data
+
 
 class Converter(abc.ABC):
 
     @staticmethod
     def generate_html(news_items):
-        template_loader = jinja2.FileSystemLoader(searchpath="data/html")
+        htmlpath = get_path_to_data("html")
+        template_loader = jinja2.FileSystemLoader(searchpath=htmlpath)
         template_env = jinja2.Environment(loader=template_loader)
         template = template_env.get_template("template.html")
 
@@ -41,5 +49,5 @@ class ToPdfConverter(Converter):
     def convert(self, news_items):
         html_content = self.generate_html(news_items)
         pdf_content = io.BytesIO()
-        pisa.pisaDocument(html_content.encode("UTF-8"), pdf_content, encoding="UTF-8", path="data/fonts")
+        pisa.pisaDocument(html_content.encode("UTF-8"), pdf_content, encoding="UTF-8", path=get_path_to_data("fonts"))
         self.create_file(pdf_content.getvalue())

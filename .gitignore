@@ -128,4 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-rss_reader/data/localstorage.json
+rss_reader/rss_reader/data/images/*.jpg
+rss_reader/rss_reader/data/json/localstorage.json
+

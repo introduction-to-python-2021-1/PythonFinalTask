@@ -1,17 +1,20 @@
-import os
 import sys
 import json
 import logging
 import datetime
 import pkg_resources
 from pathlib import Path
+import concurrent.futures
+from urllib.request import urlretrieve
 
 import dateparser
 
 try:
     from logger_config import get_logger
+    from helpers import get_path_to_data
 except ImportError:
     from .logger_config import get_logger
+    from .helpers import get_path_to_data
 
 logger = get_logger()
 
@@ -32,11 +35,27 @@ class LocalStorage:
         """
         return dateparser.parse(news_item["Date"])
 
+    @staticmethod
+    def get_news_items_images(news_items):
+
+        logger.info("Download images")
+
+        executor = concurrent.futures.ThreadPoolExecutor(max_workers=len(news_items) or None)
+
+        for news_item in news_items:
+            url = news_item["image_url"]
+
+            if url is not None:
+                storage_path_on_local_machine = get_path_to_data("images", url.split("/")[-1] + ".jpg")
+                news_item["image_url"] = storage_path_on_local_machine
+                executor.submit(urlretrieve, url, storage_path_on_local_machine)
+        # If wait in line below set to False, news is printed to stdout without waiting for all images to be downloaded
+        executor.shutdown(wait=True) # If wait set to False, it can affect PDF generation (some images may be absent)
+
     def __init__(self, name):
         logger.info(f'Create local storage "{name}"')
 
-        base = Path(os.path.join(os.path.abspath(os.path.dirname(__file__)), "data"))
-        storagepath = base / "json" / f"{name}.json"
+        storagepath = Path(get_path_to_data("json", f"{name}.json"))
         storagepath.touch(exist_ok=True)
 
         self.storagepath = storagepath
@@ -49,7 +68,7 @@ class LocalStorage:
                             url (str): URL by which save news items to local storage
                             news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dicts
         """
-        # Sorts channel news items by date, latest news come first
+        # Sorts channel news items by date, latest news comes first
         sorted_news_items = sorted(news_items, reverse=True, key=self.parse_date_from_news_item)
 
         storage_content = self.read_from_storage_file()
@@ -67,15 +86,19 @@ class LocalStorage:
 
             logger.info(f"Set {i} fresh news items in local storage by url: {url}")
 
-            storage_content[url] = sorted_news_items[:i] + storage_content[url]
+            news_items_to_be_add_to_storage = sorted_news_items[:i]
+            self.get_news_items_images(news_items_to_be_add_to_storage)
+            storage_content[url] = news_items_to_be_add_to_storage + storage_content[url]
         else:
             logger.info(f"Set {len(sorted_news_items)} fresh news items in local storage by url: {url}")
 
+            self.get_news_items_images(sorted_news_items)
             storage_content[url] = sorted_news_items
 
         self.write_to_storage_file(storage_content)
-
         self.get_number_of_news_items_by_url(url)
+
+        return storage_content[url]
 
     def get_news_items_by_url_and_date(self, url, pub_date):
         """
@@ -117,7 +140,7 @@ class LocalStorage:
         else:
             for news_items in storage_content.values():
                 fold_news_items_by_url_and_date(news_items)
-        # Latest news come first
+        # Latest news comes first
         return sorted(news_items_by_specific_date, reverse=True, key=self.parse_date_from_news_item)
 
     def get_number_of_news_items_by_url(self, url):
