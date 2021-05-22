@@ -5,6 +5,12 @@ repos:
     rev: v0.15.1
     hooks:
       - id: gitlint
+  - repo: https://github.com/psf/black
+    rev: 21.5b1
+    hooks:
+      - id: black
+        args: [--safe, --quiet]
+        exclude: &fixtures tests/input/|tests/data/
   - repo: https://github.com/PyCQA/isort
     rev: 5.8.0
     hooks:
@@ -14,7 +20,7 @@ repos:
     hooks:
       - id: pyupgrade
         args: [--py38-plus]
-        exclude: tests/input/|tests/data/
+        exclude: *fixtures
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
     hooks:

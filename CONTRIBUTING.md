@@ -89,6 +89,7 @@ source .venv/bin/activate
    - [pylint][] to analyze code
    - [isort][] to sort imports alphabetically, and automatically separated into
      sections
+   - [black][] to format the code
 
 **Congratulations!** You're now all set to begin development.
 
@@ -173,10 +174,6 @@ license your work under the terms of the [MIT License][].
 [pydocstyle]: http://www.pydocstyle.org/en/stable/
 [pylint]: https://www.pylint.org/
 [isort]: https://pycqa.github.io/isort/
-[black]: https://black.readthedocs.io/en/stable/
-[darglint]: https://github.com/terrencepreilly/darglint
-[mypy]: https://mypy.readthedocs.io/en/stable/
-[flake8]: https://flake8.pycqa.org/en/latest/
 [github.com help documentation]:
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:
