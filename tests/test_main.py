@@ -1,9 +1,11 @@
 import unittest
+from datetime import datetime
 from unittest import mock
 from unittest.mock import patch
 
 import data_for_tests as td
-from rss_reader import rss_reader as rs
+
+from rss_reader.rss_reader import rss_reader as rs
 
 NEWSLINK = "https://news.yahoo.com/rss/"
 
@@ -124,18 +126,37 @@ class TestMainReader(unittest.TestCase):
     # Test for function "date_compare"
     def test_date_compare_true(self):
         # Pass two equal dates
-        self.assertTrue(rs.date_compare("Fri, 21 May 2021 12:51:18 -0400", "20210521"))
+        user_date = datetime.strptime("20210521", '%Y%m%d')
+        self.assertTrue(rs.date_compare("Fri, 21 May 2021 12:51:18 -0400", user_date))
 
     def test_date_compare_false(self):
         # Pass two non equal dates
-        self.assertFalse(rs.date_compare("Fri, 21 February 2021 12:51:18 -0400", "20210521"))
+        user_date = datetime.strptime("20210521", '%Y%m%d')
+        self.assertFalse(rs.date_compare("Fri, 21 February 2021 12:51:18 -0400", user_date))
 
-    # @patch("builtins.print", autospec=True, side_effect=print)
-    # def test_date_compare_invalid_date(self, mock_print):
-    #     # Test Exception is raising and user-friendly message is printing to stdout, if we give a bad date
-    #     rs.date_compare("Fri, 21 February 2021 12:51:18 -0400", "210521")
-    #     message = mock_print.call_args_list[0].args[0]
-    #     self.assertEqual(message, "Invalid date, please insert date like '14100715")
+    # Tests for function "parsing_user_date"
+    @patch("builtins.print", autospec=True, side_effect=print)
+    def test_invalid_date(self, mock_print):
+        # Test ValueError was cached and user-friendly message is printing to stdout, if we give a bad date
+        rs.parsing_user_date("12345")
+        message = mock_print.call_args_list[0].args[0]
+        self.assertEqual(message, "Invalid date, please insert date like '14100715'")
+
+    @patch("builtins.print", autospec=True, side_effect=print)
+    def test_no_cashed_news(self, mock_print):
+        # Test AttributeError was cached and user-friendly message is printing to stdout, if we give a bad date
+        with mock.patch("rss_reader.rss_reader.rss_reader.find_cashed_news") as cashMock:
+            cashMock.side_effect = AttributeError(mock.Mock)
+            rs.parsing_user_date("20210101")
+            message = mock_print.call_args_list[0].args[0]
+            self.assertEqual(message, "No news from this date")
+
+    def test_return_valid_cashed_dict_with_valid_len_news(self):
+        # Test take newsdict from find_cashed_news, valid count it's len_news and return it
+        with mock.patch("rss_reader.rss_reader.rss_reader.find_cashed_news") as cashMock:
+            cashMock = td.TEST_NEWSDICT
+            newsdict, len_news = rs.parsing_user_date("20210521")
+            self.assertEqual(len_news, len(newsdict["news"]))
 
     # # Test for function "write_cash"
     # def test_cash_writing(self):
@@ -144,19 +165,19 @@ class TestMainReader(unittest.TestCase):
     #     with open("E:/nl/ITA/PythonFinalTask/rss_reader/rss_reader/cashed_news.txt", "r") as cash_file:
     #         self.assertTrue(json.dumps(td.TEST_NEWSDICT) in cash_file)
 
-    # Test for function "find_cashed_news"
-    def test_news_find_by_date_only(self):
-        # Test for valid user date
-        self.assertTrue(rs.find_cashed_news("20210521"))
-
-    def test_news_find_by_date_and_link(self):
-        # Test for valid user date and source
-        self.assertTrue(rs.find_cashed_news("20210521", source=NEWSLINK))
-
-    def test_news_not_find_by_date_and_link(self):
-        # Test for invalid user date and source - ValueError is raising
-        with self.assertRaises(ValueError):
-            rs.find_cashed_news("14100521", source=NEWSLINK)
+    # # Test for function "find_cashed_news"
+    # def test_news_find_by_date_only(self):
+    #     # Test for valid user date
+    #     self.assertTrue(rs.find_cashed_news("20210521"))
+    #
+    # def test_news_find_by_date_and_link(self):
+    #     # Test for valid user date and source
+    #     self.assertTrue(rs.find_cashed_news("20210521", source=NEWSLINK))
+    #
+    # def test_news_not_find_by_date_and_link(self):
+    #     # Test for invalid user date and source - ValueError is raising
+    #     with self.assertRaises(ValueError):
+    #         rs.find_cashed_news("14100521", source=NEWSLINK)
 
 
 if __name__ == "__main__":
