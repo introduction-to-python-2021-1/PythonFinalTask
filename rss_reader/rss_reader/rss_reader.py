@@ -2,7 +2,6 @@ import argparse
 import sys
 import logging
 import json
-import os
 from urllib.error import URLError
 
 
@@ -106,6 +105,7 @@ def main():
     else:
         print_news(args)
         data.make_csv()
+
 
 if __name__ == "__main__":
     main()
