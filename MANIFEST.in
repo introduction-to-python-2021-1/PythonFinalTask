@@ -5,6 +5,7 @@ exclude .gitlint
 exclude .isort
 exclude .mypy.ini
 exclude .pre-commit-config.yaml
+exclude .prettierrc.yaml
 exclude .pydocstyle.ini
 exclude .pylintrc
 exclude requirements-dev.txt
