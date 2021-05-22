@@ -56,7 +56,7 @@ class LocalStorage:
                 news_item["image_url"] = storage_path_on_local_machine
                 executor.submit(urlretrieve, url, storage_path_on_local_machine)
         # If wait in line below set to False, news is printed to stdout without waiting for all images to be downloaded
-        executor.shutdown(wait=True) # If wait set to False, it can affect PDF generation (some images may be absent)
+        executor.shutdown(wait=True)  # If wait set to False, it can affect PDF generation (some images may be absent)
 
     def __init__(self, name):
         logger.info(f'Create local storage "{name}"')
