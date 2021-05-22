@@ -2,8 +2,9 @@ import argparse
 import os
 import sys
 import logging.handlers
+import feedparser
 
-from rss_reader.functions import read_rss, make_json, check_limit
+from rss_reader.functions import parse_news, make_json, check_limit
 
 
 def main():
@@ -57,7 +58,8 @@ def main():
         logging.disable(0)
         logger.info('Parcing news...')
 
-    result = read_rss(args.source, logger)
+    rss_news = feedparser.parse(args.source)
+    result = parse_news(rss_news.entries)
 
     if limit > 0:
         logger.info(f'Working with limited by user number ({limit} items) of articles')

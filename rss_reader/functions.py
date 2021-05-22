@@ -1,28 +1,21 @@
-import feedparser
 import json
 
 from rss_reader.article import Article
 
 
-def read_rss(link, logger):
+def parse_news(news):
     """Creating list of news"""
-    defaultValue = '---'
+    default_value = '---'
 
     def get_attribute(name):
         """Checking for the presence of a trasable attribute"""
         try:
             return entry[name]
         except KeyError:
-            # logger.warning(f'There is no attribute "{name}" for selected article: "{entry.title}"')
-            return defaultValue
+            return default_value
 
     news_list = []
-
-    rss_news = feedparser.parse(link)
-
-    # news_list.append(rss_news.feed.title + '\n')
-
-    for entry in rss_news.entries:
+    for entry in news:
         title = get_attribute('title')
         link = get_attribute('link')
         published = get_attribute('published')
@@ -30,15 +23,15 @@ def read_rss(link, logger):
         description = get_attribute('description')
         media_content = get_attribute('media_content')
 
-        sourceTitle = defaultValue
-        if source != sourceTitle:
-            sourceTitle = source['title']
+        source_title = default_value
+        if source != source_title:
+            source_title = source['title']
 
-        image = defaultValue
+        image = default_value
         if media_content != image:
             image = media_content[0]['url']
 
-        article = Article(title, link, published, sourceTitle, description, image)
+        article = Article(title, link, published, source_title, description, image)
         news_list.append(article)
 
     return news_list
@@ -57,5 +50,4 @@ def check_limit(limit_value):
         limit = int(limit_value)
         return limit
     except ValueError:
-        print('The argument "limit" should be a positive number')
-        raise SystemExit
+        raise SystemExit(ValueError, 'The argument "limit" should be a positive number')

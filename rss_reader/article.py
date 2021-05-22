@@ -14,7 +14,14 @@ class Article:
         """Function to convert a date to a string"""
         return self.date.strftime(format)
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, Article):
+            return self.link == other.link
+        return False
+
     def __str__(self):
+        """Overrides the default implementation"""
         return 'Title: ' + self.title + '\n' \
                + 'Link: ' + self.link + '\n' \
                + 'Date: ' + self.date_str("%a, %d %B, %Y") + '\n' \
