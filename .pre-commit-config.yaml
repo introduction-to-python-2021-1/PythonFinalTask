@@ -44,6 +44,10 @@ repos:
     rev: 6.0.0
     hooks:
       - id: pydocstyle
+  - repo: https://github.com/terrencepreilly/darglint
+    rev: v1.8.0
+    hooks:
+      - id: darglint
   - repo: https://github.com/pycqa/pylint
     rev: pylint-2.8.0
     hooks:

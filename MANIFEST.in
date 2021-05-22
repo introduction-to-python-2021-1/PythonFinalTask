@@ -1,3 +1,4 @@
+exclude .darglint
 exclude .gitignore
 exclude .gitlint
 exclude .isort

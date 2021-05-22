@@ -90,6 +90,8 @@ source .venv/bin/activate
    - [isort][] to sort imports alphabetically, and automatically separated into
      sections
    - [black][] to format the code
+   - [darglint][] to checks whether a docstring's description matches the
+     actual function/method implementation
 
 **Congratulations!** You're now all set to begin development.
 
@@ -174,6 +176,7 @@ license your work under the terms of the [MIT License][].
 [pydocstyle]: http://www.pydocstyle.org/en/stable/
 [pylint]: https://www.pylint.org/
 [isort]: https://pycqa.github.io/isort/
+[black]: https://black.readthedocs.io/en/stable/
 [github.com help documentation]:
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:
