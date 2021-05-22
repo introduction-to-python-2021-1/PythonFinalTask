@@ -1,0 +1,157 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>FOX Sports Digital</title>
+        <link>http://api.foxsports.com/v1/rss</link>
+        <atom:link href="http://dallas.example.com/rss.xml" rel="self" type="application/rss+xml"/>
+        <description>FOX Sports Content Feed</description>
+        <image>
+            <title>FOX Sports Digital</title>
+            <url>http://www.foxsports.com/wp-content/themes/foxsports/assets/images/60x60.png</url>
+            <link>http://api.foxsports.com/v1/rss</link>
+        </image>
+        <pubDate>Fri, 21 May 2021 19:56:53 +0000</pubDate>
+        <ttl>180</ttl>
+        <language>en-us</language>
+        <item>
+            <title>
+                <![CDATA[ Chris Webber shares his reaction to Hall of Fame induction, talks Lakers&#8217; chances of repeating I THE HERD ]]>
+            </title>
+            <link>https://www.foxsports.com/watch/the-herd-with-colin-cowherd/video/1899982403591</link>
+            <guid>https://www.foxsports.com/watch/the-herd-with-colin-cowherd/video/1899982403591</guid>
+            <category>the-herd-with-colin-cowherd</category>
+            <description>
+                <![CDATA[ Chris Webber joins Colin Cowherd to discuss his initial reaction to being inducted in the Hall of Fame and shares his concerns for LeBron James' health and the Los Angeles Lakers. Hear what the Michigan Fab Five member has to say about the reigning champs' odds of repeating this season. ]]>
+            </description>
+            <pubDate>Fri, 21 May 2021 18:53:07 +0000</pubDate>
+            <enclosure url="https://b.fssta.com/uploads/2021/05/0521_HERD_Webber.vresize.335.220.high.0.jpg" length="1"
+                       type="image/jpeg"/>
+        </item>
+        <item>
+            <title>
+                <![CDATA[ JBL vs. Eddie Guerrero – WWE Title Steel Cage Match: SmackDown, July 15, 2004 (Full Match) ]]>
+            </title>
+            <link>https://www.foxsports.com/wwe/video/1899988035572</link>
+            <guid>https://www.foxsports.com/wwe/video/1899988035572</guid>
+            <category>wwe</category>
+            <description>
+                <![CDATA[ JBL vs. Eddie Guerrero – WWE Title Steel Cage Match: SmackDown, July 15, 2004 (Full Match) ]]>
+            </description>
+            <pubDate>Fri, 21 May 2021 18:00:03 +0000</pubDate>
+            <enclosure
+                    url="https://b.fssta.com/uploads/2021/05/DCFullJun2021_15_SD2004_JBLEddie-29b9cfba77bc98e9ffe30d531189d06a_350x197_1900000323579.vresize.335.220.high.0.jpg"
+                    length="1" type="image/jpeg"/>
+        </item>
+        <item>
+            <title>
+                <![CDATA[ The Mysterios on continuing Eddie Guerrero’s legacy: WWE After the Bell, May 21, 2021 ]]>
+            </title>
+            <link>https://www.foxsports.com/wwe/video/1899962435747</link>
+            <guid>https://www.foxsports.com/wwe/video/1899962435747</guid>
+            <category>wwe</category>
+            <description>
+                <![CDATA[ The Mysterios on continuing Eddie Guerrero’s legacy: WWE After the Bell, May 21, 2021 ]]>
+            </description>
+            <pubDate>Fri, 21 May 2021 17:00:01 +0000</pubDate>
+            <enclosure
+                    url="https://b.fssta.com/uploads/2021/05/20210520_ATB_Thumb_73_Clean-bbb74712eeaaf4e80076ad908ff61ea2_350x197_1899971651534.vresize.335.220.high.0.jpg"
+                    length="1" type="image/jpeg"/>
+        </item>
+        <item>
+            <title>
+                <![CDATA[ Colin Cowherd: Clippers are under crazy pressure heading into the playoffs | THE HERD ]]>
+            </title>
+            <link>https://www.foxsports.com/watch/the-herd-with-colin-cowherd/video/1899934275924</link>
+            <guid>https://www.foxsports.com/watch/the-herd-with-colin-cowherd/video/1899934275924</guid>
+            <category>the-herd-with-colin-cowherd</category>
+            <description>
+                <![CDATA[ Colin Cowherd breaks down why the Los Angeles Clippers are heading into the 2021 NBA Playoffs under a crazy amount of pressure. Hear why he describes Kawhi Leonard, Paul George and the rest of the Clippers team as a 'tinderbox'. ]]>
+            </description>
+            <pubDate>Fri, 21 May 2021 16:56:16 +0000</pubDate>
+            <enclosure url="https://b.fssta.com/uploads/2021/05/0508_Clippers.vresize.335.220.high.0.jpg" length="1"
+                       type="image/jpeg"/>
+        </item>
+        <item>
+            <title>
+                <![CDATA[ Colin Cowherd wants to see how the Brooklyn Nets perform in crisis | THE HERD ]]>
+            </title>
+            <link>https://www.foxsports.com/watch/the-herd-with-colin-cowherd/video/1899937859623</link>
+            <guid>https://www.foxsports.com/watch/the-herd-with-colin-cowherd/video/1899937859623</guid>
+            <category>the-herd-with-colin-cowherd</category>
+            <description>
+                <![CDATA[ Colin Cowherd is excited to see the Brooklyn Nets under pressure as the 2021 NBA playoffs begin. With the Milwaukee Bucks in their direct path to an NBA title, Colin breaks down why he's not so sure the Big-3 of Brooklyn, Kevin Durant, Kyrie Irving and James Harden will handle crisis in the playoffs well. ]]>
+            </description>
+            <pubDate>Fri, 21 May 2021 16:55:57 +0000</pubDate>
+            <enclosure url="https://b.fssta.com/uploads/2021/05/0521_Nets2.vresize.335.220.high.0.jpg" length="1"
+                       type="image/jpeg"/>
+        </item>
+        <item>
+            <title>
+                <![CDATA[ Colin Cowherd isn&#8217;t phased about LeBron&#8217;s leg: &#8216;Nobody&#8217;s 100% in the playoffs&#8217; | THE HERD ]]>
+            </title>
+            <link>https://www.foxsports.com/watch/the-herd-with-colin-cowherd/video/1899934787505</link>
+            <guid>https://www.foxsports.com/watch/the-herd-with-colin-cowherd/video/1899934787505</guid>
+            <category>the-herd-with-colin-cowherd</category>
+            <description>
+                <![CDATA[ Colin Cowherd reacts to reports that LeBron James is 'playing on one leg' in the NBA playoffs due to his high ankle injury. Colin points out few athletes are 100% in the playoffs, and gives examples of star players like Tom Brady, who have played through injuries. ]]>
+            </description>
+            <pubDate>Fri, 21 May 2021 16:55:22 +0000</pubDate>
+            <enclosure url="https://b.fssta.com/uploads/2021/05/0521_LeBron.vresize.335.220.high.0.jpg" length="1"
+                       type="image/jpeg"/>
+        </item>
+        <item>
+            <title>
+                <![CDATA[ Go behind the scenes with Natalya &amp; Tamina for their epic WWE Women’s Tag Team Championship victory ]]>
+            </title>
+            <link>https://www.foxsports.com/wwe/video/1899913283755</link>
+            <guid>https://www.foxsports.com/wwe/video/1899913283755</guid>
+            <category>wwe</category>
+            <description>
+                <![CDATA[ Go behind the scenes with Natalya & Tamina for their epic WWE Women’s Tag Team Championship victory ]]>
+            </description>
+            <pubDate>Fri, 21 May 2021 15:48:00 +0000</pubDate>
+            <enclosure
+                    url="https://b.fssta.com/uploads/2021/05/SD_05142021RF_27861-7838a0d88b5a654dd962bcd53af5f054_350x197_1899924035645.vresize.335.220.high.0.jpg"
+                    length="1" type="image/jpeg"/>
+        </item>
+        <item>
+            <title>
+                <![CDATA[ Brandon Marshall: It&#8217;s NBA Title or bust for the Brooklyn Nets | FIRST THING FIRST ]]>
+            </title>
+            <link>https://www.foxsports.com/watch/first-things-first/video/1899903043892</link>
+            <guid>https://www.foxsports.com/watch/first-things-first/video/1899903043892</guid>
+            <category>first-things-first</category>
+            <description>
+                <![CDATA[ Brandon Marshall says it an NBA Championship or Bust for the Brooklyn Nets as we head into the playoffs. Hear him break down why the Nets have all the weapons they need in Kyrie Irving, Kevin Durant and James Harden to be successful in their battle for the Title. ]]>
+            </description>
+            <pubDate>Fri, 21 May 2021 15:42:48 +0000</pubDate>
+            <enclosure url="https://b.fssta.com/uploads/2021/05/0521_Nets.vresize.335.220.high.0.jpg" length="1"
+                       type="image/jpeg"/>
+        </item>
+        <item>
+            <title>
+                <![CDATA[ Skip Bayless: If Russell Westbrook plays well like last night, the Wizards will be a handful for the Sixers I UNDISPUTED ]]>
+            </title>
+            <link>https://www.foxsports.com/watch/undisputed/video/1899901507570</link>
+            <guid>https://www.foxsports.com/watch/undisputed/video/1899901507570</guid>
+            <category>undisputed</category>
+            <description>
+                <![CDATA[ After falling short in the 7 versus 8 seed play-in game against the Boston Celtics, Russell Westbrook would not be denied a playoff spot for the eighth seed last night. The all-time triple double leader finished with 18 points, 15 assists and a plus-minus of plus 30 in the 142-to-115 victory over the Indiana Pacers. Scott Brooks gave high praise for Westbrook, saying quote 'he is a hooper that just plays the right way and hard. I knew he wanted to come back better.' Skip Bayless explains how the Wizards can be a handful for the Sixers if Westbrook plays well. ]]>
+            </description>
+            <pubDate>Fri, 21 May 2021 15:30:06 +0000</pubDate>
+            <enclosure url="https://b.fssta.com/uploads/2021/05/0521_UND_Westbrook.vresize.335.220.high.0.jpg"
+                       length="1" type="image/jpeg"/>
+        </item>
+        <item>
+            <title>
+                <![CDATA[ Shannon Sharpe: I don&#8217;t believe Deontay Wilder has become a better boxer, I&#8217;m taking Tyson Fury | UNDISPUTED ]]>
+            </title>
+            <link>https://www.foxsports.com/watch/undisputed/video/1899897411753</link>
+            <guid>https://www.foxsports.com/watch/undisputed/video/1899897411753</guid>
+            <category>undisputed</category>
+            <description>
+                <![CDATA[ We’ve got big news out of boxing as it looks like we are going to get a 3rd fight between Tyson Fury and Deontay Wilder. The two fighters have reportedly agreed to a fight in July after an arbitrator ruled that Fury was contractually obligated to give Wilder a rematch. The first fight ended in a draw back in 2018 while the second match ending in a Fury TKO last year. Hear what Skip Bayless and Shannon Sharpe have to say about the rematch. ]]>
+            </description>
+            <pubDate>Fri, 21 May 2021 15:25:06 +0000</pubDate>
+            <enclosure url="https://b.fssta.com/uploads/2021/05/THUMBNAILSllllllll-4.vresize.335.220.high.0.jpg"
+                       length="1" type="image/jpeg"/>
+        </item>
