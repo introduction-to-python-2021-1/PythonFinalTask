@@ -5,6 +5,10 @@ repos:
     rev: v0.15.1
     hooks:
       - id: gitlint
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.8.0
+    hooks:
+      - id: isort
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.14.0
     hooks:

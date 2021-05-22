@@ -87,6 +87,8 @@ source .venv/bin/activate
    - [pre-commit hooks][] to run some out-of-the-box hooks for pre-commit
    - [pydocstyle][] to check docstring style
    - [pylint][] to analyze code
+   - [isort][] to sort imports alphabetically, and automatically separated into
+     sections
 
 **Congratulations!** You're now all set to begin development.
 
@@ -170,6 +172,11 @@ license your work under the terms of the [MIT License][].
 [pre-commit hooks]: https://github.com/pre-commit/pre-commit-hooks
 [pydocstyle]: http://www.pydocstyle.org/en/stable/
 [pylint]: https://www.pylint.org/
+[isort]: https://pycqa.github.io/isort/
+[black]: https://black.readthedocs.io/en/stable/
+[darglint]: https://github.com/terrencepreilly/darglint
+[mypy]: https://mypy.readthedocs.io/en/stable/
+[flake8]: https://flake8.pycqa.org/en/latest/
 [github.com help documentation]:
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:

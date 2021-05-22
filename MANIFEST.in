@@ -1,5 +1,6 @@
 exclude .gitignore
 exclude .gitlint
+exclude .isort
 exclude .pre-commit-config.yaml
 exclude .pydocstyle.ini
 exclude .pylintrc
