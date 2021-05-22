@@ -165,19 +165,22 @@ class TestMainReader(unittest.TestCase):
     #     with open("E:/nl/ITA/PythonFinalTask/rss_reader/rss_reader/cashed_news.txt", "r") as cash_file:
     #         self.assertTrue(json.dumps(td.TEST_NEWSDICT) in cash_file)
 
-    # # Test for function "find_cashed_news"
-    # def test_news_find_by_date_only(self):
-    #     # Test for valid user date
-    #     self.assertTrue(rs.find_cashed_news("20210521"))
-    #
-    # def test_news_find_by_date_and_link(self):
-    #     # Test for valid user date and source
-    #     self.assertTrue(rs.find_cashed_news("20210521", source=NEWSLINK))
-    #
-    # def test_news_not_find_by_date_and_link(self):
-    #     # Test for invalid user date and source - ValueError is raising
-    #     with self.assertRaises(ValueError):
-    #         rs.find_cashed_news("14100521", source=NEWSLINK)
+    # Test for function "find_cashed_news"
+    def test_news_find_by_date_only(self):
+        # Test for valid user date
+        user_date = datetime.strptime("20210521", '%Y%m%d')
+        self.assertTrue(rs.find_cashed_news(user_date))
+
+    def test_news_find_by_date_and_link(self):
+        # Test for valid user date and source
+        user_date = datetime.strptime("20210521", '%Y%m%d')
+        self.assertTrue(rs.find_cashed_news(user_date, source=NEWSLINK))
+
+    def test_news_not_find_by_date_and_link(self):
+        # Test for invalid user date and source - ValueError is raising
+        user_date = datetime.strptime("14100521", '%Y%m%d')
+        with self.assertRaises(AttributeError):
+            rs.find_cashed_news(user_date, source=NEWSLINK)
 
 
 if __name__ == "__main__":
