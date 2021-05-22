@@ -114,19 +114,15 @@ def printing_news_in_json(newsdict: dict, number_of_news_to_show: int):
     print(jsn.dumps(newsdict, indent=1))
 
 
-def date_compare(dict_date, user_date):
+def date_compare(dict_date, converted_user_date):
     """
     Compare date given by user with datetime from a newsdict
     :param dict_date: date from a newsdict
-    :param user_date:  date given by user
+    :param converted_user_date:  date given by user
     :return: True if dates are equal, else False
     """
     converted_dict_date = dateparser.parse(dict_date, date_formats=['%y/%m/%d'])
-    try:
-        converted_user_date = datetime.strptime(user_date, '%Y%m%d')
-        return True if converted_dict_date.date() == converted_user_date.date() else False
-    except Exception:
-        return print("Invalid date, please insert date like '14100715'")
+    return True if converted_dict_date.date() == converted_user_date.date() else False
 
 
 def write_cash(newsdict: dict):
@@ -139,23 +135,23 @@ def write_cash(newsdict: dict):
         cash_file.write("\n")
 
 
-def find_cashed_news(user_date: str, source=None):
+def find_cashed_news(converted_user_date, source=None):
     """
     Check file with cashed news dictionaries
-    :param user_date: date given by user
+    :param converted_user_date: date given by user
     :param source: source link given by user if any
     :return: newsdict for reading news if there is suitable in cash, else raise ValueError
     """
     with open("cashed_news.txt", "r") as cash_file:
         for json_dict in cash_file:
             newsdict = jsn.loads(json_dict)
-            if date_compare(newsdict["date"], user_date):
+            if date_compare(newsdict["date"], converted_user_date):
                 if source:
                     if source == newsdict["source"]:
                         return newsdict
                 else:
                     return newsdict
-    raise ValueError
+    raise AttributeError
 
 
 def open_rss_link(source, verbose):
@@ -182,6 +178,28 @@ def open_rss_link(source, verbose):
         return print("Please insert rss link")
 
     return content
+
+
+def parsing_user_date(user_date: str, source: str = None):
+    """
+    Receive user date in str format, convert it to datetime,
+    call "find_cashed_news" function to find siutable cashed news.
+    :param user_date: date given by user in str format
+    :param source: link to take news
+    :return: newsdict for reading news if there is suitable in cash and number of news in it (len_news)
+    If date is invalid and couldn't be converted in datetime, and ValueError was raising, print user-friendly message
+    If no suitable news was found and AttributeError was raising, print user-friendly message
+    """
+    try:
+        converted_user_date = datetime.strptime(user_date, '%Y%m%d')
+        newsdict = find_cashed_news(converted_user_date, source)
+        len_news = len(newsdict["news"])
+        return newsdict, len_news
+    except ValueError:
+        return print("Invalid date, please insert date like '14100715'")
+    except AttributeError:
+        return print("No news from this date")
+
 
 
 def parse_command_line_arguments():
@@ -222,11 +240,10 @@ def main():
 
     if arguments.date:
         try:
-            newsdict = find_cashed_news(arguments.date, arguments.source)
+            newsdict, len_news = parsing_user_date(arguments.date, arguments.source)
             logger.info(f"News will be reading from cash")
-            len_news = len(newsdict["news"])
-        except ValueError:
-            return print("No news from this date")
+        except Exception:
+            sys.exit()
     else:
         content = open_rss_link(arguments.source, arguments.verbose)
         len_news = len(content.entries)
