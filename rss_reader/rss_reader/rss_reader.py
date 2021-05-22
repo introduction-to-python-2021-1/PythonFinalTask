@@ -6,6 +6,7 @@ import argparse
 import json as jsn
 import logging
 import logging.handlers
+import os
 import sys
 from datetime import datetime
 from urllib.error import URLError
@@ -130,7 +131,8 @@ def write_cash(newsdict: dict):
     Write newsdict in the file "cashed_news.txt" in json format
     :param newsdict: dictionary with parsed news "news"
     """
-    with open("cashed_news.txt", "a") as cash_file:
+    cash_file_name = os.path.join(os.getcwd(), "cashed_news.txt")
+    with open(cash_file_name, "a") as cash_file:
         cash_file.write(jsn.dumps(newsdict))
         cash_file.write("\n")
 
@@ -142,7 +144,9 @@ def find_cashed_news(converted_user_date, source=None):
     :param source: source link given by user if any
     :return: newsdict for reading news if there is suitable in cash, else raise ValueError
     """
-    with open("cashed_news.txt", "r") as cash_file:
+    cash_file_name = os.path.join(os.getcwd(), "cashed_news.txt")
+    print(cash_file_name)
+    with open(cash_file_name, "r") as cash_file:
         for json_dict in cash_file:
             newsdict = jsn.loads(json_dict)
             if date_compare(newsdict["date"], converted_user_date):
@@ -190,13 +194,16 @@ def parsing_user_date(user_date: str, source: str = None):
     If date is invalid and couldn't be converted in datetime, and ValueError was raising, print user-friendly message
     If no suitable news was found and AttributeError was raising, print user-friendly message
     """
+
     try:
         converted_user_date = datetime.strptime(user_date, '%Y%m%d')
+
+    except ValueError:
+        return print("Invalid date, please insert date like '14100715'")
+    try:
         newsdict = find_cashed_news(converted_user_date, source)
         len_news = len(newsdict["news"])
         return newsdict, len_news
-    except ValueError:
-        return print("Invalid date, please insert date like '14100715'")
     except AttributeError:
         return print("No news from this date")
 
@@ -241,7 +248,7 @@ def main():
         try:
             newsdict, len_news = parsing_user_date(arguments.date, arguments.source)
             logger.info(f"News will be reading from cash")
-        except Exception:
+        except (AttributeError):
             sys.exit()
     else:
         content = open_rss_link(arguments.source, arguments.verbose)
