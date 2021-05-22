@@ -29,17 +29,15 @@ local_storage = LocalStorage("localstorage")
 
 def get_response(url):
     """
-    Returns HTTPResponse from server using provided url.
+    Returns HTTPResponse from server using provided url. Exits program if can't return good response.
 
-            Parameters:
-                    url (str): URL to RSS feed content
+    Parameters:
+        url (str): URL to RSS feed content
 
-            Returns:
-                    response (http.client.HTTPResponse): Response from server
+    Returns:
+        response (http.client.HTTPResponse): Response from server
     """
     try:
-        logger.info(f"Get response from: {url}")
-
         response = urlopen(url)
 
     except HTTPError as e:
@@ -52,18 +50,20 @@ def get_response(url):
         logger.error(f"Generic exception: {e}")
         sys.exit()
 
+    logger.info(f"Got response from: {url}")
+
     return response
 
 
 def parse_response(response):
     """
-    Returns list with news items.
+    Returns list with news items. Exits program if can't parse response.
 
-            Parameters:
-                    response (http.client.HTTPResponse): Response from server provided by get_response function
+    Parameters:
+        response (http.client.HTTPResponse): Response from server provided by get_response function
 
-            Returns:
-                    [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
+    Returns:
+        [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: List of dicts
     """
     try:
         xmldoc = ET.parse(response)
@@ -101,12 +101,12 @@ def limit_news_items(news_items, limit):
     """
     Returns limited list with news items. Items number is determined by provided limit argument.
 
-            Parameters:
-                    news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
-                    limit (None) or (int): Max number of items in result dictionary, if (None) all items are included
+    Parameters:
+        news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: List of dicts
+        limit (None) or (int): Max number of items in result dictionary, if (None) all items are included
 
-            Returns:
-                    [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: Limited list of dictionaries
+    Returns:
+        [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: Limited list of dicts
     """
     calculated_limit = max(0, limit) if limit is not None else limit
 
@@ -122,8 +122,8 @@ def print_news(news_items):
     """
     Prints news to stdout.
 
-            Parameters:
-                    news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
+    Parameters:
+        news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: List of dicts
     """
     logger.info(f"Print news items")
 
@@ -139,8 +139,8 @@ def print_json(news_items):
     """
     Prints news as JSON in stdout.
 
-            Parameters:
-                    news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
+    Parameters:
+        news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: List of dicts
     """
     logger.info(f"Print news items as JSON")
 

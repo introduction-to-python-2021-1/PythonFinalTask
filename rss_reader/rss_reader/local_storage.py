@@ -10,11 +10,11 @@ from urllib.request import urlretrieve
 import dateparser
 
 try:
+    from helper import get_path_to_data
     from logger_config import get_logger
-    from helpers import get_path_to_data
 except ImportError:
+    from .helper import get_path_to_data
     from .logger_config import get_logger
-    from .helpers import get_path_to_data
 
 logger = get_logger()
 
@@ -27,16 +27,22 @@ class LocalStorage:
         """
         Returns date from single news item.
 
-                    Parameters:
-                            news_item {"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}: News item dict
+        Parameters:
+            news_item {"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}: News item dict
 
-                    Returns:
-                            (datetime.datetime): Date from news item dict by key "Date"
+        Returns:
+            (datetime.datetime): Date from news item dict by key "Date"
         """
         return dateparser.parse(news_item["Date"])
 
     @staticmethod
     def get_news_items_images(news_items):
+        """
+        Downloads news items images to ./project_data/images directory.
+
+        Parameters:
+            news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: [] of {}'s
+        """
 
         logger.info("Download images")
 
@@ -62,15 +68,17 @@ class LocalStorage:
 
     def set_news_items_by_url(self, url, news_items):
         """
-        Sets news items by specific url.
+        Sets news items to local storage by specific url and returns them, items are sorted so latest news comes first.
 
-                    Parameters:
-                            url (str): URL by which save news items to local storage
-                            news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dicts
+        Parameters:
+            url (str): URL by which save news items to local storage
+            news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: [] of {}'s
+
+        Returns:
+            [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: Sorted list of dicts
         """
         # Sorts channel news items by date, latest news comes first
         sorted_news_items = sorted(news_items, reverse=True, key=self.parse_date_from_news_item)
-
         storage_content = self.read_from_storage_file()
 
         if url in storage_content:
@@ -102,24 +110,24 @@ class LocalStorage:
 
     def get_news_items_by_url_and_date(self, url, pub_date):
         """
-        Returns news items by specific url and date.
+        Returns news items by specific date or by specific url and date. Exits program if wrong date is provided.
 
-                    Parameters:
-                            url (None) or (str): URL to source from which return news items, if (None) from all sources
-                            pub_date (str): Date from which return news items
+        Parameters:
+            url (None) or (str): URL to source from which return news items, if (None) from all sources
+            pub_date (str): Date from which return news items
 
-                    Returns:
-                            [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str)}]: List of dictionaries
+        Returns:
+            [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: List of dicts
         """
-        logger.info(
-            "Get news items from local storage by" + (f" url: {url} and " if url else " ") + f"date: {pub_date}"
-        )
-
         try:
             pub_date = datetime.datetime.strptime(pub_date, "%Y%m%d")
         except ValueError:
-            logger.error("You entered wrong date or not entered one at all")
+            logger.error("You entered wrong date")
             sys.exit()
+
+        logger.info(
+            "Get news items from local storage by" + (f" url: {url} and " if url else " ") + f"date: {pub_date.date()}"
+        )
 
         def fold_news_items_by_url_and_date(news_items):
             """Folds news items get by specific date to list named "news_items_by_specific_date"."""
@@ -131,7 +139,6 @@ class LocalStorage:
                 news_items_by_specific_date += tmp
 
         news_items_by_specific_date = []
-
         storage_content = self.read_from_storage_file()
 
         if url in storage_content:
@@ -147,11 +154,11 @@ class LocalStorage:
         """
         Returns number of news items in local storage by specific url.
 
-                    Parameters:
-                            url (str): URL by which save news items to local storage
+        Parameters:
+            url (str): URL by which save news items to local storage
 
-                    Returns:
-                            result (int): Number of news items in local storage by specific url
+        Returns:
+            result (int): Number of news items in local storage by specific url
         """
         storage_content = self.read_from_storage_file()
 

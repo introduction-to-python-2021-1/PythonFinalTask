@@ -1,5 +1,8 @@
-"""Provides small and useful functions."""
+"""Provides useful objects."""
 import os
+import argparse
+
+VERSION = "4.0"
 
 
 def get_path_to_data(*args):
