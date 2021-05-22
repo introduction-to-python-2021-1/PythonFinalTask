@@ -1,13 +1,13 @@
 import unittest
 from unittest.mock import patch
-from rss_reader import Rss_reader
+from rss_reader.rss_reader import RssParser
 
 
 class FeedTest(unittest.TestCase):
     def setUp(self) -> None:
         self.url = 'url'
         self.limit = 2
-        self.parser = Rss_reader.RssParser(self.url, self.limit)
+        self.parser = RssParser(self.url, self.limit)
 
     def test_url(self):
         self.assertEqual(self.parser.url, self.url)
@@ -15,7 +15,7 @@ class FeedTest(unittest.TestCase):
     def test_count(self):
         self.assertEqual(self.parser.limit, self.limit)
 
-    @patch('rss_reader.RssParser.get_img')
+    @patch('rss_reader.rss_reader.get_img')
     @patch('feedparser.parse')
     def test_feed_parser(self, parse_mock, get_img_mock):
         test_time = (2021, 5, 19, 21, 22, 56, 2, 139, 0)
