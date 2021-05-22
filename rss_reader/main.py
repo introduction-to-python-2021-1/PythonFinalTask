@@ -1,5 +1,5 @@
 from argparser import get_args
-from rss_reader import RssParser
+from Rss_reader import RssParser
 import logger_conf
 
 
