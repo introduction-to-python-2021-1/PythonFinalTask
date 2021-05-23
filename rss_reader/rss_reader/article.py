@@ -26,8 +26,8 @@ class Article:
                + 'Link: ' + self.link + '\n' \
                + 'Date: ' + self.date_str("%a, %d %B, %Y") + '\n' \
                + 'Source: ' + self.source + '\n' \
-               + 'Description: ' + self.description + '\n'\
-               + 'Image: ' + self.image + '\n'\
+               + 'Description: ' + self.description + '\n' \
+               + 'Image: ' + self.image + '\n'
 
     def to_dict(self):
         """Function to convert an instance of a class to a dictionary"""
@@ -37,6 +37,5 @@ class Article:
             'Date': self.date_str("%a, %d %B, %Y"),
             'Source': self.source,
             'Description': self.description,
-            'Image': self.image,
-        }
+            'Image': self.image, }
         return fields

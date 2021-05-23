@@ -11,8 +11,8 @@ class TestFunctions(unittest.TestCase):
         self.article_A = Article('Japan reporter freed from Myanmar says inmates were abused',
                                  'https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html',
                                  '2021-05-21T15:03:25Z', 'Associated Press', '---',
-                                 'https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAwMDthcHBpZ'
-                                 'D15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc')
+                                 'https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAwMDthcHB'
+                                 'pZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc')
         self.entries = [{'title': 'Japan reporter freed from Myanmar says inmates were abused',
                          'title_detail': {'type': 'text/plain', 'language': None, 'base': 'https://news.yahoo.com/rss/',
                                           'value': 'Japan reporter freed from Myanmar says inmates were abused'},
@@ -20,14 +20,14 @@ class TestFunctions(unittest.TestCase):
                                     'href': 'https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html'}],
                          'link': 'https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html',
                          'published': '2021-05-21T15:03:25Z',
-                         'published_parsed': 'time.struct_time(tm_year=2021, tm_mon=5, tm_mday=21, tm_hour=8, tm_min=21, '
-                                             'tm_sec=38, tm_wday=4, tm_yday=141, tm_isdst=0)',
+                         'published_parsed': 'time.struct_time(tm_year=2021, tm_mon=5, tm_mday=21, tm_hour=8, tm_min=21'
+                                             ', tm_sec=38, tm_wday=4, tm_yday=141, tm_isdst=0)',
                          'source': {'href': 'http://www.ap.org/', 'title': 'Associated Press'},
                          'id': 'japan-reporter-freed-myanmar-says-082138070.html', 'guidislink': False,
                          'media_content': [{'height': '86',
                                             'url': 'https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOT'
-                                                   'k4O3c9MzAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org'
-                                                   '/d2d71e1fafaffbdd78bb05538e0732dc',
+                                                   'k4O3c9MzAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.'
+                                                   'org/d2d71e1fafaffbdd78bb05538e0732dc',
                                             'width': '130'}], 'media_credit': [{'role': 'publishing company'}],
                          'credit': ''}]
 
@@ -41,8 +41,8 @@ class TestFunctions(unittest.TestCase):
                          '"Link": "https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html", '
                          '"Date": "Fri, 21 May, 2021", "Source": "Associated Press", '
                          '"Description": "---", '
-                         '"Image": "https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAwMDthcHB'
-                         'pZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc"}')
+                         '"Image": "https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAwMDthc'
+                         'HBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc"}')
 
     def test_check_limit(self):
         self.assertEqual(check_limit('2'), 2)
