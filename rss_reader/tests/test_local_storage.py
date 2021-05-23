@@ -3,6 +3,7 @@ import unittest
 
 from rss_reader.local_storage import LocalStorage
 
+
 @ddt.ddt
 class TestSetNewsItemsByUrl(unittest.TestCase):
     """Tests set_news_items_by_url method of LocalStorage object with various arguments."""
