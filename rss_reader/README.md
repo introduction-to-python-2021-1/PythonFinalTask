@@ -30,10 +30,13 @@ optional arguments:
   --json         Print result as JSON in stdout
   --verbose      Outputs verbose status messages
   --limit LIMIT  Limit news topics if this parameter provided
+  --date DATE        Return news topics which were published in specific date
+  --to-html TO_HTML  Save news in .html format by provided path
+  --to-pdf TO_PDF    Save news in .pdf format by provided path
 
 ```
 
-In case of using `--json` argument utility converts the news into [JSON](https://en.wikipedia.org/wiki/JSON) format and prints it to stdout. saves it in the directory **data** as **news.json**. The JSON structure is shown below.
+In case of using `--json` argument utility converts the news into [JSON](https://en.wikipedia.org/wiki/JSON) format and prints it to stdout. The JSON structure is shown below.
 
 ```json
 [
@@ -41,7 +44,8 @@ In case of using `--json` argument utility converts the news into [JSON](https:/
         "Feed": "Yahoo News - Latest News & Headlines",
         "Title": "Republican anger with Dr. Fauci reaches new heights",
         "Date": "2021-05-10T20:17:40Z",
-        "Link": "https://news.yahoo.com/republican-anger-with-dr-fauci-reaches-new-heights-201740818.html"
+        "Link": "https://news.yahoo.com/republican-anger-with-dr-fauci-reaches-new-heights-201740818.html",
+        "image_url": "https://news.yahoo.com/republican-anger-with-dr-fauci-reaches-new-heights-201740818.jpg"
     }
 ]
 ```
@@ -64,7 +68,7 @@ as well as this:
 
 ## News caching
 
-The RSS news is stored in a local storage while reading. The format of this storage is shown down below:
+The RSS news is stored in a local storage while reading. Local storage is located in the directory **data** as **localstorage.json**. The format of this storage is shown down below:
 
 ```json
 {
@@ -73,7 +77,8 @@ The RSS news is stored in a local storage while reading. The format of this stor
             "Feed": "Yahoo News - Latest News & Headlines",
             "Title": "Republican anger with Dr. Fauci reaches new heights",
             "Date": "2021-05-10T20:17:40Z",
-            "Link": "https://news.yahoo.com/republican-anger-with-dr-fauci-reaches-new-heights-201740818.html"
+            "Link": "https://news.yahoo.com/republican-anger-with-dr-fauci-reaches-new-heights-201740818.html",
+            "image_url": "https://news.yahoo.com/republican-anger-with-dr-fauci-reaches-new-heights-201740818.jpg"
         }
     ]
 }
