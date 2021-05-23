@@ -162,7 +162,6 @@ def find_cashed_news(converted_user_date, source=None):
         raise AttributeError
 
 
-
 def open_rss_link(source, verbose):
     """
     Receive link with RSS news and try to parse it, print logs
