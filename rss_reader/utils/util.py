@@ -6,7 +6,6 @@
 
 def log(show_on_console: bool = True, msg: str = "", flag: str = ""):
     """
-
     :param show_on_console: do we show log on console or not
     :param msg: message to be shown
     :param flag: specified what type message is this. Your may pass INFO, WARNING, ERROR or

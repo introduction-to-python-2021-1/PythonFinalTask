@@ -1,9 +1,7 @@
 """
-
     Module stores readers for reading data from given resource
 """
 import requests
-from requests import get
 from abc import abstractmethod, ABC
 
 from utils import util
@@ -11,7 +9,6 @@ from utils import util
 
 class Reader(ABC):
     """
-
     Abstract class for setting reader for using in Parser
     """
 
@@ -22,29 +19,34 @@ class Reader(ABC):
 
 class SiteReader(Reader):
     """
-
     Class for getting data from site
     """
 
     def get_data(self, link: str = ""):
         """
-
         Get data from site and return it
         :param link: link for connecting
         :return: site source
         """
         try:
-            response = get(url=link)
+            response = requests.get(url=link)
             if response.ok:
                 content = response.text
                 return content
             else:
-                raise ValueError("Response from site is not ok! Code:" + str(response.status_code))
-        except ValueError as err:
+                raise ConnectionError(f"Response from site is not ok! Response code: {response.status_code}")
+        except ValueError:
             util.log(show_on_console=True,
                      flag="ERROR",
-                     msg=f"ValueError at SiteReader.get_data: {str(err)}")
-        except requests.exceptions.RequestException as err:
+                     msg=f"Value error has occurred while getting data from chanel")
+            exit(1)
+        # except requests.exceptions.MissingSchema as err:
+        #     util.log(show_on_console=True,
+        #              flag="ERROR",
+        #              msg=f"Wrong link = '{link}': {str(err)}")
+        #     exit(1)
+        except requests.exceptions.RequestException:
             util.log(show_on_console=True,
                      flag="ERROR",
-                     msg=f"RequestException at SiteReader.get_data: {str(err)}")
+                     msg=f"Request error has occurred while getting data from chanel")
+            exit(1)

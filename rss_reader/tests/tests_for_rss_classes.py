@@ -1,35 +1,40 @@
+"""
+    This module covers with tests code of rss_reader.py
+"""
 import unittest
 
-from rss_core.rss_classes import RSSItem, RSSNews
+from rss_core.rss_classes import RssItem, RssNews
 
-rss_item_init_dict = {"title": "-", "link": "-", "pubDate": "-", "guid": "-", "category": "-", "content": ["-"],
-                      "description": "-"}
-rss_item_str = "Title: -\nDate: -\nLink: -\nCategory: -\nDescription: -\nMedia: ['-']"
+RSS_ITEM_DICT = {"title": "-", "link": "-", "pubDate": "-", "guid": "-", "category": "-", "content": ["-"],
+                 "description": "-"}
+RSS_ITEM_STR = "Title: -\nDate: -\nLink: -\nCategory: -\nDescription: -\nMedia: ['-']"
 
 
 class TestRssItem(unittest.TestCase):
-
-    def test_RSSItem_create_from_empty_dict(self):
-        RSSItem(**{})
+    """Test RssItem class"""
 
     def test_RSSItem_init(self):
-        item = RSSItem(**rss_item_init_dict)
-        self.assertEqual(rss_item_str, str(item))
-
-    def test_RSSItem_str(self):
-        self.assertEqual(rss_item_str, str(RSSItem(**rss_item_init_dict)))
+        """
+        Check if RssItem initializing from dirt in right way +
+        checking work of overloaded __str__
+        """
+        item = RssItem(**RSS_ITEM_DICT)
+        self.assertEqual(RSS_ITEM_STR, str(item))
 
     def test_RSSItem_as_dict(self):
+        """Check as_dict"""
         self.assertEqual({'Title': '-', 'Date': '-', 'Link': '-', 'Description': '-', 'Category': '-', 'Media': ['-']},
-                         RSSItem(**rss_item_init_dict).as_dict())
+                         RssItem(**RSS_ITEM_DICT).as_dict())
 
 
 class TestRssNews(unittest.TestCase):
-    def test_RSSNews_create_from_empty_dict(self):
-        RSSNews(**{})
+    """ Testing of RssNews"""
 
-    def test_RSSNews_str(self):
-        self.assertEqual("\n [link: ]\n\n\nSorry, no news for you...", str(RSSNews(**{})))
+    def test_RssNews_str(self):
+        """Test as_str function"""
+        self.assertEqual("\n [link: ]\n\n\nNo news", RssNews(**{}).as_str())
 
-    def test_RSSNews_json(self):
-        self.assertEqual("""{"Link": "", "Description": "", "Title": "", "News": []}""", RSSNews(**{}).as_json())
+    def test_RssNews_json(self):
+        """Check as_json function"""
+        self.assertEqual("""{"Link":"","Description":"","Title":"","News":[]}""",
+                         RssNews(**{}).as_json().replace("\n", "").replace(" ", ""))

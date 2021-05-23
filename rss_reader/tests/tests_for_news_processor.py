@@ -1,4 +1,9 @@
+"""
+    This module covers with tests code of news_processor.py
+"""
 import unittest
+from io import StringIO
+from unittest.mock import patch
 
 from rss_core.news_processor import NewsProcessor
 from rss_core.parser import XMLParser
@@ -6,11 +11,12 @@ from rss_core.reader import SiteReader
 
 
 class TestNewsProcessor(unittest.TestCase):
-    def test_get_news_with_empty_parser(self):
-        proc = NewsProcessor(1)
-        proc.get_news("https://news.yahoo.com/rss/")
-
-    def test_get_news_wrong_link(self):
+    """ Test NewsProcessor"""
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_get_news_wrong_link(self, mock_stdout):
+        """ Parse news from empty link"""
         proc = NewsProcessor(XMLParser(SiteReader()))
-        proc.get_news("")
-        proc.get_news(1)
+        with self.assertRaises(SystemExit) as cm:
+            proc.get_news("")
+        self.assertEqual(cm.exception.code, 1)
+        self.assertEqual("[ERROR] Link mast be not empty str", mock_stdout.getvalue().strip())

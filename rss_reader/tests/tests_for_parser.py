@@ -1,25 +1,28 @@
+"""
+    This module covers with tests code of parser.py
+"""
 import unittest
-
+from unittest.mock import MagicMock
 from rss_core.parser import XMLParser
 from rss_core.reader import SiteReader
 
 
 class TestParser(unittest.TestCase):
-    def test_empty_reader(self):
-        parser = XMLParser()
-        self.assertRaises(AttributeError, parser.parse_news, "https://news.yahoo.com/rss/")
+    """Test XmlParser"""
 
-    def test_not_rss_url(self):
+    def test_empty_reader(self):
+        """ Test work of parser with empty reader"""
+        parser = XMLParser()
+        self.assertRaises(AttributeError, parser.parse_news, "http")
+
+    def test_get_invalid_xml(self):
+        """Test parsing news from bad xml or not xml response"""
+        SiteReader.get_data = MagicMock(return_value="<h1><")
         parser = XMLParser(SiteReader())
-        self.assertEqual({}, parser.parse_news("https://google.com"))
+        with self.assertRaises(SystemExit) as cm:
+            parser.parse_news("http")
+        self.assertEqual(cm.exception.code, 1)
 
     def test_strip_text(self):
+        """Test replacing wrong character"""
         self.assertEqual("ab'c&", XMLParser(SiteReader()).strip_tag_text("<![CDATA[ab&#039;c&amp;]]>"))
-
-
-class TestParserParseNews(unittest.TestCase):
-
-    def test_invalid_limit(self):
-        parser = XMLParser(SiteReader())
-        self.assertRaises(TypeError, parser.parse_news, "https://news.yahoo.com/rss/", 'a')
-        self.assertRaises(ValueError, parser.parse_news, "https://news.yahoo.com/rss/", -1)
