@@ -25,7 +25,7 @@ class Parser(ABC):
         """Process data and return dict of rss news"""
 
 
-class XMLParser(Parser):  # TODO: CamelCase?
+class XmlParser(Parser):
     """
     Parser for NewsWorker witch received xml string from reader
     and parse it into dict fro initializing RssNews object

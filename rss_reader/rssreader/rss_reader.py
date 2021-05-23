@@ -7,7 +7,7 @@ import argparse
 import sys
 
 from rss_core.news_processor import NewsProcessor
-from rss_core.parser import XMLParser
+from rss_core.parser import XmlParser
 from rss_core.reader import SiteReader
 from utils import util
 
@@ -24,7 +24,7 @@ def main(argv=None):
         exit(1)
 
     try:
-        parser = XMLParser(reader=SiteReader())
+        parser = XmlParser(reader=SiteReader())
         news_processor = NewsProcessor(parser=parser, show_logs=my_args.verbose)
         rss_news = news_processor.get_news(my_args.source)
         if my_args.json:
