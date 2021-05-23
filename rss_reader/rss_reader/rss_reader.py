@@ -28,11 +28,10 @@ def get_response(url):
         url (str): URL to RSS feed content
 
     Returns:
-        response (http.client.HTTPResponse): Response from server
+        response_content (str): Response content from server
     """
     try:
         response = urlopen(url)
-
     except HTTPError as e:
         logger.error(f"The server couldn't fulfill the request.\nError code: {e.code}")
         sys.exit()
@@ -43,24 +42,26 @@ def get_response(url):
         logger.error(f"Generic exception: {e}")
         sys.exit()
 
-    logger.info(f"Got response from: {url}")
+    response_content = response.read()
+    response.close()
 
-    return response
+    logger.info(f"Got response content from: {url}")
+
+    return response_content
 
 
-def parse_response(response):
+def parse_response(response_content):
     """
     Returns list with news items. Exits program if can't parse response.
 
     Parameters:
-        response (http.client.HTTPResponse): Response from server provided by get_response function
+        response_content (str): Response content from server provided by get_response function
 
     Returns:
         [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: List of dicts
     """
     try:
-        xmldoc = ET.parse(response)
-        root = xmldoc.getroot()
+        root = ET.fromstring(response_content)
 
         if root.tag != "rss":
             raise Exception("The document isn't RSS feed")
@@ -85,8 +86,6 @@ def parse_response(response):
         })
 
     logger.info(f"Parsed {index_of_news_item + 1} items from response")
-
-    response.close()
 
     return news_items
 
