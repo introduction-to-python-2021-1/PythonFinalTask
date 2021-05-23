@@ -62,10 +62,6 @@ def make_news_dictionary(source: str, content) -> dict:
     innerdict = {}
     newslist = []
     newsdict = {"source": source, "main_title": content.feed.title}
-    try:
-        newsdict["date"] = content.feed.published
-    except AttributeError:
-        newsdict["date"] = content.feed.updated
 
     for news in content.entries:
         for item in NEWS_PARTS:
@@ -142,20 +138,29 @@ def find_cashed_news(converted_user_date, source=None):
     Check file with cashed news dictionaries
     :param converted_user_date: date given by user
     :param source: source link given by user if any
-    :return: newsdict for reading news if there is suitable in cash, else raise ValueError
+    :return: newsdict_from_cash for reading news if there is suitable in cash, else raise ValueError
     """
     cash_file_name = os.path.join(os.getcwd(), "cashed_news.txt")
     print(cash_file_name)
     with open(cash_file_name, "r") as cash_file:
+        newslist = []
+        newsdict_from_cash = {"source": "from cash file", "main_title": "Cashed news"}
         for json_dict in cash_file:
             newsdict = jsn.loads(json_dict)
-            if date_compare(newsdict["date"], converted_user_date):
-                if source:
-                    if source == newsdict["source"]:
-                        return newsdict
-                else:
-                    return newsdict
-    raise AttributeError
+
+            if source:
+                if source != newsdict["source"]:
+                    continue
+            for one_news in (newsdict["news"]):
+                if date_compare(one_news["Published"], converted_user_date):
+                    newslist.append(one_news)
+
+    if newslist:
+        newsdict_from_cash["news"] = newslist
+        return newsdict_from_cash
+    else:
+        raise AttributeError
+
 
 
 def open_rss_link(source, verbose):
@@ -248,7 +253,7 @@ def main():
         try:
             newsdict, len_news = parsing_user_date(arguments.date, arguments.source)
             logger.info(f"News will be reading from cash")
-        except (AttributeError):
+        except (AttributeError, ValueError, TypeError):
             sys.exit()
     else:
         content = open_rss_link(arguments.source, arguments.verbose)
