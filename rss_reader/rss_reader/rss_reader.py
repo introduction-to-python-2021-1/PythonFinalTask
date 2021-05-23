@@ -1,12 +1,11 @@
 import logging
-import os
 import sys
 
-from argparser import Argparser
-from connector import Connector
-from output import ConsoleOutput
-from rssparser import RSSparser
-from writer import WriterJSON
+from modules.argparser import Argparser
+from modules.connector import Connector
+from modules.output import ConsoleOutput
+from modules.rssparser import RSSparser
+from modules.writer import WriterJSON
 
 VERSION = 2.1
 

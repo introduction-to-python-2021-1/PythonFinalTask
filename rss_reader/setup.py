@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
-from os.path import join, dirname
 
-with open(file=join(dirname(dirname(__file__)), 'requirements.txt')) as f:
-    required = f.read().splitlines()
+# with open(file=join(dirname(dirname(__file__)), 'requirements.txt')) as f:
+#     required = f.read().splitlines()
+
 
 setup(
     name='rss_reader',
@@ -11,11 +11,11 @@ setup(
     author='Eduard Vasanski',
     author_email='wasanski@mail.ru',
     url='https://github.com/EVasanski/PythonFinalTask',
-    packages=find_packages(['rss_reader', 'tests']),
+    packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'rss_reader = rss_reader.rss_reader:main',
+            'rss_reader = rss_reader.rss_reader.rss_reader:main',
         ]
     },
-    install_requires=required,
+    install_requires=['requests==2.25.1', 'feedparser==6.0.2'],
 )

@@ -1,10 +1,10 @@
 import unittest
-from unittest.mock import patch
 from io import StringIO
+from unittest.mock import patch
 
+from modules.connector import Connector
+from modules.rssparser import RSSparser
 from rss_reader.rss_reader.rss_reader import main, VERSION, create_logger
-from rss_reader.rss_reader.connector import Connector
-from rss_reader.rss_reader.rssparser import RSSparser
 
 logger = create_logger()
 

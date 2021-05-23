@@ -17,7 +17,6 @@ class RSSparser:
         self.__rss = parse(url)
         self.limit = self.__validate_limit(limit)
 
-
     @property
     def heading(self):
         return self.__rss.feed.get('title')
