@@ -8,13 +8,8 @@ from urllib.request import pathname2url
 
 import ddt
 
+from rss_reader import rss_reader
 from rss_reader.helper import VERSION
-from rss_reader.rss_reader import main
-from rss_reader.rss_reader import logger
-from rss_reader.rss_reader import print_news
-from rss_reader.rss_reader import get_response
-from rss_reader.rss_reader import parse_response
-from rss_reader.rss_reader import limit_news_items
 
 
 class TestMain(unittest.TestCase):
@@ -28,14 +23,14 @@ class TestMain(unittest.TestCase):
     def test_url_and_version_arguments(self):
         """Tests that app prints its version and stops if URL and --version arguments are specified."""
         with self.assertRaises(SystemExit):
-            main([None, "https://news.yahoo.com/rss/", "--version"])
+            rss_reader.main([None, "https://news.yahoo.com/rss/", "--version"])
 
         self.assertEqual(self.captured_output.getvalue(), f'"Version {VERSION}"\n')
 
     def test_just_version_argument(self):
         """Tests that app prints its version and stops if just --version argument is specified."""
         with self.assertRaises(SystemExit):
-            main([None, "--version"])
+            rss_reader.main([None, "--version"])
 
         self.assertEqual(self.captured_output.getvalue(), f'"Version {VERSION}"\n')
 
@@ -50,7 +45,7 @@ class TestGetResponse(unittest.TestCase):
     def test_get_response_with_good_status_code(self):
         """Tests that get_response successfully gets response from server."""
         url = "https://www.google.com/"
-        self.assertEqual(get_response(url).code, 200, "Wrong output size")
+        self.assertEqual(rss_reader.get_response(url).code, 200, "Wrong output size")
 
 
 @ddt.ddt
@@ -64,7 +59,7 @@ class TestLimitNewsItems(unittest.TestCase):
         with open("../rss_reader/project_data/json/news.json") as json_file:
             news_items = json.load(json_file)
 
-        self.assertEqual(len(limit_news_items(news_items, limit)), expected, "Wrong output size")
+        self.assertEqual(len(rss_reader.limit_news_items(news_items, limit)), expected, "Wrong output size")
 
 
 class TestPrintNews(unittest.TestCase):
@@ -91,7 +86,7 @@ class TestPrintNews(unittest.TestCase):
         captured_output = io.StringIO()
         sys.stdout = captured_output
         # Perform testing
-        print_news(test_list)
+        rss_reader.print_news(test_list)
         self.assertEqual(captured_output.getvalue(), test_output)
         # Resets redirect of stdout
         sys.stdout = sys.__stdout__
@@ -104,9 +99,9 @@ class TestExceptions(unittest.TestCase):
     @ddt.file_data("../project_data/json/testexceptionsdata.json")
     def test_get_response(self, url, expected):
         """Tests that get_response function handles exceptions."""
-        with self.assertLogs(logger, "ERROR") as captured:
+        with self.assertLogs(rss_reader.logger, "ERROR") as captured:
             with self.assertRaises(SystemExit):
-                get_response(url)
+                rss_reader.get_response(url)
 
             self.assertEqual(expected, captured.records[0].getMessage(), "Wrong output message")
 
@@ -114,9 +109,9 @@ class TestExceptions(unittest.TestCase):
         """Tests that process_response function handles response with wrong xml structure."""
         fake_response = urlopen("file:" + pathname2url(os.path.abspath("project_data/xml/badsample.xml")))
 
-        with self.assertLogs(logger, "ERROR") as captured:
+        with self.assertLogs(rss_reader.logger, "ERROR") as captured:
             with self.assertRaises(SystemExit):
-                parse_response(fake_response)
+                rss_reader.parse_response(fake_response)
 
             self.assertEqual("Couldn't parse response", captured.records[0].getMessage())
 
