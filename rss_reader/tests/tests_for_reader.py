@@ -14,7 +14,7 @@ class TestReader(unittest.TestCase):
 
     def test_get_data_empty_link(self):
         reader = SiteReader()
-        reader.get_data()
+        reader.get_data("https://")
 
 
     # @patch('sys.stdout', new_callable=StringIO)

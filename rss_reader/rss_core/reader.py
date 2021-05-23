@@ -22,7 +22,7 @@ class SiteReader(Reader):
     Class for getting data from site
     """
 
-    def get_data(self, link: str = ""):
+    def get_data(self, link: str):
         """
         Get data from site and return it
         :param link: link for connecting
