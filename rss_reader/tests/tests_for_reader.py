@@ -1,8 +1,8 @@
 """
     This module covers with tests code of reader.py
 """
-import unittest
 import requests
+import unittest
 from unittest.mock import MagicMock
 from rss_core.reader import SiteReader
 
