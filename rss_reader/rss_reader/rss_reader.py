@@ -10,7 +10,6 @@ import xml.etree.ElementTree as ET
 
 from pathvalidate.argparse import validate_filepath_arg
 
-from rss_reader.helper import VERSION
 from rss_reader.logger_config import get_logger
 from rss_reader.local_storage import LocalStorage
 from rss_reader.format_converter import ToPdfConverter
@@ -18,6 +17,8 @@ from rss_reader.format_converter import ToHtmlConverter
 
 logger = get_logger()
 local_storage = LocalStorage("localstorage")
+
+VERSION = "4.0"
 
 
 def get_response(url):
@@ -28,7 +29,7 @@ def get_response(url):
         url (str): URL to RSS feed content
 
     Returns:
-        response_content (str): Response content from server
+        response_content (bytes): Response content from server
     """
     try:
         response = urlopen(url)
@@ -55,7 +56,7 @@ def parse_response(response_content):
     Returns list with news items. Exits program if can't parse response.
 
     Parameters:
-        response_content (str): Response content from server provided by get_response function
+        response_content (bytes): Response content from server provided by get_response function
 
     Returns:
         [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: List of dicts

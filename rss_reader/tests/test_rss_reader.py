@@ -9,7 +9,6 @@ from urllib.request import pathname2url
 import ddt
 
 from rss_reader import rss_reader
-from rss_reader.helper import VERSION
 
 
 class TestMain(unittest.TestCase):
@@ -25,14 +24,14 @@ class TestMain(unittest.TestCase):
         with self.assertRaises(SystemExit):
             rss_reader.main([None, "https://news.yahoo.com/rss/", "--version"])
 
-        self.assertEqual(self.captured_output.getvalue(), f'"Version {VERSION}"\n')
+        self.assertEqual(self.captured_output.getvalue(), f'"Version {rss_reader.VERSION}"\n')
 
     def test_just_version_argument(self):
         """Tests that app prints its version and stops if just --version argument is specified."""
         with self.assertRaises(SystemExit):
             rss_reader.main([None, "--version"])
 
-        self.assertEqual(self.captured_output.getvalue(), f'"Version {VERSION}"\n')
+        self.assertEqual(self.captured_output.getvalue(), f'"Version {rss_reader.VERSION}"\n')
 
     def tearDown(self):
         """Resets redirect of stdout."""
@@ -42,10 +41,10 @@ class TestMain(unittest.TestCase):
 class TestGetResponse(unittest.TestCase):
     """Tests get_response function from rss_reader."""
 
-    def test_get_response_with_good_status_code(self):
-        """Tests that get_response successfully gets response from server."""
+    def test_get_response_with_good_url(self):
+        """Tests that get_response returns bytes object when good url is provided."""
         url = "https://www.google.com/"
-        self.assertEqual(rss_reader.get_response(url).code, 200, "Wrong output size")
+        self.assertEqual(type(rss_reader.get_response(url)), type(b""), "Wrong output type")
 
 
 @ddt.ddt
@@ -96,7 +95,7 @@ class TestPrintNews(unittest.TestCase):
 class TestExceptions(unittest.TestCase):
     """Tests that get_response and parse_response functions from rss_reader handle exceptions."""
 
-    @ddt.file_data("../project_data/json/testexceptionsdata.json")
+    @ddt.file_data("../project_data/json/test_exceptions_data.json")
     def test_get_response(self, url, expected):
         """Tests that get_response function handles exceptions."""
         with self.assertLogs(rss_reader.logger, "ERROR") as captured:

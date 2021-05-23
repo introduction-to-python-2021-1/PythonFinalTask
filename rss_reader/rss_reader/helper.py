@@ -2,8 +2,6 @@
 import os
 import argparse
 
-VERSION = "4.0"
-
 
 def get_path_to_data(*args):
     """Returns an absolute path to directory "package_data" which contains package data files."""

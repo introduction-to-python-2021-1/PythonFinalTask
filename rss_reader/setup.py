@@ -1,5 +1,7 @@
 from setuptools import setup
 
+from rss_reader.rss_reader import VERSION
+
 with open("README.md") as f:
     readme = f.read()
 
@@ -8,7 +10,7 @@ with open("LICENSE") as f:
 
 setup(
     name="rss_reader",
-    version="3.0",
+    version=VERSION,
     description="Pure Python command-line RSS reader.",
     long_description=readme,
     url="https://github.com/egor-makhlaev/PythonFinalTask/tree/final-task-implementation",
