@@ -37,7 +37,7 @@ class Converter(abc.ABC):
 
     def __init__(self, *, directory_path, file_name):
         self.directory_path = Path(directory_path).absolute()
-        self.file_path = self.directory_path / file_name 
+        self.file_path = self.directory_path / file_name
 
     def create_file(self, content):
         """
