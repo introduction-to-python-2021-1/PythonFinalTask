@@ -12,7 +12,7 @@ def main():
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
     logger = logging.getLogger("")
     logger.setLevel(logging.INFO)
-    handler = logging.handlers.RotatingFileHandler('../../logs.txt')
+    handler = logging.handlers.RotatingFileHandler('../../../logs.txt')
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     handler.setFormatter(formatter)
     logger.addHandler(handler)
@@ -21,12 +21,12 @@ def main():
     # Checking the current version of the program
     new_version = 1.0
 
-    if not os.path.exists('../../actual_version.txt'):
-        with open('../../actual_version.txt', 'w') as act_version:
+    if not os.path.exists('../../../actual_version.txt'):
+        with open('../../../actual_version.txt', 'w') as act_version:
             act_version.write(str(new_version))
         print('Creating file for storing actual programm version')
     else:
-        with open('../../actual_version.txt', 'r+') as act_version:
+        with open('../../../actual_version.txt', 'r+') as act_version:
             actual = act_version.read()
             act_version.seek(0)
             new_version = round((float(actual) + 0.1), 1)
