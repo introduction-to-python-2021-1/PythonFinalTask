@@ -24,7 +24,7 @@ class Connector:
             resp.raise_for_status()
             self.__logger.debug('Connection detected.')
             return True
-        except RequestException as err:
+        except RequestException:
             self.__logger.error(f'Connection not detected.')
             return False
 
@@ -41,5 +41,3 @@ class Connector:
                 return True
         else:
             return False
-
-

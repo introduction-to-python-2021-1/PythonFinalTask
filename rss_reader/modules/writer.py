@@ -1,6 +1,6 @@
+import os
 from abc import ABC, abstractmethod
 from json import dump
-import os
 
 
 class Writer(ABC):
