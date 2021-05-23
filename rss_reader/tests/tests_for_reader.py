@@ -32,5 +32,5 @@ class TestReader(unittest.TestCase):
         with self.assertRaises(SystemExit) as cm:
             reader.get_data()
         self.assertEqual(cm.exception.code, 1)
-        self.assertEqual("[ERROR] Value error has occurred while getting data from chanel", mock_stdout.getvalue().strip())
-
+        self.assertEqual("[ERROR] Value error has occurred while getting data from chanel",
+                         mock_stdout.getvalue().strip())

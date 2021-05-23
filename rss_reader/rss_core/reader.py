@@ -40,11 +40,6 @@ class SiteReader(Reader):
                      flag="ERROR",
                      msg=f"Value error has occurred while getting data from chanel")
             exit(1)
-        # except requests.exceptions.MissingSchema as err:
-        #     util.log(show_on_console=True,
-        #              flag="ERROR",
-        #              msg=f"Wrong link = '{link}': {str(err)}")
-        #     exit(1)
         except requests.exceptions.RequestException:
             util.log(show_on_console=True,
                      flag="ERROR",
