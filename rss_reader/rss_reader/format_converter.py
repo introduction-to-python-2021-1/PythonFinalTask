@@ -36,7 +36,8 @@ class Converter(abc.ABC):
         return template.render(news_items=news_items)
 
     def __init__(self, *, directory_path, file_name):
-        self.file_path = Path(directory_path).absolute() / file_name
+        self.directory_path = Path(directory_path).absolute()
+        self.file_path = self.directory_path / file_name 
 
     def create_file(self, content):
         """
@@ -47,6 +48,7 @@ class Converter(abc.ABC):
         """
         logger.info(f"Create file {self.file_path}")
 
+        os.makedirs(self.directory_path, exist_ok=True)
         self.file_path.touch(exist_ok=True)
         self.file_path.write_bytes(content)
 
