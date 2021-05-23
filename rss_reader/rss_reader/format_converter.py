@@ -6,12 +6,8 @@ from pathlib import Path
 import jinja2
 from xhtml2pdf import pisa
 
-try:
-    from helper import get_path_to_data
-    from logger_config import get_logger
-except ImportError:
-    from .helper import get_path_to_data
-    from .logger_config import get_logger
+from rss_reader.helper import get_path_to_data
+from rss_reader.logger_config import get_logger
 
 
 class Converter(abc.ABC):

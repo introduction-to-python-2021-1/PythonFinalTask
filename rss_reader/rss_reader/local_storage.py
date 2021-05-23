@@ -9,12 +9,8 @@ from urllib.request import urlretrieve
 
 import dateparser
 
-try:
-    from helper import get_path_to_data
-    from logger_config import get_logger
-except ImportError:
-    from .helper import get_path_to_data
-    from .logger_config import get_logger
+from rss_reader.helper import get_path_to_data
+from rss_reader.logger_config import get_logger
 
 logger = get_logger()
 

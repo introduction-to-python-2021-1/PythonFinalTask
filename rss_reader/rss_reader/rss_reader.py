@@ -8,20 +8,13 @@ from urllib.error import HTTPError
 from urllib.request import urlopen
 import xml.etree.ElementTree as ET
 
-try:
-    from logger_config import get_logger
-    from local_storage import LocalStorage
-    from format_converter import ToPdfConverter
-    from format_converter import ToHtmlConverter
-except ImportError:
-    from .logger_config import get_logger
-    from .local_storage import LocalStorage
-    from .format_converter import ToPdfConverter
-    from .format_converter import ToHtmlConverter
-
 from pathvalidate.argparse import validate_filepath_arg
 
-VERSION = "3.0"
+from rss_reader.helper import VERSION
+from rss_reader.logger_config import get_logger
+from rss_reader.local_storage import LocalStorage
+from rss_reader.format_converter import ToPdfConverter
+from rss_reader.format_converter import ToHtmlConverter
 
 logger = get_logger()
 local_storage = LocalStorage("localstorage")
@@ -80,6 +73,7 @@ def parse_response(response):
     news_items = []
 
     for index_of_news_item, news_item in enumerate(root.iterfind("channel/item")):
+        # Finds images only in response from https://news.yahoo.com/rss/
         image_element = news_item.find('{http://search.yahoo.com/mrss/}content')
 
         news_items.append({
