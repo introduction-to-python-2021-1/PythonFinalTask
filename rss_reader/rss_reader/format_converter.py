@@ -9,6 +9,8 @@ from xhtml2pdf import pisa
 from rss_reader.helper import get_path_to_data
 from rss_reader.logger_config import get_logger
 
+logger = get_logger()
+
 
 class Converter(abc.ABC):
     """Creates abstract converter from which concrete converters must be derived."""
@@ -24,6 +26,8 @@ class Converter(abc.ABC):
         Returns:
             (str): String containing HTML with news items.
         """
+        logger.info("Generate HTML")
+
         htmlpath = get_path_to_data("html")
         template_loader = jinja2.FileSystemLoader(searchpath=htmlpath)
         template_env = jinja2.Environment(loader=template_loader)
@@ -41,6 +45,8 @@ class Converter(abc.ABC):
         Parameters:
             content (bytes): Bytes object with content to write to file.
         """
+        logger.info(f"Create file {self.file_path}")
+
         self.file_path.touch(exist_ok=True)
         self.file_path.write_bytes(content)
 
@@ -65,6 +71,8 @@ class ToHtmlConverter(Converter):
         Parameters:
             news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: [] of {}'s
         """
+        logger.info("Convert to HTML")
+
         html_content = self.generate_html(news_items)
         self.create_file(html_content.encode("UTF-8"))
 
@@ -79,6 +87,8 @@ class ToPdfConverter(Converter):
         Parameters:
             news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: [] of {}'s
         """
+        logger.info("Convert to PDF")
+
         html_content = self.generate_html(news_items)
         pdf_content = io.BytesIO()
         pisa.pisaDocument(html_content.encode("UTF-8"), pdf_content, encoding="UTF-8", path=get_path_to_data("fonts"))

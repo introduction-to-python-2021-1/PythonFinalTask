@@ -39,7 +39,6 @@ class LocalStorage:
         Parameters:
             news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: [] of {}'s
         """
-
         logger.info("Download images")
 
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=len(news_items) or None)
@@ -82,7 +81,7 @@ class LocalStorage:
             storage_has_news_items_by_url = bool(len(storage_content[url]))
             # News items in news_items_sorted_by_date list which index is less than max_index will be added to storage
             max_index = None
-            
+
             if storage_has_news_items_by_url:
 
                 date_of_latest_news_item_by_url = self.parse_date_from_news_item(storage_content[url][0])
@@ -92,9 +91,10 @@ class LocalStorage:
                     if self.parse_date_from_news_item(news_item) > date_of_latest_news_item_by_url:
                         max_index += 1
 
-            logger.info(f"Set {max_index} fresh news items in local storage by url: {url}")
-
             news_items_to_be_add_to_storage = news_items_sorted_by_date[:max_index]
+
+            logger.info(f"Set {len(news_items_to_be_add_to_storage)} fresh news items in local storage by url: {url}")
+
             self.get_news_items_images(news_items_to_be_add_to_storage)
             storage_content[url] = news_items_to_be_add_to_storage + storage_content[url]
         else:
