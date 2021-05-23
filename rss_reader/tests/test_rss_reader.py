@@ -7,6 +7,9 @@ from modules.rssparser import RSSparser
 from rss_reader.rss_reader.rss_reader import main, VERSION, create_logger
 
 logger = create_logger()
+URL_BAD = 'https://www.dsfsdfsdf.com/'
+URL_WITH_RSS = 'https://news.yahoo.com/rss/'
+URL_WITHOUT_RSS = 'https://news.yahoo.com/'
 
 
 class TestMain(unittest.TestCase):
@@ -23,20 +26,22 @@ class TestMain(unittest.TestCase):
         main(argv)
         self.assertEqual(mock_stdout.getvalue(), '\nVersion {}\n'.format(VERSION))
 
+    def test_bad_url(self):
+        with self.assertLogs('root', level='ERROR') as logs:
+            main(['None', URL_BAD])
+        self.assertIn('ERROR:root:Connection not detected.', logs.output)
+
 
 class TestConnector(unittest.TestCase):
-    URL_BAD = 'https://www.dsfsdfsdf.com/'
-    URL_WITH_RSS = 'https://news.yahoo.com/rss/'
-    URL_WITHOUT_RSS = 'https://news.yahoo.com/'
 
     def test_bad_url(self):
-        self.assertEqual(Connector(self.URL_BAD, logger).connection, False)
+        self.assertEqual(Connector(URL_BAD, logger).connection, False)
 
     def test_url_without_rss(self):
-        self.assertEqual(Connector(self.URL_WITHOUT_RSS, logger).connection, False)
+        self.assertEqual(Connector(URL_WITHOUT_RSS, logger).connection, False)
 
     def test_url_with_rss(self):
-        self.assertEqual(Connector(self.URL_WITH_RSS, logger).connection, True)
+        self.assertEqual(Connector(URL_WITH_RSS, logger).connection, True)
 
 
 class TestRSSparser(unittest.TestCase):
