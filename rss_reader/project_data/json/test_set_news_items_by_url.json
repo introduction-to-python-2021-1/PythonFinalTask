@@ -19,6 +19,33 @@
         ],
         "expected": 4
     },
+    "with_existing_url_in_storage_but_without_news_items": {
+        "url": "https://news.google.com/rss",
+        "news_items": [
+            {
+                "Feed": "Top stories - Google News",
+                "Title": "Italy cable car fall: 14 dead after accident near Lake Maggiore - BBC News",
+                "Date": "Sun, 23 May 2021 19:53:03 GMT",
+                "Link": "https://news.google.com/__i/rss",
+                "image_url": null
+            },
+            {
+                "Feed": "Top stories - Google News",
+                "Title": "iPhone 13 rumors are getting people excited. Here's what we've heard - CNET",
+                "Date": "Sun, 23 May 2021 18:42:27 GMT",
+                "Link": "https://news.google.com/__i/rss",
+                "image_url": null
+            },
+            {
+                "Feed": "Top stories - Google News",
+                "Title": "China ultramarathon: Champion runners among 21 dead from freezing conditions - New York Post",
+                "Date": "Sun, 23 May 2021 18:21:00 GMT",
+                "Link": "https://news.google.com/__i/rss",
+                "image_url": null
+            }
+        ],
+        "expected": 3
+    },
     "without_existing_url_in_storage": {
         "url": "https://www.feedforall.com/sample.xml",
         "news_items": [

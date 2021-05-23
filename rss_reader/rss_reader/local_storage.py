@@ -74,30 +74,34 @@ class LocalStorage:
             [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: Sorted list of dicts
         """
         # Sorts channel news items by date, latest news comes first
-        sorted_news_items = sorted(news_items, reverse=True, key=self.parse_date_from_news_item)
+        news_items_sorted_by_date = sorted(news_items, reverse=True, key=self.parse_date_from_news_item)
         storage_content = self.read_from_storage_file()
 
         if url in storage_content:
             # To prevent duplication of news items from the same url
             storage_has_news_items_by_url = bool(len(storage_content[url]))
-            date_of_latest_news_item_by_url = self.parse_date_from_news_item(storage_content[url][0])
+            # News items in news_items_sorted_by_date list which index is less than max_index will be added to storage
+            max_index = None
+            
+            if storage_has_news_items_by_url:
 
-            i = 0
+                date_of_latest_news_item_by_url = self.parse_date_from_news_item(storage_content[url][0])
+                max_index = 0
 
-            while storage_has_news_items_by_url and i < len(sorted_news_items) and \
-                    date_of_latest_news_item_by_url < self.parse_date_from_news_item(sorted_news_items[i]):
-                i += 1
+                for news_item in news_items_sorted_by_date:
+                    if self.parse_date_from_news_item(news_item) > date_of_latest_news_item_by_url:
+                        max_index += 1
 
-            logger.info(f"Set {i} fresh news items in local storage by url: {url}")
+            logger.info(f"Set {max_index} fresh news items in local storage by url: {url}")
 
-            news_items_to_be_add_to_storage = sorted_news_items[:i]
+            news_items_to_be_add_to_storage = news_items_sorted_by_date[:max_index]
             self.get_news_items_images(news_items_to_be_add_to_storage)
             storage_content[url] = news_items_to_be_add_to_storage + storage_content[url]
         else:
-            logger.info(f"Set {len(sorted_news_items)} fresh news items in local storage by url: {url}")
+            logger.info(f"Set {len(news_items_sorted_by_date)} fresh news items in local storage by url: {url}")
 
-            self.get_news_items_images(sorted_news_items)
-            storage_content[url] = sorted_news_items
+            self.get_news_items_images(news_items_sorted_by_date)
+            storage_content[url] = news_items_sorted_by_date
 
         self.write_to_storage_file(storage_content)
         self.get_number_of_news_items_by_url(url)
@@ -125,11 +129,10 @@ class LocalStorage:
             "Get news items from local storage by" + (f" url: {url} and " if url else " ") + f"date: {pub_date.date()}"
         )
 
-        def fold_news_items_by_url_and_date(news_items):
-            """Folds news items get by specific date to list named "news_items_by_specific_date"."""
-            nonlocal news_items_by_specific_date
+        def fold_news_items_by_url_and_date(news_items, news_items_by_specific_date):
+            """Folds news items get by specific date to list news_items_by_specific_date."""
 
-            tmp = list(filter(lambda item: self.parse_date_from_news_item(item).date() == pub_date.date(), news_items))
+            tmp = [item for item in news_items if self.parse_date_from_news_item(item).date() == pub_date.date()]
 
             if tmp:
                 news_items_by_specific_date += tmp
@@ -139,10 +142,10 @@ class LocalStorage:
 
         if url in storage_content:
             news_items = storage_content[url]
-            fold_news_items_by_url_and_date(news_items)
+            fold_news_items_by_url_and_date(news_items, news_items_by_specific_date)
         else:
             for news_items in storage_content.values():
-                fold_news_items_by_url_and_date(news_items)
+                fold_news_items_by_url_and_date(news_items, news_items_by_specific_date)
         # Latest news comes first
         return sorted(news_items_by_specific_date, reverse=True, key=self.parse_date_from_news_item)
 
