@@ -39,7 +39,6 @@ def parses_data(source, limit):
                 for image in images_find:
                     link_of_image = image.get("url")
                     images.append(link_of_image)
-                # news_item = {"Title": title, "Date": date, "Link": link, "Description": description, "Images": images}
                 news_item = {"Title": title, "Date": date, "Link": link, "Images": images}
                 list_of_news.append(news_item)
             dictionary["News"] = list_of_news
@@ -48,20 +47,19 @@ def parses_data(source, limit):
     return dictionary
 
 
-def print_news(dictionary):
+def printing_news(dictionary):
     """Print news on console"""
     print("\nFeed:", dictionary["Feed"], "\n")
-    for news_item in dictionary["News"]:
-        print("Title:", news_item["Title"])
-        print("Date:", news_item["Date"])
-        print("Link:", news_item["Link"])
-        # print("Description:", news_item["Description"])
-        print("Images:", len(news_item["Images"]))
-        print('\n'.join(news_item["Images"]), "\n")
+    for part in dictionary["News"]:
+        print("Title:", part["Title"])
+        print("Date:", part["Date"])
+        print("Link:", part["Link"])
+        print("Images:", len(part["Images"]))
+        print('\n'.join(part["Images"]), "\n")
     print("Amount of news:", len(dictionary["News"]), "\n")
 
 
-def print_json(dictionary):
+def printing_json(dictionary):
     """Print json news on console"""
     print(json.dumps(dictionary, indent=3))
     with open("../json_format", "w") as file:
@@ -85,9 +83,9 @@ def main():
             logging.info(f"Reads amount of news - {args.limit} ")
         if args.json:
             logging.info(f"In json")
-            print_json(number_of_news)
+            printing_json(number_of_news)
         else:
-            print_news(number_of_news)
+            printing_news(number_of_news)
     except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL) as e:
             print("ConnectionError. Correct the URL, please")
 
