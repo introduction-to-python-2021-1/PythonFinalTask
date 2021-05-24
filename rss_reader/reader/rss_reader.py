@@ -77,11 +77,12 @@ def main():
 
     if args.date:
         try:
+            args_date = (datetime.datetime.strptime(args.date, '%Y%m%d')).date()
             logger.info(
-                f"Retrieves news for the selected date ({(datetime.datetime.strptime(args.date, '%Y%m%d')).date()}) ...")
+                f"Retrieves news for the selected date ({args_date}) ...")
             result = execute_news(args.date, cursor)
             if len(result) == 0:
-                print(f"Sorry, there are no articles for {(datetime.datetime.strptime(args.date, '%Y%m%d')).date()}!")
+                print(f"Sorry, there are no articles for {args_date}!")
         except ValueError:
             print('Please, enter the date in the following format: "YYYYMMDD".')
             result = []

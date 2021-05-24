@@ -58,7 +58,7 @@ def check_limit(limit_value):
 def store_news(list_of_news, cursor, connection):
     """Storing news in a local storage"""
     cursor.execute('''CREATE TABLE IF NOT EXISTS news
-                   (title text, link text UNIQUE, full_date text, date text, source text, description text, 
+                   (title text, link text UNIQUE, full_date text, date text, source text, description text,
                    image text)''')
     list_of_values = []
     for item in list_of_news:
