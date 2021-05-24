@@ -1,11 +1,10 @@
-'''This module contains a class which parse and print data'''
 from bs4 import BeautifulSoup
 from dateutil import parser as date_parser
 import json
 
 
 class RssParser():
-    '''This class parse the RSS feed and print data'''
+    """This class parse the RSS feed and print data"""
     def __init__(self, doc, arg, logging):
         self.doc = doc
         self.arg = arg
@@ -14,7 +13,7 @@ class RssParser():
         self.format_news()
 
     def format_news(self):
-        '''This method collect all data in a dict'''
+        """This method collect all data in a dict"""
         self.logging.info('Collect all news and print')
         for num, item in enumerate(self.get_news()):
             if self.arg.json:
@@ -24,12 +23,12 @@ class RssParser():
         self.print_news()
 
     def print_news(self):
-        '''This method print data JSON style'''
+        """This method print data JSON style"""
         if self.news:
             print(json.dumps(self.news, indent=4, sort_keys=False, default=str))
 
     def get_news(self):
-        '''This method find data in xml file'''
+        """This method find data in xml file"""
         self.soup = BeautifulSoup(self.doc.content, 'lxml-xml')
         self.data = self.soup.findAll('item', limit=self.arg.limit)
         for item in self.data:
@@ -48,7 +47,7 @@ class RssParser():
             yield news_data
 
     def json_format(self, data):
-        '''This method format data from xml file JSON style'''
+        """This method format data from xml file JSON style"""
         return {
             'Title': data['title'],
             'Publication date': data['pubDate'],
@@ -57,7 +56,7 @@ class RssParser():
             }
 
     def default_format(self, data):
-        '''This method format data from xml file default style'''
+        """This method format data from xml file default style"""
         print('\n\n\nTitle: {0}\nDate: {1}\nLink: {2}\n\nImages links: {3}'.format(
                                                                             data['title'],
                                                                             data['pubDate'],
