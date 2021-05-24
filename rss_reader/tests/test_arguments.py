@@ -1,10 +1,10 @@
 from io import StringIO
 import json
 import logging
+import os
 import re
 import unittest
 from unittest.mock import patch
-import os
 
 from bs4 import BeautifulSoup
 
