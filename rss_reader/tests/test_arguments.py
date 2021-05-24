@@ -3,11 +3,25 @@ from unittest.mock import patch
 from io import StringIO
 import re
 import json
+import logging
+
+from bs4 import BeautifulSoup
 
 from rss_reader.rss_reader.rss_reader import main
+from components.feed import Feed
 
 
 class TestRssReader(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        with open('data/example.xml', 'r') as file:
+            cls.soup = BeautifulSoup(file.read(), 'lxml-xml')
+        cls.example_feed_title = cls.soup.find('title').text
+        cls.example_items = cls.soup.find_all('item')
+        cls.example_feed = Feed('https://www.yahoo.com/news', None, False, logging, cls.example_feed_title,
+                                cls.example_items)
+        cls.example_news_list = cls.example_feed.news_list
+
     @patch('sys.stdout', new_callable=StringIO)
     def test_version(self, mock_stdout):
         """Tests that if --version option is specified app should just print its version and stop"""
@@ -27,32 +41,32 @@ class TestRssReader(unittest.TestCase):
     @patch('sys.stdout', new_callable=StringIO)
     def test_limit(self, mock_stdout):
         """Tests that if --limit is specified user should get specified number of news"""
-        argv = ['https://news.yahoo.com/rss/', '--limit=2']
-        main(argv)
+        with patch.object(self.example_feed, 'news_limit', 2):
+            print(str(self.example_feed))
         result_news_dates_and_links = re.findall('Date: .+\nLink: .+\n', mock_stdout.getvalue())
         self.assertEqual(len(result_news_dates_and_links), 2)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_limit_larger_than_feed_size(self, mock_stdout):
         """Tests that if --limit is larger than feed size then user should get all available news"""
-        argv = ['https://news.yahoo.com/rss/', '--limit=999']
-        main(argv)
+        with patch.object(self.example_feed, 'news_limit', 999):
+            print(str(self.example_feed))
         result_news_dates_and_links = re.findall('Date: .+\nLink: .+\n', mock_stdout.getvalue())
-        self.assertEqual(len(result_news_dates_and_links), 50)
+        self.assertEqual(len(result_news_dates_and_links), 5)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_limit_is_not_specified(self, mock_stdout):
         """Tests that if --limit is not specified, then user should get all available feed"""
-        argv = ['https://news.yahoo.com/rss/']
-        main(argv)
+        with patch.object(self.example_feed, 'news_limit', None):
+            print(str(self.example_feed))
         result_news_dates_and_links = re.findall('Date: .+\nLink: .+\n', mock_stdout.getvalue())
-        self.assertEqual(len(result_news_dates_and_links), 50)
+        self.assertEqual(len(result_news_dates_and_links), 5)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_json(self, mock_stdout):
         """Tests that if --json option is specified utility should convert the news into JSON format"""
-        argv = ['https://news.yahoo.com/rss/', '--json']
-        main(argv)
+        with patch.object(self.example_feed, 'to_json', True):
+            print(str(self.example_feed))
         try:
             json.loads(mock_stdout.getvalue())
         except json.JSONDecodeError:
@@ -64,8 +78,9 @@ class TestRssReader(unittest.TestCase):
         Tests that if --limit and --json option is specified utility should convert the news into JSON format
         and user should get specified number of news
         """
-        argv = ['https://news.yahoo.com/rss/', '--limit=2', '--json']
-        main(argv)
+        with patch.object(self.example_feed, 'to_json', True):
+            with patch.object(self.example_feed, 'news_limit', 2):
+                print(str(self.example_feed))
         try:
             result_json = json.loads(mock_stdout.getvalue())
         except json.JSONDecodeError:

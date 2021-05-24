@@ -1,0 +1,72 @@
+<rss xmlns:media="http://search.yahoo.com/mrss/" version="2.0">
+    <channel>
+        <title>&#39Yahoo News - Latest News & Headlines</title>
+        <link>https://www.yahoo.com/news</link>
+        <description>The latest news and headlines from Yahoo! News. Get breaking news stories and in-depth coverage
+            with videos and photos.
+        </description>
+        <language>en-US</language>
+        <copyright>Copyright (c) 2021 Yahoo! Inc. All rights reserved</copyright>
+        <pubDate>Wed, 05 May 2021 15:51:05 -0400</pubDate>
+        <ttl>5</ttl>
+        <image>
+            <title>Yahoo News - Latest News & Headlines</title>
+            <link>https://www.yahoo.com/news</link>
+            <url>http://l.yimg.com/rz/d/yahoo_news_en-US_s_f_p_168x21_news.png</url>
+        </image>
+        <item>
+            <title>Yair Lapid receives mandate to form Israeli government, oust Netanyahu</title>
+            <link>https://news.yahoo.com/yair-lapid-receives-mandate-form-153810526.html</link>
+            <pubDate>2021-05-05T15:38:10Z</pubDate>
+            <source url="https://www.axios.com/">Axios</source>
+            <guid isPermaLink="false">yair-lapid-receives-mandate-form-153810526.html</guid>
+            <media:content height="86"
+                           url="https://s.yimg.com/uu/api/res/1.2/Hwi2jF5YMkfZEQXYn6.4GQ--~B/aD03MjA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/axios_articles_623/61bb76f4c77ab703e79def21576ca9b1"
+                           width="130"/>
+            <media:credit role="publishing company"/>
+        </item>
+        <item>
+            <title>St. Louis prosecutor Kim Gardner to face disciplinary hearing, law license in jeopardy over Greitens
+                complaint
+            </title>
+            <link>https://news.yahoo.com/st-louis-prosecutor-kim-gardner-180119536.html</link>
+            <pubDate>2021-05-05T18:01:19Z</pubDate>
+            <source url="https://www.foxnews.com/">Fox News</source>
+            <guid isPermaLink="false">st-louis-prosecutor-kim-gardner-180119536.html</guid>
+            <media:credit role="publishing company"/>
+        </item>
+        <item>
+            <title>Firing of Atlanta officer who shot Rayshard Brooks reversed</title>
+            <link>https://news.yahoo.com/firing-atlanta-officer-shot-rayshard-150649408.html</link>
+            <pubDate>2021-05-05T15:06:49Z</pubDate>
+            <source url="http://www.ap.org/">Associated Press</source>
+            <guid isPermaLink="false">firing-atlanta-officer-shot-rayshard-150649408.html</guid>
+            <media:content height="86"
+                           url="https://s.yimg.com/uu/api/res/1.2/zQO1L7RzJ6fc.2116yKQIg--~B/aD0xNTQ2O3c9Mjc0MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/517fb7ea8aad0b76436f74ff9f1f0d06"
+                           width="130"/>
+            <media:credit role="publishing company"/>
+        </item>
+        <item>
+            <title>Nicola Sturgeon is waging war against the Union, &#39warns Gordon Brown</title>
+            <link>https://news.yahoo.com/nicola-sturgeon-waging-war-against-133338284.html</link>
+            <pubDate>2021-05-05T13:33:38Z</pubDate>
+            <source url="http://www.telegraph.co.uk/">The Telegraph</source>
+            <guid isPermaLink="false">nicola-sturgeon-waging-war-against-133338284.html</guid>
+            <media:content height="86"
+                           url="https://s.yimg.com/uu/api/res/1.2/jezFQg0ByRwiwzcdbLn7Ug--~B/aD0xNTYzO3c9MjUwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/the_telegraph_258/836d0b7b71320c2d2e8009b263d63836"
+                           width="130"/>
+            <media:credit role="publishing company"/>
+        </item>
+        <item>
+            <title>CDC expects new COVID surge starting this month</title>
+            <link>https://news.yahoo.com/cdc-expects-covid-surge-starting-191220387.html</link>
+            <pubDate>2021-05-05T19:12:20Z</pubDate>
+            <source url="https://www.axios.com/">Axios</source>
+            <guid isPermaLink="false">cdc-expects-covid-surge-starting-191220387.html</guid>
+            <media:content height="86"
+                           url="https://s.yimg.com/uu/api/res/1.2/o1HDPzuwj4aPloGNsuiN6g--~B/aD03MjA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/axios_articles_623/6ae46d1b029a1b0b433a582c5d9209de"
+                           width="130"/>
+            <media:credit role="publishing company"/>
+        </item>
+    </channel>
+</rss>
