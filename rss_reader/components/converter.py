@@ -34,7 +34,7 @@ class Converter:
         Parameters:
             path (str): Output filepath
             feeds_list (list): List of objects of class Feed
-            news_limit (int): Value that limits the number of news
+            news_limit (int or NoneType): Value that limits the number of news
         """
         self.logger.info(' Start converting news feed to PDF format')
         output_filepath = self.prepare_output_filepath(path, pdf=True)
@@ -81,7 +81,7 @@ class Converter:
 
         Parameters:
             feeds_list (list): List of objects of class Feed
-            news_limit (int): Value that limits the number of news
+            news_limit (int or NoneType): Value that limits the number of news
             path (str): Output filepath
             pdf (bool): If True prepares HTML for conversion to PDF
 

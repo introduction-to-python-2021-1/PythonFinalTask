@@ -15,7 +15,7 @@ class Feed:
 
         Parameters:
             source_url (str): Link to RSS Feed
-            news_limit (int): Value that limits the number of news
+            news_limit (int or NoneType): Value that limits the number of news
             to_json (bool): If True printing news in JSON format
             logger (module): logging module
             feed_title (str): News feed title

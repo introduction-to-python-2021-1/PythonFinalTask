@@ -105,7 +105,7 @@ class Cache:
 
         Parameters:
             publication_date (str): Date of publication of the news in the format "%Y%m%d"
-            news_limit (int): Value that limits the number of news
+            news_limit (int or NoneType): Value that limits the number of news
             source_url (str): Link to the source from which the news was received
             to_json (bool): If True news will be printed in JSON format
         """
