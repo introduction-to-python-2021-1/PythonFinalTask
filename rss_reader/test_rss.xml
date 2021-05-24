@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+<title>News channel</title>
+<description>For testing rss reader</description>
+<link>http://test_rss_reader.org/</link>
+<item>
+<title>Last news</title>
+<author>Alexey Morozov</author>
+<link>https://news.ru/last_news.html</link>
+<pubDate>2021-05-24T10:14:55Z</pubDate>
+<description>Last news</description>
+</item>
+<item>
+<title>Next news</title>
+<link>https://super_news.ru/next_news.html</link>
+</item>
+</channel>
+</rss>

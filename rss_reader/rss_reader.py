@@ -18,7 +18,7 @@ Optional arguments:
   --limit LIMIT  Limit news topics if this parameter provided
 """
 
-__version__ = '1.0'
+__version__ = '2.0'
 
 import argparse
 import feedparser
@@ -71,6 +71,26 @@ class RSSReader:
         self.is_json = is_json
         self.limit = limit
 
+    def _parse_url(self):
+        """Parse RSS URL and return parser object."""
+        self.logger.info("Parsing RSS URL...")
+
+        if not self.source or self.source == '':
+            self.logger.error("Source is empty.")
+            return
+
+        try:
+            parser = feedparser.parse(self.source)
+        except URLError:
+            self.logger.error("RSS URL is incorrect.", exc_info=True)
+            return
+
+        if parser.get('encoding') == '':
+            self.logger.error("Feed’s character encoding is incorrect.", exc_info=True)
+            return
+
+        return parser
+
     @staticmethod
     def _format_date(date):
         """Date formatting (for example: Sun, 23 May, 2021 05:30 PM) ."""
@@ -84,6 +104,15 @@ class RSSReader:
     def _load_data(self, parser):
         """Load data to dict from parser object."""
         self.logger.info("Loading data from RSS...")
+
+        if parser is None:
+            self.logger.warning("Parser is None.")
+            return
+
+        if parser.feed.get('title') is None:
+            self.logger.warning("Channel is empty.")
+            return
+
         data = {'channel': parser.feed.get('title', '')}
 
         if self.limit:
@@ -152,23 +181,13 @@ class RSSReader:
 
     def run(self):
         """Load data from RSS and print it in text or json format."""
-        self.logger.info("Parsing RSS URL...")
-        try:
-            parser = feedparser.parse(self.source)
-        except URLError:
-            self.logger.error("RSS URL is incorrect.", exc_info=True)
-            return
+        data = self._load_data(self._parse_url())
 
-        if parser.encoding == '':
-            self.logger.error("Feed’s character encoding is incorrect.", exc_info=True)
-            return
-
-        data = self._load_data(parser)
-
-        if self.is_json:
-            self._print_as_json(data)
-        else:
-            self._print_as_formatted_text(data)
+        if data:
+            if self.is_json:
+                self._print_as_json(data)
+            else:
+                self._print_as_formatted_text(data)
 
 
 def main():
