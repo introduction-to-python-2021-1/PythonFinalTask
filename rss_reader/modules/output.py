@@ -22,11 +22,11 @@ class ConsoleOutput:
             print('Date: {}'.format(onews['date']))
             print('Link: {}\n'.format(onews['link']))
 
-            if onews.get('description') is not None:
+            if onews.get('description'):
                 print(onews['description'])
                 print()
 
-            if onews.get('links') is not None:
+            if onews.get('links'):
                 links = onews.get('links')
                 print('Links:')
                 for i in range(len(links)):
