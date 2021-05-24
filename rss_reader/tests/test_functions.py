@@ -1,7 +1,7 @@
 import unittest
 
-from rss_reader.functions import parse_news, make_json, check_limit
-from rss_reader.article import Article
+from rss_reader.reader.functions import parse_news, make_json, check_limit
+from rss_reader.reader import Article
 
 """Test cases to test functions"""
 
