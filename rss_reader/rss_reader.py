@@ -117,6 +117,10 @@ def check_URL_validity():
 
 
 def misspelled_args():
+    """
+    Function checks if user enters any misspelled arguments, excluding negative numbers.
+    :return: True or False
+    """
     if len(sys.argv) > 1:
         misspelled_args_list = list()
         list_to_check = [item for item in sys.argv[1:] if item.strip('-').isalpha()] # exclude numeric
@@ -205,7 +209,7 @@ def main():
     logging.info('Program end.')
 
 
-# URL https://news.yahoo.com/rss/
+# python3 rss_reader.py https://news.yahoo.com/rss/ --limit 1 --json
 args_for_quick_exit = ['--version', '-h', '--help']
 allowed_arguments = ['-h', '--help', '--version', '--json', '--verbose', '--limit']
 rss_output_path = 'news_from_rss.json'

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 def read_requirements():
-    with open('requirements.txt') as f_obj:
+    with open('/home/rmaladziashyn/PycharmProjects/PythonFinalTask/requirements.txt') as f_obj:
         contents = f_obj.read()
         requirements = contents.split('\n')
     return requirements
