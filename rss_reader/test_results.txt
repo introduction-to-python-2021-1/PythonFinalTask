@@ -1,0 +1,39 @@
+Result of test_print_as_formatted_text(), data contains only channel:
+----------------------------------------------------------------------------------------------------
+Channel: News channel
+
+Result of test_print_as_formatted_text(), full data:
+----------------------------------------------------------------------------------------------------
+Channel: News channel
+----------------------------------------------------------------------------------------------------
+News № 1
+Title: Last news
+Link: https://news.ru/last_news.html
+Author: Alexey Morozov
+Date: Sun, 23 May, 2021 05:30 PM
+
+Last news
+----------------------------------------------------------------------------------------------------
+News № 2
+Title: Next news
+Link: https://super_news.ru/next_news.html
+
+Result of test_print_as_json(), data contains only channel:
+{
+    "channel": "News channel"
+}
+
+Result of test_print_as_json(), full data:
+{
+    "channel": "News channel",
+    "news": [
+        {
+            "number": 1,
+            "title": "Last news",
+            "link": "https://news.ru/last_news.html",
+            "author": "Alexey Morozov",
+            "date": "Sun, 23 May, 2021 05:30 PM",
+            "description": "Last news"
+        }
+    ]
+}
