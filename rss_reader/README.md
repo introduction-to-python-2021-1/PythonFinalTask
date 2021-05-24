@@ -39,6 +39,8 @@ In case of using `--json` argument the utility uses the following json format:
 
 ## Package structure
     rss_reader/
-      |-- setup.py           # installation package
-      |-- rss_reader.py      # implementation RSSReader class
-      |-- test_rss_reader.py # testing RSSReader class
+      |-- setup.py             # installation package
+      |-- rss_reader/          
+        |-- rss_reader.py      # implementation RSSReader class
+      |-- tests                
+        |-- test_rss_reader.py # testing RSSReader class

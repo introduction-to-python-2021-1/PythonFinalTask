@@ -1,6 +1,6 @@
 import setuptools
 
-with open("rss_reader/README.md") as file:
+with open("README.md") as file:
     read_me_description = file.read()
 
 setuptools.setup(

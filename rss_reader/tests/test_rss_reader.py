@@ -6,7 +6,7 @@ import feedparser
 import unittest
 
 from io import StringIO
-from rss_reader import RSSReader
+from rss_reader.rss_reader import RSSReader
 from time import strptime
 from unittest.mock import patch
 
@@ -37,7 +37,7 @@ class RSSReaderTests(unittest.TestCase):
         parser = feedparser.parse('')
         self.assertIsNone(RSSReader()._load_data(parser))
         # Full data
-        parser = feedparser.parse('test_rss.xml')
+        parser = feedparser.parse(r'tests/test_rss.xml')
         data = {'channel': 'News channel',
                 'news': [
                     {'number': 1,
@@ -79,7 +79,7 @@ class RSSReaderTests(unittest.TestCase):
         self._test_print(func, data, expected)
         # Only channel
         data = {'channel': 'News channel'}
-        expected = self._test_result('test_results.txt', 1, 2)
+        expected = self._test_result(r'tests/test_results.txt', 1, 2)
         self._test_print(func, data, expected)
         # Full data
         data = {'channel': 'News channel',
@@ -97,7 +97,7 @@ class RSSReaderTests(unittest.TestCase):
                      'date': '',
                      'description': ''},
                 ]}
-        expected = self._test_result('test_results.txt', 5, 18)
+        expected = self._test_result(r'tests/test_results.txt', 5, 18)
         self._test_print(func, data, expected)
 
     def test_print_as_json(self):
@@ -113,7 +113,7 @@ class RSSReaderTests(unittest.TestCase):
         self._test_print(func, data, expected)
         # Only channel
         data = {'channel': 'News channel'}
-        expected = self._test_result('test_results.txt', 21, 23)
+        expected = self._test_result(r'tests/test_results.txt', 21, 23)
         self._test_print(func, data, expected)
         # Full data
         data = {'channel': 'News channel',
@@ -125,7 +125,7 @@ class RSSReaderTests(unittest.TestCase):
                      'date': 'Sun, 23 May, 2021 05:30 PM',
                      'description': 'Last news'},
                 ]}
-        expected = self._test_result('test_results.txt', 26, 38)
+        expected = self._test_result(r'tests/test_results.txt', 26, 38)
         self._test_print(func, data, expected)
 
 
