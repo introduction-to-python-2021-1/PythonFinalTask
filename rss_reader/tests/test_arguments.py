@@ -1,14 +1,14 @@
-import unittest
-from unittest.mock import patch
 from io import StringIO
-import re
 import json
 import logging
+import re
+import unittest
+from unittest.mock import patch
 
 from bs4 import BeautifulSoup
 
-from rss_reader.rss_reader.rss_reader import main
 from components.feed import Feed
+from rss_reader.rss_reader.rss_reader import main
 
 
 class TestRssReader(unittest.TestCase):
