@@ -21,7 +21,6 @@ class RssItem:
         of absence any of listed parameters class field value will be
         remain its default value ( empty string or empty list for content tag)
         """
-        # vars(self).update(kwargs)
         self.title = kwargs.get("title", "")
         self.link = kwargs.get("link", "")
         self.pub_date = kwargs.get("pubDate", "")
