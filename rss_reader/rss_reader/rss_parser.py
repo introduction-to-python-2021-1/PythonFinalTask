@@ -3,7 +3,7 @@ from dateutil import parser as date_parser
 import json
 
 
-class RssParser():
+class RssParser:
     """This class parse the RSS feed and print data"""
     def __init__(self, doc, arg, logging):
         self.doc = doc

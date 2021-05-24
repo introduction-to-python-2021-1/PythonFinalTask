@@ -5,6 +5,7 @@ import rss_reader.reader as reader
 
 from contextlib import redirect_stdout
 
+
 class TestRssReader(unittest.TestCase):
     def test_negative_limit(self):
         with self.assertRaises(SystemExit):
@@ -21,7 +22,8 @@ class TestRssReader(unittest.TestCase):
     def test_invalid_schema_url(self):
         with io.StringIO() as buf, redirect_stdout(buf):
                 reader.main(args=['url.com'])
-                self.assertEqual(buf.getvalue(), 'Invalid URL url.com: No schema supplied. Perhaps you meant http:url.com?\n')
+                self.assertEqual(buf.getvalue(),
+                                 'Invalid URL url.com: No schema supplied. Perhaps you meant http:url.com?\n')
 
     def test_invalid_url(self):
         with io.StringIO() as buf, redirect_stdout(buf):

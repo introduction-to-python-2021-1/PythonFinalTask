@@ -3,14 +3,10 @@ import argparse
 import logging
 import requests
 import sys
-import os
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-
-from rss_reader.rss_parser import RssParser
+from .rss_parser import RssParser
 
 
-def main(args):
+def main(args=sys.argv[1:]):
     """This function add console arguments"""
     parser = argparse.ArgumentParser(description='Python command-line RSS reader.')
     parser.add_argument('source', type=str, help='RSS URL')
@@ -51,4 +47,4 @@ def parse(parser, args):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()
