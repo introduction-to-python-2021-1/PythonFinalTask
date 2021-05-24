@@ -4,6 +4,7 @@ import logging
 import re
 import unittest
 from unittest.mock import patch
+import os
 
 from bs4 import BeautifulSoup
 
@@ -14,7 +15,7 @@ from rss_reader.rss_reader.rss_reader import main
 class TestRssReader(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        with open('data/example.xml', 'r') as file:
+        with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/example.xml')), 'r') as file:
             cls.soup = BeautifulSoup(file.read(), 'lxml-xml')
         cls.example_feed_title = cls.soup.find('title').text
         cls.example_items = cls.soup.find_all('item')
