@@ -35,13 +35,13 @@ class TestMain(unittest.TestCase):
 class TestConnector(unittest.TestCase):
 
     def test_bad_url(self):
-        self.assertEqual(Connector(URL_BAD, logger).connection, False)
+        self.assertEqual(Connector(URL_BAD, logger).is_connect, False)
 
     def test_url_without_rss(self):
-        self.assertEqual(Connector(URL_WITHOUT_RSS, logger).connection, False)
+        self.assertEqual(Connector(URL_WITHOUT_RSS, logger).is_connect, False)
 
     def test_url_with_rss(self):
-        self.assertEqual(Connector(URL_WITH_RSS, logger).connection, True)
+        self.assertEqual(Connector(URL_WITH_RSS, logger).is_connect, True)
 
 
 class TestRSSparser(unittest.TestCase):
