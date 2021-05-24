@@ -70,11 +70,11 @@ class RSSparser:
             feed_data['link'] = self.news[i].get('link')
             feed_data['date'] = self.news[i].get('published')
 
-            if self.news[i].get('description') is not None:
+            if self.news[i].get('description'):
                 feed_data['description'] = self.clean_text(self.news[i].get('description'))
 
             feed_links = self.news[i].get('links')
-            if feed_links is not None:
+            if feed_links:
                 list_of_links = [{'link': link.get('href'), 'type': self.LINK_TYPES.get(link.get('type'))} for link in
                                  feed_links]
                 feed_data['links'] = list_of_links
