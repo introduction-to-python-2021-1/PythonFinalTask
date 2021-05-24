@@ -3,7 +3,7 @@ import argparse
 import logging
 import requests
 import sys
-from .rss_parser import RssParser
+from rss_reader.rss_parser import RssParser
 
 
 def main(args=sys.argv[1:]):

@@ -11,7 +11,7 @@ setup(
     packages=['rss_reader'],
     entry_points={
         'console_scripts': [
-            'rss_reader=rss_reader.reader:main',
+            'rss_reader=rss_reader.rss_reader:main',
         ],
     }
 )
