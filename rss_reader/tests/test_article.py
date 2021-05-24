@@ -1,5 +1,5 @@
 import unittest
-from rss_reader.reader import Article
+from reader.article import Article
 
 """Test cases to test Article methods"""
 
