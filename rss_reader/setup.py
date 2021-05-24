@@ -1,8 +1,5 @@
 from setuptools import setup, find_packages
 
-# with open(file=join(dirname(dirname(__file__)), 'requirements.txt')) as f:
-#     required = f.read().splitlines()
-
 
 setup(
     name='rss_reader',
