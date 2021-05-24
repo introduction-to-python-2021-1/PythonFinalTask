@@ -7,7 +7,6 @@ from modules.connector import Connector
 from modules.output import ConsoleOutput
 from modules.rssparser import RSSparser
 
-
 VERSION = 2.1
 
 
@@ -34,8 +33,9 @@ def main(argv=sys.argv):
 
             logger.info('Starting the program.')
 
-            if Connector(url=args['source'], logger=logger).is_connected:
-                news = RSSparser(url=args['source'], limit=args['limit'], logger=logger).parse_news()
+            connection = Connector(url=args['source'], logger=logger)
+            if connection.is_connect:
+                news = RSSparser(source=connection.response_text, limit=args['limit'], logger=logger).parse_news()
 
                 with ConsoleOutput(logger=logger) as console:
                     if args['json']:

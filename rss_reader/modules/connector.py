@@ -8,12 +8,10 @@ class Connector:
     def __init__(self, url, logger):
         self.url = url
         self.__logger = logger
-        self.is_connected = self.__is_rss()
+        self.response_text = None
+        self.is_connect = self.is_connect()
 
-    def __str__(self):
-        return self.is_connected
-
-    def __is_connect(self):
+    def is_connect(self):
         """
         Server connection check
         :return: boolean value
@@ -23,21 +21,14 @@ class Connector:
             resp = requests.get(self.url)
             resp.raise_for_status()
             self.__logger.debug('Connection detected.')
-            return True
-        except RequestException:
-            self.__logger.error(f'Connection not detected.')
-            return False
 
-    def __is_rss(self):
-        """
-        RSS feed check
-        :return: boolean value
-        """
-        if self.__is_connect():
-            if len(parse(self.url)['entries']) == 0:
+            if len(parse(resp.text)['entries']) == 0:
                 self.__logger.error('Invalid URL. RSS feed not found.')
                 return False
             else:
+                self.response_text = resp.text
                 return True
-        else:
+
+        except RequestException:
+            self.__logger.error(f'Connection not detected.')
             return False

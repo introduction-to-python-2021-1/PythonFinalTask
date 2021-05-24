@@ -12,9 +12,9 @@ class RSSparser:
         'video/mp4': 'video',
     }
 
-    def __init__(self, url, logger, limit=False):
+    def __init__(self, source, logger, limit=False):
         self.__logger = logger
-        self.__rss = parse(url)
+        self.__rss = parse(source)
         self.limit = self.__validate_limit(limit)
 
     @property
