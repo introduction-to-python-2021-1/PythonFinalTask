@@ -28,5 +28,5 @@ class Argparser:
 
     def __validate_arguments(self, args):
         """ Checking the correctness of the entered data """
-        if args.get('source') is None and args.get('version') is False:
+        if (args.get('source') is None or not args.get('source')) and args.get('version') is False:
             raise self.__parser.error('the following arguments are required: source')
