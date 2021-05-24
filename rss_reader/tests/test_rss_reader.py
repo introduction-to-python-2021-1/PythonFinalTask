@@ -75,7 +75,7 @@ class TestException(unittest.TestCase):
         """Test not rss format"""
         parser = rss_reader.create_parser(["https://news.yahoo.com", "-l 1"])
         with self.assertRaises(SystemExit):
-            self.assertLogs(rss_reader.print_news(parser), logging.ERROR)
+            self.assertLogs(rss_reader.parse_print_news(parser), logging.ERROR)
 
     def test_bad_url(self):
         """Try test bad urs page"""
@@ -101,7 +101,7 @@ class TestLimit(unittest.TestCase):
         """Test negative limit"""
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l-1"])
         with self.assertRaises(SystemExit):
-            self.assertLogs(rss_reader.print_news(parser), logging.ERROR)
+            self.assertLogs(rss_reader.parse_print_news(parser), logging.ERROR)
 
     def test_normal_limit(self):
         """Test limit"""
