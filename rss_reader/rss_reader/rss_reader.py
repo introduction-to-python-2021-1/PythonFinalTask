@@ -35,7 +35,7 @@ def main(argv=sys.argv):
 
             logger.info('Starting the program.')
 
-            if Connector(url=args['source'], logger=logger).connection:
+            if Connector(url=args['source'], logger=logger).is_connected:
                 news = RSSparser(url=args['source'], limit=args['limit'], logger=logger).parse_news()
 
                 with ConsoleOutput(logger=logger) as console:

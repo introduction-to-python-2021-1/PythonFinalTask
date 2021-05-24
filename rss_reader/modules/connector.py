@@ -8,10 +8,10 @@ class Connector:
     def __init__(self, url, logger):
         self.url = url
         self.__logger = logger
-        self.connection = self.__is_rss()
+        self.is_connected = self.__is_rss()
 
     def __str__(self):
-        return self.connection
+        return self.is_connected
 
     def __is_connect(self):
         """
