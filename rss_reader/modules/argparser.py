@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 
 
 class Argparser:
+    """ Class for handling command line arguments """
 
     def __init__(self, logger):
         self.__logger = logger

@@ -1,4 +1,5 @@
 class ConsoleOutput:
+    """ Class for printing news to console in human readable format """
 
     def __init__(self, logger):
         self.__logger = logger

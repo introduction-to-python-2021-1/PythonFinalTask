@@ -4,6 +4,7 @@ from requests.exceptions import RequestException
 
 
 class Connector:
+    """ Class for handling requests to the server """
 
     def __init__(self, url, logger):
         self.url = url

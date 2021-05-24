@@ -4,6 +4,8 @@ from feedparser import parse
 
 
 class RSSparser:
+    """ Class for parsing RSS feed """
+
     LINK_TYPES = {
         'text/html': 'link',
         'image/jpeg': 'image',

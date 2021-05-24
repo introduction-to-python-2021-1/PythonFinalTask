@@ -4,6 +4,8 @@ from json import dump
 
 
 class Writer(ABC):
+    """ Abstract class for writing data """
+
     _file_expansion = ''
 
     def __init__(self, logger, path=os.getcwd(), name='result'):
@@ -33,6 +35,8 @@ class Writer(ABC):
 
 
 class WriterJSON(Writer):
+    """ Class for writing data to JSON file """
+
     _file_expansion = 'json'
 
     def write(self, data):
