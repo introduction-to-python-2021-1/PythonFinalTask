@@ -1,5 +1,3 @@
-import logging
-import logging.handlers
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -8,6 +6,7 @@ import logging
 import logging.handlers
 import sys
 from urllib.error import URLError
+
 
 logging.basicConfig(level=logging.WARNING, format="%(message)s")
 logger = None
