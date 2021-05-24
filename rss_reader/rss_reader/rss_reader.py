@@ -32,9 +32,14 @@ def create_parser(args):
 
 
 def open_url(url):
-    """ Try to open url
-    :param url page
-    :return feed of news"""
+    """
+    Try to open url
+
+    Parameter
+        url page
+    Return
+        feed of news
+    """
 
     try:
         logger.info(f"open {url} and start parse")
@@ -49,9 +54,13 @@ def open_url(url):
     return feed
 
 
-def print_news(args):
-    """Check format and print news on console or json
-    :param args from the user"""
+def parse_print_news(args):
+    """
+    Check format and print news on console or json
+
+    Parameter:
+            args from the user(url, verbose, limit, json)
+    """
     feed = open_url(args.url)
     try:
         if not args.json:
@@ -64,7 +73,7 @@ def print_news(args):
         logger.error("it's not rss format")
         sys.exit()
 
-    make_dict = {}
+    feed_news = {}
     count = 0
 
     if not args.limit:
@@ -74,18 +83,17 @@ def print_news(args):
         sys.exit()
     for item in feed["items"][:args.limit]:
         logger.info(f"Process item № {count + 1}")
-        make_dict["Title"] = item['title']
-        make_dict["PubDate"] = item['published']
-        make_dict["Link"] = item["link"]
-        data_ = list(make_dict.values())
-        data.make_dataframe(data_)
+        feed_news["Title"] = item['title']
+        feed_news["Date"] = item['published']
+        feed_news["Link"] = item["link"]
+        data.make_dataframe(feed_news)
         if args.date:
             pass
         elif args.json:
-            print(json.dumps(make_dict, indent=3))
+            print(json.dumps(feed_news, indent=3))
             count += 1
         else:
-            for name_of_line, news in make_dict.items():
+            for name_of_line, news in feed_news.items():
                 print(f"{name_of_line}: {news}")
                 count += 1
 
@@ -96,14 +104,14 @@ def main():
         logger.setLevel(logging.INFO)
 
     if args.date:
+        data.make_csv()
         if len(args.date) == 8 and int(args.date):
-            data.make_csv()
-            data.print_data(args.date, args.limit, args.verbose)
+            data.print_data(args.date, args.limit, args.verbose, args.json)
         else:
             logger.error(f"Bad date format")
             sys.exit()
     else:
-        print_news(args)
+        parse_print_news(args)
         data.make_csv()
 
 

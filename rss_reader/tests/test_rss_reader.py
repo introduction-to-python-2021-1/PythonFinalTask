@@ -12,7 +12,7 @@ class TestProcessResponse(unittest.TestCase):
         sys.stdout = self.out
 
     def test_version_none_argyment(self):
-        """Test version with out url"""
+        """Test version without url"""
         with self.assertRaises(SystemExit):
             parser = rss_reader.create_parser([None, "--version"])
         self.assertEqual(self.out.getvalue(), "Version 3.0\n")
@@ -93,15 +93,18 @@ class TestException(unittest.TestCase):
 
 class TestLimit(unittest.TestCase):
     def test_zero_limit(self):
+        """Test 0 limit"""
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l0"])
         self.assertFalse(parser.limit)
 
     def test_negative_limit(self):
+        """Test negative limit"""
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l-1"])
         with self.assertRaises(SystemExit):
             self.assertLogs(rss_reader.print_news(parser), logging.ERROR)
 
     def test_normal_limit(self):
+        """Test limit"""
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l 1"])
         self.assertTrue(parser.limit)
 

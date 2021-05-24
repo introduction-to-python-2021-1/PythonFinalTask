@@ -1,6 +1,7 @@
 import sys
 import os
 import logging
+import json
 
 import pandas as pd
 
@@ -10,9 +11,11 @@ logger = logging.getLogger()
 
 class Data:
     def __init__(self):
-        """Make empty DataFrame from pandas and check file data.csv
-           if he have feed read and connect with empty dataframe and
-            clear file"""
+        """
+        Make empty DataFrame from pandas and check file data.csv
+        if he have feed read and connect with empty dataframe and
+        clear file
+        """
         self.df = pd.DataFrame()
         file = open("data.csv", "a")
         if os.path.getsize("data.csv") == 0:
@@ -20,16 +23,16 @@ class Data:
         else:
             self.data = pd.read_csv("data.csv")
             self.df = pd.concat([self.data])
-            f = open("data.csv", "w")
-            f.close()
+            os.remove("data.csv")
 
-    def make_dataframe(self, item: []):
-        """Append feed from reader"""
-        dict_ = dict()
-        dict_['Title'] = item[0]
-        dict_['Date'] = item[1]
-        dict_['Link'] = item[2]
-        self.df = self.df.append(dict_, ignore_index=True)
+    def make_dataframe(self, item: {}):
+        """
+        Append feed from reader.
+
+        Parameter:
+                item = dictionary of feed news
+        """
+        self.df = self.df.append(item, ignore_index=True)
 
     def make_csv(self):
         """Delete duplicate from DataFrame and write to csv"""
@@ -41,31 +44,47 @@ class Data:
                 logger.error("Empty file")
                 sys.exit()
 
-    def print_data(self, date, limit, verbose):
-        """Prints news for the date
-        :param date=Date, limit=quantity news, verbose=if need log
+    def print_data(self, date, limit, verbose, argjson):
+        """
+        Prints news for the date.
+
+        Parameters:
+             date=Date, limit=quantity news, verbose=if need log, argjson=format json in stdout
         """
         if verbose:
             logger.setLevel(logging.INFO)
-
         count = 0
-        print(f"News for {date}")
         if os.path.getsize("data.csv") == 0:
             print("Empty file")
             sys.exit()
         self.data = pd.read_csv("data.csv")
         all_data = self.data['Date']
-        for i in all_data:
-            if date == i[:10].replace('-', ''):
+        for days in all_data:
+            if date == days[:10].replace('-', ''):
                 break
         else:
             print(f"doesnt have news on this day ({date})")
+            sys.exit()
+        if not limit:
+            limit = len(all_data)
+        elif limit < 0:
+            logger.error("Negative limit")
+            sys.exit()
+        print(f"News for {date}")
         for data, title, link in zip(self.data['Date'], self.data['Title'], self.data['Link']):
             if int(date) == int(data[:10].replace('-', '')):
                 logger.info(f"{count + 1}")
-                print(f"Title :{title}")
-                print(f"Date : {data}")
-                print(f"Link : {link}\n")
                 count += 1
-                if count == limit:
-                    break
+                if argjson:
+                    patch_data = dict()
+                    patch_data["Title"] = title
+                    patch_data["Date"] = data
+                    patch_data["Link"] = link
+                    print(json.dumps(patch_data, indent=3))
+                else:
+                    print(f"Title :{title}")
+                    print(f"Date : {data}")
+                    print(f"Link : {link}\n")
+
+            if count == limit:
+                break
