@@ -97,5 +97,6 @@ class Testinit(unittest.TestCase):
         with self.assertRaises(SystemExit):
             self.assertLogs(self.data.make_csv(), "ERROR:root:Empty file")
 
+
 if __name__ == "__main__":
     unittest.main()
