@@ -65,6 +65,7 @@ def printing_json(dictionary):
     with open("../json_format", "w") as file:
         json.dump(dictionary, file, indent=3)
 
+
 def main():
     args = command_arguments_parser(sys.argv[1:])
     if args.limit == 0:
