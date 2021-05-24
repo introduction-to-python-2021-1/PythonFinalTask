@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RSS Reader Result</title>
+    <style type="text/css">
+        @font-face {
+            font-family: "DejaVu Sans";
+            src: url({{ fonts }}/DejaVuSans.ttf);
+        }
+
+        div {
+            font-family: "DejaVu Sans";
+        }
+    </style>
+</head>
+<body>
+{% for news in news_list %}
+    <div>
+        <h4><a href="{{ news.link }}">[{{ news.feed_title }}] {{ news.title }}</a></h4>
+        <p>{{ news.formatted_date }}</p>
+        {% if news.description %}
+            <p>{{ news | news_description_to_html }}</p>
+        {% endif %}
+        {% if news.links %}
+            <p>{{ news | news_enclosures_to_html }}</p>
+        {% endif %}
+    </div>
+{% endfor %}
+</body>
+</html>

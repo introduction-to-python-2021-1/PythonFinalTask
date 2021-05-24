@@ -1,3 +1,5 @@
+"""This module contains a class containing methods for converting news feed into various formats"""
+
 from datetime import datetime
 import glob
 import hashlib
@@ -7,82 +9,51 @@ import re
 import urllib.error
 import urllib.request
 
-from bs4 import BeautifulSoup
-import fpdf
+from jinja2 import Environment, PackageLoader
+from xhtml2pdf import pisa
 
 
 class Converter:
     """This class is needed for news feed conversion"""
 
     def __init__(self, logger):
-        """This class constructor initializes the required variables for the news feed conversion"""
+        """
+        This class constructor initializes the required variables for the news feed conversion
+
+        Parameters:
+            logger (module): logging module
+        """
         self.logger = logger
         self.cache_folder_path = 'cache' + os.path.sep
         self.cache_images_folder_path = self.cache_folder_path + 'images' + os.path.sep
 
-    def to_pdf(self, path, feed, limit):
-        """This method converts news feed to PDF file"""
-        self.logger.info(' Start converting news feed to PDF file')
-        fpdf.set_global('SYSTEM_TTFONTS', os.path.join(os.path.dirname(__file__), 'fonts'))
-        pdf = fpdf.FPDF()
-        pdf.add_font('DejaVuSans', '', 'DejaVuSans.ttf', uni=True)
-        pdf.set_font('DejaVuSans', size=12)
-        for news in feed.news_list[:limit]:
-            pdf.add_page()
-            pdf.write(5, f'[{news.feed_title}] {news.title}\n', news.link)
-            pdf.write(5, f'{news.formatted_date}\n\n')
-            if news.description:
-                temp_index = 0
-                images = list(re.finditer(r'\[image \d: .+\]', news.description))
-                for image in images:
-                    pdf.write(5, news.description[temp_index:image.start()].strip())
-                    image_index = re.search(r' \d:', image.string).group(0)[1:2]
-                    cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{image_index}'
-                    cached_image_file_path = self.__get_image(news.links[image_index]['url'], cached_image_filename)
-                    if cached_image_file_path:
-                        pdf.image(cached_image_file_path)
-                    else:
-                        pdf.write(5, f' {image.group(0)} ', news.links[image_index]['url'])
-                    temp_index = image.end()
-                pdf.write(5, news.description[temp_index:].strip() + '\n\n')
-            enclosure_indexes_list = []
-            for link_index, link in news.links.items():
-                if link['enclosure']:
-                    enclosure_indexes_list.append(link_index)
-            if enclosure_indexes_list:
-                pdf.write(5, 'Enclosures:\n')
-                for enclosure_index in enclosure_indexes_list:
-                    enclosure = news.links[enclosure_index]
-                    if 'image' in enclosure['type']:
-                        cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{enclosure_index}'
-                        cached_image_file_path = self.__get_image(enclosure['url'], cached_image_filename)
-                        if cached_image_file_path:
-                            pdf.image(cached_image_file_path, w=100)
-                        else:
-                            pdf.write(5, f'[{enclosure_index}]: {enclosure["url"]} ({enclosure["type"]})')
-                        pdf.write(5, '\n')
-                    else:
-                        pdf.write(5, f'[{enclosure_index}]: {enclosure["url"]} ({enclosure["type"]})\n')
-        result_path, result_file_extension = os.path.splitext(path.rstrip(os.sep))
-        if not result_file_extension:
-            result_filename = f'{datetime.now()}.pdf'
-        else:
-            result_filename = f'{result_path.split(os.sep)[-1]}{result_file_extension}'
-            result_path = f'{os.sep}'.join(result_path.split(os.sep)[:-1])
-        if result_path:
-            result_path += os.sep
-            if not os.path.exists(result_path):
-                os.makedirs(result_path, exist_ok=True)
-        try:
-            pdf.output(result_path + result_filename)
-            self.logger.info(f' PDF file created and saved at {result_path + result_filename}')
-        except PermissionError:
-            self.logger.error(
-                f' Unable to save PDF file at {result_path + result_filename}. Permission denied.')
+    def to_pdf(self, path, feeds_list, news_limit):
+        """
+        This method converts news feed to PDF format
+
+        Parameters:
+            path (str): Output filepath
+            feeds_list (list): List of objects of class Feed
+            news_limit (int): Value that limits the number of news
+        """
+        self.logger.info(' Start converting news feed to PDF format')
+        output_filepath = self.prepare_output_filepath(path, pdf=True)
+        if output_filepath:
+            try:
+                with open(output_filepath, 'w+b') as file:
+                    pisa.CreatePDF(self.to_html(feeds_list, news_limit, pdf=True), file, )
+                    self.logger.info(f' PDF file created and saved at {output_filepath}')
+            except PermissionError:
+                self.logger.error(
+                    f' Unable to save PDF file at {output_filepath}. Permission denied.')
 
     def __get_image(self, url, cached_image_filename):
         """
-        This method tries to get an image from a link if the news is cached but the image is not
+        This method tries to get image by filepath or link
+
+        Parameters:
+            url (str): Link to image
+            cached_image_filename (str): Image filename
 
         Returns:
             str: Image file path
@@ -104,68 +75,127 @@ class Converter:
         else:
             return os.path.abspath(cached_image_file_path[0])
 
-    def to_html(self, path, feed, limit):
-        """This method converts news feed to HTML file"""
-        self.logger.info(' Start converting news feed to HTML file')
-        news_html_containers = []
-        for news in feed.news_list:
-            news_description = ''
-            news_enclosure = ''
-            if news.description:
-                temp_index = 0
-                images = list(re.finditer(r'\[image \d: .+\]', news.description))
-                for image in images:
-                    news_description += news.description[temp_index:image.start()].strip()
-                    image_index = re.search(r' \d:', image.string).group(0)[1:2]
-                    cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{image_index}'
-                    cached_image_file_path = self.__get_image(news.links[image_index]['url'], cached_image_filename)
-                    if cached_image_file_path:
-                        image_src = cached_image_file_path
-                    else:
-                        image_src = news.links[image_index]['url']
-                    news_description += f'<img src="{image_src}">'
-                    temp_index = image.end()
-                news_description += f'{news.description[temp_index:].strip()}\n\n'
-            enclosure_indexes_list = []
-            for link_index, link in news.links.items():
-                if link['enclosure']:
-                    enclosure_indexes_list.append(link_index)
-            if enclosure_indexes_list:
-                news_enclosure += 'Enclosures:\n'
-                for enclosure_index in enclosure_indexes_list:
-                    enclosure = news.links[enclosure_index]
-                    if 'image' in enclosure['type']:
-                        cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{enclosure_index}'
-                        cached_image_file_path = self.__get_image(enclosure['url'], cached_image_filename)
-                        if cached_image_file_path:
-                            news_enclosure += f'<img src="{cached_image_file_path}">'
-                        else:
-                            news_enclosure += f'[{enclosure_index}]: {enclosure["url"]} ({enclosure["type"]})'
-                        news_enclosure += '\n'
-                    else:
-                        news_enclosure += f'[{enclosure_index}]: {enclosure["url"]} ({enclosure["type"]})\n'
-            news_html_container = f'<div><h4><a href="{news.link}">[{news.feed_title}] {news.title}</a></h4>\n' \
-                                  f'<p>{news.formatted_date}</p>\n\n' \
-                                  f'{"<p>" + news_description + "</p>" if news_description else ""}' \
-                                  f'{"<p>" + news_enclosure + "</p>" if news_enclosure else ""}</div>'
-            news_html_containers.append(news_html_container)
-        result_path, result_file_extension = os.path.splitext(path.rstrip(os.sep))
-        if not result_file_extension:
-            result_filename = f'{datetime.now()}.html'
+    def to_html(self, feeds_list, news_limit, path=None, pdf=False):
+        """
+        This method converts news feed to HTML format
+
+        Parameters:
+            feeds_list (list): List of objects of class Feed
+            news_limit (int): Value that limits the number of news
+            path (str): Output filepath
+            pdf (bool): If True prepares HTML for conversion to PDF
+
+        Returns:
+            str: HTML code required to get PDF if pdf is True
+        """
+        self.logger.info(' Start converting news feed to HTML format')
+        env = Environment(loader=PackageLoader('components', 'templates'))
+        env.filters['news_description_to_html'] = self.news_description_to_html
+        env.filters['news_enclosures_to_html'] = self.news_enclosures_to_html
+        template = env.get_template('template.html')
+        news_list = []
+        for feed in feeds_list:
+            news_list += feed.news_list
+        if pdf:
+            return template.render(news_list=news_list[:news_limit],
+                                   fonts=os.path.join(os.path.dirname(__file__), 'fonts'))
         else:
-            result_filename = f'{result_path.split(os.sep)[-1]}{result_file_extension}'
-            result_path = f'{os.sep}'.join(result_path.split(os.sep)[:-1])
-        if result_path:
-            result_path += os.sep
-            if not os.path.exists(result_path):
-                os.makedirs(result_path, exist_ok=True)
-        result_feed_html = ''.join(news_html_containers)
-        soup = BeautifulSoup(f'<!DOCTYPE html><html><body>{result_feed_html}</body></html>', 'lxml')
-        result_html = soup.prettify()
-        try:
-            with open(result_path + result_filename, 'w') as file:
-                file.write(result_html)
-            self.logger.info(f' HTML file created and saved as {result_path + result_filename}')
-        except PermissionError:
-            self.logger.error(
-                f' Unable to save HTML file at {result_path + result_filename}. Permission denied.')
+            output_filepath = self.prepare_output_filepath(path, html=True)
+            if output_filepath:
+                try:
+                    with open(output_filepath, 'w') as file:
+                        file.write(template.render(news_list=news_list[:news_limit], ))
+                        self.logger.info(f' HTML file created and saved as {output_filepath}')
+                except PermissionError:
+                    self.logger.error(
+                        f' Unable to save HTML file at {output_filepath}. Permission denied.')
+
+    def prepare_output_filepath(self, path, pdf=False, html=False):
+        """
+        This method is needed to format the output filepath
+
+        Parameters:
+            path (str): Output filepath
+            pdf (bool): If True appends .pdf to filename (if not specified)
+            html (bool): If True appends .html to filename (if not specified)
+
+        Returns:
+            str: Formatted output filepath
+            None: If permission denied
+        """
+        output_path, output_file_extension = os.path.splitext(path.rstrip(os.sep))
+        if not output_file_extension and pdf:
+            output_filename = f'{datetime.now()}.pdf'
+        elif not output_file_extension and html:
+            output_filename = f'{datetime.now()}.html'
+        else:
+            output_filename = f'{output_path.split(os.sep)[-1]}{output_file_extension}'
+            output_path = f'{os.sep}'.join(output_path.split(os.sep)[:-1])
+        if output_path:
+            output_path += os.sep
+            if not os.path.exists(output_path):
+                try:
+                    os.makedirs(output_path, exist_ok=True)
+                except PermissionError:
+                    self.logger.error(f' Unable to create directory {output_path}. Permission denied.')
+                    return None
+        return output_path + output_filename
+
+    def news_description_to_html(self, news):
+        """
+        This method is needed to convert the news description to HTML format
+
+        Parameters:
+            news (News): Object of class News
+
+        Returns:
+            str: News description converted to HTML format
+        """
+        news_description = ''
+        temp_index = 0
+        images = list(re.finditer(r'\[image \d: .+\]', news.description))
+        for image in images:
+            news_description += news.description[temp_index:image.start()].strip()
+            image_index = re.search(r' \d:', image.string).group(0)[1:2]
+            cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{image_index}'
+            cached_image_file_path = self.__get_image(news.links[image_index]['url'], cached_image_filename)
+            if cached_image_file_path:
+                image_src = cached_image_file_path
+            else:
+                image_src = news.links[image_index]['url']
+            image_alt = news.links[image_index]['attributes']['alt']
+            news_description += f'<img src="{image_src}" alt="[{image_index}] {image_alt}">'
+            temp_index = image.end()
+        news_description += f'{news.description[temp_index:].strip()}\n\n'
+        return news_description
+
+    def news_enclosures_to_html(self, news):
+        """
+        This method is needed to convert the news enclosures to HTML format
+
+        Parameters:
+            news (News): Object of class News
+
+        Returns:
+            str: News enclosures converted to HTML format
+        """
+        news_enclosure = ''
+        enclosure_indexes_list = []
+        for link_index, link in news.links.items():
+            if link['enclosure']:
+                enclosure_indexes_list.append(link_index)
+        if enclosure_indexes_list:
+            news_enclosure += 'Enclosures:\n'
+            for enclosure_index in enclosure_indexes_list:
+                enclosure = news.links[enclosure_index]
+                if 'image' in enclosure['type']:
+                    cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{enclosure_index}'
+                    cached_image_file_path = self.__get_image(enclosure['url'], cached_image_filename)
+                    if cached_image_file_path:
+                        news_enclosure += f'<img src="{cached_image_file_path}">'
+                    else:
+                        news_enclosure += f'[{enclosure_index}]: {enclosure["url"]} ({enclosure["type"]})'
+                    news_enclosure += '\n'
+                else:
+                    news_enclosure += f'[{enclosure_index}]: {enclosure["url"]} ({enclosure["type"]})\n'
+        return news_enclosure
