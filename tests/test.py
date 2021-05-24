@@ -9,6 +9,7 @@ class TestReader(unittest.TestCase):
         self.output = io.StringIO()
         sys.stdout = self.output
 
+
     def test_set_limit_for_print(self):
         """Good limit"""
         parser = rss_reader.command_arguments_parser(["--limit 3"])
@@ -29,6 +30,12 @@ class TestReader(unittest.TestCase):
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
         self.assertTrue(parser.verbose)
 
+    def test_checking_verbose_plus(self):
+        """Test verbose status message"""
+        parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
+        self.assertLogs(parser, f"Getting access to the RSS")
+
+
     def test_checking_verbose_plus_limit(self):
         """Test verbose status message and limit"""
         parser = rss_reader.command_arguments_parser(["--limit 4", "--verbose"])
@@ -38,7 +45,6 @@ class TestReader(unittest.TestCase):
         """Test json format"""
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--json"])
         self.assertTrue(parser.json)
-
 
     def test_checking_empty(self):
         """Test without link"""
