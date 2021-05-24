@@ -5,18 +5,6 @@ import argparse
 import logging
 import logging.handlers
 import sys
-from urllib.error import URLError
-
-
-logging.basicConfig(level=logging.WARNING, format="%(message)s")
-logger = None
-
-def create_logger(verbose):
-    """Creates a logger"""
-    global logger
-    if logger is None:
-        logger = logging.getLogger()
-    return logger
 
 
 def command_arguments_parser(args):
@@ -59,21 +47,6 @@ def parses_data(source, limit):
         print(f"Xml was failed: {e}")
     return dictionary
 
-def rss_link(source, verbose):
-    """Receive link with RSS news and try to parse it, print logs"""
-    logger = create_logger(verbose)
-    try:
-        news_log = command_arguments_parser(source)
-        if not source:
-            raise ValueError
-        logger.info(f"Reads link {source}")
-    except URLError as e:
-        logger.error(f"Error {e} in opening link {source}")
-        return print("Change link and try again, please")
-    except ValueError as e:
-        logger.error(f"Error {e} in opening link {source}")
-        return print("Add rss link, please")
-
 
 def print_news(dictionary):
     """Print news on console"""
@@ -94,19 +67,29 @@ def print_json(dictionary):
     with open("../json_format", "w") as file:
         json.dump(dictionary, file, indent=3)
 
-
 def main():
     args = command_arguments_parser(sys.argv[1:])
-    logger = create_logger(args.verbose)
-    number_of_news = parses_data(args.source, args.limit)
-    if args.limit:
-        logger.info(f"Reads {args.limit} news' amount")
-    if args.json:
-        logger.info(f"In json")
-        print_json(number_of_news)
+    if args.limit == 0:
+        print("Invalid limit. Enter the limit (greater than 0), please")
+        sys.exit(0)
+
+    if args.verbose:
+        logging.basicConfig(level=logging.INFO)
     else:
-        print_news(number_of_news)
-    logger.info(f"The end")
+        logging.basicConfig(level=logging.ERROR)
+
+    try:
+        logging.info("Getting access to the RSS")
+        number_of_news = parses_data(args.source, args.limit)
+        if args.limit:
+            logging.info(f"Reads amount of news - {args.limit} ")
+        if args.json:
+            logging.info(f"In json")
+            print_json(number_of_news)
+        else:
+            print_news(number_of_news)
+    except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL) as e:
+            print("ConnectionError. Correct the URL, please")
 
 
 if __name__ == "__main__":
