@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{# Basic template for news representation #}
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{newsdict["main_title"]}}</title>
+</head>
+
+<body>
+
+<span>
+	        <h2> Title: {{one_news["Title"]}} </h2>
+           <h4>Date: </h4>
+            <p>{{one_news["Published"]}} </p>
+
+
+            {% if one_news["Summary"] %}
+                <h4>Summary: </h4>
+                <p>{{one_news["Summary"]}} </p>
+                {% endif %}
+            {% if one_news["Description"] %}
+                <h4>Description: </h4>
+                <p>{{ one_news["Description"] }} </p>
+                {% endif %}
+
+            {% if one_news["Image"] %}
+                <img alt="Image link: {{one_news['Image']}}" height="300" src="{{one_news['Image']}}" width="400"/>
+                {% endif %}
+       <p><a href="{{one_news['Image']}}">read more in source</a></p>
+
+
+   </span>
+
+</body>
+</html>
