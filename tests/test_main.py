@@ -1,3 +1,5 @@
+import json
+import os
 import unittest
 from datetime import datetime
 from unittest import mock
@@ -158,12 +160,16 @@ class TestMainReader(unittest.TestCase):
             newsdict, len_news = rs.parsing_user_date("20210521")
             self.assertEqual(len_news, len(newsdict["news"]))
 
-    # # Test for function "write_cash"
-    # def test_cash_writing(self):
-    #     # Test our dict are in cash file
-    #     rs.write_cash(td.TEST_NEWSDICT)
-    #     with open("E:/nl/ITA/PythonFinalTask/rss_reader/rss_reader/cashed_news.txt", "r") as cash_file:
-    #         self.assertTrue(json.dumps(td.TEST_NEWSDICT) in cash_file)
+    # Test for function "write_cash"
+    def test_cash_writing(self):
+        # Test our dict are in cash file
+        rs.write_cash(td.TEST_NEWSDICT)
+        cash_file_name = os.path.join(os.getcwd(), "cashed_news.txt")
+        with open(cash_file_name, "r") as cash_file:
+            lines = cash_file.readlines()
+            last_line = lines[-1]
+            check_dict = json.loads(last_line)
+            self.assertEqual(check_dict, td.TEST_NEWSDICT)
 
     # Test for function "find_cashed_news"
     def test_news_find_by_date_only(self):
@@ -177,7 +183,7 @@ class TestMainReader(unittest.TestCase):
         self.assertTrue(rs.find_cashed_news(user_date, source=NEWSLINK))
 
     def test_news_not_find_by_date_and_link(self):
-        # Test for invalid user date and source - ValueError is raising
+        # Test for invalid user date and source - AttributeError is raising
         user_date = datetime.strptime("14100521", '%Y%m%d')
         with self.assertRaises(AttributeError):
             rs.find_cashed_news(user_date, source=NEWSLINK)
