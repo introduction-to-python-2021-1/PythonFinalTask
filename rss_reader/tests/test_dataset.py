@@ -1,3 +1,4 @@
+import logging
 import os
 import unittest
 import io
@@ -21,7 +22,7 @@ class TestFile(unittest.TestCase):
         self.assertEqual(os.path.getsize("data.csv"), 0)
 
     def test_date_empty(self):
-        """TEst Empty result"""
+        """Test Empty result"""
         with self.assertRaises(SystemExit):
             self.assertEqual(
                 self.test.print_data(
@@ -47,7 +48,7 @@ class TestDataFrame(unittest.TestCase):
         self.out = io.StringIO()
         sys.stdout = self.out
 
-    def test_empty(self):
+    def test_dataframe(self):
         """Test input on dataframe"""
         self.assertIsNone(self.data.make_dataframe(self.feed))
 
@@ -63,6 +64,38 @@ class TestDataFrame(unittest.TestCase):
     def tearDown(self):
         os.remove("data.csv")
 
+
+class TestArg(unittest.TestCase):
+    def setUp(self):
+        with self.assertWarns(ResourceWarning):
+            self.data = Data()
+
+    def test_verbose(self):
+        """Test verbose lvl"""
+        with self.assertRaises(SystemExit):
+            self.assertLogs(self.data.print_data(20210523, 1, logging.INFO, None), logging.INFO)
+
+    def test_json(self):
+        """Test json"""
+        with self.assertRaises(SystemExit):
+            self.assertIs(self.data.print_data(20210523, 1, None, "--json"), None)
+
+    def test_negative_limit(self):
+        """Test negative limit"""
+        with self.assertRaises(SystemExit):
+            self.assertIsNone(self.data.print_data(20210523, -2, None, None))
+
+    def tearDown(self):
+        os.remove("data.csv")
+
+
+class Testinit(unittest.TestCase):
+    def test_log(self):
+        """Test error log"""
+        with self.assertWarns(ResourceWarning):
+            self.data = Data()
+        with self.assertRaises(SystemExit):
+            self.assertLogs(self.data.make_csv(), "ERROR:root:Empty file")
 
 if __name__ == "__main__":
     unittest.main()
