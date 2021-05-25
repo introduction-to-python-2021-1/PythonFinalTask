@@ -42,8 +42,8 @@ class Cache:
         cached_data = self.__get_cached_data(cache_file_path)
         if cached_data:
             cached_feeds_sources = tuple((cached_feed['source'] for cached_feed in cached_data.values()))
-            if news.source in cached_feeds_sources:
-                source_feed_index = str(cached_feeds_sources.index(news.source))
+            if news.source_url in cached_feeds_sources:
+                source_feed_index = str(cached_feeds_sources.index(news.source_url))
                 cached_news_links = tuple(
                     cached_news['url'] for cached_news in cached_data[source_feed_index]['items'].values())
                 if news.link in cached_news_links:
@@ -52,13 +52,13 @@ class Cache:
                     cached_data[source_feed_index]['items'][len(cached_news_links)] = news.to_dict()
             else:
                 cached_data[len(cached_data)] = {'title': news.feed_title,
-                                                 'source': news.source,
+                                                 'source': news.source_url,
                                                  'items': {
                                                      0: news.to_dict()
                                                  }}
         else:
             cached_data = {0: {'title': news.feed_title,
-                               'source': news.source,
+                               'source': news.source_url,
                                'items': {
                                    0: news.to_dict()
                                }}}

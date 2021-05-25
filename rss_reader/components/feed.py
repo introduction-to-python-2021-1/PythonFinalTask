@@ -19,6 +19,7 @@ class Feed:
             to_json (bool): If True printing news in JSON format
             logger (module): logging module
             feed_title (str): News feed title
+            cache (Cache): Object of class Cache
             news_items (bs4.element.ResultSet): Object of class bs4.element.ResultSet containing news items
             news_list (list): List of objects of class News
         """

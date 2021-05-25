@@ -6,15 +6,23 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse
 
 
-
 class News:
     """This class represents a feed item"""
 
-    def __init__(self, feed_title, item, source, logger, cache):
-        """This class constructor initializes the required variables for the news class"""
+    def __init__(self, feed_title, item, source_url, logger, cache):
+        """
+        This class constructor initializes the required variables for the news class
+
+        Parameters:
+            feed_title (str): News feed title
+            item (bs4.element.Tag): Object of class bs4.element.Tag containing news item
+            source_url (str): Link to RSS Feed
+            logger (module): logging module
+            cache (Cache): Object of class Cache
+        """
         self.feed_title = feed_title
         self.item = item
-        self.source = source
+        self.source_url = source_url
         self.logger = logger
         self.cache = cache
         if isinstance(self.item, dict):
