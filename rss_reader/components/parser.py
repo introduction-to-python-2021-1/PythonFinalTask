@@ -32,11 +32,22 @@ class Parser:
                                  dest='to_html')
 
     def parse_args(self, argv) -> argparse.Namespace:
-        """This method parses command-line arguments and return them"""
+        """
+        This method parses command-line arguments and return them
+
+        Parameters:
+            argv (list): List of command-line arguments
+        """
         return self.parser.parse_args(argv)
 
 
-def validate_date_arg(input_value):
+def validate_date_arg(input_value) -> str:
+    """
+    This function checks the format of the argument value --date
+
+    Parameters:
+        input_value (str): Argument value --date
+    """
     try:
         datetime.strptime(input_value, '%Y%m%d')
     except ValueError:
@@ -46,7 +57,14 @@ def validate_date_arg(input_value):
         return input_value
 
 
-def validate_limit_arg(input_value):
+def validate_limit_arg(input_value) -> int:
+    """
+    This function checks the format of the argument value --limit
+
+    Parameters:
+        input_value (str): Argument value --limit
+
+    """
     try:
         input_value = int(input_value)
     except ValueError:
