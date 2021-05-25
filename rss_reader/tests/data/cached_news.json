@@ -1,0 +1,15 @@
+{
+    "0": {
+        "title": "Yahoo News - Latest News  Headlines",
+        "source": "https://www.yahoo.com/news",
+        "items": {
+            "0": {
+                "title": "Yair Lapid receives mandate to form Israeli government, oust Netanyahu",
+                "url": "https://news.yahoo.com/yair-lapid-receives-mandate-form-153810526.html",
+                "description": null,
+                "date": "Wed, 05 May 2021 15:38:10",
+                "links": null
+            }
+        }
+    }
+}
