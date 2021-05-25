@@ -6,10 +6,10 @@ import sys
 from bs4 import BeautifulSoup
 import requests
 
+from components.cache import Cache
 from components.converter import Converter
 from components.feed import Feed
 from components.parser import Parser
-from components.cache import Cache
 
 
 def main(argv=sys.argv[1:]):
