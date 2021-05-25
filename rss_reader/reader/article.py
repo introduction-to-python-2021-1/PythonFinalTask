@@ -2,6 +2,7 @@ import dateparser
 
 
 class Article:
+    """Creates a news item with the necessary attributes"""
     def __init__(self, title, link, date, source, description, image):
         self.title = title
         self.link = link

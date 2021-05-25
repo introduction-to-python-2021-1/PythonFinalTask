@@ -19,6 +19,7 @@ Interface example:
       --json         Print result as JSON in stdout
       --verbose      Outputs verbose status messages
       --limit LIMIT  Limit news topics if this parameter provided
+      --date [DATE]  Sets the date in %Y%m%d format the news will be displayed for
 
 
 JSON structure:
@@ -33,3 +34,7 @@ JSON structure:
                 'Image': imageLink,
         }
     }
+    
+Storage:
+
+    Articles from the source are saved in the database using the sqlite3 module.

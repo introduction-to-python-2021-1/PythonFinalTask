@@ -1,4 +1,7 @@
 import json
+import argparse
+import feedparser
+import urllib.error
 
 from reader.article import Article
 
@@ -7,21 +10,14 @@ def parse_news(news, cursor, connection):
     """Creating list of news"""
     default_value = '---'
 
-    def get_attribute(name):
-        """Checking for the presence of a trasable attribute"""
-        try:
-            return entry[name]
-        except KeyError:
-            return default_value
-
     news_list = []
     for entry in news:
-        title = get_attribute('title')
-        link = get_attribute('link')
-        published = get_attribute('published')
-        source = get_attribute('source')
-        description = get_attribute('description')
-        media_content = get_attribute('media_content')
+        title = entry.get('title', default_value)
+        link = entry.get('link', default_value)
+        published = entry.get('published', default_value)
+        source = entry.get('source', default_value)
+        description = entry.get('description', default_value)
+        media_content = entry.get('media_content', default_value)
 
         source_title = default_value
         if source != source_title:
@@ -42,7 +38,7 @@ def parse_news(news, cursor, connection):
 def make_json(result):
     """Converting news in json format"""
     new_result = result.to_dict()
-    json_result = json.dumps(new_result, sort_keys=True, indent=4)
+    json_result = json.dumps(new_result, indent=4)
     return json_result
 
 
@@ -50,9 +46,14 @@ def check_limit(limit_value):
     """Checking the validity of user-entered limit"""
     try:
         limit = int(limit_value)
-        return limit
+        # return limit
     except ValueError:
-        raise SystemExit(ValueError, 'The argument "limit" should be a positive number')
+        raise SystemExit('The argument "limit" should be a positive number')
+    else:
+        if limit < 1:
+            raise SystemExit('The argument "limit" should be greater than 0')
+        else:
+            return limit
 
 
 def store_news(list_of_news, cursor, connection):
@@ -62,10 +63,13 @@ def store_news(list_of_news, cursor, connection):
                    image text)''')
     list_of_values = []
     for item in list_of_news:
-        new_date = item.date.strftime('%Y%m%d')
-        new_article = [item.title, item.link, item.date, new_date, item.source, item.description, item.image]
-        list_of_values.append(new_article)
-        cursor.execute("INSERT OR REPLACE INTO news VALUES (?, ?, ?, ?, ?, ?, ?)", new_article)
+        try:
+            new_date = item.date.strftime('%Y%m%d')
+            new_article = [item.title, item.link, item.date, new_date, item.source, item.description, item.image]
+            list_of_values.append(new_article)
+            cursor.execute("INSERT OR REPLACE INTO news VALUES (?, ?, ?, ?, ?, ?, ?)", new_article)
+        except AttributeError:
+            print('zzzz')
     connection.commit()
 
 
@@ -77,3 +81,25 @@ def execute_news(date, cursor):
     for title, link, full_date, source, description, image in cursor.fetchall():
         articles.append(Article(title, link, full_date, source, description, image))
     return articles
+
+
+# def check_URL(source, cursor, connection):
+#     try:
+#         rss_news = feedparser.parse(source)
+#         result = parse_news(rss_news.entries, cursor, connection)
+#         return result
+#     except urllib.error.URLError:
+#         print("Source isn't available")
+
+def create_arguments(new_version):
+    """Creates command line arguments"""
+    parser = argparse.ArgumentParser(description='Pure Python command-line RSS reader')
+    parser.add_argument('source', type=str, help='RSS URL')
+    parser.add_argument('--version', action='version', version='Version ' + str(new_version), help='Print version info')
+    parser.add_argument('--json', action='store_true', help='Print result as JSON in stdout')
+    parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
+    parser.add_argument('--limit', help='Limit news topics if this parameter provided')
+    parser.add_argument('--date', type=str, nargs='?', default='', help='Sets the date the news will be displayed')
+
+    args, unknown = parser.parse_known_args()
+    return args

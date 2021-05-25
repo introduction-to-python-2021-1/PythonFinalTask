@@ -10,7 +10,7 @@ import sqlite3
 
 import datetime
 
-from reader.functions import parse_news, make_json, check_limit, execute_news
+from reader.functions import parse_news, make_json, check_limit, execute_news, create_arguments
 
 
 def main():
@@ -42,21 +42,18 @@ def main():
             new_version = round((float(actual) + 0.1), 1)
             act_version.write(str(new_version))
 
-    """Create command line arguments"""
-    parser = argparse.ArgumentParser(description='Pure Python command-line RSS reader')
-    parser.add_argument('source', type=str, help='RSS URL')
-    parser.add_argument('--version', action='version', version='Version ' + str(new_version), help='Print version info')
-    parser.add_argument('--json', action='store_true', help='Print result as JSON in stdout')
-    parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
-    parser.add_argument('--limit', help='Limit news topics if this parameter provided')
-    parser.add_argument('--date', type=str, nargs='?', default='', help='Sets the date the news will be displayed')
+    # """Create command line arguments"""
+    # parser = argparse.ArgumentParser(description='Pure Python command-line RSS reader')
+    # parser.add_argument('source', type=str, help='RSS URL')
+    # parser.add_argument('--version', action='version', version='Version ' + str(new_version), help='Print version info')
+    # parser.add_argument('--json', action='store_true', help='Print result as JSON in stdout')
+    # parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
+    # parser.add_argument('--limit', help='Limit news topics if this parameter provided')
+    # parser.add_argument('--date', type=str, nargs='?', default='', help='Sets the date the news will be displayed')
+    #
+    # args, unknown = parser.parse_known_args()
 
-    # args = parser.parse_args()
-
-    args, unknown = parser.parse_known_args()
-
-    # print(args)
-    # print(unknown)
+    args = create_arguments(new_version)
 
     if args.limit:
         limit = check_limit(args.limit)
