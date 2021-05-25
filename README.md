@@ -37,56 +37,61 @@ optional arguments:
 
 <pre>
 "0": {
-        "title": "Yahoo News - Latest News & Headlines",
-        "source": "https://news.yahoo.com/rss/",
-        "items": {
-            "0": {
-                "title": "Tennessee leads with anti-transgender laws",
-                "url": "https://news.yahoo.com/tennessee-leads-anti-transgender-laws-203549108.html",
-                "description": null,
-                "date": "Sun, 23 May 2021 20:35:49",
-                "links": null
-            }
+    "title": "The 8 Most Architecturally Significant Pavilions of Expo 2020",
+    "url": "https://news.yahoo.com/8-most-architecturally-significant-pavilions-145934705.html",
+    "description": null,
+    "date": "Mon, 24 May 2021 14:59:34",
+    "links": {
+        "0": {
+            "enclosure": false,
+            "media": true,
+            "type": "image/jpeg",
+            "url": "https://s.yimg.com/uu/api/res/1.2/jS4r0oJoL32kMPw21TPBzQ--~B/aD0yMDAwO3c9MzAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/architectural_digest_422/4741bfb27d373037c3e160f60f8d9340",
+            "attributes": null
         }
     }
+}
 </pre>
 
 ## Cache file structure
 
 <pre>
 {
-    "0": {
-        "title": "Yahoo News - Latest News & Headlines",
-        "source": "https://news.yahoo.com/rss",
-        "items": {
-            "0": {
-                "title": "Israel military draws up plan for ground invasion of Gaza",
-                "url": "https://news.yahoo.com/israel-military-draws-plan-ground-064023988.html",
-                "description": null,
-                "date": "Thu, 13 May 2021 06:40:23",
-                "links": null
-            }
-        }
-    },
-    "1": {
-        "title": "Последние новости Беларуси и мира | Главные события 2021 - Sputnik",
-        "source": "https://sputnik.by/export/rss2/archive/index.xml",
-        "items": {
-            "0": {
-                "title": "Транспортная перезагрузка: что от нее ждут Беларусь и Россия?",
-                "url": "https://sputnik.by/press_center/20210520/1047678494/Transportnaya-perezagruzka-chto-ot-nee-zhdut-Belarus-i-Rossiya.html",
-                "description": "Минск планирует построить в России собственные перевалочные терминалы для экспорта продукции по морю.",
-                "date": "Thu, 20 May 2021 18:35:16",
-                "links": {
-                    "0": {
-                        "enclosure": true,
-                        "type": "image/jpeg",
-                        "url": "https://cdn11.img.sputnik.by/images/07e5/01/1b/1046753762.jpg",
-                        "attributes": null
-                    }
-                }
-            }
-        }
+  "0": {
+    "title": "The 8 Most Architecturally Significant Pavilions of Expo 2020",
+    "url": "https://news.yahoo.com/8-most-architecturally-significant-pavilions-145934705.html",
+    "description": null,
+    "date": "Mon, 24 May 2021 14:59:34",
+    "links": {
+      "0": {
+        "enclosure": false,
+        "media": true,
+        "type": "image/jpeg",
+        "url": "https://s.yimg.com/uu/api/res/1.2/jS4r0oJoL32kMPw21TPBzQ--~B/aD0yMDAwO3c9MzAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/architectural_digest_422/4741bfb27d373037c3e160f60f8d9340",
+        "attributes": null
+      }
     }
+  },
+  "1": {
+    "title": "Последние новости Беларуси и мира | Главные события 2021 - Sputnik",
+    "source": "https://sputnik.by/export/rss2/archive/index.xml",
+    "items": {
+      "0": {
+        "title": "Какой сегодня праздник: 26 мая",
+        "url": "https://sputnik.by/event/20210526/1035631463/26-maya.html",
+        "description": "Сегодня среда, 26 мая. Этот день является 146-м в григорианском календаре. До конца года остается 219 дней.",
+        "date": "Wed, 26 May 2021 00:01:00",
+        "links": {
+          "0": {
+            "enclosure": true,
+            "media": false,
+            "type": "image/jpeg",
+            "url": "https://cdn11.img.sputnik.by/images/07e5/05/18/1047701328.jpg",
+            "attributes": null
+          }
+        }
+      }
+    }
+  }
 }
 </pre>
