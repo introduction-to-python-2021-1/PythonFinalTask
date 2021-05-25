@@ -4,3 +4,5 @@ coverage==4.5.1
 termcolor==1.1.0
 requests==2.25.1
 feedparser==6.0.2
+python-dateutil~=2.8.1
+setuptools~=56.2.0
