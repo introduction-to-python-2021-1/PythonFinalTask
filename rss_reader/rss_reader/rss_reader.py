@@ -339,7 +339,7 @@ def main():
         printing_news_in_json(newsdict, number_of_news_to_show)
 
     if arguments.to_html:
-        logger.info(f"News will be saved in pdf on path {arguments.to_html}")
+        logger.info(f"News will be saved in html on path {arguments.to_html}")
         try:
             save_html(arguments.to_html, newsdict, number_of_news_to_show)
         except FileNotFoundError:
