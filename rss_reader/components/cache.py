@@ -15,22 +15,23 @@ from components.news import News
 class Cache:
     """This class is needed for caching news"""
 
-    def __init__(self, logger):
+    def __init__(self, logger, cache_folder_path='cache' + os.path.sep):
         """
         This class constructor initializes the required variables for the caching
 
         Parameters:
             logger (module): logging module
+            cache_folder_path (str): Path to the folder with the cache
         """
         self.logger = logger
-        self.cache_folder_path = 'cache' + os.path.sep
+        self.cache_folder_path = cache_folder_path
         self.cache_images_folder_path = self.cache_folder_path + 'images' + os.path.sep
         if not os.path.exists(self.cache_images_folder_path):
             os.makedirs(self.cache_images_folder_path)
 
     def cache_news(self, news):
         """
-        This method prepares data for writing to the cache file
+        This method prepares data and writing it to the cache file
 
         Parameters:
             news (News): Object of class News
@@ -106,7 +107,7 @@ class Cache:
         Parameters:
             publication_date (str): Date of publication of the news in the format "%Y%m%d"
             news_limit (int or NoneType): Value that limits the number of news
-            source_url (str): Link to the source from which the news was received
+            source_url (str or NoneType): Link to the source from which the news was received
             to_json (bool): If True news will be printed in JSON format
         """
         self.logger.info(' Trying to get news from cache')
@@ -123,12 +124,12 @@ class Cache:
                 news_list = []
                 for cached_news in cached_feed['items'].values():
                     if retrieved_news_amount != news_limit:
-                        news = News(cached_feed['title'], cached_news, cached_feed['source'], self.logger)
+                        news = News(cached_feed['title'], cached_news, cached_feed['source'], self.logger, self)
                         news_list.append(news)
                         retrieved_news_amount += 1
                     else:
                         break
-                feed = Feed(source_url, None, to_json, self.logger, feed_title, news_list=news_list)
+                feed = Feed(source_url, None, to_json, self.logger, feed_title, self, news_list=news_list)
                 feeds_list.append(feed)
                 if retrieved_news_amount == news_limit:
                     break

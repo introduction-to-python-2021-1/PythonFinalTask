@@ -5,19 +5,18 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 
-import components
 
 
 class News:
     """This class represents a feed item"""
 
-    def __init__(self, feed_title, item, source, logger):
+    def __init__(self, feed_title, item, source, logger, cache):
         """This class constructor initializes the required variables for the news class"""
         self.feed_title = feed_title
         self.item = item
         self.source = source
         self.logger = logger
-        self.cache = components.cache.Cache(self.logger)
+        self.cache = cache
         if isinstance(self.item, dict):
             self.__from_cache()
         else:

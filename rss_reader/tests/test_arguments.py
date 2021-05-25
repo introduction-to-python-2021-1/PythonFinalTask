@@ -3,11 +3,13 @@ import json
 import logging
 import os
 import re
+import shutil
 import unittest
 from unittest.mock import patch
 
 from bs4 import BeautifulSoup
 
+from components.cache import Cache
 from components.feed import Feed
 from rss_reader.rss_reader.rss_reader import main
 
@@ -15,13 +17,16 @@ from rss_reader.rss_reader.rss_reader import main
 class TestRssReader(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/example.xml')), 'r') as file:
+        cls.cache_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'cache')) + os.path.sep
+        cls.data_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data')) + os.path.sep
+        with open(cls.data_folder + 'example.xml', 'r') as file:
             cls.soup = BeautifulSoup(file.read(), 'lxml-xml')
         cls.example_feed_title = cls.soup.find('title').text
         cls.example_items = cls.soup.find_all('item')
         cls.example_feed = Feed('https://www.yahoo.com/news', None, False, logging, cls.example_feed_title,
-                                cls.example_items)
+                                Cache(logging, cls.cache_folder), news_items=cls.example_items)
         cls.example_news_list = cls.example_feed.news_list
+        shutil.rmtree(cls.cache_folder)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_version(self, mock_stdout):

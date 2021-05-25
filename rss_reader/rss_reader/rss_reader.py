@@ -27,8 +27,8 @@ def main(argv=sys.argv[1:]):
         logging.basicConfig(level=logging.ERROR)
     logger = logging
     converter = Converter(logger)
+    cache = Cache(logger)
     if args.date:
-        cache = Cache(logger)
         feeds_list = cache.get_news_from_cache(args.date, args.source, args.limit, args.json)
         if args.to_pdf is not None:
             converter.to_pdf(args.to_pdf, feeds_list, args.limit)
@@ -43,7 +43,7 @@ def main(argv=sys.argv[1:]):
             items = soup.find_all('item')
             logger.info(f' Founded {len(items)} news items')
             if items:
-                feed = Feed(args.source, args.limit, args.json, logger, feed_title, news_items=items)
+                feed = Feed(args.source, args.limit, args.json, logger, feed_title, cache, news_items=items)
                 if args.to_pdf is not None:
                     converter.to_pdf(args.to_pdf, [feed], args.limit)
                 if args.to_html is not None:

@@ -8,7 +8,7 @@ from components.news import News
 class Feed:
     """This class represents a feed"""
 
-    def __init__(self, source_url, news_limit, to_json, logger, feed_title, news_items=None, news_list=[]):
+    def __init__(self, source_url, news_limit, to_json, logger, feed_title, cache, news_items=None, news_list=[]):
         """
         This class constructor initializes the required variables for the feed class
         and calls the method that creates news objects and adds them to news list
@@ -29,6 +29,7 @@ class Feed:
         self.source_url = source_url
         self.news_list = news_list
         self.feed_title = feed_title
+        self.cache = cache
         if not self.news_list:
             self.news_items = news_items
             self.__create_feed()
@@ -36,7 +37,7 @@ class Feed:
     def __create_feed(self):
         """This method creates news objects and adds them to the news list"""
         for news_item in self.news_items:
-            self.news_list.append(News(self.feed_title, news_item, self.source_url, self.logger))
+            self.news_list.append(News(self.feed_title, news_item, self.source_url, self.logger, self.cache))
 
     def __str__(self) -> str:
         """This method override default __str__ method which computes the string representation of an object"""
