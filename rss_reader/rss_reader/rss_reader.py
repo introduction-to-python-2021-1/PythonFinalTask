@@ -11,10 +11,9 @@ import sys
 from datetime import datetime
 from urllib.error import URLError
 
+import converter as converter
 import dateparser
 import feedparser
-
-import rss_reader.rss_reader.converter as converter
 
 NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
 
@@ -273,12 +272,9 @@ def main():
     if arguments.limit:
         logger.info(f"Would read only {arguments.limit} number of news")
 
-    if arguments.to_pdf:
-        logger.info(f"News will be saved in pdf on path {arguments.to_pdf}")
-        try:
-            converter.safe_pdf(arguments.to_pdf, newsdict, number_of_news_to_show)
-        except FileNotFoundError:
-            sys.exit()
+    if arguments.json:
+        logger.info(f"Convert news in json format")
+        printing_news_in_json(newsdict, number_of_news_to_show)
 
     if arguments.to_html:
         logger.info(f"News will be saved in pdf on path {arguments.to_html}")
@@ -286,11 +282,12 @@ def main():
             converter.safe_pdf(arguments.to_html, newsdict, number_of_news_to_show)
         except FileNotFoundError:
             sys.exit()
-
-    if arguments.json:
-        logger.info(f"Convert news in json format")
-        printing_news_in_json(newsdict, number_of_news_to_show)
-
+    elif arguments.to_pdf:
+        logger.info(f"News will be saved in pdf on path {arguments.to_pdf}")
+        try:
+            converter.safe_pdf(arguments.to_pdf, newsdict, number_of_news_to_show)
+        except FileNotFoundError:
+            sys.exit()
     else:
         printing_parsing_news(newsdict, number_of_news_to_show)
 
