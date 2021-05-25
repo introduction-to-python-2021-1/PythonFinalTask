@@ -8,14 +8,17 @@ import logging
 import logging.handlers
 import os
 import sys
-import time
 from datetime import datetime
 from urllib.error import URLError
 
 import dateparser
 import feedparser
-from jinja2 import Template
-from xhtml2pdf import pisa
+
+# from jinja2 import Template
+# from xhtml2pdf import pisa
+sys.path.append((os.path.realpath(__file__)))
+print(sys.path)
+import converter as converter
 
 NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
 
@@ -197,62 +200,63 @@ def open_rss_link(source, verbose):
     return content
 
 
-def make_html(newsdict, one_news):
-    """
-    Make html file from all news from newsdict
-    :param newsdict: dictionary with parsed news "news"
-    :param one_news: one news from newsdict
-    :return: html file with all news, rendered by template
-    """
-    template = Template(open(os.path.join(os.getcwd(), "html_template.html")).read())
-    return template.render(newsdict=newsdict, one_news=one_news)
-
-
-def save_html(user_path: str, newsdict: dict, number_of_news_to_show: int):
-    """
-    Save news in html in a directory, chosen by user, in a volume (number of news), chosen by user.
-    Name of the file include exact time of making file (joined on one string without spaces) to avoid rewritings.
-    :param user_path: path to the file on users PC, chosen by him
-    :param newsdict: dictionary with parsed news "news"
-    :param number_of_news_to_show: limit number of news for saving
-    :return: first write chosen number of news to html file, than return path to it
-    If user_path is invalid, FileNotFoundError is raising and user-friendly message is printing
-    """
-    filename = "".join(str(time.time()))
-    file_path = os.path.join(user_path, f"News from time {filename}.html")
-    try:
-        with open(file_path, "w") as file:
-            for one_news in newsdict["news"][:number_of_news_to_show]:
-                file.write(make_html(newsdict, one_news))
-            return file_path
-    except FileNotFoundError:
-        return print(
-            "Please write a valid existing absolute path to a destination directory, "
-            "filename will be generated automatically"
-        )
-
-
-def safe_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
-    """
-    Call function safe_html to make html file with number of news, chosen by user, create a pdf file in a directory,
-    chosen by user, and write there converted html.
-    Name of the file include exact time of making file (joined on one string without spaces) to avoid rewritings.
-    :param user_path: path to the file on users PC, chosen by him
-    :param newsdict: dictionary with parsed news "news"
-    :param number_of_news_to_show: limit number of news for saving
-    :return: return False on success and True on errors
-    If user_path is invalid, FileNotFoundError is raising and user-friendly message is printing
-    """
-
-    file_in_path = save_html(user_path, newsdict, number_of_news_to_show)
-    filename = "".join(str(time.time()))
-    file_out_path = os.path.join(user_path, f"News from time {filename}.pdf")
-    try:
-        with open(file_out_path, "w+b") as file_out, open(file_in_path, "r") as file_in:
-            pisa_status = pisa.CreatePDF(src=file_in, dest=file_out)
-        return pisa_status.err
-    except FileNotFoundError:
-        sys.exit()
+#
+# def make_html(newsdict, one_news):
+#     """
+#     Make html file from all news from newsdict
+#     :param newsdict: dictionary with parsed news "news"
+#     :param one_news: one news from newsdict
+#     :return: html file with all news, rendered by template
+#     """
+#     template = Template(open(os.path.join(os.getcwd(), "html_template.html")).read())
+#     return template.render(newsdict=newsdict, one_news=one_news)
+#
+#
+# def save_html(user_path: str, newsdict: dict, number_of_news_to_show: int):
+#     """
+#     Save news in html in a directory, chosen by user, in a volume (number of news), chosen by user.
+#     Name of the file include exact time of making file (joined on one string without spaces) to avoid rewritings.
+#     :param user_path: path to the file on users PC, chosen by him
+#     :param newsdict: dictionary with parsed news "news"
+#     :param number_of_news_to_show: limit number of news for saving
+#     :return: first write chosen number of news to html file, than return path to it
+#     If user_path is invalid, FileNotFoundError is raising and user-friendly message is printing
+#     """
+#     filename = "".join(str(time.time()))
+#     file_path = os.path.join(user_path, f"News from time {filename}.html")
+#     try:
+#         with open(file_path, "w") as file:
+#             for one_news in newsdict["news"][:number_of_news_to_show]:
+#                 file.write(make_html(newsdict, one_news))
+#             return file_path
+#     except FileNotFoundError:
+#         return print(
+#             "Please write a valid existing absolute path to a destination directory, "
+#             "filename will be generated automatically"
+#         )
+#
+#
+# def safe_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
+#     """
+#     Call function safe_html to make html file with number of news, chosen by user, create a pdf file in a directory,
+#     chosen by user, and write there converted html.
+#     Name of the file include exact time of making file (joined on one string without spaces) to avoid rewritings.
+#     :param user_path: path to the file on users PC, chosen by him
+#     :param newsdict: dictionary with parsed news "news"
+#     :param number_of_news_to_show: limit number of news for saving
+#     :return: return False on success and True on errors
+#     If user_path is invalid, FileNotFoundError is raising and user-friendly message is printing
+#     """
+#
+#     file_in_path = save_html(user_path, newsdict, number_of_news_to_show)
+#     filename = "".join(str(time.time()))
+#     file_out_path = os.path.join(user_path, f"News from time {filename}.pdf")
+#     try:
+#         with open(file_out_path, "w+b") as file_out, open(file_in_path, "r") as file_in:
+#             pisa_status = pisa.CreatePDF(src=file_in, dest=file_out)
+#         return pisa_status.err
+#     except FileNotFoundError:
+#         sys.exit()
 
 
 def parsing_user_date(user_date: str, source: str = None):
@@ -348,13 +352,13 @@ def main():
     if arguments.to_html:
         logger.info(f"News will be saved in html on path {arguments.to_html}")
         try:
-            save_html(arguments.to_html, newsdict, number_of_news_to_show)
+            converter.save_html(arguments.to_html, newsdict, number_of_news_to_show)
         except FileNotFoundError:
             sys.exit()
     elif arguments.to_pdf:
         logger.info(f"News will be saved in pdf on path {arguments.to_pdf}")
         try:
-            safe_pdf(arguments.to_pdf, newsdict, number_of_news_to_show)
+            converter.safe_pdf(arguments.to_pdf, newsdict, number_of_news_to_show)
         except FileNotFoundError:
             sys.exit()
     else:
