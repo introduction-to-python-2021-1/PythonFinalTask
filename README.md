@@ -24,7 +24,34 @@ optional arguments:
   --to-html TO_HTML  Converts news to HTML format
 ```
 
+## Expected arguments values
+
+<pre>
+    --limit: Accepts an integer greater than zero (example '--limit=0')
+    --date: Accepts a date in the format '%Y%m%d' (example '--date=20210525')
+    --to-pdf and --to-html: Accepts an absolute or relative path with or without a filename (example 'folder/filename.pdf' or '/home/username/folder').
+                            If the file name is not specified, a file is created with the current date and time as filename (example '2021-05-25 12:25:26.850176.pdf')
+</pre>
+
 ## JSON structure
+
+<pre>
+"0": {
+        "title": "Yahoo News - Latest News & Headlines",
+        "source": "https://news.yahoo.com/rss/",
+        "items": {
+            "0": {
+                "title": "Tennessee leads with anti-transgender laws",
+                "url": "https://news.yahoo.com/tennessee-leads-anti-transgender-laws-203549108.html",
+                "description": null,
+                "date": "Sun, 23 May 2021 20:35:49",
+                "links": null
+            }
+        }
+    }
+</pre>
+
+## Cache file structure
 
 <pre>
 {
