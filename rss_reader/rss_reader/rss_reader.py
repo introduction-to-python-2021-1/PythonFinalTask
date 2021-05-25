@@ -65,16 +65,16 @@ def parse_response(response_content):
         root = ET.fromstring(response_content)
 
         if root.tag != "rss":
-            raise Exception("The document isn't RSS feed")
+            raise Exception("the document isn't RSS feed")
 
     except Exception as e:
-        logger.error("Couldn't parse response")
+        logger.error(f"Couldn't parse response: {e}")
         sys.exit()
 
     channel_title = root.findtext("channel/title")
     news_items = []
 
-    for index_of_news_item, news_item in enumerate(root.iterfind("channel/item")):
+    for news_item in root.iterfind("channel/item"):
         # Finds images only in response from https://news.yahoo.com/rss/
         image_element = news_item.find('{http://search.yahoo.com/mrss/}content')
 
@@ -86,7 +86,7 @@ def parse_response(response_content):
             "image_url": image_element.get("url") if image_element is not None else None
         })
 
-    logger.info(f"Parsed {index_of_news_item + 1} items from response")
+    logger.info(f"Parsed {len(news_items)} items from response")
 
     return news_items
 

@@ -3,8 +3,9 @@ import io
 import sys
 import json
 import unittest
-from urllib.request import urlopen
-from urllib.request import pathname2url
+from unittest.mock import patch
+from urllib.error import URLError
+from urllib.error import HTTPError
 
 import ddt
 
@@ -38,13 +39,33 @@ class TestMain(unittest.TestCase):
         sys.stdout = sys.__stdout__
 
 
+@ddt.ddt
 class TestGetResponse(unittest.TestCase):
     """Tests get_response function from rss_reader."""
 
-    def test_get_response_with_good_url(self):
-        """Tests that get_response returns bytes object when good url is provided."""
-        url = "https://www.google.com/"
-        self.assertEqual(type(rss_reader.get_response(url)), type(b""), "Wrong output type")
+    @ddt.file_data("../project_data/json/test_get_response.json")
+    @patch.object(rss_reader, "urlopen")
+    def test_get_response(self, mocked_function, string_with_exception_creation, exception_attributes, output_message):
+        """Tests that get_response function from rss_reader handles various exceptions."""
+        mocked_function.side_effect = eval(string_with_exception_creation, globals(), exception_attributes)
+
+        with self.assertLogs(rss_reader.logger, "ERROR") as captured:
+            with self.assertRaises(SystemExit):
+                rss_reader.get_response("")
+
+            self.assertEqual(output_message.format(**exception_attributes), captured.records[0].getMessage())
+
+
+class TestParseResponse(unittest.TestCase):
+    """Tests parse_response function from rss_reader."""
+
+    def test_parse_response_with_bad_xml(self):
+        """Tests that parse_response function from rss_reader raises exception when tag rss ins't in xml structure."""
+        with self.assertLogs(rss_reader.logger, "ERROR") as captured:
+            with self.assertRaises(SystemExit):
+                rss_reader.parse_response(b"<channel></channel>")
+
+            self.assertEqual("Couldn't parse response: the document isn't RSS feed", captured.records[0].getMessage())
 
 
 @ddt.ddt
@@ -89,32 +110,6 @@ class TestPrintNews(unittest.TestCase):
         self.assertEqual(captured_output.getvalue(), test_output)
         # Resets redirect of stdout
         sys.stdout = sys.__stdout__
-
-
-@ddt.ddt
-class TestExceptions(unittest.TestCase):
-    """Tests that get_response and parse_response functions from rss_reader handle exceptions."""
-
-    @ddt.file_data("../project_data/json/test_exceptions_data.json")
-    def test_get_response(self, url, expected):
-        """Tests that get_response function handles exceptions."""
-        with self.assertLogs(rss_reader.logger, "ERROR") as captured:
-            with self.assertRaises(SystemExit):
-                rss_reader.get_response(url)
-
-            self.assertEqual(expected, captured.records[0].getMessage(), "Wrong output message")
-
-    def test_parse_bad_response(self):
-        """Tests that process_response function handles response with wrong xml structure."""
-        fake_response = urlopen("file:" + pathname2url(os.path.abspath("project_data/xml/badsample.xml")))
-
-        with self.assertLogs(rss_reader.logger, "ERROR") as captured:
-            with self.assertRaises(SystemExit):
-                rss_reader.parse_response(fake_response)
-
-            self.assertEqual("Couldn't parse response", captured.records[0].getMessage())
-
-        fake_response.close()
 
 
 if __name__ == "__main__":
