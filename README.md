@@ -29,7 +29,7 @@ optional arguments:
 <pre>
     --limit: Accepts an integer greater than zero (example '--limit=0')
     --date: Accepts a date in the format '%Y%m%d' (example '--date=20210525')
-    --to-pdf and --to-html: Accepts an absolute or relative path with or without a filename (example 'folder/filename.pdf' or '/home/username/folder').
+    --to-pdf and --to-html: Accepts an absolute or relative path with or without a filename (example '--to-pdf=folder/filename.pdf' or '--to-html=/home/username/folder').
                             If the file name is not specified, a file is created with the current date and time as filename (example '2021-05-25 12:25:26.850176.pdf')
 </pre>
 
