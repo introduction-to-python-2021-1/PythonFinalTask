@@ -92,6 +92,7 @@ class Converter:
         env = Environment(loader=PackageLoader('components', 'templates'))
         env.filters['news_description_to_html'] = self.news_description_to_html
         env.filters['news_enclosures_to_html'] = self.news_enclosures_to_html
+        env.filters['news_media_content_to_html'] = self.news_media_content_to_html
         template = env.get_template('template.html')
         news_list = []
         for feed in feeds_list:
@@ -179,23 +180,56 @@ class Converter:
         Returns:
             str: News enclosures converted to HTML format
         """
-        news_enclosure = ''
+        news_enclosure_html = ''
         enclosure_indexes_list = []
         for link_index, link in news.links.items():
             if link['enclosure']:
                 enclosure_indexes_list.append(link_index)
         if enclosure_indexes_list:
-            news_enclosure += 'Enclosures:\n'
-            for enclosure_index in enclosure_indexes_list:
-                enclosure = news.links[enclosure_index]
-                if 'image' in enclosure['type']:
-                    cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{enclosure_index}'
-                    cached_image_file_path = self.__get_image(enclosure['url'], cached_image_filename)
-                    if cached_image_file_path:
-                        news_enclosure += f'<img src="{cached_image_file_path}">'
-                    else:
-                        news_enclosure += f'[{enclosure_index}]: {enclosure["url"]} ({enclosure["type"]})'
-                    news_enclosure += '\n'
+            news_enclosure_html += 'Enclosures:\n' + self.__links_to_html(news, enclosure_indexes_list)
+        return news_enclosure_html
+
+    def news_media_content_to_html(self, news):
+        """
+        This method is needed to convert the news media:content to HTML format
+
+        Parameters:
+            news (News): Object of class News
+
+        Returns:
+            str: News media:content converted to HTML format
+        """
+        news_media_content_html = ''
+        media_content_indexes_list = []
+        for link_index, link in news.links.items():
+            if link['media']:
+                media_content_indexes_list.append(link_index)
+        if media_content_indexes_list:
+            news_media_content_html += 'Media:\n' + self.__links_to_html(news, media_content_indexes_list)
+        return news_media_content_html
+
+    def __links_to_html(self, news, links):
+        """
+        This method is needed to convert the news links to HTML format
+
+        Parameters:
+            news (News): Object of class News
+            links (list): List of news link indexes to be converted to HTML format
+
+        Returns:
+            str: Links converted to HTML format
+        """
+        news_links_html = ''
+        for link_index in links:
+            link = news.links[link_index]
+            if 'image' in link['type']:
+                cached_image_filename = f'{hashlib.md5(news.link.encode()).hexdigest()}_{link_index}'
+                cached_image_file_path = self.__get_image(link['url'], cached_image_filename)
+                if cached_image_file_path:
+                    news_links_html += f'<img src="{cached_image_file_path}">'
                 else:
-                    news_enclosure += f'[{enclosure_index}]: {enclosure["url"]} ({enclosure["type"]})\n'
-        return news_enclosure
+                    news_links_html += f'[{link_index}]: {link["url"]} ({link["type"]})'
+                news_links_html += '\n'
+            else:
+                news_links_html += f'[{link_index}]: {link["url"]} ({link["type"]})\n'
+        return news_links_html

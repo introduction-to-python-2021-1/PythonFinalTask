@@ -23,6 +23,7 @@
             <p>{{ news | news_description_to_html }}</p>
         {% endif %}
         {% if news.links %}
+            <p>{{ news | news_media_content_to_html }}</p>
             <p>{{ news | news_enclosures_to_html }}</p>
         {% endif %}
     </div>
