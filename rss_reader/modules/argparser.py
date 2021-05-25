@@ -32,10 +32,14 @@ class Argparser:
 
     def __validate_arguments(self, args):
         """ Checking the correctness of the entered data """
-        if (args.get('source') is None or not args.get('source')) and args.get('version') is False:
+        if (args.get('source') is None or not args.get('source')) \
+                and args.get('version') is False \
+                and args.get('date') is False:
             raise self.__parser.error('the following arguments are required: source')
         if args.get('date'):
             try:
-                datetime.strptime(args['date'], "%Y%m%d")
+                date = datetime.strptime(args['date'], "%Y%m%d")
+                if date > datetime.now():
+                    raise self.__parser.error('date cannot be more than today')
             except ValueError as err:
                 raise self.__parser.error(err)
