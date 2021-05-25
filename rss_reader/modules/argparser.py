@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from datetime import datetime
 
 
 class Argparser:
@@ -17,6 +18,8 @@ class Argparser:
         self.__parser.add_argument('--verbose', help='Outputs verbose status messages', action='store_true')
         self.__parser.add_argument('--limit', type=int, help='Limit news topics if this parameter provided',
                                    default=False)
+        self.__parser.add_argument('--date', type=str, metavar='YYYYMMDD', help='Print news for the specified date',
+                                   default=False)
 
     def parse_arguments(self, argv):
         """
@@ -31,3 +34,8 @@ class Argparser:
         """ Checking the correctness of the entered data """
         if (args.get('source') is None or not args.get('source')) and args.get('version') is False:
             raise self.__parser.error('the following arguments are required: source')
+        if args.get('date'):
+            try:
+                datetime.strptime(args['date'], "%Y%m%d")
+            except ValueError as err:
+                raise self.__parser.error(err)
