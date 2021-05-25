@@ -27,23 +27,23 @@ def parses_data(source, limit):
     try:
         request = requests.get(source)
         if request.status_code == 200:
-            soup = BeautifulSoup(request.content, 'xml')
-            dictionary["Feed"] = soup.find("title").text
-            news_for_print = soup.findAll("item", limit=limit)
-            for news in news_for_print:
-                title = news.find("title").text
-                date = news.find("pubDate").text
-                link = news.find("link").text
+            buitiful_soup = BeautifulSoup(request.content, 'xml')
+            dictionary["Feed"] = buitiful_soup.find("title").text
+            news_for_print = buitiful_soup.findAll("item", limit=limit)
+            for alone_news in news_for_print:
+                title = alone_news.find("title").text
+                pub_date = alone_news.find("pubDate").text
+                link = alone_news.find("link").text
                 images = []
-                images_find = news.findAll("media:content")
+                images_find = alone_news.findAll("media:content")
                 for image in images_find:
                     link_of_image = image.get("url")
                     images.append(link_of_image)
-                news_item = {"Title": title, "Date": date, "Link": link, "Images": images}
-                list_of_news.append(news_item)
+                news_dictionary = {"Title": title, "Date": pub_date, "Link": link, "Images": images}
+                list_of_news.append(news_dictionary)
             dictionary["News"] = list_of_news
-    except Exception as e:
-        print(f"Xml was failed: {e}")
+    except Exception:
+        print(f"Xml was failed")
     return dictionary
 
 
@@ -62,8 +62,8 @@ def printing_news(dictionary):
 def printing_json(dictionary):
     """Print json news on console"""
     print(json.dumps(dictionary, indent=3))
-    with open("../json_format", "w") as file:
-        json.dump(dictionary, file, indent=3)
+    with open("../json_format", "w") as json_file:
+        json.dump(dictionary, json_file, indent=3)
 
 
 def main():
@@ -87,7 +87,7 @@ def main():
             printing_json(number_of_news)
         else:
             printing_news(number_of_news)
-    except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL) as e:
+    except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL):
             print("ConnectionError. Correct the URL, please")
 
 
