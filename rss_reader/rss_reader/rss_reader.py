@@ -14,6 +14,8 @@ from urllib.error import URLError
 
 import dateparser
 import feedparser
+from jinja2 import Template
+from xhtml2pdf import pisa
 
 NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
 
@@ -28,7 +30,13 @@ def set_logger(verbose):
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
-        handlers=[logging.StreamHandler(sys.stdout), ] if verbose else [logging.FileHandler("logs.log"), ]
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+        ]
+        if verbose
+        else [
+            logging.FileHandler("logs.log"),
+        ],
     )
     logger = logging.getLogger()
     return logger
@@ -119,7 +127,7 @@ def date_compare(dict_date, converted_user_date):
     :param converted_user_date:  date given by user
     :return: True if dates are equal, else False
     """
-    converted_dict_date = dateparser.parse(dict_date, date_formats=['%y/%m/%d'])
+    converted_dict_date = dateparser.parse(dict_date, date_formats=["%y/%m/%d"])
     return True if converted_dict_date.date() == converted_user_date.date() else False
 
 
@@ -152,7 +160,7 @@ def find_cashed_news(converted_user_date, source=None):
             if source:
                 if source != newsdict["source"]:
                     continue
-            for one_news in (newsdict["news"]):
+            for one_news in newsdict["news"]:
                 if date_compare(one_news["Published"], converted_user_date):
                     newslist.append(one_news)
 
@@ -189,10 +197,6 @@ def open_rss_link(source, verbose):
     return content
 
 
-from jinja2 import Template
-from xhtml2pdf import pisa
-
-
 def make_html(newsdict, one_news):
     """
     Make html file from all news from newsdict
@@ -200,9 +204,7 @@ def make_html(newsdict, one_news):
     :param one_news: one news from newsdict
     :return: html file with all news, rendered by template
     """
-    template = Template(
-        open(os.path.join(os.getcwd(), "html_template.html")).read()
-    )
+    template = Template(open(os.path.join(os.getcwd(), "html_template.html")).read())
     return template.render(newsdict=newsdict, one_news=one_news)
 
 
@@ -224,8 +226,10 @@ def save_html(user_path: str, newsdict: dict, number_of_news_to_show: int):
                 file.write(make_html(newsdict, one_news))
             return file_path
     except FileNotFoundError:
-        return print("Please write a valid existing absolute path to a destination directory, "
-                     "filename will be generated automatically")
+        return print(
+            "Please write a valid existing absolute path to a destination directory, "
+            "filename will be generated automatically"
+        )
 
 
 def safe_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
@@ -263,7 +267,7 @@ def parsing_user_date(user_date: str, source: str = None):
     """
 
     try:
-        converted_user_date = datetime.strptime(user_date, '%Y%m%d')
+        converted_user_date = datetime.strptime(user_date, "%Y%m%d")
 
     except ValueError:
         return print("Invalid date, please insert date like '14100715'")
@@ -282,9 +286,12 @@ def parse_command_line_arguments():
 
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader")
     parser.add_argument(
-        "--version", action="version", version="Version 3.0.1", help="Print version info"
+        "--version",
+        action="version",
+        version="Version 3.0.1",
+        help="Print version info",
     )
-    parser.add_argument("source", type=str, nargs='?', default=None, help="RSS URL")
+    parser.add_argument("source", type=str, nargs="?", default=None, help="RSS URL")
     parser.add_argument(
         "--limit", type=int, help="Limit news topics if this parameter provided"
     )
