@@ -192,7 +192,6 @@ class DbCacher(Cacher):
                      show_on_console=True)
             exit(1)
 
-
     def _get_rss_news_from_db(self, channel_id: int, date: str = None):
         """
         Restore news items from db for channel with id = channel id
