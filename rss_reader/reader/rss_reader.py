@@ -1,16 +1,11 @@
-import argparse
 import os
 import sys
 import logging.handlers
-from urllib.error import URLError
-
-import feedparser
-
 import sqlite3
 
 import datetime
 
-from reader.functions import parse_news, make_json, check_limit, execute_news, create_arguments
+from reader.functions import make_json, check_limit, execute_news, create_arguments, check_URL
 
 
 def main():
@@ -42,17 +37,6 @@ def main():
             new_version = round((float(actual) + 0.1), 1)
             act_version.write(str(new_version))
 
-    # """Create command line arguments"""
-    # parser = argparse.ArgumentParser(description='Pure Python command-line RSS reader')
-    # parser.add_argument('source', type=str, help='RSS URL')
-    # parser.add_argument('--version', action='version', version='Version ' + str(new_version), help='Print version info')
-    # parser.add_argument('--json', action='store_true', help='Print result as JSON in stdout')
-    # parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
-    # parser.add_argument('--limit', help='Limit news topics if this parameter provided')
-    # parser.add_argument('--date', type=str, nargs='?', default='', help='Sets the date the news will be displayed')
-    #
-    # args, unknown = parser.parse_known_args()
-
     args = create_arguments(new_version)
 
     if args.limit:
@@ -65,24 +49,19 @@ def main():
         logging.disable(0)
         logger.info('Parcing news...')
 
-    result = []
-    try:
-        rss_news = feedparser.parse(args.source)
-        result = parse_news(rss_news.entries, cursor, connection)
-    except URLError:
-        print("Source isn't available")
-
-    if args.date:
+    if not args.date:
+        result = check_URL(args.source, cursor, connection)
+    else:
         try:
             args_date = (datetime.datetime.strptime(args.date, '%Y%m%d')).date()
             logger.info(
                 f"Retrieves news for the selected date ({args_date}) ...")
-            result = execute_news(args.date, cursor)
+            result = execute_news(args.date, cursor, args.source)
             if len(result) == 0:
-                print(f"Sorry, there are no articles for {args_date}!")
+                raise SystemExit(f"Sorry, there are no articles for {args_date}!")
         except ValueError:
-            print('Please, enter the date in the following format: "YYYYMMDD".')
-            result = []
+            raise SystemExit('Please, enter the date in the following format: "YYYYMMDD".')
+
     if limit > 0:
         logger.info(f'Working with limited by user number ({limit} items) of articles')
         logger.info('Creating the list of news for limited articles...')

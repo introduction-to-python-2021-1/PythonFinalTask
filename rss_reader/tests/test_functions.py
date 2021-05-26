@@ -1,8 +1,7 @@
 import unittest
-import argparse
 import sqlite3
 
-from reader.functions import parse_news, make_json, check_limit, execute_news, store_news
+from reader.functions import parse_news, make_json, check_limit
 from reader.article import Article
 
 connection = sqlite3.connect('news.db')
@@ -39,15 +38,10 @@ class TestFunctions(unittest.TestCase):
                                                    'org/d2d71e1fafaffbdd78bb05538e0732dc',
                                             'width': '130'}], 'media_credit': [{'role': 'publishing company'}],
                          'credit': ''}]
-        # self.empty_entries = [{}]
 
     def test_parse_news(self):
         self.actual = parse_news(self.entries, cursor, connection)[0]
         self.assertEqual(self.actual, self.article_A)
-
-    # def test_parse_empty_news(self):
-    #     self.actual = parse_news(self.empty_entries, cursor, connection)[0]
-    #     self.assertEqual(self.actual, self.article_A)
 
     def test_make_json(self):
         self.assertEqual(make_json(self.article_A),
@@ -55,8 +49,9 @@ class TestFunctions(unittest.TestCase):
                          '    "Link": "https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html",\n'
                          '    "Date": "Fri, 21 May, 2021",\n    "Source": "Associated Press",\n'
                          '    "Description": "---",\n'
-                         '    "Image": "https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAwMDthc'
-                         'HBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc"\n}')
+                         '    "Image": "https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAw'
+                         'MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc"'
+                         '\n}')
 
     def test_check_limit(self):
         self.assertEqual(check_limit('2'), 2)

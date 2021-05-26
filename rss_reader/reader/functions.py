@@ -6,7 +6,7 @@ import urllib.error
 from reader.article import Article
 
 
-def parse_news(news, cursor, connection):
+def parse_news(news, cursor, connection, url):
     """Creating list of news"""
     default_value = '---'
 
@@ -20,7 +20,7 @@ def parse_news(news, cursor, connection):
         media_content = entry.get('media_content', default_value)
 
         source_title = default_value
-        if source != source_title:
+        if source != default_value:
             source_title = source['title']
 
         image = default_value
@@ -30,7 +30,7 @@ def parse_news(news, cursor, connection):
         article = Article(title, link, published, source_title, description, image)
         news_list.append(article)
 
-        store_news(news_list, cursor, connection)
+        store_news(news_list, cursor, connection, url)
 
     return news_list
 
@@ -46,7 +46,6 @@ def check_limit(limit_value):
     """Checking the validity of user-entered limit"""
     try:
         limit = int(limit_value)
-        # return limit
     except ValueError:
         raise SystemExit('The argument "limit" should be a positive number')
     else:
@@ -56,45 +55,63 @@ def check_limit(limit_value):
             return limit
 
 
-def store_news(list_of_news, cursor, connection):
+def store_news(list_of_news, cursor, connection, url):
     """Storing news in a local storage"""
     cursor.execute('''CREATE TABLE IF NOT EXISTS news
                    (title text, link text UNIQUE, full_date text, date text, source text, description text,
-                   image text)''')
+                   image text, url text)''')
     list_of_values = []
     for item in list_of_news:
-        try:
-            new_date = item.date.strftime('%Y%m%d')
-            new_article = [item.title, item.link, item.date, new_date, item.source, item.description, item.image]
-            list_of_values.append(new_article)
-            cursor.execute("INSERT OR REPLACE INTO news VALUES (?, ?, ?, ?, ?, ?, ?)", new_article)
-        except AttributeError:
-            print('zzzz')
+        new_date = item.date.strftime('%Y%m%d')
+        new_article = [item.title, item.link, item.date, new_date, item.source, item.description, item.image]
+        list_of_values.append(new_article)
+
+        sql = "INSERT OR REPLACE INTO news VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        cursor.execute(sql, (new_article[0], new_article[1], new_article[2], new_article[3], new_article[4],
+                             new_article[5], new_article[6], url))
     connection.commit()
 
 
-def execute_news(date, cursor):
+def execute_news(date, cursor, url):
     """Retrieves news for the selected date"""
-    cursor.execute('SELECT title, link, full_date, source, description, image FROM news WHERE date=:date',
-                   {'date': date})
+    cursor.execute('SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date '
+                   'and url=:url', {'date': date, 'url': url})
+
+    records = cursor.fetchall()
+
+    # for row in records:
+    #     print("Title:", row[0])
+    #     print("link:", row[1])
+    #     print("Full_date:", row[2])
+    #     print("Source:", row[3])
+    #     print("Desc:", row[4])
+    #     print("Image:", row[5])
+    #     print("RSS:", row[6], end="\n\n")
+
     articles = []
-    for title, link, full_date, source, description, image in cursor.fetchall():
+    for title, link, full_date, source, description, image, url in records:
         articles.append(Article(title, link, full_date, source, description, image))
     return articles
 
 
-# def check_URL(source, cursor, connection):
-#     try:
-#         rss_news = feedparser.parse(source)
-#         result = parse_news(rss_news.entries, cursor, connection)
-#         return result
-#     except urllib.error.URLError:
-#         print("Source isn't available")
+def check_URL(source, cursor, connection):
+    """Checking the validity of user-entered URL"""
+    try:
+        rss_news = feedparser.parse(source)
+        result = parse_news(rss_news.entries, cursor, connection, source)
+    except urllib.error.URLError:
+        raise SystemExit("Source isn't available")
+    else:
+        if len(result) == 0:
+            raise SystemExit('Please, check if the entered link is correct!')
+        else:
+            return result
+
 
 def create_arguments(new_version):
     """Creates command line arguments"""
     parser = argparse.ArgumentParser(description='Pure Python command-line RSS reader')
-    parser.add_argument('source', type=str, help='RSS URL')
+    parser.add_argument('source', type=str, nargs='?', default=None, help='RSS URL')
     parser.add_argument('--version', action='version', version='Version ' + str(new_version), help='Print version info')
     parser.add_argument('--json', action='store_true', help='Print result as JSON in stdout')
     parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
