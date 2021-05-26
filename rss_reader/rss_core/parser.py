@@ -1,6 +1,6 @@
 """
-    Module contains classes Parser and XML2RSSDict
-    for parsing data to dict for creating RSSNews
+    Module contains classes Parser and XmlParser
+    for parsing data to dict for creating RssNews
 """
 import re
 import xml.etree.ElementTree as ElementTree
@@ -39,7 +39,7 @@ class XmlParser(Parser):
         Received xml str from reader and process it into dict
         :param link: for calling reader
         :param show_logs: whether logs should be shown
-        :return: dict  for creating RSSNews
+        :return: dict  for creating RssNews
         """
         try:
             if not isinstance(link, str):
@@ -56,10 +56,11 @@ class XmlParser(Parser):
             news_dict = self.create_rss_dict(root)
             util.log(show_on_console=show_logs, flag="INFO", msg="Dict was created successfully")
             return news_dict
+
         except ElementTree.ParseError as err:
             util.log(show_on_console=True,
                      flag="ERROR",
-                     msg=f"Error has occurred while parsing xml (Check if parsed string is valid xml)")
+                     msg=f"Error has occurred while parsing xml (Check if parsed string is valid xml) {str(err)}")
             exit(1)
         except ConnectionError as err:
             util.log(show_on_console=True,
@@ -71,30 +72,28 @@ class XmlParser(Parser):
         """
         Create dict from input ElementTree
         :param xml_content: ElementTree for filling rss_dict
-        :return: dict with info for creating RSSNews obj
+        :return: dict with info for creating RssNews obj
         """
-        # news_dict = {"title": xml_content.find(".//title").text if xml_content.find(".//title") else "",
-        #              "description": xml_content.find(".//description").text if xml_content.find(
-        #                  ".//description") else "",
-        #              "link": xml_content.find(".//link").text if xml_content.find(".//link") else "",
-        #              "news": []}
         news_dict = {"title": xml_content.find(".//title").text,
-                     "description": xml_content.find(".//description").text,
+                     "description": xml_content.find(".//description").text or "",
                      "link": xml_content.find(".//link").text,
                      "news": []}
+
         news_items = xml_content.findall(".//item")
         news_dict["news"] = self.get_news_array(news_items)
         return news_dict
 
-    def get_news_array(self, news_items):  # TODO: processed without limit - show with limit
+    def get_news_array(self, news_items):
         """
-        Create array of RSSItems from array of xml items with info
+        Create array of RssItems from array of xml items with info
         :param news_items: array ox xml items
-        :return: array of RSSItems
+        :return: array of RssItems
         """
         news = []
         for item in news_items:
-            cur_news = {elem.tag: self.strip_tag_text(elem.text) for elem in item.iter()}
+            cur_news = {elem.tag: self.strip_tag_text(elem.text) for elem in item.iter() if
+                        self.strip_tag_text(elem.text) is not None or "content" in elem.tag}
+
             cur_news_content = []
             content_elements = {key: value for key, value in cur_news.items() if "content" in key}
             for content_element in content_elements:
@@ -114,5 +113,5 @@ class XmlParser(Parser):
             return tag_text
         for wrong_chr, right_chr in CORRECT_CHARS.items():
             tag_text = tag_text.replace(wrong_chr, right_chr)
-        tag_text = re.sub(r'<\w+[^>]+?/>', '', tag_text)
+        tag_text = re.sub(r'</*\w+[^>]*?/*>', ' ', tag_text)
         return tag_text

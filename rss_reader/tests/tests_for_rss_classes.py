@@ -2,7 +2,6 @@
     This module covers with tests code of rss_reader.py
 """
 import unittest
-
 from rss_core.rss_classes import RssItem, RssNews
 
 RSS_ITEM_DICT = {"title": "-", "link": "-", "pubDate": "-", "guid": "-", "category": "-", "content": ["-"],
@@ -11,9 +10,11 @@ RSS_ITEM_STR = "Title: -\nDate: -\nLink: -\nCategory: -\nDescription: -\nMedia: 
 
 
 class TestRssItem(unittest.TestCase):
-    """Test RssItem class"""
+    """
+    Test RssItem class
+    """
 
-    def test_RSSItem_init(self):
+    def test_RssItem_init(self):
         """
         Check if RssItem initializing from dirt in right way +
         checking work of overloaded __str__
@@ -21,17 +22,23 @@ class TestRssItem(unittest.TestCase):
         item = RssItem(**RSS_ITEM_DICT)
         self.assertEqual(RSS_ITEM_STR, str(item))
 
-    def test_RSSItem_as_dict(self):
-        """Check as_dict"""
+    def test_RssItem_as_dict(self):
+        """
+        Check as_dict
+        """
         self.assertEqual({'Title': '-', 'Date': '-', 'Link': '-', 'Description': '-', 'Category': '-', 'Media': ['-']},
                          RssItem(**RSS_ITEM_DICT).as_dict())
 
 
 class TestRssNews(unittest.TestCase):
-    """ Testing of RssNews"""
+    """
+    Testing of RssNews
+    """
 
     def test_RssNews_str(self):
-        """Test as_str function"""
+        """
+        Test as_str function
+        """
         self.assertEqual("\n [link: ]\n\n\nNo news", RssNews(**{}).as_str())
 
     def test_RssNews_json(self):

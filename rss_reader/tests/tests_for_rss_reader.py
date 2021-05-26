@@ -8,6 +8,7 @@ from unittest.mock import MagicMock
 from io import StringIO
 
 from rss_core.reader import SiteReader
+from rss_core.cacher import DbCacher
 from rssreader import rss_reader
 
 XML_INFO = """<?xml version="1.0" encoding="UTF-8"?>
@@ -55,57 +56,67 @@ class TestRssReader(unittest.TestCase):
     """
     Tests for rss_reader.py
     """
-
-    def setUp(self):
-        self.get_args = rss_reader.get_args
-
-    def tearDown(self):
-        rss_reader.get_args = self.get_args
+    SiteReader.get_data = MagicMock(return_value=XML_INFO)
+    DbCacher.cache_rss_news = MagicMock(return_value=True)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_verbose_arg(self, mock_stdout):
-        """ Test --verbose argument """
-        SiteReader.get_data = MagicMock(return_value=XML_INFO)
-        rss_reader.get_args = MagicMock(
-            return_value=argparse.Namespace(limit=1, verbose=True, json=False, source="https://news.yahoo.com/rss/"))
-        rss_reader.main()
-        self.assertTrue("[INFO]" in mock_stdout.getvalue())
+        """
+        Test --verbose argument
+        """
+        rss_reader.main(["--limit", "1", "--verbose", "https://news.yahoo.com/rss/"])
+        self.assertIn("[INFO]", mock_stdout.getvalue())
 
     @patch('sys.stdout', new_callable=StringIO)
-    def test_limit_arg(self, mock_stdout):
-        """ Tests --limit argument """
-        SiteReader.get_data = MagicMock(return_value=XML_INFO)
-        rss_reader.get_args = MagicMock(
-            return_value=argparse.Namespace(limit=-1, verbose=False, json=False, source="https://news.yahoo.com/rss/"))
-
+    def test_negative_limit_arg(self, mock_stdout):
+        """
+        Tests negative --limit argument
+        """
         with self.assertRaises(SystemExit) as cm:
-            rss_reader.main()
+            rss_reader.main(["--limit", "-1", "https://news.yahoo.com/rss/"])
         self.assertEqual(cm.exception.code, 1)
-        self.assertTrue("[ERROR] Limit should be positive integer" in mock_stdout.getvalue())
+        self.assertIn("[ERROR] Limit should be positive integer", mock_stdout.getvalue())
 
-        rss_reader.get_args = MagicMock(
-            return_value=argparse.Namespace(limit="a", verbose=False, json=False, source="https://news.yahoo.com/rss/"))
+    def test_invalid_str_limit_arg(self):
+        """
+        Tests invalid str --limit argument
+        """
         with self.assertRaises(SystemExit) as cm:
-            rss_reader.main()
+            rss_reader.main(["--limit", "a", "https://news.yahoo.com/rss/"])
         self.assertEqual(cm.exception.code, 1)
 
-        rss_reader.get_args = MagicMock(
-            return_value=argparse.Namespace(limit=3, verbose=False, json=False, source="https://news.yahoo.com/rss/"))
-        rss_reader.main()
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_over_news_count_limit_arg(self, mock_stdout):
+        """
+        Tests --limit argument which greater than news count
+        """
+        rss_reader.main(["--limit", "3", "https://news.yahoo.com/rss/"])
         self.assertEqual(2, mock_stdout.getvalue().count("News title"))
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_version_arg(self, mock_stdout):
-        """Test --version"""
+        """
+        Test --version argument
+        """
         with self.assertRaises(SystemExit) as cm:
-            rss_reader.get_args({"--version": True})
+            rss_reader.main(["--version"])
         self.assertEqual(cm.exception.code, 0)
-        self.assertTrue("Version" in mock_stdout.getvalue())
+        self.assertIn("Version 1.3", mock_stdout.getvalue())
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_json_arg(self, mock_stdout):
-        SiteReader.get_data = MagicMock(return_value=XML_INFO)
-        rss_reader.get_args = MagicMock(
-            return_value=argparse.Namespace(limit=1, verbose=False, source="https://news.yahoo.com/rss/", json=True))
-        rss_reader.main()
+        """
+        Test --json argument
+        """
+        rss_reader.main(["--limit", "1", "--json", "https://news.yahoo.com/rss/"])
         self.assertEqual(RSS_JSON, mock_stdout.getvalue())
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_getting_cache_with_wrong_date(self, mock_stdout):
+        """
+        Test for getting from cache with wrong date
+        """
+        with self.assertRaises(SystemExit) as cm:
+            rss_reader.main(["--limit", "1", "https://news.yahoo.com/rss/", "--date", "2020"])
+        self.assertEqual(cm.exception.code, 1)
+        self.assertIn("Can't parse date '2020'. Check if it is %Y%m%d format", mock_stdout.getvalue())
