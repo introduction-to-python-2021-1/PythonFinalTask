@@ -16,26 +16,6 @@ logger = get_logger()
 class Converter(abc.ABC):
     """Creates abstract converter from which concrete converters must be derived."""
 
-    @staticmethod
-    def generate_html(news_items):
-        """
-        Generates HTML with news items.
-
-        Parameters:
-            news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: [] of {}'s
-
-        Returns:
-            (str): String containing HTML with news items.
-        """
-        logger.info("Generate HTML")
-
-        htmlpath = get_path_to_data("html")
-        template_loader = jinja2.FileSystemLoader(searchpath=htmlpath)
-        template_env = jinja2.Environment(loader=template_loader)
-        template = template_env.get_template("template.html")
-
-        return template.render(news_items=news_items)
-
     def __init__(self, *, directory_path, file_name):
         self.directory_path = Path(directory_path).absolute()
         self.file_path = self.directory_path / file_name
@@ -62,6 +42,26 @@ class Converter(abc.ABC):
             news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: [] of {}'s
         """
         pass
+
+    @staticmethod
+    def generate_html(news_items):
+        """
+        Generates HTML with news items.
+
+        Parameters:
+            news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: [] of {}'s
+
+        Returns:
+            (str): String containing HTML with news items.
+        """
+        logger.info("Generate HTML")
+
+        htmlpath = get_path_to_data("html")
+        template_loader = jinja2.FileSystemLoader(searchpath=htmlpath)
+        template_env = jinja2.Environment(loader=template_loader)
+        template = template_env.get_template("template.html")
+
+        return template.render(news_items=news_items)
 
 
 class ToHtmlConverter(Converter):

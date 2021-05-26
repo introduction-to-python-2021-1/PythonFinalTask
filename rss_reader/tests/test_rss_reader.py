@@ -3,13 +3,14 @@ import io
 import sys
 import json
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 from urllib.error import URLError
 from urllib.error import HTTPError
 
 import ddt
 
 from rss_reader import rss_reader
+from rss_reader.helper import VERSION
 
 
 class TestMain(unittest.TestCase):
@@ -25,14 +26,14 @@ class TestMain(unittest.TestCase):
         with self.assertRaises(SystemExit):
             rss_reader.main([None, "https://news.yahoo.com/rss/", "--version"])
 
-        self.assertEqual(self.captured_output.getvalue(), f'"Version {rss_reader.VERSION}"\n')
+        self.assertEqual(self.captured_output.getvalue(), f'"Version {VERSION}"\n')
 
     def test_just_version_argument(self):
         """Tests that app prints its version and stops if just --version argument is specified."""
         with self.assertRaises(SystemExit):
             rss_reader.main([None, "--version"])
 
-        self.assertEqual(self.captured_output.getvalue(), f'"Version {rss_reader.VERSION}"\n')
+        self.assertEqual(self.captured_output.getvalue(), f'"Version {VERSION}"\n')
 
     def tearDown(self):
         """Resets redirect of stdout."""
@@ -40,20 +41,26 @@ class TestMain(unittest.TestCase):
 
 
 @ddt.ddt
+@patch.object(rss_reader, "urlopen")
 class TestGetResponse(unittest.TestCase):
     """Tests get_response function from rss_reader."""
 
+    def test_get_response_with_valid_url(self, mocked):
+        """Tests that get_response function from rss_reader closes connection after successful response from server."""
+        mocked.return_value = response_mock = Mock()
+        rss_reader.get_response("https://news.yahoo.com/rss/")
+        response_mock.close.assert_called()
+
     @ddt.file_data("../project_data/json/test_get_response.json")
-    @patch.object(rss_reader, "urlopen")
-    def test_get_response(self, mocked_function, string_with_exception_creation, exception_attributes, output_message):
+    def test_get_response_with_exceptions(self, mocked, string_with_exception_creation, exception_attributes, message):
         """Tests that get_response function from rss_reader handles various exceptions."""
-        mocked_function.side_effect = eval(string_with_exception_creation, globals(), exception_attributes)
+        mocked.side_effect = eval(string_with_exception_creation, globals(), exception_attributes)
 
         with self.assertLogs(rss_reader.logger, "ERROR") as captured:
             with self.assertRaises(SystemExit):
                 rss_reader.get_response("")
 
-            self.assertEqual(output_message.format(**exception_attributes), captured.records[0].getMessage())
+            self.assertEqual(message.format(**exception_attributes), captured.records[0].getMessage())
 
 
 class TestParseResponse(unittest.TestCase):

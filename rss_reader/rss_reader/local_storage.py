@@ -18,41 +18,6 @@ logger = get_logger()
 class LocalStorage:
     """Implements local storage and interface to interact with it."""
 
-    @staticmethod
-    def parse_date_from_news_item(news_item):
-        """
-        Returns date from single news item.
-
-        Parameters:
-            news_item {"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}: News item dict
-
-        Returns:
-            (datetime.datetime): Date from news item dict by key "Date"
-        """
-        return dateparser.parse(news_item["Date"])
-
-    @staticmethod
-    def get_news_items_images(news_items):
-        """
-        Downloads news items images to ./project_data/images directory.
-
-        Parameters:
-            news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: [] of {}'s
-        """
-        logger.info("Download images")
-
-        executor = concurrent.futures.ThreadPoolExecutor(max_workers=len(news_items) or None)
-
-        for news_item in news_items:
-            url = news_item["image_url"]
-
-            if url is not None:
-                storage_path_on_local_machine = get_path_to_data("images", url.split("/")[-1] + ".jpg")
-                news_item["image_url"] = storage_path_on_local_machine
-                executor.submit(urlretrieve, url, storage_path_on_local_machine)
-        # If wait in line below set to False, news is printed to stdout without waiting for all images to be downloaded
-        executor.shutdown(wait=True)  # If wait set to False, it can affect PDF generation (some images may be absent)
-
     def __init__(self, name):
         logger.info(f'Create local storage "{name}"')
 
@@ -160,11 +125,7 @@ class LocalStorage:
             result (int): Number of news items in local storage by specific url
         """
         storage_content = self.read_from_storage_file()
-
-        if url in storage_content:
-            result = len(storage_content[url])
-        else:
-            result = 0
+        result = len(storage_content[url]) if url in storage_content else 0
 
         logger.info(f"There are {result} news items in local storage by url: {url}")
 
@@ -177,3 +138,39 @@ class LocalStorage:
     def write_to_storage_file(self, storage_content):
         """Writes dictionary containing local storage content to file as JSON."""
         self.storagepath.write_bytes(json.dumps(storage_content, indent=4, ensure_ascii=False).encode("UTF-8"))
+
+    @staticmethod
+    def parse_date_from_news_item(news_item):
+        """
+        Returns date from single news item.
+
+        Parameters:
+            news_item {"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}: News item dict
+
+        Returns:
+            (datetime.datetime): Date from news item dict by key "Date"
+        """
+        return dateparser.parse(news_item["Date"])
+
+    @staticmethod
+    def get_news_items_images(news_items):
+        """
+        Downloads news items images to ./project_data/images directory.
+
+        Parameters:
+            news_items [{"Feed": (str), "Title", (str), "Date": (srt), "Link": (str), "image_url": (str)}]: [] of {}'s
+        """
+        logger.info("Download images")
+
+        executor = concurrent.futures.ThreadPoolExecutor(max_workers=len(news_items) or None)
+
+        for news_item in news_items:
+            url = news_item["image_url"]
+
+            if url is not None:
+                storage_path_on_local_machine = get_path_to_data("images", url.split("/")[-1] + ".jpg")
+                news_item["image_url"] = storage_path_on_local_machine
+                executor.submit(urlretrieve, url, storage_path_on_local_machine)
+        # If wait in line below set to False, news is printed to stdout without waiting for all images to be downloaded
+        # it can affect PDF generation (some images may be absent)
+        executor.shutdown(wait=True)
