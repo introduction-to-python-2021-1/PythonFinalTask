@@ -4,8 +4,7 @@ import io
 import logging
 import logging.handlers
 import sys
-from unittest import mock
-from unittest.mock import patch
+
 
 class TestReader(unittest.TestCase):
     def test_checking_the_installation(self):
@@ -34,7 +33,7 @@ class TestReader(unittest.TestCase):
         self.assertTrue(parser)
 
 
-    def test_checking_verbose(self, mock_print):
+    def test_checking_verbose(self):
         """Test verbose status message"""
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
         self.assertTrue(parser.verbose)
@@ -78,47 +77,19 @@ class TestReader(unittest.TestCase):
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/"])
         self.assertLogs(parser, logging.ERROR)
 
-    def test_wrong_source(self):
-        """Test wrong url"""
-        parser = rss_reader.parses_data(["https://news.sahoo.com/rss/"], "--limit 1")
-        self.assertEqual(parser, {})
+    def test_answer_Exception(self):
+        """Test answer for wrong URL"""
+        answer = rss_reader.answer_URL(["https://news.sahoo.com/rss/"])
+        self.assertLogs(answer, "Xml was failed. Input the correct URL, please")
 
 
-    def test_good_source(self):
-        """Test good url"""
-        parser = rss_reader.parses_data(["https://news.yahoo.com/rss/"], "--limit 1")
-        self.assertEqual(parser, {})
-
-    def test_printException(self):
-        """Test not rss format"""
-        parser = rss_reader.command_arguments_parser(["https://news.yahoo.com", "--limit 1"])
-        with self.assertRaises(SystemExit):
-            self.assertLogs(rss_reader.main(), logging.ERROR)
-
-
-    def test_printing_news(self):
-        """Test print of news"""
-        dictionary = rss_reader.parses_data("https://news.yahoo.com/rss/", "--limit 1")
-        self.assertEqual(dictionary, {'Feed': 'Yahoo News - Latest News & Headlines'})
-
-    def test_printing_(self):
-        """Test print of news"""
-        dictionary = rss_reader.parses_data("https://news.yahoo.com/rss/", "--limit 1")
-        list_of_keys = []
-        for keys in dictionary:
-            for part in dictionary["News"]:
-                list_of_keys.append(part.keys)
-                list_of_keys += keys
-        self.assertEqual(list_of_keys, ['Title', 'Date', 'Link', 'Images'])
-
-
-    def test_bad_link(self):
+    def test_bad_link_message(self):
         # Test Exception is raising and user-friendly message is printing to stdout, if we give a bad link
         parser = rss_reader.parses_data("https://news.sahoo.com/rss/", "--limit 1")
         with self.assertRaises(Exception):
             self.assertEqual(parser, "Xml was failed")
 
-    def test_0_link_(self):
+    def test_0_link_message(self):
         # Test Exception is raising and user-friendly message is printing to stdout, if we give a bad link
         parser = rss_reader.parses_data("https://news.sahoo.com/rss/", "--limit 1")
         with self.assertRaises(Exception):
