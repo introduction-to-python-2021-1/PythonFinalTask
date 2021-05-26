@@ -86,7 +86,6 @@ class TestException(unittest.TestCase):
 
     def test_url(self):
         """Test normal Url"""
-
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/"])
         self.assertTrue(rss_reader.open_url(parser.url))
 
