@@ -1,26 +1,22 @@
 import unittest
-import sqlite3
+from unittest.mock import MagicMock
+from unittest.mock import patch
+from urllib.error import URLError
 
-from reader.functions import parse_news, make_json, check_limit
+from reader.functions import parse_news, make_json, check_limit, check_URL, store_news
 from reader.article import Article
-
-connection = sqlite3.connect('news.db')
-cursor = connection.cursor()
-
-"""Test cases to test functions"""
 
 
 class TestFunctions(unittest.TestCase):
+    """Test cases to test functions"""
+
     def setUp(self):
+        self.url = 'Some_URL'
         self.article_A = Article('Japan reporter freed from Myanmar says inmates were abused',
                                  'https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html',
                                  '2021-05-21T15:03:25Z', 'Associated Press', '---',
                                  'https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAwMDthcHB'
                                  'pZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc')
-        self.article_B = Article('Title_B',
-                                 'Link_B',
-                                 '2021-05-25T15:03:25Z', 'Source_B', '---',
-                                 'Image_B')
         self.entries = [{'title': 'Japan reporter freed from Myanmar says inmates were abused',
                          'title_detail': {'type': 'text/plain', 'language': None, 'base': 'https://news.yahoo.com/rss/',
                                           'value': 'Japan reporter freed from Myanmar says inmates were abused'},
@@ -39,9 +35,22 @@ class TestFunctions(unittest.TestCase):
                                             'width': '130'}], 'media_credit': [{'role': 'publishing company'}],
                          'credit': ''}]
 
-    def test_parse_news(self):
-        self.actual = parse_news(self.entries, cursor, connection)[0]
+    @patch('reader.functions.store_news')
+    def test_parse_news(self, store):
+        store.return_value = ''
+        self.actual = parse_news(self.entries, None, None, self.url)[0]
         self.assertEqual(self.actual, self.article_A)
+
+    @patch('reader.functions.store_news')
+    def test_empty_news(self, store):
+        self.entries = {'entries': []}
+        store.return_value = ''
+
+        with self.assertRaises(SystemExit) as cm:
+            parse_news(self.entries, None, None, self.url)
+
+        the_exception = cm.exception
+        self.assertEqual(the_exception.args[0], "Sorry, no news to parse!")
 
     def test_make_json(self):
         self.assertEqual(make_json(self.article_A),
@@ -76,6 +85,33 @@ class TestFunctions(unittest.TestCase):
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], 'The argument "limit" should be greater than 0')
+
+    @patch('feedparser.parse')
+    def test_bad_link(self, mock_api_call):
+        mock_api_call.return_value = {'entries': []}
+        with self.assertRaises(SystemExit) as cm:
+            check_URL(self.url, None, None)
+
+        the_exception = cm.exception
+        self.assertEqual(the_exception.args[0], "Please, check if the entered link is correct!")
+
+    @patch('feedparser.parse')
+    def test_unvalid_url(self, mock_api_call):
+        mock_api_call.side_effect = MagicMock(side_effect=URLError('foo'))
+        with self.assertRaises(SystemExit) as cm:
+            check_URL(self.url, None, None)
+
+        the_exception = cm.exception
+        self.assertEqual(the_exception.args[0], "Source isn't available")
+
+    @patch('reader.functions.store_news')
+    @patch('feedparser.parse')
+    def test_valid_url(self, parser, store):
+        parser.return_value = {'entries': self.entries}
+        store.return_value = ''
+
+        self.actual = check_URL(self.entries, None, None)
+        self.assertEqual(self.actual[0], self.article_A)
 
 
 if __name__ == "__main__":

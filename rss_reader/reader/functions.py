@@ -5,32 +5,37 @@ import urllib.error
 
 from reader.article import Article
 
+__version__ = '1.3'
+
 
 def parse_news(news, cursor, connection, url):
     """Creating list of news"""
-    default_value = '---'
+    try:
+        default_value = '---'
 
-    news_list = []
-    for entry in news:
-        title = entry.get('title', default_value)
-        link = entry.get('link', default_value)
-        published = entry.get('published', default_value)
-        source = entry.get('source', default_value)
-        description = entry.get('description', default_value)
-        media_content = entry.get('media_content', default_value)
+        news_list = []
+        for entry in news:
+            title = entry.get('title', default_value)
+            link = entry.get('link', default_value)
+            published = entry.get('published', default_value)
+            source = entry.get('source', default_value)
+            description = entry.get('description', default_value)
+            media_content = entry.get('media_content', default_value)
 
-        source_title = default_value
-        if source != default_value:
-            source_title = source['title']
+            source_title = default_value
+            if source != default_value:
+                source_title = source['title']
 
-        image = default_value
-        if media_content != image:
-            image = media_content[0]['url']
+            image = default_value
+            if media_content != image:
+                image = media_content[0]['url']
 
-        article = Article(title, link, published, source_title, description, image)
-        news_list.append(article)
+            article = Article(title, link, published, source_title, description, image)
+            news_list.append(article)
 
-        store_news(news_list, cursor, connection, url)
+            store_news(news_list, cursor, connection, url)
+    except AttributeError:
+        raise SystemExit('Sorry, no news to parse!')
 
     return news_list
 
@@ -76,18 +81,7 @@ def execute_news(date, cursor, url):
     """Retrieves news for the selected date"""
     cursor.execute('SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date '
                    'and url=:url', {'date': date, 'url': url})
-
     records = cursor.fetchall()
-
-    # for row in records:
-    #     print("Title:", row[0])
-    #     print("link:", row[1])
-    #     print("Full_date:", row[2])
-    #     print("Source:", row[3])
-    #     print("Desc:", row[4])
-    #     print("Image:", row[5])
-    #     print("RSS:", row[6], end="\n\n")
-
     articles = []
     for title, link, full_date, source, description, image, url in records:
         articles.append(Article(title, link, full_date, source, description, image))
@@ -98,7 +92,7 @@ def check_URL(source, cursor, connection):
     """Checking the validity of user-entered URL"""
     try:
         rss_news = feedparser.parse(source)
-        result = parse_news(rss_news.entries, cursor, connection, source)
+        result = parse_news(rss_news['entries'], cursor, connection, source)
     except urllib.error.URLError:
         raise SystemExit("Source isn't available")
     else:
@@ -108,11 +102,11 @@ def check_URL(source, cursor, connection):
             return result
 
 
-def create_arguments(new_version):
+def create_arguments():
     """Creates command line arguments"""
     parser = argparse.ArgumentParser(description='Pure Python command-line RSS reader')
     parser.add_argument('source', type=str, nargs='?', default=None, help='RSS URL')
-    parser.add_argument('--version', action='version', version='Version ' + str(new_version), help='Print version info')
+    parser.add_argument('--version', action='version', version='Version ' + __version__, help='Print version info')
     parser.add_argument('--json', action='store_true', help='Print result as JSON in stdout')
     parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
     parser.add_argument('--limit', help='Limit news topics if this parameter provided')

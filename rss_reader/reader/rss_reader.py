@@ -1,4 +1,3 @@
-import os
 import sys
 import logging.handlers
 import sqlite3
@@ -23,21 +22,7 @@ def main():
     connection = sqlite3.connect('news.db')
     cursor = connection.cursor()
 
-    """Checking the current version of the program"""
-    new_version = 1.0
-
-    if not os.path.exists('../../../actual_version.txt'):
-        with open('../../../actual_version.txt', 'w') as act_version:
-            act_version.write(str(new_version))
-        print('Creating file for storing actual programm version')
-    else:
-        with open('../../../actual_version.txt', 'r+') as act_version:
-            actual = act_version.read()
-            act_version.seek(0)
-            new_version = round((float(actual) + 0.1), 1)
-            act_version.write(str(new_version))
-
-    args = create_arguments(new_version)
+    args = create_arguments()
 
     if args.limit:
         limit = check_limit(args.limit)
