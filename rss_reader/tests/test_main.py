@@ -5,9 +5,8 @@ from datetime import datetime
 from unittest import mock
 from unittest.mock import patch
 
-import data_for_tests as td
-
-from rss_reader.rss_reader import rss_reader as rs
+from rss_reader.main_reader import rss_reader as rs
+from rss_reader.tests import data_for_tests as td
 
 NEWSLINK = "https://news.yahoo.com/rss/"
 
@@ -147,7 +146,7 @@ class TestMainReader(unittest.TestCase):
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_no_cashed_news(self, mock_print):
         # Test AttributeError was cached and user-friendly message is printing to stdout, if we give a bad date
-        with mock.patch("rss_reader.rss_reader.rss_reader.find_cashed_news") as cashMock:
+        with mock.patch("rss_reader.main_reader.rss_reader.find_cashed_news") as cashMock:
             cashMock.side_effect = AttributeError(mock.Mock)
             rs.parsing_user_date("20210101")
             message = mock_print.call_args_list[0].args[0]
@@ -155,7 +154,7 @@ class TestMainReader(unittest.TestCase):
 
     def test_return_valid_cashed_dict_with_valid_len_news(self):
         # Test take newsdict from find_cashed_news, valid count it's len_news and return it
-        with mock.patch("rss_reader.rss_reader.rss_reader.find_cashed_news") as cashMock:
+        with mock.patch("rss_reader.main_reader.rss_reader.find_cashed_news") as cashMock:
             cashMock = td.TEST_NEWSDICT
             newsdict, len_news = rs.parsing_user_date("20210521")
             self.assertEqual(len_news, len(newsdict["news"]))

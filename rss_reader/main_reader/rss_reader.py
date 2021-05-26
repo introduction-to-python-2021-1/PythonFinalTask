@@ -11,14 +11,10 @@ import sys
 from datetime import datetime
 from urllib.error import URLError
 
+# from rss_reader.main_reader import converter as converter такой вариант, с абсолютным импортом, не работает
+import converter as converter  # работает в виндоус для запуска через $ python rss_reader.py, не работает для setup
 import dateparser
 import feedparser
-
-# from jinja2 import Template
-# from xhtml2pdf import pisa
-sys.path.append((os.path.realpath(__file__)))
-print(sys.path)
-import converter as converter
 
 NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
 
@@ -150,23 +146,26 @@ def find_cashed_news(converted_user_date, source=None):
     Check file with cashed news dictionaries
     :param converted_user_date: date given by user
     :param source: source link given by user if any
-    :return: newsdict_from_cash for reading news if there is suitable in cash, else raise AttributeError
+    :return: newsdict_from_cash for reading news if there is suitable in cash, else raise AttributeError.
+    If there were no cashed news before at all, means file with cashed news wasn't created, raise FileNotFoundError.
     """
     cash_file_name = os.path.join(os.getcwd(), "cashed_news.txt")
-    print(cash_file_name)
-    with open(cash_file_name, "r") as cash_file:
-        newslist = []
-        newsdict_from_cash = {"source": "from cash file", "main_title": "Cashed news"}
-        for json_dict in cash_file:
-            newsdict = jsn.loads(json_dict)
+    try:
+        with open(cash_file_name, "r") as cash_file:
+            newslist = []
+            newsdict_from_cash = {"source": "from cash file", "main_title": "Cashed news"}
+            for json_dict in cash_file:
+                newsdict = jsn.loads(json_dict)
 
-            if source:
-                if source != newsdict["source"]:
-                    continue
-            for one_news in newsdict["news"]:
-                if date_compare(one_news["Published"], converted_user_date):
-                    newslist.append(one_news)
-
+                if source:
+                    if source != newsdict["source"]:
+                        continue
+                for one_news in newsdict["news"]:
+                    if date_compare(one_news["Published"], converted_user_date):
+                        newslist.append(one_news)
+    except FileNotFoundError:
+        return print("There are no cashed news, "
+                     "please read some news from external sources before trying to access cash")
     if newslist:
         newsdict_from_cash["news"] = newslist
         return newsdict_from_cash
@@ -198,65 +197,6 @@ def open_rss_link(source, verbose):
         return print("Please insert rss link")
 
     return content
-
-
-#
-# def make_html(newsdict, one_news):
-#     """
-#     Make html file from all news from newsdict
-#     :param newsdict: dictionary with parsed news "news"
-#     :param one_news: one news from newsdict
-#     :return: html file with all news, rendered by template
-#     """
-#     template = Template(open(os.path.join(os.getcwd(), "html_template.html")).read())
-#     return template.render(newsdict=newsdict, one_news=one_news)
-#
-#
-# def save_html(user_path: str, newsdict: dict, number_of_news_to_show: int):
-#     """
-#     Save news in html in a directory, chosen by user, in a volume (number of news), chosen by user.
-#     Name of the file include exact time of making file (joined on one string without spaces) to avoid rewritings.
-#     :param user_path: path to the file on users PC, chosen by him
-#     :param newsdict: dictionary with parsed news "news"
-#     :param number_of_news_to_show: limit number of news for saving
-#     :return: first write chosen number of news to html file, than return path to it
-#     If user_path is invalid, FileNotFoundError is raising and user-friendly message is printing
-#     """
-#     filename = "".join(str(time.time()))
-#     file_path = os.path.join(user_path, f"News from time {filename}.html")
-#     try:
-#         with open(file_path, "w") as file:
-#             for one_news in newsdict["news"][:number_of_news_to_show]:
-#                 file.write(make_html(newsdict, one_news))
-#             return file_path
-#     except FileNotFoundError:
-#         return print(
-#             "Please write a valid existing absolute path to a destination directory, "
-#             "filename will be generated automatically"
-#         )
-#
-#
-# def safe_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
-#     """
-#     Call function safe_html to make html file with number of news, chosen by user, create a pdf file in a directory,
-#     chosen by user, and write there converted html.
-#     Name of the file include exact time of making file (joined on one string without spaces) to avoid rewritings.
-#     :param user_path: path to the file on users PC, chosen by him
-#     :param newsdict: dictionary with parsed news "news"
-#     :param number_of_news_to_show: limit number of news for saving
-#     :return: return False on success and True on errors
-#     If user_path is invalid, FileNotFoundError is raising and user-friendly message is printing
-#     """
-#
-#     file_in_path = save_html(user_path, newsdict, number_of_news_to_show)
-#     filename = "".join(str(time.time()))
-#     file_out_path = os.path.join(user_path, f"News from time {filename}.pdf")
-#     try:
-#         with open(file_out_path, "w+b") as file_out, open(file_in_path, "r") as file_in:
-#             pisa_status = pisa.CreatePDF(src=file_in, dest=file_out)
-#         return pisa_status.err
-#     except FileNotFoundError:
-#         sys.exit()
 
 
 def parsing_user_date(user_date: str, source: str = None):
@@ -332,7 +272,7 @@ def main():
         try:
             newsdict, len_news = parsing_user_date(arguments.date, arguments.source)
             logger.info(f"News will be reading from cash")
-        except (AttributeError, ValueError, TypeError):
+        except (AttributeError, ValueError, TypeError, FileNotFoundError):
             sys.exit()
     else:
         content = open_rss_link(arguments.source, arguments.verbose)
