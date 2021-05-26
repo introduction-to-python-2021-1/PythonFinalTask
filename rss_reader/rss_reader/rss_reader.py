@@ -54,6 +54,7 @@ def parses_data(data, limit):
         print("Xml was failed")
     return dictionary
 
+
 def printing_news(dictionary):
     """Print news on console"""
     print("\nFeed:", dictionary["Feed"], "\n")
@@ -76,10 +77,6 @@ def printing_json(dictionary):
 def main():
     args = command_arguments_parser(sys.argv[1:])
     answer = answer_URL(args.source)
-    if not answer:
-        if args.verbose:
-            print("No content received from URL", args.source)
-        return False
 
     if args.limit == 0:
         print("Invalid limit. Enter the limit (greater than 0), please")
@@ -105,6 +102,7 @@ def main():
 
     except requests.exceptions.MissingSchema:
         print("Incorrect URL. Correct the URL, please")
+
 
 if __name__ == "__main__":
  main()

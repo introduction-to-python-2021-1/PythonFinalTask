@@ -27,6 +27,7 @@ class TestReader(unittest.TestCase):
         parser = rss_reader.command_arguments_parser(["--limit 0"])
         self.assertLogs(parser, "Invalid limit. Enter the limit (greater than 0), please")
 
+
     def test_limit_negative_number(self):
         """Test limit negative number"""
         parser = rss_reader.command_arguments_parser(["--limit -5"])
@@ -47,7 +48,7 @@ class TestReader(unittest.TestCase):
         """Test verbose status message"""
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
         data = rss_reader.parses_data(parser, "--limit 1")
-        self.assertLogs(parser, "Reads amount of news - 1")
+        self.assertLogs(data, "Reads amount of news - 1")
 
 
     def test_checking_verbose_plus_limit(self):
@@ -61,6 +62,7 @@ class TestReader(unittest.TestCase):
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--json"])
         self.assertTrue(parser.json)
 
+
     def test_checking_empty(self):
         """Test without link"""
         parser = rss_reader.command_arguments_parser([""])
@@ -72,10 +74,12 @@ class TestReader(unittest.TestCase):
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
         self.assertLogs(parser, logging.INFO)
 
+
     def test_logging_ERROR(self):
         """Test without verbose"""
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/"])
         self.assertLogs(parser, logging.ERROR)
+
 
     def test_answer_Exception(self):
         """Test answer for wrong URL"""
@@ -84,13 +88,7 @@ class TestReader(unittest.TestCase):
 
 
     def test_bad_link_message(self):
-        # Test Exception is raising and user-friendly message is printing to stdout, if we give a bad link
-        parser = rss_reader.parses_data("https://news.sahoo.com/rss/", "--limit 1")
-        with self.assertRaises(Exception):
-            self.assertEqual(parser, "Xml was failed")
-
-    def test_0_link_message(self):
-        # Test Exception is raising and user-friendly message is printing to stdout, if we give a bad link
+        """Test Exception is raising and user-friendly message is printing to stdout, if we give a bad link"""
         parser = rss_reader.parses_data("https://news.sahoo.com/rss/", "--limit 1")
         with self.assertRaises(Exception):
             self.assertEqual(parser, "Xml was failed")
