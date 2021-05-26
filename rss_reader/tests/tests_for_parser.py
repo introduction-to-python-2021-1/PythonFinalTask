@@ -39,12 +39,6 @@ class TestParser(unittest.TestCase):
     Test XmlParser
     """
 
-    def setUp(self):
-        self.get_data = SiteReader.get_data
-
-    def tearDown(self):
-        SiteReader.get_data = self.get_data
-
     def test_empty_reader(self):
         """
         Test work of parser with empty reader
@@ -54,6 +48,9 @@ class TestParser(unittest.TestCase):
         self.assertRaises(AttributeError, parser.parse_news, "http")
 
     def test_not_empty_parser(self):
+        """
+        Test correct work parse_news method with correct xml info
+        """
         SiteReader.get_data = MagicMock(return_value=XML_INFO.replace("\n", ""))
         parser = XmlParser(SiteReader())
         news_dict = parser.parse_news("http://abc")
