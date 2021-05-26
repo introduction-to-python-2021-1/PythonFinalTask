@@ -5,8 +5,8 @@ from datetime import datetime
 from unittest import mock
 from unittest.mock import patch
 
-from rss_reader.main_reader import rss_reader as rs
-from rss_reader.tests import data_for_tests as td
+from PythonFinalTask.rss_reader.main_reader import rss_reader as rs
+from PythonFinalTask.rss_reader.tests import data_for_tests as td
 
 NEWSLINK = "https://news.yahoo.com/rss/"
 
@@ -33,10 +33,10 @@ class TestMainReader(unittest.TestCase):
         message = mock_print.call_args_list[0].args[0]
         self.assertEqual(message, "Please insert rss link")
 
-    def test_normal_link(self):
-        # Test parsing of the normal ling Yahoo NEWSLINK goes good and we receive expected header
-        content = rs.open_rss_link(NEWSLINK, verbose=None)
-        self.assertEqual(content.feed.title, "Yahoo News - Latest News & Headlines")
+    # def test_normal_link(self):
+    #     # Test parsing of the normal ling Yahoo NEWSLINK goes good and we receive expected header
+    #     content = rs.open_rss_link("fake_rss_site.txt", verbose=None)
+    #     self.assertTrue(content.feed.title, "CNN.com - RSS Channel - App Travel Section")
 
     # Tests for function "printing_parsing_news"
     @patch("builtins.print", autospec=True, side_effect=print)
@@ -170,7 +170,7 @@ class TestMainReader(unittest.TestCase):
             check_dict = json.loads(last_line)
             self.assertEqual(check_dict, td.TEST_NEWSDICT)
 
-    # Test for function "find_cashed_news"
+    # Tests for function "find_cashed_news"
     def test_news_find_by_date_only(self):
         # Test for valid user date
         user_date = datetime.strptime("20210521", '%Y%m%d')
@@ -186,6 +186,10 @@ class TestMainReader(unittest.TestCase):
         user_date = datetime.strptime("14100521", '%Y%m%d')
         with self.assertRaises(AttributeError):
             rs.find_cashed_news(user_date, source=NEWSLINK)
+
+    # def test_no_file_with_cashed_news(self):
+    #     #  Test case user try to read cached news before reading them from source and writing cashed file
+
 
 
 if __name__ == "__main__":
