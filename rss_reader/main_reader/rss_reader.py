@@ -11,10 +11,9 @@ import sys
 from datetime import datetime
 from urllib.error import URLError
 
-# from rss_reader.main_reader import converter as converter такой вариант, с абсолютным импортом, не работает
-import converter as converter  # работает в виндоус для запуска через $ python rss_reader.py, не работает для setup
 import dateparser
 import feedparser
+from main_reader import converter
 
 NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
 
