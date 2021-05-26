@@ -11,6 +11,6 @@ setuptools.setup(
     python_requires='>=3.8',
     install_requires=['requests', 'bs4', 'feedparser', 'lxml'],
     entry_points={
-        'console_scripts': ['rss-reader=rss_reader.rss_reader:main'],
+        'console_scripts': ['rss-reader=rss_reader_files.rss_reader:main'],
     }
 )
