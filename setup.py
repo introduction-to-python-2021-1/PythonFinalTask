@@ -9,7 +9,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     include_package_data=True,
     python_requires='>=3.8',
-    install_requires=['requests', 'bs4', 'feedparser', 'lxml'],
+    install_requires=['requests', 'bs4', 'feedparser', 'lxml', 'reportlab'],
     entry_points={
         'console_scripts': ['rss-reader=rss_reader_files.rss_reader:main'],
     }

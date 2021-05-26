@@ -9,3 +9,4 @@ requests==2.25.1
 sgmllib3k==1.0.0
 soupsieve==2.2.1
 urllib3==1.26.4
+reportlab==3.5.67
