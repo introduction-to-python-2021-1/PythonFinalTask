@@ -116,6 +116,8 @@ class TestRssReader(unittest.TestCase):
         """
         Test for getting from cache with wrong date
         """
+        DbCacher._get_channel_info_from_db = MagicMock(
+            return_value={"id": -1, "title": "", "link": "", "description": ""})
         with self.assertRaises(SystemExit) as cm:
             rss_reader.main(["--limit", "1", "https://news.yahoo.com/rss/", "--date", "2020"])
         self.assertEqual(cm.exception.code, 1)
