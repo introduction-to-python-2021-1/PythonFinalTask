@@ -5,8 +5,8 @@ from datetime import datetime
 from unittest import mock
 from unittest.mock import patch
 
-from PythonFinalTask.rss_reader.main_reader import rss_reader as rs
-from PythonFinalTask.rss_reader.tests import data_for_tests as td
+from main_reader import rss_reader as rs
+from tests import data_for_tests as td
 
 NEWSLINK = "https://news.yahoo.com/rss/"
 
@@ -189,7 +189,6 @@ class TestMainReader(unittest.TestCase):
 
     # def test_no_file_with_cashed_news(self):
     #     #  Test case user try to read cached news before reading them from source and writing cashed file
-
 
 
 if __name__ == "__main__":
