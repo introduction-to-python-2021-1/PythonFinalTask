@@ -1,0 +1,69 @@
+{
+    "with_existing_url_in_storage": {
+        "url": "https://news.yahoo.com/rss/",
+        "news_items": [
+            {
+                "Feed": "Yahoo News - Latest News & Headlines",
+                "Title": "Ammon Bundy enters Idaho governor race",
+                "Date": "2021-05-23T17:47:10Z",
+                "Link": "https://news.yahoo.com/ammon-bundy-enters-idaho-governor-174710059.html",
+                "image_url": null
+            },
+            {
+                "Feed": "Yahoo News - Latest News & Headlines",
+                "Title": "Are religious people more moral?",
+                "Date": "2021-05-23T17:07:16Z",
+                "Link": "https://news.yahoo.com/religious-people-more-moral-170716231.html",
+                "image_url": null
+            }
+        ],
+        "expected": 4
+    },
+    "with_existing_url_in_storage_but_without_news_items": {
+        "url": "https://news.google.com/rss",
+        "news_items": [
+            {
+                "Feed": "Top stories - Google News",
+                "Title": "Italy cable car fall: 14 dead after accident near Lake Maggiore - BBC News",
+                "Date": "Sun, 23 May 2021 19:53:03 GMT",
+                "Link": "https://news.google.com/__i/rss",
+                "image_url": null
+            },
+            {
+                "Feed": "Top stories - Google News",
+                "Title": "iPhone 13 rumors are getting people excited. Here's what we've heard - CNET",
+                "Date": "Sun, 23 May 2021 18:42:27 GMT",
+                "Link": "https://news.google.com/__i/rss",
+                "image_url": null
+            },
+            {
+                "Feed": "Top stories - Google News",
+                "Title": "China ultramarathon: Champion runners among 21 dead from freezing conditions - New York Post",
+                "Date": "Sun, 23 May 2021 18:21:00 GMT",
+                "Link": "https://news.google.com/__i/rss",
+                "image_url": null
+            }
+        ],
+        "expected": 3
+    },
+    "without_existing_url_in_storage": {
+        "url": "https://www.feedforall.com/sample.xml",
+        "news_items": [
+            {
+                "Feed": "FeedForAll Sample Feed",
+                "Title": "RSS Solutions for Restaurants",
+                "Date": "Tue, 19 Oct 2004 11:09:11 -0400",
+                "Link": "http://www.feedforall.com/restaurant.htm",
+                "image_url": null
+            },
+            {
+                "Feed": "FeedForAll Sample Feed",
+                "Title": "RSS Solutions for Schools and Colleges",
+                "Date": "Tue, 19 Oct 2004 11:09:09 -0400",
+                "Link": "http://www.feedforall.com/schools.htm",
+                "image_url": null
+            }
+        ],
+        "expected": 2
+    }
+}

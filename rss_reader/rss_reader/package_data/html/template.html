@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style type="text/css">
+      @font-face {
+        font-family: Arial;
+        src: url("arial.ttf");
+      }
+      body {
+        font-family: Arial;
+      }
+      img {
+        display: block;
+      }
+    </style>
+    <title>Rss feed</title>
+  </head>
+  <body>
+    <div class="container">
+      <h2>
+        Rss feed
+      </h2>
+      {% for news_item in news_items -%}
+      <div class="news">
+        <h3>
+          {{ news_item['Feed'] }}
+        </h3>
+        <img src="{{ news_item['image_url'] }}" width="130" height="86">
+        <a href="{{ news_item['Link'] }}">
+          {{ news_item['Title'] }}
+        </a>
+        <div class="date">
+          {{ news_item['Date'] }}
+        </div>
+      </div>
+      {% endfor -%}
+    </div>
+ </body>
+</html>

@@ -1,0 +1,23 @@
+{
+    "http_error": {
+        "message": "The server couldn't fulfill the request.\nError code: {code}",
+        "string_with_exception_creation": "HTTPError(None, code, None, None, None)",
+        "exception_attributes": {
+            "code": 404
+        }
+    },
+    "url_error": {
+        "message": "Failed to reach a server.\nReason: {reason}",
+        "string_with_exception_creation": "URLError(reason)",
+        "exception_attributes": {
+            "reason": "[Errno 11001] getaddrinfo failed"
+        }
+    },
+    "value_error": {
+        "message": "Generic exception: {error_message}",
+        "string_with_exception_creation": "ValueError(error_message)",
+        "exception_attributes": {
+            "error_message": "unknown url type: ''"
+        }
+    }
+}

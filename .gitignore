@@ -127,3 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+rss_reader/rss_reader/package_data/images/*
+!rss_reader/rss_reader/package_data/images/image_not_found.jpg
+rss_reader/rss_reader/package_data/json/localstorage.json
+

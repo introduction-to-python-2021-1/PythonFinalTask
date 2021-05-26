@@ -1,0 +1,31 @@
+{
+    "https://news.tut.by/rss/geonews/vitebsk.rss": [
+        {
+            "Feed": "TUT.BY: Новости Витебска и Витебской области",
+            "Title": "День Победы в Витебске. Часы на ратуше играли «Катюшу», а «Бессмертный полк» нес портрет Сталина",
+            "Date": "Sun, 09 May 2021 15:45:00 +0300",
+            "Link": "https://news.tut.by/society/729817.html?utm_campaign=news-feed&utm_medium=rss&utm_source=rss-news"
+        },
+        {
+            "Feed": "TUT.BY: Новости Витебска и Витебской области",
+            "Title": "«Ожившие памятники» на параде. Как в Витебске праздновали День Победы в 1985 году",
+            "Date": "Sun, 09 May 2021 09:47:00 +0300",
+            "Link": "https://news.tut.by/society/729462.html?utm_campaign=news-feed&utm_medium=rss&utm_source=rss-news"
+        }
+    ],
+    "https://news.yahoo.com/rss/": [
+        {
+            "Feed": "Yahoo News - Latest News & Headlines",
+            "Title": "Republican anger with Dr. Fauci reaches new heights",
+            "Date": "2021-05-10T20:17:40Z",
+            "Link": "https://news.yahoo.com/republican-anger-with-dr-fauci-reaches-new-heights-201740818.html"
+        },
+        {
+            "Feed": "Yahoo News - Latest News & Headlines",
+            "Title": "Trump's 'big lie' puts Republicans in danger who don't embrace it",
+            "Date": "2021-05-09T17:55:13Z",
+            "Link": "https://news.yahoo.com/trumps-big-lie-puts-republicans-175513352.html"
+        }
+    ],
+    "https://news.google.com/rss": []
+}
