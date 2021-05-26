@@ -7,7 +7,7 @@ import logging.handlers
 import sys
 
 
-def command_arguments_parse(args):
+def command_arguments_parser(args):
     """ Adds positional and optional arguments """
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", action="version", help="Print version info", version="Version 1.0")
