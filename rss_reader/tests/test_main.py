@@ -187,9 +187,6 @@ class TestMainReader(unittest.TestCase):
         with self.assertRaises(AttributeError):
             rs.find_cashed_news(user_date, source=NEWSLINK)
 
-    # def test_no_file_with_cashed_news(self):
-    #     #  Test case user try to read cached news before reading them from source and writing cashed file
-
 
 if __name__ == "__main__":
     unittest.main()
