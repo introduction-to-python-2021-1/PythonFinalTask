@@ -5,8 +5,8 @@ from datetime import datetime
 from unittest import mock
 from unittest.mock import patch
 
+import data_for_tests as td
 from main_reader import rss_reader as rs
-from tests import data_for_tests as td
 
 NEWSLINK = "https://news.yahoo.com/rss/"
 
