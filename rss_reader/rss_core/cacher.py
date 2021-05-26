@@ -150,12 +150,12 @@ class DbCacher(Cacher):
         :param pub_date: timestamp in channel format
         :return: date in yyyy-mm-dd format
         """
-        matches = re.findall("(\d{4})-0*(\d{1,2})-(\d{1,2})", pub_date)
+        matches = re.findall(r"(\d{4})-0*(\d{1,2})-(\d{1,2})", pub_date)
         if matches:
             ok_date = f"{matches[0][0]}-{matches[0][1]}-{matches[0][2]}"
             return ok_date
 
-        matches = re.findall("(\d{1,2})\s+(\w{3})\s+(\d{4})", pub_date)
+        matches = re.findall(r"(\d{1,2})\s+(\w{3})\s+(\d{4})", pub_date)
         if matches:
             ok_date = f"{matches[0][2]}-{MONTH_NUM[matches[0][1]]}-{matches[0][0]}"
             return ok_date

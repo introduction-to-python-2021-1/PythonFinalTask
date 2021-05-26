@@ -56,11 +56,8 @@ class TestParser(unittest.TestCase):
     def test_not_empty_parser(self):
         SiteReader.get_data = MagicMock(return_value=XML_INFO.replace("\n", ""))
         parser = XmlParser(SiteReader())
-        try:
-            news_dict = parser.parse_news("http://abc")
-            self.assertTrue(isinstance(news_dict, dict))
-        except:
-            self.assertTrue(False)
+        news_dict = parser.parse_news("http://abc")
+        self.assertTrue(isinstance(news_dict, dict))
 
     def test_get_invalid_xml(self):
         """
