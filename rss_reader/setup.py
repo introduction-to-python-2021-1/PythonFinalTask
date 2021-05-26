@@ -5,7 +5,7 @@ with open("README.md") as file:
 
 setuptools.setup(
     name="rss-reader",
-    version="2.0",
+    version="3.0",
     author="Julia Los",
     author_email="los.julia.v@gmail.com",
     description="A Python command-line RSS reader",

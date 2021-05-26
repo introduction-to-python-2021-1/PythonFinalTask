@@ -19,21 +19,35 @@ Title: Next news
 Link: https://super_news.ru/next_news.html
 
 Result of test_print_as_json(), data contains only channel:
-{
-    "channel": "News channel"
-}
+[
+    {
+        "channel_id": "https://news.ru/",
+        "channel_title": "News channel"
+    }
+]
 
 Result of test_print_as_json(), full data:
-{
-    "channel": "News channel",
-    "news": [
-        {
-            "number": 1,
-            "title": "Last news",
-            "link": "https://news.ru/last_news.html",
-            "author": "Alexey Morozov",
-            "date": "Sun, 23 May, 2021 05:30 PM",
-            "description": "Last news"
-        }
-    ]
-}
+[
+    {
+        "channel_id": "https://news.ru/",
+        "channel_title": "News channel",
+        "news": [
+            {
+                "number": 1,
+                "title": "Last news",
+                "link": "https://news.ru/last_news.html",
+                "author": "Alexey Morozov",
+                "date": "Sun, 23 May, 2021 05:30 PM",
+                "description": "Last news"
+            },
+            {
+                "number": 2,
+                "title": "Next news",
+                "link": "https://super_news.ru/next_news.html",
+                "author": "",
+                "date": "",
+                "description": ""
+            }
+        ]
+    }
+]

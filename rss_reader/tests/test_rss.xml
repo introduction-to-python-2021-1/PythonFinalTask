@@ -3,7 +3,7 @@
 <channel>
 <title>News channel</title>
 <description>For testing rss reader</description>
-<link>http://test_rss_reader.org/</link>
+<link>https://news.ru/</link>
 <item>
 <title>Last news</title>
 <author>Alexey Morozov</author>
