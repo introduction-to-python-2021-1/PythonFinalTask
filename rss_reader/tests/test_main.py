@@ -1,11 +1,12 @@
+import json
+import os
 import unittest
 from datetime import datetime
 from unittest import mock
 from unittest.mock import patch
 
 import data_for_tests as td
-
-from rss_reader.rss_reader import rss_reader as rs
+from main_reader import rss_reader as rs
 
 NEWSLINK = "https://news.yahoo.com/rss/"
 
@@ -32,10 +33,10 @@ class TestMainReader(unittest.TestCase):
         message = mock_print.call_args_list[0].args[0]
         self.assertEqual(message, "Please insert rss link")
 
-    def test_normal_link(self):
-        # Test parsing of the normal ling Yahoo NEWSLINK goes good and we receive expected header
-        content = rs.open_rss_link(NEWSLINK, verbose=None)
-        self.assertEqual(content.feed.title, "Yahoo News - Latest News & Headlines")
+    # def test_normal_link(self):
+    #     # Test parsing of the normal ling Yahoo NEWSLINK goes good and we receive expected header
+    #     content = rs.open_rss_link("fake_rss_site.txt", verbose=None)
+    #     self.assertTrue(content.feed.title, "CNN.com - RSS Channel - App Travel Section")
 
     # Tests for function "printing_parsing_news"
     @patch("builtins.print", autospec=True, side_effect=print)
@@ -145,7 +146,7 @@ class TestMainReader(unittest.TestCase):
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_no_cashed_news(self, mock_print):
         # Test AttributeError was cached and user-friendly message is printing to stdout, if we give a bad date
-        with mock.patch("rss_reader.rss_reader.rss_reader.find_cashed_news") as cashMock:
+        with mock.patch("main_reader.rss_reader.find_cashed_news") as cashMock:
             cashMock.side_effect = AttributeError(mock.Mock)
             rs.parsing_user_date("20210101")
             message = mock_print.call_args_list[0].args[0]
@@ -153,19 +154,23 @@ class TestMainReader(unittest.TestCase):
 
     def test_return_valid_cashed_dict_with_valid_len_news(self):
         # Test take newsdict from find_cashed_news, valid count it's len_news and return it
-        with mock.patch("rss_reader.rss_reader.rss_reader.find_cashed_news") as cashMock:
+        with mock.patch("main_reader.rss_reader.find_cashed_news") as cashMock:
             cashMock = td.TEST_NEWSDICT
             newsdict, len_news = rs.parsing_user_date("20210521")
             self.assertEqual(len_news, len(newsdict["news"]))
 
-    # # Test for function "write_cash"
-    # def test_cash_writing(self):
-    #     # Test our dict are in cash file
-    #     rs.write_cash(td.TEST_NEWSDICT)
-    #     with open("E:/nl/ITA/PythonFinalTask/rss_reader/rss_reader/cashed_news.txt", "r") as cash_file:
-    #         self.assertTrue(json.dumps(td.TEST_NEWSDICT) in cash_file)
+    # Test for function "write_cash"
+    def test_cash_writing(self):
+        # Test our dict are in cash file
+        rs.write_cash(td.TEST_NEWSDICT)
+        cash_file_name = os.path.join(os.getcwd(), "cashed_news.txt")
+        with open(cash_file_name, "r") as cash_file:
+            lines = cash_file.readlines()
+            last_line = lines[-1]
+            check_dict = json.loads(last_line)
+            self.assertEqual(check_dict, td.TEST_NEWSDICT)
 
-    # Test for function "find_cashed_news"
+    # Tests for function "find_cashed_news"
     def test_news_find_by_date_only(self):
         # Test for valid user date
         user_date = datetime.strptime("20210521", '%Y%m%d')
@@ -177,7 +182,7 @@ class TestMainReader(unittest.TestCase):
         self.assertTrue(rs.find_cashed_news(user_date, source=NEWSLINK))
 
     def test_news_not_find_by_date_and_link(self):
-        # Test for invalid user date and source - ValueError is raising
+        # Test for invalid user date and source - AttributeError is raising
         user_date = datetime.strptime("14100521", '%Y%m%d')
         with self.assertRaises(AttributeError):
             rs.find_cashed_news(user_date, source=NEWSLINK)

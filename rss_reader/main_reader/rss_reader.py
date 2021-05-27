@@ -13,6 +13,7 @@ from urllib.error import URLError
 
 import dateparser
 import feedparser
+from main_reader import converter
 
 NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
 
@@ -27,7 +28,13 @@ def set_logger(verbose):
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
-        handlers=[logging.StreamHandler(sys.stdout), ] if verbose else [logging.FileHandler("logs.log"), ]
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+        ]
+        if verbose
+        else [
+            logging.FileHandler("logs.log"),
+        ],
     )
     logger = logging.getLogger()
     return logger
@@ -62,10 +69,6 @@ def make_news_dictionary(source: str, content) -> dict:
     innerdict = {}
     newslist = []
     newsdict = {"source": source, "main_title": content.feed.title}
-    try:
-        newsdict["date"] = content.feed.published
-    except AttributeError:
-        newsdict["date"] = content.feed.updated
 
     for news in content.entries:
         for item in NEWS_PARTS:
@@ -122,7 +125,7 @@ def date_compare(dict_date, converted_user_date):
     :param converted_user_date:  date given by user
     :return: True if dates are equal, else False
     """
-    converted_dict_date = dateparser.parse(dict_date, date_formats=['%y/%m/%d'])
+    converted_dict_date = dateparser.parse(dict_date, date_formats=["%y/%m/%d"])
     return True if converted_dict_date.date() == converted_user_date.date() else False
 
 
@@ -142,20 +145,31 @@ def find_cashed_news(converted_user_date, source=None):
     Check file with cashed news dictionaries
     :param converted_user_date: date given by user
     :param source: source link given by user if any
-    :return: newsdict for reading news if there is suitable in cash, else raise ValueError
+    :return: newsdict_from_cash for reading news if there is suitable in cash, else raise AttributeError.
+    If there were no cashed news before at all, means file with cashed news wasn't created, raise FileNotFoundError.
     """
     cash_file_name = os.path.join(os.getcwd(), "cashed_news.txt")
-    print(cash_file_name)
-    with open(cash_file_name, "r") as cash_file:
-        for json_dict in cash_file:
-            newsdict = jsn.loads(json_dict)
-            if date_compare(newsdict["date"], converted_user_date):
+    try:
+        with open(cash_file_name, "r") as cash_file:
+            newslist = []
+            newsdict_from_cash = {"source": "from cash file", "main_title": "Cashed news"}
+            for json_dict in cash_file:
+                newsdict = jsn.loads(json_dict)
+
                 if source:
-                    if source == newsdict["source"]:
-                        return newsdict
-                else:
-                    return newsdict
-    raise AttributeError
+                    if source != newsdict["source"]:
+                        continue
+                for one_news in newsdict["news"]:
+                    if date_compare(one_news["Published"], converted_user_date):
+                        newslist.append(one_news)
+    except FileNotFoundError:
+        return print("There are no cashed news, "
+                     "please read some news from external sources before trying to access cash")
+    if newslist:
+        newsdict_from_cash["news"] = newslist
+        return newsdict_from_cash
+    else:
+        raise AttributeError
 
 
 def open_rss_link(source, verbose):
@@ -196,7 +210,7 @@ def parsing_user_date(user_date: str, source: str = None):
     """
 
     try:
-        converted_user_date = datetime.strptime(user_date, '%Y%m%d')
+        converted_user_date = datetime.strptime(user_date, "%Y%m%d")
 
     except ValueError:
         return print("Invalid date, please insert date like '14100715'")
@@ -215,9 +229,12 @@ def parse_command_line_arguments():
 
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader")
     parser.add_argument(
-        "--version", action="version", version="Version 3.0.1", help="Print version info"
+        "--version",
+        action="version",
+        version="Version 3.0.1",
+        help="Print version info",
     )
-    parser.add_argument("source", type=str, nargs='?', default=None, help="RSS URL")
+    parser.add_argument("source", type=str, nargs="?", default=None, help="RSS URL")
     parser.add_argument(
         "--limit", type=int, help="Limit news topics if this parameter provided"
     )
@@ -229,6 +246,12 @@ def parse_command_line_arguments():
     )
     parser.add_argument(
         "--date", type=str, help="Return news from date yyyymmdd from cash"
+    )
+    parser.add_argument(
+        "--to-pdf", type=str, help="Save news in pdf format in chosen path"
+    )
+    parser.add_argument(
+        "--to-html", type=str, help="Save news in html format in chosen path"
     )
     arguments = parser.parse_args()
     return arguments
@@ -248,7 +271,7 @@ def main():
         try:
             newsdict, len_news = parsing_user_date(arguments.date, arguments.source)
             logger.info(f"News will be reading from cash")
-        except (AttributeError, ValueError, TypeError):
+        except (AttributeError, ValueError, TypeError, FileNotFoundError):
             sys.exit()
     else:
         content = open_rss_link(arguments.source, arguments.verbose)
@@ -264,6 +287,19 @@ def main():
     if arguments.json:
         logger.info(f"Convert news in json format")
         printing_news_in_json(newsdict, number_of_news_to_show)
+
+    if arguments.to_html:
+        logger.info(f"News will be saved in html on path {arguments.to_html}")
+        try:
+            converter.save_html(arguments.to_html, newsdict, number_of_news_to_show)
+        except FileNotFoundError:
+            sys.exit()
+    elif arguments.to_pdf:
+        logger.info(f"News will be saved in pdf on path {arguments.to_pdf}")
+        try:
+            converter.safe_pdf(arguments.to_pdf, newsdict, number_of_news_to_show)
+        except FileNotFoundError:
+            sys.exit()
     else:
         printing_parsing_news(newsdict, number_of_news_to_show)
 
