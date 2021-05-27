@@ -11,17 +11,18 @@ class RssParser:
     """
     RssParser class wraps together feedparser and BeautifulSoup module
     To work with class the following sequence required:
-    1. create instance of the class parameter url: rss_feed = RssParser("https://www.yahoo.com/news/rss")
-    2. retrieve data and parse rss feed: rss_feed.parse_url()
-    3. extract raw data from the feed: rss_feed.rss2raw_json()
+    1. create instance of the class: rss_feed = RssParser("https://www.yahoo.com/news/rss")
+    - 2. retrieve data and parse rss feed: rss_feed.parse_url()
+    3. check whether data was retrieved: rss_feed.is_empty != 0 . if empty - no data received.
+    - 3. extract raw data from the feed: rss_feed.rss2raw_json()
 
        4. (optional)  the data will be stored in rss_feed.raw_json_list which is list of dictionaries
-       to view rss_feed.raw_json_list just call: rss_feed.dump_raw_json()
+       To view rss_feed.raw_json_list just call: rss_feed.dump_raw_json()
 
-    5. To remove html tags and substitute links and images with references, call: rss_feed.raw_json2clean_json()
+    5. to remove html tags and substitute links and images with references, call: rss_feed.raw_json2clean_json()
 
        6. (optional) the data will be stored in rss_feed.clean_json_list which is list of dictionaries
-       to view rss.feed.self.clean_json_list call: rss_feed.dump_raw_json()
+       To view rss_feed.clean_json_list call: rss_feed.dump_raw_json()
 
     7. to print rss the feed, call: rss_feed.print_clean_json()
     """
@@ -30,13 +31,19 @@ class RssParser:
     # json_rss = {"Feed": "", "Title": "", "Date": "", "Link": "", "Summary": "", "Content": "", "Links": {}}
     # "Links" : { 1 : "Link1", 2 : "Link2", N : "LinkN"}
 
-    def __init__(self, url, limit=None, saved_json=[]):
+    def __init__(self, url, limit=None):
         logging.info("rss_parser module activated")
         self.clean_json_list = []  # list of JSON items containing Feed, Title, Date information in plain text
-        self.raw_json_list = saved_json  # load JSON on iteration 3
+        self.raw_json_list = []  # will be used to store JSON data on disc (iteration 3)
         self.url = url  # rss feed url
         self.limit = limit  # number of rss feed entries to show
         logging.info(f"Number of news to read: {self.limit}")
+        self.NewsFeed = []
+        self.number_of_entries = 0
+
+        self.parse_url()
+        self.rss2raw_json()
+        self.raw_json2clean_json()
 
     def parse_url(self):
         # Loading and parsing data from target url
@@ -57,7 +64,7 @@ class RssParser:
     def is_empty(self):
         """ is_empty() static function - returns True if NewsFeed object is empty
             if is empty return True - main() function should stop rss feed processing
-            because no data recieved
+            because no data received
         """
         return not bool(self.number_of_entries)
 
@@ -70,8 +77,10 @@ class RssParser:
     @staticmethod
     def append_links(links, html_snippet):
         """ receives list of [links] and string containing html markup - html_snippet
-            seeking html_snippet for images and links with BeautifulSoup library
-            links found in html_snippet argument appended to the [links] argument"""
+            seeking html_snippet for images and links
+            links found in html_snippet argument appended to the [links] argument
+            For example: <a href="www.example.com">example</a> added to the [links] as 'https://www.example.com (link)'
+            """
         logging.info(f"append_links: Starting...")
         soup = BeautifulSoup(html_snippet, "lxml")
 
@@ -89,8 +98,9 @@ class RssParser:
                 continue
             logging.info(f"append_links:Adding reference link: {link_src['href']})")
 
-    @staticmethod
-    def find_links(all_links, html_snippet):  # *args
+    # @staticmethod
+    # def find_links(all_links, html_snippet):  # *args
+        # pass
         """ method find_links() takes as an argument HTML string and seeking for tags
             <a href=""> </a> - links
             <img src="" alt=""> - images
@@ -98,6 +108,7 @@ class RssParser:
             ['https://www.example.com (link)', 'https://www.w3schools.com/images/w3schools_green.jpg (image)',
             'https://www.w3schools.com/ (link)']
         """
+    """
         soup = BeautifulSoup(html_snippet, "lxml")
 
         for image_src in soup.find_all("img"):
@@ -107,6 +118,7 @@ class RssParser:
         for link_src in soup.find_all("a"):
             all_links.append(link_src['href'] + " (link)")
             logging.info(f"Adding reference link: {link_src['href']})")
+    """
 
     @staticmethod
     def links_list2links_dict(all_links):
@@ -145,7 +157,7 @@ class RssParser:
         for entry in self.NewsFeed.entries[:]:
             logging.info("rss2raw_json:new cycle")
             raw_json_entry = {"Feed": "", "Title": "", "Date": "", "Link": "", "Summary": "", "Content": "",
-                              "Links": {}, "short_date": "", "short_time": ""}
+                              "Links": {}, "short_date": "", "short_time": "", "url": ""}
 
             found_links = []  # list of links found in <a href= /> and <img src= /> will be stored here
 
@@ -178,7 +190,7 @@ class RssParser:
 
             try:
                 raw_json_entry["Summary"] = str(entry.summary)
-                self.find_links(found_links, raw_json_entry["Summary"])
+                self.append_links(found_links, raw_json_entry["Summary"]) # was find_linsk()
             except AttributeError:
                 logging.info("rss2raw_json:Warning:Summary not available")
 
@@ -189,10 +201,12 @@ class RssParser:
                 logging.info("rss2raw_json:Warning:Content not available")
 
             raw_json_entry["Links"] = self.links_list2links_dict(found_links)
+            raw_json_entry["url"] = self.url
 
-            self.raw_json_list.append(raw_json_entry) # raw_json_entry dictionary was filled and now appended to list
+            self.raw_json_list.append(raw_json_entry)  # raw_json_entry dictionary was filled and now appended to list
 
     def dump_raw_json(self):
+        """ dump_raw_json prints list of dictionaries contained in raw_json_list variable) """
         for dct in self.raw_json_list[:self.limit]:
             json.dump(dct, sys.stdout, indent=2)
 
@@ -212,8 +226,8 @@ class RssParser:
         # nested tags <a href=""><img src="" alt=""></a> - (image links) will be keys of the dictionary:
         image_links_dict = dict()
         for link_src in soup_html.find_all("a"):
-            link_key = ""
-            image_key = ""
+            #  link_key = ""
+            #  image_key = ""
             alt_str = ""
             try:
                 link_key = link_src['href']
@@ -240,7 +254,7 @@ class RssParser:
         # Pass 2 - Find images
         image_dict = dict()
         for image_src in soup_html.find_all("img"):
-            image_key = ""
+            #  image_key = ""
             alt_str = ""
             try:
                 image_key = image_src["src"]
@@ -294,30 +308,28 @@ class RssParser:
 
         # Modification 3 - Replacing link tags with plain text
         for links_src, replacement_text in links_dict.items():
-            logging.info(f"tags2text:Replacing {link_src} with {replacement_text}")
+            logging.info(f"tags2text:Replacing {links_src} with {replacement_text}")
             modified_html = modified_html.replace(links_src, replacement_text)
 
         return modified_html
 
     def dump_clean_json(self):
+        """ dump_clean_json prints list of dictionaries contained in clean_json_list variable) """
         for dct in self.clean_json_list[:self.limit]:
             json.dump(dct, sys.stdout, indent=2)
 
     def raw_json2clean_json(self):
         logging.info("raw_json2clean_json:new cycle")
         for entry in self.raw_json_list[:self.limit]:
-            clean_json_entry = {"Feed": "", "Title": "", "Date": "", "Link": "", "Summary": "", "Content": "",
-                                "Links": {}}
-            clean_json_entry["Feed"] = entry["Feed"]
-            clean_json_entry["Title"] = entry["Title"]
-            clean_json_entry["Date"] = entry["Date"]
-            clean_json_entry["Link"] = entry["Link"]
-            clean_json_entry["Links"] = entry["Links"]
-
-            # substituting images links ans image links for plain text references
-            # removing all html tags
-            clean_json_entry["Summary"] = self.html2text(self.tags2text(entry["Summary"], entry["Links"]))
-            clean_json_entry["Content"] = self.html2text(self.tags2text(entry["Content"], entry["Links"]))
+            clean_json_entry = {"Feed": entry["Feed"],
+                                "Title": entry["Title"],
+                                "Date": entry["Date"],
+                                "Link": entry["Link"],
+                                # substituting images links ans image links for plain text references
+                                # removing all html tags
+                                "Summary": self.html2text(self.tags2text(entry["Summary"], entry["Links"])),
+                                "Content": self.html2text(self.tags2text(entry["Content"], entry["Links"])),
+                                "Links": entry["Links"]}
 
             self.clean_json_list.append(clean_json_entry)
 
@@ -327,91 +339,12 @@ class RssParser:
         """
         for entry in self.clean_json_list[:self.limit]:
             print("-" * 80, flush=True)
-
             print(f'Feed: {entry["Feed"]}', flush=True)
-
             print(f'Title: {entry["Title"]}', flush=True)
-
             print(f'Date: {entry["Date"]}', flush=True)
-
             print(f'Link: {entry["Link"]}\n', flush=True)
-
             print(f'Summary: {entry["Summary"]}', flush=True)
-
             print(f'\nContent: {entry["Content"]}', flush=True)
-
             print("\nLinks:")
             for link, i in entry["Links"].items():
-                print(f"[{i}] {link}")
-
-    def print_rss(self):
-
-        for entry in self.NewsFeed.entries[:self.limit]:
-
-            found_links = []  # list of links <a href= /> and <img src= /> will be stored here
-
-            print("-" * 80)
-
-            try:
-                print(f"Feed: {self.NewsFeed.feed.title}\n", flush=True)
-            except AttributeError:
-                logging.info("Warning:Feed name not available")
-
-            try:
-                print(f"Title: {entry.title}", flush=True)
-            except AttributeError:
-                logging.info("Warning:Title not available")
-
-            try:
-                # converting time.time to datetime.datetime
-                published_date = datetime.datetime.fromtimestamp(time.mktime(entry.published_parsed))
-                published_date_utc = published_date.replace(tzinfo=datetime.timezone.utc)
-                published_date_local = published_date_utc.astimezone()
-                print(f"Date: {published_date_local.strftime('%a, %d %b %Y %H:%M:%S %z')}", flush=True)
-            except AttributeError:
-                logging.info("Warning:Date not available")
-
-            try:
-                print(f"Link: {entry.link}\n", flush=True)
-                found_links.append(entry.link + " (link)")
-            except AttributeError:
-                logging.info("Warning:Link not available")
-
-            try:
-                pass
-                # found_links.append(entry.media_content[0]['url'])
-                # print(f"{entry.media_content[0]['url']}")
-            except AttributeError:
-                logging.info("Warning:Media not available")
-
-            try:
-                # f = HTMLFilter()
-                # f.feed(entry.summary)
-                # print(f"Summary: {f.text}")
-                print(f"Summary: {self.html2text(entry.summary)}")
-                self.append_links(found_links, entry.summary)
-            except AttributeError:
-                logging.info("Warning:Summary not available")
-
-            try:
-                # f1 = HTMLFilter()
-                # f1.feed(entry.content[-1]['value'])
-                # print(f"\nContent: \n{f1.text.strip()}")
-
-                print(f"\nContent: {self.html2text(entry.content[-1]['value'])}")
-
-                self.append_links(found_links, entry.content[-1]['value'])
-            except AttributeError:
-                logging.info("Warning:Content not available")
-
-            try:
-                # print(f"Author: {entry.author}")
-                pass
-            except AttributeError:
-                logging.info("Warning:Author not available")
-
-            print("\nLinks:")
-            found_links = set(found_links)  # removing duplicate links by casting list to set
-            for i, link in zip(range(1, len(found_links) + 1),
-                               found_links):  # range is used as link index while printing
                 print(f"[{i}] {link}")

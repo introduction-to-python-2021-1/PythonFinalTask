@@ -1,19 +1,14 @@
-"""Command Line Interface (CLI) application - RSS reader
-"""
-
+"""Command Line Interface (CLI) application - RSS reader"""
 import argparse
 import logging
 import rss_reader.rss_parser as rp
-
-# import feedparser as fp
-
 import sys
 import os
+
 
 def main():
     """
     main() method is parsing command line arguments with argparse module and defines program control flow
-
     :return: exit codes:
     os.EX_USAGE - misuse of command line arguments
     os.EX_NOHOST - RSS feed url not responding or no internet connection
@@ -56,7 +51,6 @@ def main():
         print("Source is not valid string\nPlease, provide string with length between 3 and 255 symbols", flush=True)
         exit(sys.exit(os.EX_USAGE))
 
-
     logging.info(f"Limit: {args.limit}")
     # args.limit parameter limits number of news to print. This value must be positive.
     if args.limit < 0:
@@ -69,24 +63,25 @@ def main():
         # RssParser provides error handling and prints to stdout error messages in case of problems with
         # URL or connection
         rss_feed = rp.RssParser(args.source, args.limit)
-        rss_feed.parse_url()
+        #  rss_feed.parse_url()
 
     if rss_feed.is_empty:
         # In case rss_feed == [] something is wrong with URL or internet connection
         print("RSS source is not responding", flush=True)
         exit(sys.exit(os.EX_NOHOST))
 
-     # args.json parameter specified: news are printed to stdout in json format
+    # args.json parameter specified: news are printed to stdout in json format
     if args.json:
         logging.info("Print RSS in json")
-        rss_feed.rss2raw_json()
-        rss_feed.raw_json2clean_json()
+        #  rss_feed.rss2raw_json()
+        # rss_feed.dump_raw_json()
+        #  rss_feed.raw_json2clean_json()
         rss_feed.dump_clean_json()
     else:
         # by default: news are printed to stdout as formatted text
         logging.info("Print RSS in plain text")
-        rss_feed.rss2raw_json()
-        rss_feed.raw_json2clean_json()
+        #rss_feed.rss2raw_json()
+        #rss_feed.raw_json2clean_json()
         rss_feed.print_clean_json()
     # Program finished successfully: exit(0)
     exit(sys.exit(os.EX_OK))
