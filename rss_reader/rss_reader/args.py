@@ -2,6 +2,7 @@ import argparse
 
 
 class RssReaderArgs:
+    """class for command line arguments parsing"""
     def __init__(self):
         self.__parser = argparse.ArgumentParser(prog='rss_reader', description='Pure Python command-line RSS reader.')
         self.__parser.add_argument(
