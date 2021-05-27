@@ -38,10 +38,12 @@ def save_html(user_path: str, newsdict: dict, number_of_news_to_show: int):
     """
     filename = "".join(str(time.time()))
     file_path = os.path.join(user_path, f"News from time {filename}.html")
+    print(file_path)
     try:
         with open(file_path, "w", encoding="utf-8") as file:
             for one_news in newsdict["news"][:number_of_news_to_show]:
                 file.write(make_html(newsdict, one_news))
+            print(f"Your news was successfully save to {file_path} in html")
             return file_path
     except FileNotFoundError:
         return print("Please write a valid existing absolute path to a destination directory, "
@@ -64,8 +66,9 @@ def safe_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
     filename = "".join(str(time.time()))
     file_out_path = os.path.join(user_path, f"News from time {filename}.pdf")
     try:
-        with open(file_out_path, "w+b", encoding="utf-8") as file_out, open(file_in_path, "r") as file_in:
+        with open(file_out_path, "w+b") as file_out, open(file_in_path, "r") as file_in:
             pisa_status = pisa.CreatePDF(src=file_in, dest=file_out)
+            print(f"Your news was successfully save to {file_out_path} in html")
         return pisa_status.err
     except TypeError:
         sys.exit()
