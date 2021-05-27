@@ -131,8 +131,8 @@ class TestRssReader(unittest.TestCase):
         """
         DbCacher._get_channels_info_from_db = MagicMock(
             return_value=[{"id": -1, "title": "", "link": "", "description": ""}])
-        rss_reader.main(["--date", "20200527", "--to-html", "//t\\a.html"])
-        self.assertIn("Синтаксическая ошибка в имени файла, имени папки или метке тома", mock_stdout.getvalue())
+        rss_reader.main(["--date", "20200527", "--to-html", "a.txt"])
+        self.assertIn("File for writing news as html should ends with '.html'", mock_stdout.getvalue())
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_getting_cache_with_wrong_date(self, mock_stdout):
