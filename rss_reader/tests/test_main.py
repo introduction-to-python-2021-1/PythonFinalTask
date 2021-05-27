@@ -1,3 +1,7 @@
+"""
+Main test module for basic reading news from from external resources and cash
+"""
+
 import json
 import os
 import unittest
@@ -14,7 +18,7 @@ NEWSLINK = "https://news.yahoo.com/rss/"
 class TestMainReader(unittest.TestCase):
     """
     Tests for effective parsing links, making news dictionaries, printing news in json and normal format,
-    setting and working limits of the numbers of news.
+    setting and working limits of the numbers of news, verbose flag.
     """
 
     #  Tests for function "open_rss_link"
