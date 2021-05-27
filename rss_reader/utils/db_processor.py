@@ -1,8 +1,6 @@
 """
     Module contains class for convenient work with db
 """
-import os
-import re
 import sqlite3
 
 from utils import util
@@ -69,3 +67,6 @@ class DbProcessor:
         query = f"INSERT {ignore_word} INTO {table_name} ({columns}) VALUES ({values})"
         self.dbi.execute(query, tuple(insert_values.values()))
         self.dbi.commit()
+
+    def close_connection(self):
+        self.dbi.close()
