@@ -49,8 +49,6 @@ def main(argv=None):
             news_processor.save_news_as_html(my_args.to_html, news_limit)
         if my_args.to_pdf:
             news_processor.save_news_as_pdf(my_args.to_pdf, news_limit)
-
-
     except Exception as err:
         util.log(show_on_console=True, flag="ERROR", msg=f"Unexpected error has occurred: {str(err)}")
 
