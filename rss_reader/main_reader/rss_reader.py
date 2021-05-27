@@ -298,7 +298,7 @@ def main():
         logger.info(f"News will be saved in pdf on path {arguments.to_pdf}")
         try:
             converter.safe_pdf(arguments.to_pdf, newsdict, number_of_news_to_show)
-        except FileNotFoundError:
+        except (FileNotFoundError, TypeError):
             sys.exit()
     else:
         printing_parsing_news(newsdict, number_of_news_to_show)

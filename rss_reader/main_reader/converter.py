@@ -67,5 +67,8 @@ def safe_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
         with open(file_out_path, "w+b") as file_out, open(file_in_path, "r") as file_in:
             pisa_status = pisa.CreatePDF(src=file_in, dest=file_out)
         return pisa_status.err
-    except FileNotFoundError:
+    except TypeError:
         sys.exit()
+    except FileNotFoundError:
+        return print("Please write a valid existing absolute path to a destination directory, "
+                     "filename will be generated automatically")
