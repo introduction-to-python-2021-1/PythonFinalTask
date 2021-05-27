@@ -6,15 +6,12 @@ import json
 class RssReaderApp:
     """main class for application"""
 
-    __verbose = False
-
     def run(self):
         """main function to run application"""
         rss_args = RssReaderArgs()
         if rss_args.args.verbose:
             self.log = self.__log_stdout
-        # log(rss_args.args)
-        entries =  self.rss_reader(
+        entries = self.rss_reader(
             source=rss_args.args.source,
             limit=rss_args.args.limit,
         )
@@ -33,14 +30,18 @@ class RssReaderApp:
 
     def rss_reader(self, source, limit=None):
         """main method for read rss feed"""
+        self.log('parsing feed')
         feed = fp.parse(source)
         if 'bozo_exception' in feed:
-            self.__log_stdout('Error parsing feed :',feed['bozo_exception'].getMessage())
+            self.__log_stdout('Error parsing feed :', feed['bozo_exception'].getMessage())
             return
+        self.log('building entries')
         entries = [{'title': x.title, 'link': x.link, 'summary': x.summary} for x in feed.entries[0:limit]]
         return entries
 
     def print_entries(self, entries, json_fmt=False):
+        """print rss entries"""
+        self.log('printing entries')
         if json_fmt:
             print(json.dumps(entries))
         else:
