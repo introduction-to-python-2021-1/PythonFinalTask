@@ -12,15 +12,18 @@ class TestReader(unittest.TestCase):
         self.output = io.StringIO()
         sys.stdout = self.output
 
+
     def test_set_limit_for_print(self):
         """Good limit"""
         parser = rss_reader.command_arguments_parser(["--limit 3"])
         self.assertTrue(parser)
 
+
     def test_0_limit(self):
         """Test limit zero"""
         parser = rss_reader.command_arguments_parser(["--limit 0"])
         self.assertTrue(parser)
+
 
     def test_0_limit_message(self):
         """Test limit zero message"""
@@ -39,10 +42,12 @@ class TestReader(unittest.TestCase):
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
         self.assertTrue(parser.verbose)
 
+
     def test_checking_verbose_plus(self):
         """Test verbose status message"""
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
         self.assertLogs(parser, "Getting access to the RSS")
+
 
     def test_checking_verbose_plus1(self):
         """Test verbose status message"""
@@ -60,6 +65,12 @@ class TestReader(unittest.TestCase):
     def test_checking_json_format(self):
         """Test json format"""
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--json"])
+        self.assertTrue(parser.json)
+
+
+    def test_checking_json_format_with_limit(self):
+        """Test json format with limit"""
+        parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--json", "--limit 3"])
         self.assertTrue(parser.json)
 
 
@@ -92,6 +103,20 @@ class TestReader(unittest.TestCase):
         parser = rss_reader.parses_data("https://news.sahoo.com/rss/", "--limit 1")
         with self.assertRaises(Exception):
             self.assertEqual(parser, "Xml was failed")
+
+
+    def test_good_link(self):
+        """Test for parser data with good link"""
+        with open("yahoo_news.xml", "r") as rssfile:
+            answer = rss_reader.parses_data(rssfile, "--limit 1")
+            self.assertTrue(answer['feed'], "Yahoo News - Latest News & Headlines")
+
+
+    def test_good_link_dict(self):
+        """Test for dictionary with good link"""
+        with open("yahoo_news.xml", "r") as rssfile:
+            answer = rssfile.read()
+        self.assertEqual(len(rss_reader.parses_data(answer, 0)["news"]), 2)
 
 
 if __name__ == "__main__":
