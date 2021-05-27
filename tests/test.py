@@ -119,5 +119,16 @@ class TestReader(unittest.TestCase):
         self.assertEqual(len(rss_reader.parses_data(answer, 0)["news"]), 2)
 
 
+    def test_good_link_for_dictionary_part(self):
+        """Test for part in dictionary with good link"""
+        with open("yahoo_news.xml", "r") as rssfile:
+            answer = rssfile.read()
+        self.assertEqual(rss_reader.parses_data(answer, 0)["news"][1]["title"], "Big cheese no more: UK drug "
+                                                                                "dealer caught out by cheese pic")
+        self.assertEqual(rss_reader.parses_data(answer, 0)["news"][1]["link"], "https://news.yahoo.com/big-cheese"
+                                                                               "-no-more-uk-112645101.html")
+        self.assertEqual(rss_reader.parses_data(answer, 0)["news"][1]["pubDate"], "2021-05-27T11:26:45Z")
+
+
 if __name__ == "__main__":
     unittest.main()
