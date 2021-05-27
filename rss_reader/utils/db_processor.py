@@ -5,6 +5,8 @@ import os
 import re
 import sqlite3
 
+from utils import util
+
 
 class DbProcessor:
     """
@@ -33,26 +35,10 @@ class DbProcessor:
         :param db_name: name of sqlite db to be connected
         :return: connection to db
         """
-        self._create_db_directory(db_name)
+        util.create_directory(db_name)
         dbi = sqlite3.connect(db_name)
         dbi.row_factory = self._dict_factory
         return dbi
-
-    def _create_db_directory(self, full_db_path: str):
-        """
-        Method create directory for placing database if it is not exist
-        :param full_db_path: full path to db
-        :return: None
-        """
-
-        directory = ""
-        if "/" in full_db_path or "\\" in full_db_path:
-            parts = re.findall(r"^(.+?)(?:[/\\])(\w+\.db)", full_db_path)
-            directory = parts[0][0]
-
-        if directory:
-            if not os.path.exists(directory):
-                os.makedirs(directory)
 
     def perform_query(self, query: str = ""):
         """

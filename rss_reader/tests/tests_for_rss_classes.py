@@ -43,5 +43,4 @@ class TestRssNews(unittest.TestCase):
 
     def test_RssNews_json(self):
         """Check as_json function"""
-        self.assertEqual("""{"Link":"","Description":"","Title":"","News":[]}""",
-                         RssNews(**{}).as_json().replace("\n", "").replace(" ", ""))
+        self.assertEqual({"Link": "", "Description": "", "Title": "", "News": []}, RssNews(**{}).as_json())

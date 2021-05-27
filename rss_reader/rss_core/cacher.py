@@ -3,6 +3,7 @@
 """
 import calendar
 import re
+import sqlite3
 from abc import ABC, abstractmethod
 from rss_core.rss_classes import RssNews, RssItem
 from utils import util
@@ -21,7 +22,7 @@ class Cacher(ABC):
         """Create cache of RssNews object"""
 
     @abstractmethod
-    def get_from_cache(self, rss_link: str, date: str = None, show_logs: bool = False):
+    def load_from_cache(self, rss_link: str, date: str = None, show_logs: bool = False):
         """Restore RssNews object from cache"""
 
 
@@ -33,7 +34,12 @@ class DbCacher(Cacher):
     def __init__(self, db_name: str = ""):
         self.db_name = db_name
         self.db_processor = DbProcessor(self.db_name)
-        self._create_tables()
+        try:
+            self._create_tables()
+        except sqlite3.OperationalError as err:
+            util.log(msg=f"Error has happened while generating database: {str(err)}", flag="ERROR",
+                     show_on_console=True)
+            exit(1)
 
     def _create_tables(self):
         """
@@ -41,24 +47,24 @@ class DbCacher(Cacher):
         :return: None
         """
         query = """CREATE TABLE if NOT EXISTS "channels" (
-                    "id"	INTEGER,
-                    "rss_link"	TEXT NOT NULL DEFAULT '' UNIQUE,
-                    "title"	TEXT NOT NULL DEFAULT '',
-                    "link"	TEXT NOT NULL DEFAULT '',
-                    "description"	TEXT NOT NULL DEFAULT '',
+                    "id"    INTEGER,
+                    "rss_link"    TEXT NOT NULL DEFAULT '' UNIQUE,
+                    "title"    TEXT NOT NULL DEFAULT '',
+                    "link"    TEXT NOT NULL DEFAULT '',
+                    "description"    TEXT NOT NULL DEFAULT '',
                     PRIMARY KEY("id" AUTOINCREMENT));"""
         self.db_processor.perform_query(query)
 
         query = """CREATE TABLE if NOT EXISTS "news" (
-                            "id"	INTEGER,
+                            "id"    INTEGER,
                             "channel_id" INTEGER NOT NULL DEFAULT -1,
                             "guid" TEXT NOT NULL DEFAULT '',
-                            "title"	TEXT NOT NULL DEFAULT '',
-                            "link"	TEXT NOT NULL DEFAULT '' UNIQUE,
+                            "title"    TEXT NOT NULL DEFAULT '',
+                            "link"    TEXT NOT NULL DEFAULT '' UNIQUE,
                             "short_date" DATE NOT NULL DEFAULT '0000-0-0',
-                            "pub_date"	TEXT NOT NULL DEFAULT '',
-                            "description"	TEXT NOT NULL DEFAULT '',
-                            "category"	TEXT NOT NULL DEFAULT '',
+                            "pub_date"    TEXT NOT NULL DEFAULT '',
+                            "description"    TEXT NOT NULL DEFAULT '',
+                            "category"    TEXT NOT NULL DEFAULT '',
                             PRIMARY KEY("id" AUTOINCREMENT));"""
         self.db_processor.perform_query(query)
 
@@ -66,18 +72,20 @@ class DbCacher(Cacher):
         self.db_processor.perform_query(query)
 
         query = """CREATE TABLE if NOT EXISTS "content" (
-                    "id"	INTEGER,
+                    "id"    INTEGER,
                     "news_id" INTEGER NOT NULL DEFAULT -1,
-                    "link"	TEXT NOT NULL DEFAULT '',
+                    "link"    TEXT NOT NULL DEFAULT '',
                     PRIMARY KEY("id" AUTOINCREMENT));"""
         self.db_processor.perform_query(query)
 
         query = """CREATE INDEX IF NOT EXISTS content_by_news_id ON content (news_id ASC);"""
         self.db_processor.perform_query(query)
+        query = """CREATE UNIQUE INDEX IF NOT EXISTS "unique_links_for_news" ON "content" ("news_id","link");"""
+        self.db_processor.perform_query(query)
 
     def cache_rss_news(self, rss_news: RssNews, rss_link: str, show_logs: bool = False):
         """
-        Create cache or news into db
+        Create cache or news. Information will be written into db
         :param rss_news: Object of RssNews class with all required information for caching
         :param rss_link: link for getting rss news from chanel
         :param show_logs: show or hide logs
@@ -93,6 +101,12 @@ class DbCacher(Cacher):
             util.log(msg=f"Error has happened while caching: {str(err)}", flag="ERROR", show_on_console=True)
 
     def _create_channel_cache(self, rss_link: str, rss_news: RssNews):
+        """
+        Write into db info about channel
+        :param rss_link: link for reaching rss news
+        :param rss_news: object with channel info
+        :return: id of channel fom db
+        """
         chanel_ids = self.db_processor.select(
             f"SELECT id FROM channels WHERE rss_link = '{rss_link}'")
 
@@ -150,39 +164,44 @@ class DbCacher(Cacher):
         :param pub_date: timestamp in channel format
         :return: date in yyyy-mm-dd format
         """
-        matches = re.findall(r"(\d{4})-0*(\d{1,2})-(\d{1,2})", pub_date)
+        if pub_date.startswith("0"):
+            raise ValueError(f"Can't extract date from pub_date field: {pub_date}")
+
+        matches = re.findall("(\d{4})-0*(\d{1,2})-(\d{1,2})", pub_date)
         if matches:
             ok_date = f"{matches[0][0]}-{matches[0][1]}-{matches[0][2]}"
             return ok_date
 
-        matches = re.findall(r"(\d{1,2})\s+(\w{3})\s+(\d{4})", pub_date)
+        matches = re.findall("(\d{1,2})\s+(\w{3})\s+(\d{4})", pub_date)
         if matches:
             ok_date = f"{matches[0][2]}-{MONTH_NUM[matches[0][1]]}-{matches[0][0]}"
             return ok_date
 
         raise ValueError(f"Can't extract date from pub_date field: {pub_date}")
 
-    def get_from_cache(self, rss_link: str, date: str = None, show_logs: bool = False):
+    def load_from_cache(self, rss_link: str, date: str = None, show_logs: bool = False):
         """
         Get rss news from cache
         :param rss_link: link for getting rss nes from chanel
         :param date: date of publishing news
         :param show_logs: whether we want to show logs
-        :return: RssNews object
+        :return: Array of RssNews objects
         """
         try:
             util.log(msg="Start getting news from cache", flag="INFO", show_on_console=show_logs)
             rss_news_dict = {}
-            channel_info = self._get_channel_info_from_db(rss_link)
-            channel_id = channel_info["id"]
-
-            rss_news_dict["title"] = channel_info["title"]
-            rss_news_dict["link"] = channel_info["link"]
-            rss_news_dict["description"] = channel_info["description"]
-            rss_news_dict["news"] = self._get_rss_news_from_db(channel_id, date)
-            rss_news = RssNews(**rss_news_dict)
+            channels_info = self._get_channels_info_from_db(rss_link)
+            restored_news = []
+            for channel_info in channels_info:
+                channel_id = channel_info["id"]
+                rss_news_dict["title"] = channel_info["title"]
+                rss_news_dict["link"] = channel_info["link"]
+                rss_news_dict["description"] = channel_info["description"]
+                rss_news_dict["news"] = self._get_rss_news_from_db(channel_id, date)
+                rss_news = RssNews(**rss_news_dict)
+                restored_news.append(rss_news)
             util.log(msg="News was restored from cache", flag="INFO", show_on_console=show_logs)
-            return rss_news
+            return restored_news
         except ValueError as err:
             util.log(msg=f"Value error has occurred while restoring news from cache: {str(err)}", flag="ERROR",
                      show_on_console=True)
@@ -222,18 +241,20 @@ class DbCacher(Cacher):
         content_info = self.db_processor.select(f"SELECT * FROM content WHERE news_id ={news_id} ")
         return [content_item["link"] for content_item in content_info]
 
-    def _get_channel_info_from_db(self, rss_link: str):
+    def _get_channels_info_from_db(self, rss_link: str = ""):
         """
         Restore info about chanel from db
         :param rss_link: rss link for getting news from chanel
-        :return: dict of info about chanel
+        :return: array chanels info
         """
-        channel_info = self.db_processor.select(
-            f"SELECT id, title, link, description FROM channels WHERE rss_link ='{rss_link}'")
+        query = "SELECT id, title, link, description FROM channels"
+        if rss_link:
+            query += f" WHERE rss_link ='{rss_link}'"
+        channel_info = self.db_processor.select(query)
 
         if not channel_info:
             raise LookupError(f"Can't find cache for this chanel :{rss_link}")
-        return channel_info[0]
+        return channel_info
 
     def _cast_date_to_db_view(self, date: str):
         """
@@ -243,9 +264,9 @@ class DbCacher(Cacher):
         """
         if date.startswith("0"):
             raise ValueError(f"Can't parse date '{date}'. Date can't starts with 0")
-        ymd = re.findall(r"^(\d{4})(\d{2})(\d{2})$", date)
+        ymd = re.findall("^(\d{4})(\d{2})(\d{2})$", date)
         if not ymd:
             raise ValueError(f"Can't parse date '{date}'. Check if it is %Y%m%d format")
         correct_date = f"{ymd[0][0]}-{ymd[0][1]}-{ymd[0][2]}"
-        correct_date = re.sub(r"-0", "-", correct_date)
+        correct_date = re.sub(r'-0', '-', correct_date)
         return correct_date

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>RSS NEWS</title>
+</head>
+
+<body>
+{% for rss_news in channels_news %}
+<div class="channel_news" style="border: black solid 1px">
+    <div class="chanel_header" style="background-color: beige">
+        <h1 align="center"><a href="{{rss_news.Link}}">{{rss_news.Title}}</a></h1>
+        <h3 align="center">{{rss_news.Description}}</h3>
+    </div>
+    <br>
+    {% for news_item in rss_news.News %}
+    <div class="news_item">
+
+        <b>Title: {{news_item.Title}}</b>
+        <br>
+        <b>Link:</b> <a href="{{news_item.Link}}">{{news_item.Link}}</a>
+        <br>
+        <b>Date:</b> {{news_item.Date}}
+        <br>
+        {% if news_item.Category|length >0 %}
+        <b>Category:</b> {{news_item.Category}}
+        <br>
+        {% endif %}
+        {% if news_item.Description|length >0 %}
+        <b>Description:</b> {{news_item.Description}}
+        <br>
+        {% endif %}
+
+        {% if news_item["Media"] is not none %}
+        {% for media_link in news_item["Media"] %}
+        <a href="{{media_link}}"><img height="200pt" width="200pt" src="{{media_link}}"></a>
+        <br>
+        {%endfor%}
+        {% endif %}
+        <hr>
+    </div>
+    {%endfor%}
+</div>
+{%endfor%}
+
+
+</body>
+</html>

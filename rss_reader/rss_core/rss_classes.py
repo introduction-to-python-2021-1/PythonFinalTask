@@ -2,7 +2,6 @@
     Module contains classes RssItem and RssNews
     for working with rss news from different channels
 """
-import json
 from utils import util
 
 
@@ -112,7 +111,7 @@ class RssNews:
             news_limit = self._positive_integer_upper_bounded(value=limit, upper_limit=len(self.news))
             news_dict = {"Link": self.link, "Description": self.description, "Title": self.title, "News": []}
             news_dict["News"].extend([news.as_dict() for news in self.news[:news_limit]])
-            return json.dumps(news_dict, indent=4)
+            return news_dict
         except (TypeError, ValueError) as err:
             util.log(flag="ERROR", msg=str(err), show_on_console=True)
             exit(1)

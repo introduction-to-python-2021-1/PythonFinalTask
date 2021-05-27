@@ -98,7 +98,7 @@ class XmlParser(Parser):
             content_elements = {key: value for key, value in cur_news.items() if "content" in key}
             for content_element in content_elements:
                 cur_news_content += [content.attrib['url'] for content in item.findall(content_element) if
-                                     content.attrib['url']]
+                                     "url" in content.attrib]
 
             cur_news["content"] = cur_news_content
             news.append(RssItem(**cur_news))

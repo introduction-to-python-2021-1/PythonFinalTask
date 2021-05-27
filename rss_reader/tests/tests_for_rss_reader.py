@@ -7,6 +7,7 @@ from unittest.mock import patch
 from unittest.mock import MagicMock
 from io import StringIO
 
+from rss_core.news_processor import NewsProcessor
 from rss_core.reader import SiteReader
 from rss_core.cacher import DbCacher
 from rssreader import rss_reader
@@ -34,21 +35,23 @@ XML_INFO = """<?xml version="1.0" encoding="UTF-8"?>
                </channel>
             </rss>"""
 
-RSS_JSON = """{
-    "Link": "Chanel link",
-    "Description": "Chanel description",
-    "Title": "Chanel title",
-    "News": [
-        {
-            "Title": "News title",
-            "Date": "News date",
-            "Link": "News link",
-            "Media": [
-                "Media url"
-            ]
-        }
-    ]
-}
+RSS_JSON = """[
+    {
+        "Link": "Chanel link",
+        "Description": "Chanel description",
+        "Title": "Chanel title",
+        "News": [
+            {
+                "Title": "News title",
+                "Date": "News date",
+                "Link": "News link",
+                "Media": [
+                    "Media url"
+                ]
+            }
+        ]
+    }
+]
 """
 
 
@@ -83,7 +86,7 @@ class TestRssReader(unittest.TestCase):
         """
         with self.assertRaises(SystemExit) as cm:
             rss_reader.main(["--limit", "a", "https://news.yahoo.com/rss/"])
-        self.assertEqual(cm.exception.code, 1)
+        self.assertEqual(cm.exception.code, 2)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_over_news_count_limit_arg(self, mock_stdout):
@@ -101,7 +104,7 @@ class TestRssReader(unittest.TestCase):
         with self.assertRaises(SystemExit) as cm:
             rss_reader.main(["--version"])
         self.assertEqual(cm.exception.code, 0)
-        self.assertIn("Version 1.3", mock_stdout.getvalue())
+        self.assertIn("Version 1.4", mock_stdout.getvalue())
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_json_arg(self, mock_stdout):
@@ -112,12 +115,32 @@ class TestRssReader(unittest.TestCase):
         self.assertEqual(RSS_JSON, mock_stdout.getvalue())
 
     @patch('sys.stdout', new_callable=StringIO)
+    def test_wrong_date_arg(self, mock_stdout):
+        """
+        Test --date argument
+        """
+        with self.assertRaises(SystemExit) as cm:
+            rss_reader.main(["--date", "2020-05-27", "https://news.yahoo.com/rss/"])
+        self.assertEqual(cm.exception.code, 1)
+        self.assertIn("""Can't parse date '2020-05-27'. Check if it is %Y%m%d format""", mock_stdout.getvalue())
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_wrong_file_name(self, mock_stdout):
+        """
+        Test --to-html argument
+        """
+        DbCacher._get_channels_info_from_db = MagicMock(
+            return_value=[{"id": -1, "title": "", "link": "", "description": ""}])
+        rss_reader.main(["--date", "20200527", "--to-html", "//t\\a.html"])
+        self.assertIn("Синтаксическая ошибка в имени файла, имени папки или метке тома", mock_stdout.getvalue())
+
+    @patch('sys.stdout', new_callable=StringIO)
     def test_getting_cache_with_wrong_date(self, mock_stdout):
         """
         Test for getting from cache with wrong date
         """
-        DbCacher._get_channel_info_from_db = MagicMock(
-            return_value={"id": -1, "title": "", "link": "", "description": ""})
+        DbCacher._get_channels_info_from_db = MagicMock(
+            return_value=[{"id": -1, "title": "", "link": "", "description": ""}])
         with self.assertRaises(SystemExit) as cm:
             rss_reader.main(["--limit", "1", "https://news.yahoo.com/rss/", "--date", "2020"])
         self.assertEqual(cm.exception.code, 1)

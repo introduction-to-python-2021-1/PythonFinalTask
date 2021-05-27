@@ -35,6 +35,7 @@ class SiteReader(Reader):
                          msg=f"Can't get data from site: Link should starts with http:// or https://")
                 exit(1)
             response = requests.get(url=link)
+            response.encoding = 'utf-8'
             if response.ok:
                 content = response.text
                 return content

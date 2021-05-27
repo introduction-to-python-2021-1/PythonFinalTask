@@ -2,6 +2,25 @@
     This module contain classes and functions which are make
     work of my_rss_reader easier and more convenient
 """
+import os
+import re
+
+
+def create_directory(full_db_path: str):
+    """
+    Method create directory for placing file if it is not exist
+    :param full_db_path: full path to file
+    :return: None
+    """
+
+    directory = ""
+    if "/" in full_db_path or "\\" in full_db_path:
+        parts = re.findall(r"^(.+?)(?:[/\\])(\w+\.\w+)\s*$", full_db_path)
+        directory = parts[0][0]
+
+    if directory:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
 
 def log(show_on_console: bool = True, msg: str = "", flag: str = ""):

@@ -21,7 +21,7 @@ class TestNewsProcessor(unittest.TestCase):
         """
         proc = NewsProcessor(XmlParser(SiteReader()))
         with self.assertRaises(SystemExit) as cm:
-            proc.get_news("")
+            proc.load_news("")
         self.assertEqual(cm.exception.code, 1)
         self.assertEqual("[ERROR] Link mast be not empty str", mock_stdout.getvalue().strip())
 
@@ -32,7 +32,7 @@ class TestNewsProcessor(unittest.TestCase):
         """
         proc = NewsProcessor(XmlParser(SiteReader()))
         with self.assertRaises(SystemExit) as cm:
-            proc.get_news("htt://kbjxk")
+            proc.load_news("htt://kbjxk")
         self.assertEqual(cm.exception.code, 1)
         self.assertEqual("[ERROR] Can't get data from site: Link should starts with http:// or https://",
                          mock_stdout.getvalue().strip())

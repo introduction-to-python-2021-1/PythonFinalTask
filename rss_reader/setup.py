@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="rss_reader",
-    version="1.3",
+    version="1.4",
     author="Example Author",
     author_email="author@example.com",
     description="A small example package",
@@ -20,7 +20,7 @@ setuptools.setup(
         ],
     },
     install_requires=[
-        'elementpath', 'requests', 'argparse',
+        'elementpath', 'requests', 'argparse', 'jinja2', 'xhtml2pdf',
     ],
     zip_safe=False
 )
