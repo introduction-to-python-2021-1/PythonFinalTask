@@ -248,7 +248,7 @@ def main():
         try:
             newsdict, len_news = parsing_user_date(arguments.date, arguments.source)
             logger.info(f"News will be reading from cash")
-        except (AttributeError):
+        except (AttributeError, ValueError, TypeError):
             sys.exit()
     else:
         content = open_rss_link(arguments.source, arguments.verbose)
