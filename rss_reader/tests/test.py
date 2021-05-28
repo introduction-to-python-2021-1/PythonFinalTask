@@ -1,16 +1,12 @@
+"""The main test module for basic rss feed reading"""
 import unittest
 from rss_reader.rss_reader import rss_reader
-import io
 import logging
 import logging.handlers
-import sys
 
 
 class TestReader(unittest.TestCase):
-    def test_checking_the_installation(self):
-        """Creates object and outputs it to stdout"""
-        self.output = io.StringIO()
-        sys.stdout = self.output
+    """Tests for parsing links, making news dictionaries, printing news, setting limits, verbose flag"""
 
     def test_set_limit_for_print(self):
         """Good limit"""
@@ -30,7 +26,7 @@ class TestReader(unittest.TestCase):
     def test_limit_negative_number(self):
         """Test limit negative number"""
         parser = rss_reader.command_arguments_parser(["--limit -5"])
-        self.assertTrue(parser)
+        self.assertFalse(parser)
 
     def test_checking_verbose(self):
         """Test verbose status message"""
@@ -40,18 +36,9 @@ class TestReader(unittest.TestCase):
     def test_checking_verbose_plus(self):
         """Test verbose status message"""
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
-        self.assertLogs(parser, "Getting access to the RSS")
-
-    def test_checking_verbose_plus1(self):
-        """Test verbose status message"""
-        parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
         data = rss_reader.parses_data(parser, "--limit 1")
+        self.assertLogs(parser, "Getting access to the RSS")
         self.assertLogs(data, "Reads amount of news - 1")
-
-    def test_checking_verbose_plus_limit(self):
-        """Test verbose status message and limit"""
-        parser = rss_reader.command_arguments_parser(["--limit 7", "--verbose"])
-        self.assertTrue(parser.verbose)
 
     def test_checking_json_format(self):
         """Test json format"""
@@ -75,7 +62,7 @@ class TestReader(unittest.TestCase):
 
     def test_answer_Exception(self):
         """Test answer for wrong URL"""
-        answer = rss_reader.answer_URL(["https://news.sahoo.com/rss/"])
+        answer = rss_reader.server_answer(["https://news.sahoo.com/rss/"])
         self.assertLogs(answer, "Xml was failed. Input the correct URL, please")
 
     def test_bad_link_message(self):
@@ -88,7 +75,8 @@ class TestReader(unittest.TestCase):
         """Test for parser data with good link"""
         with open("../rss_reader/rss_reader/sources/yahoo_news.xml", "r") as rssfile:
             answer = rss_reader.parses_data(rssfile, "--limit 1")
-            self.assertTrue(answer['feed'], "Yahoo News - Latest News & Headlines")
+            self.assertTrue(answer["feed"], "Yahoo News - Latest News & Headlines")
+
 
     def test_good_link_dict(self):
         """Test for dictionary with good link"""
