@@ -2,7 +2,10 @@ import unittest
 from unittest.mock import MagicMock
 from unittest.mock import patch
 from urllib.error import URLError
+import io
+from contextlib import redirect_stdout
 
+from reader.rss_reader import main
 from reader.functions import parse_news, make_json, check_limit, check_url, execute_news
 from reader.article import Article
 
@@ -34,6 +37,13 @@ class TestFunctions(unittest.TestCase):
                                                    'org/d2d71e1fafaffbdd78bb05538e0732dc',
                                             'width': '130'}], 'media_credit': [{'role': 'publishing company'}],
                          'credit': ''}]
+        self.json = '{\n    "Title": "Japan reporter freed from Myanmar says inmates were abused",\n' \
+                    '    "Link": "https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html",\n' \
+                    '    "Date": "Fri, 21 May, 2021",\n' \
+                    '    "Source": "Associated Press",\n' \
+                    '    "Description": "---",\n' \
+                    '    "Image": "https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAw' \
+                    'MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc"\n}'
 
     @patch('reader.functions.store_news')
     def test_parse_news(self, store):
@@ -56,14 +66,7 @@ class TestFunctions(unittest.TestCase):
 
     def test_make_json(self):
         """Checks that туцы is converted to json format correctly"""
-        self.assertEqual(make_json(self.article_A),
-                         '{\n    "Title": "Japan reporter freed from Myanmar says inmates were abused",\n'
-                         '    "Link": "https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html",\n'
-                         '    "Date": "Fri, 21 May, 2021",\n    "Source": "Associated Press",\n'
-                         '    "Description": "---",\n'
-                         '    "Image": "https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAw'
-                         'MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc"'
-                         '\n}')
+        self.assertEqual(make_json(self.article_A), self.json)
 
     def test_check_limit(self):
         """Tests check_limit function with valid values (positive numbers)"""
@@ -122,6 +125,28 @@ class TestFunctions(unittest.TestCase):
 
         self.actual = check_url(self.entries, None, None)
         self.assertEqual(self.actual[0], self.article_A)
+
+    def test_version_only(self):
+        """Checks that the program stops after printing a version when --version is specified"""
+        with io.StringIO() as term_value, redirect_stdout(term_value):
+            with self.assertRaises(SystemExit):
+                main([None, '--version'])
+                self.assertEqual(term_value.getvalue(), 'Version 1.3')
+
+    def test_version_and_other_arg(self):
+        """Checks that the program stops after printing a version when --version and another arg are specified"""
+        with io.StringIO() as term_value, redirect_stdout(term_value):
+            with self.assertRaises(SystemExit):
+                main([None, self.url, '--version'])
+                self.assertEqual(term_value.getvalue(), 'Version 1.3')
+
+    @patch('feedparser.parse')
+    def test_json_conversion(self, parser):
+        """Checks that the program converts the news into JSON format when --json is specified"""
+        parser.return_value = {'entries': self.entries}
+        with io.StringIO() as term_value, redirect_stdout(term_value):
+            main([None, self.url, '--json'])
+            self.assertEqual(term_value.getvalue(), self.json + '\n')
 
 
 if __name__ == "__main__":

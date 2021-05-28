@@ -1,18 +1,20 @@
 import logging.handlers
 import sqlite3
 import datetime
+import sys
 
 from reader.functions import make_json, check_limit, execute_news, create_arguments, check_url, create_logger
 
 
-def main():
+def main(argv=sys.argv):
     logger = create_logger()
+
+    parser = create_arguments(argv)
+    args = parser.parse_args(argv[1:])
 
     """Creating connection to DB and cursor object"""
     connection = sqlite3.connect('news.db')
     cursor = connection.cursor()
-
-    args = create_arguments()
 
     if args.limit:
         limit = check_limit(args.limit)

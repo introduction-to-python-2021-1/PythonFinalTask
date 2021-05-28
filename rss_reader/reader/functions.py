@@ -108,7 +108,7 @@ def check_url(source, cursor, connection):
             return result
 
 
-def create_arguments():
+def create_arguments(argv):
     """Creates command line arguments"""
     parser = argparse.ArgumentParser(description='Pure Python command-line RSS reader')
     parser.add_argument('source', type=str, nargs='?', default=None, help='RSS URL')
@@ -118,9 +118,7 @@ def create_arguments():
     parser.add_argument('--limit', help='Limit news topics if this parameter provided')
     parser.add_argument('--date', type=str, nargs='?', default='', help='Sets the date the news will be displayed')
     parser.add_argument('--to_html', type=str, help='The path where new file will be saved')
-
-    args, _ = parser.parse_known_args()
-    return args
+    return parser
 
 
 def create_logger():
