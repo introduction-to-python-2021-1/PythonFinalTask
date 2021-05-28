@@ -10,7 +10,7 @@ setup(
     python_requires='>=3.8',
     packages=['rss_reader'],
     package_data={
-            'components': ['tests/rss_feed.xml']
+            'tests': ['tests/rss_feed.xml']
         },
     entry_points={
         'console_scripts': [
