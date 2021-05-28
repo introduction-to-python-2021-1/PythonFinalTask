@@ -1,8 +1,6 @@
-
 import unittest
 import io
 from rss_reader.rss_reader import main
-
 from contextlib import redirect_stdout
 
 
@@ -20,13 +18,15 @@ class TestRssReader(unittest.TestCase):
                 self.assertEqual(buf.getvalue(), 'Invalid limit value. Please correct the limit value and try again\n')
 
     def test_invalid_schema_url(self):
-        with io.StringIO() as buf, redirect_stdout(buf):
+        with self.assertRaises(SystemExit):
+            with io.StringIO() as buf, redirect_stdout(buf):
                 main(args=['url.com'])
                 self.assertEqual(buf.getvalue(),
                                  'Invalid URL url.com: No schema supplied. Perhaps you meant http:url.com?\n')
 
     def test_invalid_url(self):
-        with io.StringIO() as buf, redirect_stdout(buf):
+        with self.assertRaises(SystemExit):
+            with io.StringIO() as buf, redirect_stdout(buf):
                 main(args=['https://ttt.com'])
                 self.assertEqual(buf.getvalue(), 'Connection error. Please correct the URL and try again\n')
 
