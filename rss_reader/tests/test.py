@@ -86,19 +86,19 @@ class TestReader(unittest.TestCase):
 
     def test_good_link(self):
         """Test for parser data with good link"""
-        with open("../rss_reader/sources/yahoo_news.xml", "r") as rssfile:
+        with open("../rss_reader/rss_reader/sources/yahoo_news.xml", "r") as rssfile:
             answer = rss_reader.parses_data(rssfile, "--limit 1")
             self.assertTrue(answer['feed'], "Yahoo News - Latest News & Headlines")
 
     def test_good_link_dict(self):
         """Test for dictionary with good link"""
-        with open("../rss_reader/sources/yahoo_news.xml", "r") as rssfile:
+        with open("../rss_reader/rss_reader/sources/yahoo_news.xml", "r") as rssfile:
             answer = rssfile.read()
         self.assertEqual(len(rss_reader.parses_data(answer, 0)["news"]), 2)
 
     def test_good_link_for_dictionary_part(self):
         """Test for part in dictionary with good link"""
-        with open("../rss_reader/sources/yahoo_news.xml", "r") as rssfile:
+        with open("../rss_reader/rss_reader/sources/yahoo_news.xml", "r") as rssfile:
             answer = rssfile.read()
         self.assertEqual(rss_reader.parses_data(answer, 0)["news"][1]["title"], "Big cheese no more: UK drug "
                                                                                 "dealer caught out by cheese pic")
@@ -111,13 +111,13 @@ class TestReader(unittest.TestCase):
 
     def test_good_link_in_json(self):
         """Test for dictionary in json"""
-        with open("../rss_reader/sources/file_json_format.json", "r") as rssfile:
+        with open("../rss_reader/rss_reader/sources/file_json_format.json", "r") as rssfile:
             answer = rssfile.read()
         self.assertIsInstance(rss_reader.parses_data(answer, 0), dict)
 
     def test_for_printing_news(self):
         """Test for def printing_news"""
-        with open("../rss_reader/sources/yahoo_news.xml", "r") as rssfile:
+        with open("../rss_reader/rss_reader/sources/yahoo_news.xml", "r") as rssfile:
             answer = rssfile.read()
             dictionary = rss_reader.parses_data(answer, 0)
             news = rss_reader.printing_news(dictionary)
