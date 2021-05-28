@@ -3,6 +3,7 @@ import logging
 import unittest
 from urllib.error import URLError
 from rss_reader import rss_reader
+from rss_reader.dataset import Data
 import sys
 
 
