@@ -41,23 +41,24 @@ class RssParser:
         for feed in data['entries'][:self.limit]:
             title = feed.get('title', 'Absence of title')
             link = feed.get('link', 'Absence of link')
-            date = feed.get('published_parsed')
+            date = feed.get('published_parsed', 'Absence of date')
             img = get_img(link)
             summary_list = []
             links = []
-            print('BBBBBBBBBBBBBBBBBB')
-            print(feed['summary'])
             if feed.get('summary'):
                 summary_list.append(feed.get('summary'))
             if feed.get('links'):
                 links = feed.get('links')
                 for link in links:
                     if link['type'] == 'image/jpeg':
-                        img.append({'src': link['href']})
+                        img.append({'src': link.get('href', ''), 'alt': link.get('alt', '')})
             fields = 'title, link, date, img, content, links'
             item = collections.namedtuple('item', fields)._make((title, link, date, img, summary_list, links))
             self.save_feed_into_cache(item)
             self.items.append(item)
+
+    # def if_links_is_image(self, links_list):
+
 
     def convert_to_json(self):
         return json.dumps({'url': self.url,
@@ -66,7 +67,7 @@ class RssParser:
 
     def save_feed_into_cache(self, item):
         date = time.strftime('%Y%m%d', item.date)
-        dir_path = os.path.abspath(os.path.dirname('app')) + os.path.sep + 'feed_cache' + os.path.sep
+        dir_path = os.path.abspath(os.path.dirname(__file__)) + os.path.sep + 'feed_cache' + os.path.sep
         if not os.path.exists(dir_path):
             os.mkdir(dir_path)
         file_path = dir_path + date + '.json'
@@ -91,21 +92,33 @@ class RssParser:
         for item in self.items:
             item_as_str = (f'Title: {item.title}\nLink: {item.link["href"]}\n'
                            f'Date: {time.strftime("%y-%m-%d %H:%M", item.date)}\n')
-
             result_str += item_as_str
             if item.content:
-                result_str += 'Content: '
-                for stuff in item.content:
-                    result_str += stuff + '\n'
-            for num, img in enumerate(item.img):
-                images_as_str = f'Image № {str(num + 1)}: {img["src"]}'
-                result_str += images_as_str + '\n'
-                if img['alt']:
-                    img_desc = f'Description: {img["alt"]}'
-                    result_str += img_desc + '\n'
+                result_str += 'Content: ' + self.get_str_content(item.content)
+            result_str += self.get_img_as_str(item.img)
             if item.links:
-                result_str += 'Links: '
-                for link in item.links:
-                    result_str += link['href'] + '\n'
+                result_str += 'Links: ' + self.get_links_as_str(item.links)
             result_str += '\n\n'
         return result_str
+
+    def get_str_content(self, list_with_content):
+        pretty_str = ''
+        for record in list_with_content:
+            pretty_str += record + '\n'
+        return pretty_str
+
+    def get_img_as_str(self, list_with_img):
+        pretty_str = ''
+        for num, img in enumerate(list_with_img):
+            images_as_str = f'Image № {str(num + 1)}: {img["src"]}'
+            pretty_str += images_as_str + '\n'
+            if img['alt']:
+                img_desc = f'Description: {img["alt"]}'
+                pretty_str += img_desc + '\n'
+        return pretty_str
+
+    def get_links_as_str(self, list_with_links):
+        pretty_str = ''
+        for link in list_with_links:
+            pretty_str += link['href'] + '\n'
+        return pretty_str

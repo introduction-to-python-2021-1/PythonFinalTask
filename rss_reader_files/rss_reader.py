@@ -8,6 +8,8 @@ from rss_reader_files.logger_conf import create_root_logger, add_console_handler
 from rss_reader_files.RssParser import RssParser
 from rss_reader_files.cache_handlers import get_feed_from_cache, print_cached_feed
 from rss_reader_files.pdf_converter import convert_to_pdf
+from rss_reader_files.html_converter import convert_to_html
+
 
 def main():
     arguments = get_args()
@@ -48,6 +50,15 @@ def main():
                 logger.error(err)
                 if not arguments.verbose:
                     print(err)
+        if arguments.to_html:
+            path_to_html_file = arguments.to_html + os.path.sep + 'news.html'
+            try:
+                convert_to_html(get_data, path_to_html_file)
+            except Exception as err:
+                logger.error(err)
+                if not arguments.verbose:
+                    print(err)
+
 
 if __name__ == '__main__':
     main()

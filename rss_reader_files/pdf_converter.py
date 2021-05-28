@@ -1,13 +1,22 @@
+"""
+This module provides funcs for converting feed to pdf format
+"""
+
+
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 import time
 
+
 pdfmetrics.registerFont(TTFont('DejaVuSerif', 'DejaVuSerif.ttf'))
 
 
 def convert_to_pdf(feed, path):
+    """
+    Convert feed to html format
+    """
     parts = []
     try:
         for item in feed.items:
@@ -21,8 +30,8 @@ def convert_to_pdf(feed, path):
                 for content in item.content:
                     result_str += content + '<br/>'
             stylesheet = getSampleStyleSheet()
-            yourStyle = ParagraphStyle('DejaVuSerif', fontName='DejaVuSerif')
-            parts.append(Paragraph(result_str, style=yourStyle))
+            custom_style = ParagraphStyle('DejaVuSerif', fontName='DejaVuSerif')
+            parts.append(Paragraph(result_str, style=custom_style))
             for img in item.img:
                 images_as_str = f'Image: <img src={img["src"]} valign="top" width=100 height=100 />'
                 parts.append(Paragraph(images_as_str, style=stylesheet['Normal']))
