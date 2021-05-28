@@ -2,7 +2,7 @@ import subprocess
 from termcolor import colored
 
 
-UTIL_NAME = "reader"
+UTIL_NAME = "rss_reader"
 
 
 def call_command(command, optional_params):
