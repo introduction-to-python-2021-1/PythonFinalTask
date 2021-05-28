@@ -68,12 +68,6 @@ class TestReader(unittest.TestCase):
         self.assertTrue(parser.json)
 
 
-    def test_checking_json_format_with_limit(self):
-        """Test json format with limit"""
-        parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--json", "--limit 3"])
-        self.assertTrue(parser.json)
-
-
     def test_checking_empty(self):
         """Test without link"""
         parser = rss_reader.command_arguments_parser([""])
@@ -128,6 +122,17 @@ class TestReader(unittest.TestCase):
         self.assertEqual(rss_reader.parses_data(answer, 0)["news"][1]["link"], "https://news.yahoo.com/big-cheese"
                                                                                "-no-more-uk-112645101.html")
         self.assertEqual(rss_reader.parses_data(answer, 0)["news"][1]["pubDate"], "2021-05-27T11:26:45Z")
+        self.assertIsInstance(rss_reader.parses_data(answer, 0), dict)
+        print(len(rss_reader.parses_data(answer, 0)))
+        self.assertEqual(len(rss_reader.parses_data(answer, 0)), 2)
+
+
+    def test_good_link_in_json(self):
+        """Test for dictionary in json"""
+        with open("json_format.json", "r") as rssfile:
+            answer = rssfile.read()
+        print(answer)
+        self.assertIsInstance(rss_reader.parses_data(answer, 0), dict)
 
 
 if __name__ == "__main__":
