@@ -3,10 +3,13 @@ from itertools import islice
 
 from urllib.request import urlopen
 import xml.etree.ElementTree as ET
+
 import app_logger
 
 logger = app_logger.get_logger(__name__)
 
+# This class parses the site, handles data
+# Outputs to stdout or file
 class feed_Container:
   def __init__(self, url):
     try:
@@ -15,6 +18,8 @@ class feed_Container:
         raise Exception("Bad response")
 
     except Exception:
+      logger.exception("Bad url address")
+      # logger.error(f"Bad URL address", exc_info= True)
       sys.exit()
 
     self.xml_doc = ET.parse(self.xml_url)

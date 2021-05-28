@@ -3,7 +3,7 @@ from feed_Container import feed_Container
 
 
 def main():
-    parser = psr.argsParser()
+    parser = psr.args_Parser()
 
     feed = feed_Container(url = parser.args_Space.source)
 
