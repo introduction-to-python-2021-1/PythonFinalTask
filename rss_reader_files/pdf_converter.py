@@ -2,13 +2,12 @@
 This module provides funcs for converting feed to pdf format
 """
 
-
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 import time
-
+from rss_reader_files import str_funcs
 
 pdfmetrics.registerFont(TTFont('DejaVuSerif', 'DejaVuSerif.ttf'))
 
@@ -20,15 +19,10 @@ def convert_to_pdf(feed, path):
     parts = []
     try:
         for item in feed.items:
-            result_str = ''
-            item_as_str = (f'Title: {item.title} <br/> '
-                           f'Link: {item.link["href"]} <br/> '
-                           f'Date: {time.strftime("%y-%m-%d %H:%M", item.date)} <br/>')
-            result_str += item_as_str
-            if item.content:
-                result_str += 'Content: '
-                for content in item.content:
-                    result_str += content + '<br/>'
+            result_str = (f'<br/> Title: {item.title} <br/> '
+                          f'Link: {item.link} <br/> '
+                          f'Date: {time.strftime("%y-%m-%d %H:%M", item.date)} <br/>')
+            result_str += str_funcs.get_str_content(item.content) + '<br/>'
             stylesheet = getSampleStyleSheet()
             custom_style = ParagraphStyle('DejaVuSerif', fontName='DejaVuSerif')
             parts.append(Paragraph(result_str, style=custom_style))

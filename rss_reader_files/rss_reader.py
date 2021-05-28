@@ -28,7 +28,7 @@ def main():
 
     if arguments.date:
         feed_list = get_feed_from_cache(arguments.date, arguments.limit)
-        print_cached_feed(feed_list)
+        print(print_cached_feed(feed_list))
     else:
         get_data = RssParser(arguments.url, arguments.limit)
         try:
@@ -40,7 +40,7 @@ def main():
                 print(error_message)
         if arguments.json:
             print(get_data.convert_to_json())
-        elif not arguments.to_pdf:
+        elif not arguments.to_pdf and not arguments.to_html:
             print(get_data)
         if arguments.to_pdf:
             path_to_pdf_file = arguments.to_pdf + os.path.sep + 'news.pdf'
