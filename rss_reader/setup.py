@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='reader',
+    name='rss_reader',
     version='1.3',
     packages=['reader'],
     author='Natallia Patsiomkina',
@@ -9,6 +9,6 @@ setup(
     description='Pure Python command-line RSS reader',
     install_requires=['dateparser', 'feedparser'],
     entry_points={
-        'console_scripts': 'reader = reader.rss_reader:main'
+        'console_scripts': 'rss_reader = reader.rss_reader:main'
     }
 )

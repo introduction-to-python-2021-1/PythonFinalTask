@@ -1,22 +1,12 @@
-import sys
 import logging.handlers
 import sqlite3
-
 import datetime
 
-from reader.functions import make_json, check_limit, execute_news, create_arguments, check_URL
+from reader.functions import make_json, check_limit, execute_news, create_arguments, check_url, create_logger
 
 
 def main():
-    """Creating logger"""
-    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-    logger = logging.getLogger("")
-    logger.setLevel(logging.INFO)
-    handler = logging.handlers.RotatingFileHandler('../../../logs.txt')
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    logging.disable()
+    logger = create_logger()
 
     """Creating connection to DB and cursor object"""
     connection = sqlite3.connect('news.db')
@@ -32,10 +22,10 @@ def main():
     if args.verbose:
         """Turning on the output of messages about events"""
         logging.disable(0)
-        logger.info('Parcing news...')
+        logger.info('Checking for news to parse...')
 
     if not args.date:
-        result = check_URL(args.source, cursor, connection)
+        result = check_url(args.source, cursor, connection)
     else:
         try:
             args_date = (datetime.datetime.strptime(args.date, '%Y%m%d')).date()
@@ -50,7 +40,7 @@ def main():
     if limit > 0:
         logger.info(f'Working with limited by user number ({limit} items) of articles')
         logger.info('Creating the list of news for limited articles...')
-        for item in result[0:limit]:
+        for item in result[:limit]:
             if args.json:
                 json_item = make_json(item)
                 print(json_item)

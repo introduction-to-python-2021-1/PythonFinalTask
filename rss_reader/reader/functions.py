@@ -1,7 +1,9 @@
+import sys
 import json
 import argparse
 import feedparser
 import urllib.error
+import logging.handlers
 
 from reader.article import Article
 
@@ -78,9 +80,13 @@ def store_news(list_of_news, cursor, connection, url):
 
 
 def execute_news(date, cursor, url):
-    """Retrieves news for the selected date"""
-    cursor.execute('SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date '
-                   'and url=:url', {'date': date, 'url': url})
+    """Retrieving news for the selected date"""
+    if url:
+        cursor.execute('SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date '
+                       'and url=:url', {'date': date, 'url': url})
+    else:
+        cursor.execute('SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date',
+                       {'date': date})
     records = cursor.fetchall()
     articles = []
     for title, link, full_date, source, description, image, url in records:
@@ -88,7 +94,7 @@ def execute_news(date, cursor, url):
     return articles
 
 
-def check_URL(source, cursor, connection):
+def check_url(source, cursor, connection):
     """Checking the validity of user-entered URL"""
     try:
         rss_news = feedparser.parse(source)
@@ -111,6 +117,20 @@ def create_arguments():
     parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
     parser.add_argument('--limit', help='Limit news topics if this parameter provided')
     parser.add_argument('--date', type=str, nargs='?', default='', help='Sets the date the news will be displayed')
+    parser.add_argument('--to_html', type=str, help='The path where new file will be saved')
 
-    args, unknown = parser.parse_known_args()
+    args, _ = parser.parse_known_args()
     return args
+
+
+def create_logger():
+    """Creating logger"""
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+    logger = logging.getLogger("")
+    logger.setLevel(logging.INFO)
+    handler = logging.handlers.RotatingFileHandler('../../../logs.txt')
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logging.disable()
+    return logger
