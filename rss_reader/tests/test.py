@@ -129,7 +129,7 @@ class TestReader(unittest.TestCase):
 
     def test_good_link_in_json(self):
         """Test for dictionary in json"""
-        with open("json_format.json", "r") as rssfile:
+        with open("file_json_format.json", "r") as rssfile:
             answer = rssfile.read()
         print(answer)
         self.assertIsInstance(rss_reader.parses_data(answer, 0), dict)
