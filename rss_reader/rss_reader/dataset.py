@@ -25,7 +25,7 @@ class Data:
             self.df = pd.concat([self.data])
             os.remove("data.csv")
 
-    def make_dataframe(self, item: {}):
+    def append_dataframe(self, item: {}):
         """
         Append feed from reader.
 
@@ -34,17 +34,17 @@ class Data:
         """
         self.df = self.df.append(item, ignore_index=True)
 
-    def make_csv(self):
+    def append_cache(self):
         """Delete duplicate from DataFrame and write to csv"""
         with open("data.csv", "a") as f:
             self.df = self.df.drop_duplicates(subset=["Link"])
-            self.df.to_csv(f, index=False)
+            self.df.to_csv("data.csv", index=False)
             if os.path.getsize("data.csv") == 0:
                 os.remove("data.csv")
                 logger.error("Empty file")
                 sys.exit()
 
-    def print_data(self, date, limit, verbose, argjson):
+    def sort_data(self, date, limit, verbose):
         """
         Prints news for the date.
 
@@ -71,20 +71,15 @@ class Data:
             logger.error("Negative limit")
             sys.exit()
         print(f"News for {date}")
+        news_df = pd.DataFrame()
         for data, title, link in zip(self.data['Date'], self.data['Title'], self.data['Link']):
             if int(date) == int(data[:10].replace('-', '')):
                 logger.info(f"{count + 1}")
                 count += 1
-                if argjson:
-                    patch_data = dict()
-                    patch_data["Title"] = title
-                    patch_data["Date"] = data
-                    patch_data["Link"] = link
-                    print(json.dumps(patch_data, indent=3))
-                else:
-                    print(f"Title :{title}")
-                    print(f"Date : {data}")
-                    print(f"Link : {link}\n")
+                patch_data = dict()
+                patch_data["Title"] = title
+                patch_data["Date"] = data
+                patch_data["Link"] = link
+                news_df = news_df.append(patch_data, ignore_index=True)
 
-            if count == limit:
-                break
+        return news_df[:limit]

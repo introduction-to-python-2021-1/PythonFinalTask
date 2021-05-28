@@ -6,7 +6,7 @@ from rss_reader import rss_reader
 import sys
 
 
-class TestProcessResponse(unittest.TestCase):
+class TestArg(unittest.TestCase):
     def setUp(self):
         self.out = io.StringIO()
         sys.stdout = self.out
@@ -49,11 +49,6 @@ class TestProcessResponse(unittest.TestCase):
 
 
 class TestMain(unittest.TestCase):
-    def test_log(self):
-        """Test verbose on main"""
-        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--verbose"])
-        self.assertLogs(parser, logging.INFO)
-
     def test_lvl_log(self):
         """Test lvl log without verbose"""
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/"])
@@ -73,9 +68,11 @@ class TestMain(unittest.TestCase):
 class TestException(unittest.TestCase):
     def test_printException(self):
         """Test not rss format"""
+        with self.assertWarns(ResourceWarning):
+            data = Data()
         parser = rss_reader.create_parser(["https://news.yahoo.com", "-l 1"])
         with self.assertRaises(SystemExit):
-            self.assertLogs(rss_reader.parse_print_news(parser), logging.ERROR)
+            self.assertLogs(rss_reader.parse_news(parser, data), logging.ERROR)
 
     def test_bad_url(self):
         """Try test bad urs page"""
@@ -98,14 +95,49 @@ class TestLimit(unittest.TestCase):
 
     def test_negative_limit(self):
         """Test negative limit"""
+        with self.assertWarns(ResourceWarning):
+            data = Data()
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l-1"])
         with self.assertRaises(SystemExit):
-            self.assertLogs(rss_reader.parse_print_news(parser), logging.ERROR)
+            self.assertLogs(rss_reader.parse_news(parser, data), logging.ERROR)
 
     def test_normal_limit(self):
         """Test limit"""
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l 1"])
         self.assertTrue(parser.limit)
+
+
+class TestPrint(unittest.TestCase):
+    def setUp(self):
+        self.out = io.StringIO()
+        sys.stdout = self.out
+
+    def test_print(self):
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/"])
+        text = {"Title": "Man charged with threatening to kill President Biden",
+               "Date": "2021-05-28T11:06:25Z",
+               "Link": "https://news.yahoo.com/man-charged-threatening-kill-president-110625146.html",
+               }
+        ans = """Title: Man charged with threatening to kill President Biden
+Date: 2021-05-28T11:06:25Z
+Link: https://news.yahoo.com/man-charged-threatening-kill-president-110625146.html\n"""
+        rss_reader.print_news(parser, text)
+        self.assertEqual(self.out.getvalue(), ans)
+
+    def test_print_json(self):
+        ans = """{
+   "Title": "Gilbert Poole Jr: Man cleared of murder and set free after 32 years in prison",
+   "Date": "2021-05-27T08:55:55Z",
+   "Link": "https://news.yahoo.com/gilbert-poole-jr-man-cleared-085555782.html"
+}
+"""
+        text = {"Title":  "Gilbert Poole Jr: Man cleared of murder and set free after 32 years in prison",
+                "Date":  "2021-05-27T08:55:55Z",
+                "Link": "https://news.yahoo.com/gilbert-poole-jr-man-cleared-085555782.html"}
+
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--json"])
+        rss_reader.print_news(parser, text)
+        self.assertEqual(self.out.getvalue(), ans)
 
 
 if __name__ == "__main__":

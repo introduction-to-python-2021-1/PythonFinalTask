@@ -1,22 +1,15 @@
+import os
 import argparse
 import sys
 import logging
 import json
 from urllib.error import URLError
-
+from dataset import Data
 
 import feedparser
 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger()
-
-try:
-    from dataset import Data
-except ImportError:
-    from rss_reader.dataset import Data
-
-
-data = Data()
 
 
 def create_parser(args):
@@ -44,75 +37,105 @@ def open_url(url):
     try:
         logger.info(f"open {url} and start parse")
         feed = feedparser.parse(url)
+        logger.info(f"{feed['channel']['title']}")
     except URLError:
         logger.error(f"cant open or found {url}")
         sys.exit()
-    except Exception:
+    except SystemExit:
         logger.error(f"exception: {Exception}")
         sys.exit()
-
+    except Exception:
+        logger.error("Not rss format")
+        sys.exit()
     return feed
 
 
-def parse_print_news(args):
+def parse_news(args, data):
     """
-    Check format and print news on console or json
+    Parse news
 
     Parameter:
             args from the user(url, verbose, limit, json)
     """
     feed = open_url(args.url)
-    try:
-        if not args.json:
-            print(f'Feed: {feed["channel"]["title"]}')
-        else:
-            print("JSON")
-            print(json.dumps(feed["channel"]["title"], indent=3))
 
-    except Exception:
-        logger.error("it's not rss format")
-        sys.exit()
+    if not args.json:
+        print(f'Feed: {feed["channel"]["title"]}')
+    else:
+        print(json.dumps(feed["channel"]["title"], indent=3))
 
-    feed_news = {}
     count = 0
 
-    if not args.limit:
+    if args.limit is None:
         args.limit = len(feed["items"])
-    elif args.limit < 0:
-        logger.error(f"negative limit is entered (You enter limit = {args.limit}) ")
+    elif args.limit <= 0:
+        logger.error(f"limit is entered (You enter limit = {args.limit}) ")
         sys.exit()
+
     for item in feed["items"][:args.limit]:
         logger.info(f"Process item № {count + 1}")
+        count += 1
+        feed_news = dict()
         feed_news["Title"] = item['title']
         feed_news["Date"] = item['published']
         feed_news["Link"] = item["link"]
-        data.make_dataframe(feed_news)
-        if args.date:
-            pass
-        elif args.json:
-            print(json.dumps(feed_news, indent=3))
-            count += 1
-        else:
-            for name_of_line, news in feed_news.items():
-                print(f"{name_of_line}: {news}")
-                count += 1
+        data.append_dataframe(feed_news)
+        if not args.date:
+            print_news(args, feed_news)
+
+
+def print_news(args, feed_news):
+    """
+    Print news
+
+    Parameter:
+            args from the user(url, verbose, limit, json)
+            feed_news = news
+    """
+    if args.date:
+        for date, title, link in zip(feed_news['Date'], feed_news['Title'], feed_news['Link']):
+            if args.json:
+                patch_data = dict()
+                patch_data["Title"] = title
+                patch_data["Date"] = date
+                patch_data["Link"] = link
+                print(json.dumps(patch_data, indent=3))
+            else:
+                print(f"Title :{title}")
+                print(f"Date : {date}")
+                print(f"Link : {link}\n")
+
+    elif args.json:
+
+        print(json.dumps(feed_news, indent=3))
+
+    else:
+        for name_of_line, news in feed_news.items():
+            print(f"{name_of_line}: {news}")
 
 
 def main():
     args = create_parser(sys.argv[1:])
+    data = Data()
     if args.verbose:
         logger.setLevel(logging.INFO)
 
+    if args.url:
+        parse_news(args, data)
+    if args.date and not args.url:
+        logger.error("Empty file")
+        os.remove("data.csv")
+        sys.exit()
+    data.append_cache()
+
     if args.date:
-        data.make_csv()
-        if len(args.date) == 8 and int(args.date):
-            data.print_data(args.date, args.limit, args.verbose, args.json)
+        if len(args.date) == 8 and int(args.date) and int(args.date) > 20210500:
+            a = data.sort_data(args.date, args.limit, args.verbose)
+            print_news(args, a)
+
         else:
             logger.error(f"Bad date format")
             sys.exit()
-    else:
-        parse_print_news(args)
-        data.make_csv()
 
 
 if __name__ == "__main__":
