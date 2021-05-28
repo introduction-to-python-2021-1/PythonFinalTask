@@ -115,9 +115,9 @@ class TestPrint(unittest.TestCase):
     def test_print(self):
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/"])
         text = {"Title": "Man charged with threatening to kill President Biden",
-               "Date": "2021-05-28T11:06:25Z",
-               "Link": "https://news.yahoo.com/man-charged-threatening-kill-president-110625146.html",
-               }
+                "Date": "2021-05-28T11:06:25Z",
+                "Link": "https://news.yahoo.com/man-charged-threatening-kill-president-110625146.html",
+                }
         ans = """Title: Man charged with threatening to kill President Biden
 Date: 2021-05-28T11:06:25Z
 Link: https://news.yahoo.com/man-charged-threatening-kill-president-110625146.html\n"""
@@ -131,8 +131,8 @@ Link: https://news.yahoo.com/man-charged-threatening-kill-president-110625146.ht
    "Link": "https://news.yahoo.com/gilbert-poole-jr-man-cleared-085555782.html"
 }
 """
-        text = {"Title":  "Gilbert Poole Jr: Man cleared of murder and set free after 32 years in prison",
-                "Date":  "2021-05-27T08:55:55Z",
+        text = {"Title": "Gilbert Poole Jr: Man cleared of murder and set free after 32 years in prison",
+                "Date": "2021-05-27T08:55:55Z",
                 "Link": "https://news.yahoo.com/gilbert-poole-jr-man-cleared-085555782.html"}
 
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--json"])

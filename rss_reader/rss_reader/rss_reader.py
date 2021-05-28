@@ -4,7 +4,7 @@ import sys
 import logging
 import json
 from urllib.error import URLError
-from dataset import Data
+from rss_reader.dataset import Data
 
 import feedparser
 
