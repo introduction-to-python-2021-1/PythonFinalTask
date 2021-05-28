@@ -71,7 +71,7 @@ def printing_news(dictionary):
 def printing_json(dictionary):
     """Print json news on console"""
     print(json.dumps(dictionary, indent=3))
-    with open("json_format", "w") as json_file:
+    with open("file_json_format", "w") as json_file:
         json.dump(dictionary, json_file, indent=3)
 
 
