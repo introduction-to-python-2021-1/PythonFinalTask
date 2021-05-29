@@ -106,7 +106,7 @@ def printing_news(data):
     print("Amount of news:", len(data["news"]), "\n")
 
 
-def printing_json(data, limit):
+def printing_json(data):
     """Print json news on console"""
     print(json.dumps(data, indent=3))
 
