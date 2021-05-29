@@ -4,7 +4,6 @@ from unittest.mock import patch
 import unittest
 
 from reader.rss_reader import main
-import reader.functions
 
 
 class TestMain(unittest.TestCase):

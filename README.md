@@ -37,4 +37,4 @@ JSON structure:
     
 Storage:
 
-    Articles from the source are saved in the database using the sqlite3 module.
+    Articles from the source are saved in the database using the sqlite3 module. 
