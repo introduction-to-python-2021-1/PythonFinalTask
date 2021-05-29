@@ -3,6 +3,7 @@ from unittest.mock import patch
 import os
 import sys
 
+
 sys.path.append(os.path.dirname((os.path.dirname(__file__))))
 from reader.RssParser import RssParser
 
@@ -48,7 +49,6 @@ class FeedTest(unittest.TestCase):
     def test_convert_to_json(self):
         json_news = '{"url": "url", "feed": {"name": "", "items": []}}'
         self.assertEqual(self.parser.convert_to_json(), json_news)
-
 
 
 if __name__ == '__main__':
