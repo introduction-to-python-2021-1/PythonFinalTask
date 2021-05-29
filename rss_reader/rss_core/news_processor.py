@@ -7,6 +7,7 @@ from rss_core.converter import RssConverter
 from rss_core.parser import Parser
 from rss_core.rss_classes import RssNews
 from utils import util
+from sys import exit
 
 
 class NewsProcessor:

@@ -2,6 +2,7 @@
     Module contains classes RssItem and RssNews
     for working with rss news from different channels
 """
+from sys import exit
 from utils import util
 
 

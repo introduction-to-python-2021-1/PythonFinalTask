@@ -4,6 +4,7 @@
 """
 import re
 import xml.etree.ElementTree as ElementTree
+from sys import exit
 from abc import abstractmethod, ABC
 from rss_core.reader import Reader
 from rss_core.rss_classes import RssItem

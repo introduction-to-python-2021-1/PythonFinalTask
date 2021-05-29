@@ -1,13 +1,12 @@
 """
     This module covers with tests code of rss_reader.py
 """
-import argparse
+import os
 import unittest
 from unittest.mock import patch
 from unittest.mock import MagicMock
 from io import StringIO
 
-from rss_core.news_processor import NewsProcessor
 from rss_core.reader import SiteReader
 from rss_core.cacher import DbCacher
 from rssreader import rss_reader
@@ -59,8 +58,15 @@ class TestRssReader(unittest.TestCase):
     """
     Tests for rss_reader.py
     """
-    SiteReader.get_data = MagicMock(return_value=XML_INFO)
-    DbCacher.cache_rss_news = MagicMock(return_value=True)
+
+    @classmethod
+    def setUpClass(cls):
+        SiteReader.get_data = MagicMock(return_value=XML_INFO)
+        DbCacher.cache_rss_news = MagicMock(return_value=True)
+
+    @classmethod
+    def tearDownClass(cls):
+        os.remove('data/')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_verbose_arg(self, mock_stdout):
@@ -91,7 +97,7 @@ class TestRssReader(unittest.TestCase):
     @patch('sys.stdout', new_callable=StringIO)
     def test_over_news_count_limit_arg(self, mock_stdout):
         """
-        Tests --limit argument which greater than news count
+        Tests --limit argument which is greater than news count
         """
         rss_reader.main(["--limit", "3", "https://news.yahoo.com/rss/"])
         self.assertEqual(2, mock_stdout.getvalue().count("News title"))
@@ -112,7 +118,8 @@ class TestRssReader(unittest.TestCase):
         Test --json argument
         """
         rss_reader.main(["--limit", "1", "--json", "https://news.yahoo.com/rss/"])
-        self.assertEqual(RSS_JSON, mock_stdout.getvalue())
+        self.assertEqual(RSS_JSON.replace("\n", "").replace(" ", ""),
+                         mock_stdout.getvalue().replace("\n", "").replace(" ", ""))
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_wrong_date_arg(self, mock_stdout):

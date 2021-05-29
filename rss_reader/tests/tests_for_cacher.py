@@ -3,9 +3,6 @@
 """
 import os
 import unittest
-from io import StringIO
-from unittest.mock import patch
-
 from rss_core.cacher import DbCacher
 from rss_core.rss_classes import RssNews
 
@@ -31,5 +28,3 @@ class TestCacher(unittest.TestCase):
             cacher.db_processor.close_connection()
         except Exception:
             self.assertTrue(False)
-
-

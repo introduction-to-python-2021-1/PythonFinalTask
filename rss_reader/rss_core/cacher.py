@@ -4,6 +4,7 @@
 import calendar
 import re
 import sqlite3
+from sys import exit
 from abc import ABC, abstractmethod
 from rss_core.rss_classes import RssNews, RssItem
 from utils import util
