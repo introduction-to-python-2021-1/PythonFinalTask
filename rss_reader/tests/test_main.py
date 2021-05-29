@@ -5,6 +5,7 @@ import unittest
 from datetime import datetime
 from unittest import mock
 from unittest.mock import patch
+from urllib.error import URLError
 
 # Make tests crossplatform
 import pathmagic  # noqa
@@ -26,23 +27,15 @@ class TestMainReader(unittest.TestCase):
 
     #  Tests for function "open_rss_link"
     @patch("builtins.print", autospec=True, side_effect=print)
-    def test_bad_link(self, mock_print):
-        """ Test URLError is raising and user-friendly message is printing to stdout, if we give a bad link. """
-        bad_link = "https://news.yaom/rss/"
-        rs.open_rss_link(bad_link, verbose=None)
-        message = mock_print.call_args_list[0].args[0]
-        self.assertEqual(message, "Bad link, please try again")
-
-    @patch("builtins.print", autospec=True, side_effect=print)
     def test_no_link(self, mock_print):
-        """ Test ValueError is raising and user-friendly message is printing to stdout, if we give a bad link. """
-        rs.open_rss_link("", verbose=None)
-        message = mock_print.call_args_list[0].args[0]
-        self.assertEqual(message, "Please insert rss link")
+        """ Test ValueError is raising, if we give a bad link. """
+        with self.assertRaises(ValueError):
+            rs.open_rss_link("", verbose=None)
 
     def test_normal_link(self):
         """ Test parsing of the normal link goes good and we receive expected header. """
-        content = rs.open_rss_link("../rss_reader/data/fake_rss_site.xml", verbose=None)
+        content = rs.open_rss_link("fake_rss_site.xml", verbose=None)
+        print(content)
         self.assertEqual(content.feed.title, "W3Schools Home Page")
 
     # Tests for verbose argument
@@ -169,16 +162,16 @@ class TestMainReader(unittest.TestCase):
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_invalid_date(self, mock_print):
         """ Test ValueError was catched and user-friendly message is printing to stdout, if we give a bad date. """
-        rs.parsing_user_date("12345")
+        rs.making_cashed_news_dict("12345")
         message = mock_print.call_args_list[0].args[0]
-        self.assertEqual(message, "Invalid date, please insert date like '14100715'")
+        self.assertEqual(message, "Invalid date, please insert date like '20210715'")
 
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_no_cashed_news(self, mock_print):
         """ Test AttributeError was cached and user-friendly message is printing to stdout, if we give a bad date. """
         with mock.patch("main_reader.rss_reader.find_cashed_news") as cashMock:
             cashMock.side_effect = AttributeError(mock.Mock)
-            rs.parsing_user_date("20210101")
+            rs.making_cashed_news_dict("20210505")
             message = mock_print.call_args_list[0].args[0]
             self.assertEqual(message, "No news from this date")
 
@@ -186,7 +179,7 @@ class TestMainReader(unittest.TestCase):
         """ Test take newsdict from find_cashed_news, valid count it's len_news and return it. """
         with mock.patch("main_reader.rss_reader.find_cashed_news") as cashMock:
             cashMock = td.TEST_NEWSDICT
-            newsdict, len_news = rs.parsing_user_date("20210521")
+            newsdict, len_news = rs.making_cashed_news_dict("20210521")
             self.assertEqual(len_news, len(newsdict["news"]))
 
     # Test for function "write_cash"
