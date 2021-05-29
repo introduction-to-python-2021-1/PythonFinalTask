@@ -48,15 +48,6 @@ class TestParser(unittest.TestCase):
         news_dict = parser.parse_news("http://abc")
         self.assertTrue(isinstance(news_dict, dict))
 
-    def test_get_invalid_xml(self):
-        """
-        Test parsing news from bad xml or not xml response
-        """
-        SiteReader.get_data = MagicMock(return_value="<h1><")
-        parser = XmlParser(SiteReader())
-        with self.assertRaises(SystemExit) as cm:
-            parser.parse_news("http")
-        self.assertEqual(cm.exception.code, 1)
 
     def test_strip_text(self):
         """

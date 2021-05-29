@@ -67,7 +67,7 @@ class TestRssReader(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         if os.path.exists("data"):
-            os.remove("data")
+            os.remove("/data/rss_news_bd.db")
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_verbose_arg(self, mock_stdout):
