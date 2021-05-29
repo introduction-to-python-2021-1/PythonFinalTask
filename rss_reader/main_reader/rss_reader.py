@@ -15,23 +15,18 @@ from main_reader import converter
 NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
 
 
-def set_logger(verbose: bool):
+def set_logger(verbose: bool or None):
     """ Choose the output for logs and configure a logger.
 
     :param verbose: If True, prints logs not to the file, but to stdout
     :return: configured logger
     """
 
+    handlers = [logging.StreamHandler(sys.stdout)] if verbose else [logging.FileHandler("logs.log")]
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
-        handlers=[
-            logging.StreamHandler(sys.stdout),
-        ]
-        if verbose
-        else [
-            logging.FileHandler("logs.log"),
-        ],
+        handlers=handlers,
     )
     logger = logging.getLogger()
     return logger
@@ -174,28 +169,21 @@ def find_cashed_news(converted_user_date: datetime, source=None):
         raise AttributeError
 
 
-def open_rss_link(source: str, verbose: bool):
+def open_rss_link(source: str, verbose: bool or None):
     """ Receive link with RSS news and try to parse it, print logs.
 
     :param source: link to take news
     :param verbose: choose place to print logs
-    :return: parsed content from link. If now link, raise ValueError. If link is invalid, raise URLError
+    :return: parsed content from link. If no link, raise ValueError.
     """
 
     logger = set_logger(verbose)
 
-    # Receive link and start parsing
-    try:
-        content = feedparser.parse(source)
-        if not source:
-            raise ValueError
-        logger.info(f"Starting reading link {source}")
-    except URLError as e:
-        logger.error(f"Error {e} raised with trying to open link {source}")
-        return print("Bad link, please try again")
-    except ValueError as e:
-        logger.error(f"Error {e} raised with trying to open link {source}")
-        return print("Please insert rss link")
+    if not source:
+        raise ValueError
+
+    content = feedparser.parse(source)
+    logger.info(f"Starting reading link {source}")
 
     return content
 
@@ -278,7 +266,14 @@ def main():
             logger.error(f"{e} was appearing with parsing date '{arguments.date}'")
             sys.exit()
     else:
-        content = open_rss_link(arguments.source, arguments.verbose)
+        try:
+            content = open_rss_link(arguments.source, arguments.verbose)
+        except URLError as e:
+            logger.error(f"Error {e} raised with trying to open link {arguments.source}")
+            return print("Bad link, please try again")
+        except ValueError as e:
+            logger.error(f"Error {e} raised with trying to open link {arguments.source}")
+            return print("Please insert rss link")
         len_news = len(content.entries)
         newsdict = make_news_dictionary(arguments.source, content)
         write_cash(newsdict)
