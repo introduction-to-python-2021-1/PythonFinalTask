@@ -1,13 +1,12 @@
+import io
 import unittest
+from contextlib import redirect_stdout
 from unittest.mock import MagicMock
 from unittest.mock import patch
 from urllib.error import URLError
-import io
-from contextlib import redirect_stdout
 
-from reader.rss_reader import main
-from reader.functions import parse_news, make_json, check_limit, check_url, execute_news
 from reader.article import Article
+from reader.functions import parse_news, make_json, check_limit, get_from_url, create_arguments
 
 
 class TestFunctions(unittest.TestCase):
@@ -15,11 +14,13 @@ class TestFunctions(unittest.TestCase):
 
     def setUp(self):
         self.url = 'Some_URL'
-        self.article_A = Article('Japan reporter freed from Myanmar says inmates were abused',
+        self.url_b = 'https://news.yahoo.com/rss/'
+        self.article_a = Article('Japan reporter freed from Myanmar says inmates were abused',
                                  'https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html',
                                  '2021-05-21T15:03:25Z', 'Associated Press', '---',
                                  'https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAwMDthcHB'
                                  'pZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc')
+        self.article_b = Article('Title_B', 'Link_B', '2021-05-22T15:03:25Z', 'Source_B', 'Description_B', 'Image_B')
         self.entries = [{'title': 'Japan reporter freed from Myanmar says inmates were abused',
                          'title_detail': {'type': 'text/plain', 'language': None, 'base': 'https://news.yahoo.com/rss/',
                                           'value': 'Japan reporter freed from Myanmar says inmates were abused'},
@@ -45,28 +46,24 @@ class TestFunctions(unittest.TestCase):
                     '    "Image": "https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAw' \
                     'MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc"\n}'
 
-    @patch('reader.functions.store_news')
-    def test_parse_news(self, store):
+    def test_parse_news(self):
         """Checks that processing the entries creates an object of the Article class"""
-        store.return_value = ''
-        self.actual = parse_news(self.entries, None, None, self.url)[0]
-        self.assertEqual(self.actual, self.article_A)
+        self.actual = parse_news(self.entries)[0]
+        self.assertEqual(self.actual, self.article_a)
 
-    @patch('reader.functions.store_news')
-    def test_empty_news(self, store):
+    def test_empty_news(self):
         """Checks that the program exits after recieving an empty input"""
         self.entries = {'entries': []}
-        store.return_value = ''
 
         with self.assertRaises(SystemExit) as cm:
-            parse_news(self.entries, None, None, self.url)
+            parse_news(self.entries)
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], "Sorry, no news to parse!")
 
     def test_make_json(self):
         """Checks that туцы is converted to json format correctly"""
-        self.assertEqual(make_json(self.article_A), self.json)
+        self.assertEqual(make_json(self.article_a), self.json)
 
     def test_check_limit(self):
         """Tests check_limit function with valid values (positive numbers)"""
@@ -101,7 +98,7 @@ class TestFunctions(unittest.TestCase):
         """Tests check_url function if url returns empty news list"""
         mock_api_call.return_value = {'entries': []}
         with self.assertRaises(SystemExit) as cm:
-            check_url(self.url, None, None)
+            get_from_url(self.url)
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], "Please, check if the entered link is correct!")
@@ -111,42 +108,36 @@ class TestFunctions(unittest.TestCase):
         """Tests check_url function if url is not available"""
         mock_api_call.side_effect = MagicMock(side_effect=URLError('foo'))
         with self.assertRaises(SystemExit) as cm:
-            check_url(self.url, None, None)
+            get_from_url(self.url)
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], "Source isn't available")
 
-    @patch('reader.functions.store_news')
     @patch('feedparser.parse')
-    def test_valid_url(self, parser, store):
+    def test_valid_url(self, parser):
         """Tests check_url function if url returns correct news list"""
         parser.return_value = {'entries': self.entries}
-        store.return_value = ''
 
-        self.actual = check_url(self.entries, None, None)
-        self.assertEqual(self.actual[0], self.article_A)
+        self.actual = get_from_url(self.entries)
+        self.assertEqual(self.actual[0], self.article_a)
 
     def test_version_only(self):
         """Checks that the program stops after printing a version when --version is specified"""
         with io.StringIO() as term_value, redirect_stdout(term_value):
             with self.assertRaises(SystemExit):
-                main([None, '--version'])
+                create_arguments([None, '--version'])
                 self.assertEqual(term_value.getvalue(), 'Version 1.3')
 
     def test_version_and_other_arg(self):
         """Checks that the program stops after printing a version when --version and another arg are specified"""
         with io.StringIO() as term_value, redirect_stdout(term_value):
             with self.assertRaises(SystemExit):
-                main([None, self.url, '--version'])
+                create_arguments([None, self.url, '--version'])
                 self.assertEqual(term_value.getvalue(), 'Version 1.3')
 
-    @patch('feedparser.parse')
-    def test_json_conversion(self, parser):
-        """Checks that the program converts the news into JSON format when --json is specified"""
-        parser.return_value = {'entries': self.entries}
-        with io.StringIO() as term_value, redirect_stdout(term_value):
-            main([None, self.url, '--json'])
-            self.assertEqual(term_value.getvalue(), self.json + '\n')
+    def test_json_args(self):
+        self.actual = create_arguments([None, self.url, '--json'])
+        self.assertTrue(self.actual['json'])
 
 
 if __name__ == "__main__":

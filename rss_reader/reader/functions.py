@@ -4,13 +4,14 @@ import argparse
 import feedparser
 import urllib.error
 import logging.handlers
+import datetime
 
 from reader.article import Article
 
 __version__ = '1.3'
 
 
-def parse_news(news, cursor, connection, url):
+def parse_news(news):
     """Creating list of news"""
     try:
         default_value = '---'
@@ -35,7 +36,6 @@ def parse_news(news, cursor, connection, url):
             article = Article(title, link, published, source_title, description, image)
             news_list.append(article)
 
-            store_news(news_list, cursor, connection, url)
     except AttributeError:
         raise SystemExit('Sorry, no news to parse!')
 
@@ -62,8 +62,9 @@ def check_limit(limit_value):
             return limit
 
 
-def store_news(list_of_news, cursor, connection, url):
+def store_news(list_of_news, connection, url):
     """Storing news in a local storage"""
+    cursor = connection.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS news
                    (title text, link text UNIQUE, full_date text, date text, source text, description text,
                    image text, url text)''')
@@ -79,8 +80,9 @@ def store_news(list_of_news, cursor, connection, url):
     connection.commit()
 
 
-def execute_news(date, cursor, url):
+def execute_news(date, connection, url):
     """Retrieving news for the selected date"""
+    cursor = connection.cursor()
     if url:
         cursor.execute('SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date '
                        'and url=:url', {'date': date, 'url': url})
@@ -94,11 +96,11 @@ def execute_news(date, cursor, url):
     return articles
 
 
-def check_url(source, cursor, connection):
+def get_from_url(source):
     """Checking the validity of user-entered URL"""
     try:
         rss_news = feedparser.parse(source)
-        result = parse_news(rss_news['entries'], cursor, connection, source)
+        result = parse_news(rss_news['entries'])
     except urllib.error.URLError:
         raise SystemExit("Source isn't available")
     else:
@@ -106,6 +108,19 @@ def check_url(source, cursor, connection):
             raise SystemExit('Please, check if the entered link is correct!')
         else:
             return result
+
+
+def get_from_db(date, source, connection):
+    """Get data from DB by url and date"""
+    try:
+        args_date = (datetime.datetime.strptime(date, '%Y%m%d')).date()
+        result = execute_news(date, connection, source)
+        if len(result) == 0:
+            raise SystemExit(f"Sorry, there are no articles for {args_date}!")
+        else:
+            return result
+    except ValueError:
+        raise SystemExit('Please, enter the date in the following format: "YYYYMMDD".')
 
 
 def create_arguments(argv):
@@ -118,7 +133,8 @@ def create_arguments(argv):
     parser.add_argument('--limit', help='Limit news topics if this parameter provided')
     parser.add_argument('--date', type=str, nargs='?', default='', help='Sets the date the news will be displayed')
     parser.add_argument('--to_html', type=str, help='The path where new file will be saved')
-    return parser
+    args = parser.parse_args(argv[1:])
+    return vars(args)
 
 
 def create_logger():

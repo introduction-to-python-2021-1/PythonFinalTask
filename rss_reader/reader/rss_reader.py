@@ -1,55 +1,51 @@
 import logging.handlers
 import sqlite3
-import datetime
 import sys
 
-from reader.functions import make_json, check_limit, execute_news, create_arguments, check_url, create_logger
+from reader.functions import make_json, check_limit, create_arguments, get_from_url, create_logger, get_from_db, \
+    store_news
 
 
-def main(argv=sys.argv):
+def main(args=create_arguments(sys.argv)):
+    """Creating logger"""
     logger = create_logger()
 
-    parser = create_arguments(argv)
-    args = parser.parse_args(argv[1:])
-
-    """Creating connection to DB and cursor object"""
+    """Creating connection"""
     connection = sqlite3.connect('news.db')
-    cursor = connection.cursor()
 
-    if args.limit:
-        limit = check_limit(args.limit)
+    if args.get('limit'):
+        limit = check_limit(args.get('limit'))
     else:
         limit = 0
 
-    if args.verbose:
+    if args.get('verbose'):
         """Turning on the output of messages about events"""
         logging.disable(0)
         logger.info('Checking for news to parse...')
 
-    if not args.date:
-        result = check_url(args.source, cursor, connection)
+    date = args.get('date')
+    url = args.get('source')
+    if not date:
+        logger.info(
+            f"Retrieves news from url ({url}) ...")
+        result = get_from_url(url)
+        store_news(result, connection, url)
     else:
-        try:
-            args_date = (datetime.datetime.strptime(args.date, '%Y%m%d')).date()
-            logger.info(
-                f"Retrieves news for the selected date ({args_date}) ...")
-            result = execute_news(args.date, cursor, args.source)
-            if len(result) == 0:
-                raise SystemExit(f"Sorry, there are no articles for {args_date}!")
-        except ValueError:
-            raise SystemExit('Please, enter the date in the following format: "YYYYMMDD".')
+        logger.info(
+            f"Retrieves news for the selected date ({date}) ...")
+        result = get_from_db(date, url, connection)
 
     if limit > 0:
         logger.info(f'Working with limited by user number ({limit} items) of articles')
         logger.info('Creating the list of news for limited articles...')
         for item in result[:limit]:
-            if args.json:
+            if args.get('json'):
                 json_item = make_json(item)
                 print(json_item)
             else:
                 print(item)
         logger.info('The list of news was created successfully!')
-    elif args.json:
+    elif args.get('json'):
         logger.info('Creating the list of news in json format...')
         for item in result:
             json_item = make_json(item)
