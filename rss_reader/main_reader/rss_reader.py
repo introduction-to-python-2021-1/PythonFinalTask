@@ -271,7 +271,8 @@ def main():
         try:
             newsdict, len_news = making_cashed_news_dict(arguments.date, arguments.source)
             logger.info(f"News will be reading from cash")
-        except (AttributeError, ValueError, TypeError, FileNotFoundError):
+        except (AttributeError, ValueError, TypeError, FileNotFoundError) as e:
+            logger.error(f"{e} was appearing with parsing date '{arguments.date}'")
             sys.exit()
     else:
         content = open_rss_link(arguments.source, arguments.verbose)
@@ -292,13 +293,15 @@ def main():
         logger.info(f"News will be saved in html on path {arguments.to_html}")
         try:
             converter.save_html(arguments.to_html, newsdict, number_of_news_to_show)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+            logger.error(f"{e} was appearing with the way '{arguments.to_html}'")
             sys.exit()
     elif arguments.to_pdf:
         logger.info(f"News will be saved in pdf on path {arguments.to_pdf}")
         try:
             converter.safe_pdf(arguments.to_pdf, newsdict, number_of_news_to_show)
-        except (FileNotFoundError, TypeError):
+        except (FileNotFoundError, TypeError) as e:
+            logger.error(f"{e} was appearing with the way '{arguments.to_pdf}'")
             sys.exit()
     else:
         printing_parsing_news(newsdict, number_of_news_to_show)
