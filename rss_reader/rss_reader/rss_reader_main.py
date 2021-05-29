@@ -2,7 +2,7 @@ import os
 import sys
 
 
-sys.path.append(os.path.dirname((os.path.dirname(__file__))))
+# sys.path.append(os.path.dirname((os.path.dirname(__file__))))
 from rss_reader.argparser import get_args
 from rss_reader.logger_conf import create_root_logger, add_console_handler
 from rss_reader.RssParser import RssParser
