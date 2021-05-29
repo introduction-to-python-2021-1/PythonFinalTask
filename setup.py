@@ -7,6 +7,7 @@ setup(
         test=["coverage==5.5", "pytest==6.2.4", "pytest-cov==2.12.0"],
         dev=[
             "black==21.5b1",
+            "bump2version==1.0.1",
             "darglint==1.8.0",
             "flake8==3.9.2",
             "flake8-bugbear==21.4.3",

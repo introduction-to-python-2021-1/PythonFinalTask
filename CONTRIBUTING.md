@@ -174,7 +174,8 @@ license your work under the terms of the [MIT License][].
 **Note**: This tutorial is only for contributors who have access to the main
 repository.
 
-**Note**: This project adheres to [PEP 440 - Version Identification][pep 440].
+**Note**: This project adheres to [PEP 440 - Version Identification][pep 440]
+and uses [bump2version][].
 
 ### Checkout and update `main`
 
@@ -190,25 +191,24 @@ See current version:
 ```shell
 $ python setup.py --version
 0.0.1
+$ bump2version --dry-run --list --new-version 0.0.2 [major|minor|patch|prerelease|postrelease|devrelease]
 ```
 
-Replace the current version with a new one in the following files:
+Run `bump2version` without `--dry-run` upon a correct output.
 
-- `setup.cfg`;
-- `src/ap_rss_reader/__init__.py`.
+For example `patch` application:
+
+```shell
+version=v`bump2version --dry-run --list --new-version 0.0.2 patch | tail -n 1 | sed -r "s/^.*=//"`
+bump2version --new-version 0.0.2 --list patch
+```
 
 ### Update the [CHANGELOG.md][] and commit the changes
 
-### Tag the release
-
-```shell
-git tag -s -a v0.0.2 -m "Release 0.0.2"
-```
-
 ### Push origin
 
-```shell script
-git push origin main v0.0.2
+```shell
+git push origin main $version
 ```
 
 ### Run the release pipeline to upload to [TestPyPI][]
@@ -232,7 +232,6 @@ Using the [GitHub CLI][], with the version number as the title, the changelog
 as the description, and the distribution packages as assets
 
 ```shell
-version=v0.0.2
 hub release create -m $version -e $(find dist/* -exec echo "-a {}" \;) $version
 ```
 
