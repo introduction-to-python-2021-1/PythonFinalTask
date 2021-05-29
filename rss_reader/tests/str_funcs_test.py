@@ -1,5 +1,5 @@
 import unittest
-from reader import str_funcs
+from rss_reader import str_funcs
 
 
 class StringFunctionsTest (unittest.TestCase):

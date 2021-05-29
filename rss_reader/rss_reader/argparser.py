@@ -2,7 +2,7 @@ import argparse
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description='Python RSS-reader',
+    parser = argparse.ArgumentParser(description='Python RSS-rss_reader',
                                      prog='rss_parser',
                                      )
 
@@ -29,7 +29,7 @@ def get_args():
 
     parser.add_argument('--version',
                         action='version',
-                        version='Rss reader 1.0.',
+                        version='Rss rss_reader 1.0.',
                         help='Prints version and stop',
                         )
 

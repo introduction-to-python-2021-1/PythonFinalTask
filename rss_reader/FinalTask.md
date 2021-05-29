@@ -48,7 +48,7 @@ Utility should provide the following interface:
 usage: Rss_reader.py [-h] [--version] [--json] [--verbose] [--limit LIMIT]
                      source
 
-Pure Python command-line RSS reader.
+Pure Python command-line RSS rss_reader.
 
 positional arguments:
   source         RSS URL
