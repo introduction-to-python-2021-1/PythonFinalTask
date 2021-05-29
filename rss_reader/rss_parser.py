@@ -1,30 +1,43 @@
+"""  """
+import sys
 import logging
 import time
 import datetime
+import json
+
 import feedparser as fp
 from bs4 import BeautifulSoup
-import json
-import sys
 
 
 class RssParser:
-    """
-    RssParser class wraps together feedparser and BeautifulSoup module
-    To work with class the following sequence required:
-    1. create instance of the class: rss_feed = RssParser("https://www.yahoo.com/news/rss")
-    - 2. retrieve data and parse rss feed: rss_feed.parse_url()
-    3. check whether data was retrieved: rss_feed.is_empty != 0 . if empty - no data received.
-    - 3. extract raw data from the feed: rss_feed.rss2raw_json()
+    """Class RssParser retrieves data from specified url, parsing and printing rss feed to stdout
+    in plain text or JSON format
 
-       4. (optional)  the data will be stored in rss_feed.raw_json_list which is list of dictionaries
-       To view rss_feed.raw_json_list just call: rss_feed.dump_raw_json()
+    Parameters
+    ----------
+    arg1: str
+        url - rss-feed url
+    arg2: int
+        limit - limits number of RSS news printed to stdout. By default limit=None - all available news are printed.
 
-    5. to remove html tags and substitute links and images with references, call: rss_feed.raw_json2clean_json()
+    Example
+    -------
+    1. Create instance of the class: rss_feed = RssParser("https://www.yahoo.com/news/rss")
+    2. Check whether data was retrieved: if rss_feed.is_empty == False: data received, step 3.
+    3. Print rss feed in plain text - rss_feed.print_json()
+       or in JSON format - rss_feed.dump_json()
 
-       6. (optional) the data will be stored in rss_feed.clean_json_list which is list of dictionaries
-       To view rss_feed.clean_json_list call: rss_feed.dump_raw_json()
+    Attributes
+    ----------
+    raw_json_list : list of dict
+        Stores not processed data, received from RSS feed
+    clean_json_list : list of dict
+        Stores human readable text without html tags
 
-    7. to print rss the feed, call: rss_feed.print_clean_json()
+        clean_json_list structure:
+        {"Feed": str, "Title": str, "Date": str, "Link": str, "Summary": str, "Content": str, "Links": dict}
+            Links dictionary structure:
+            "Links" : { 1 : str, 2 : str, 3 : str, ...}
     """
 
     # Parsed RSS entries will be stored in the dictionary
@@ -62,15 +75,15 @@ class RssParser:
 
     @property
     def is_empty(self):
-        """ is_empty() static function - returns True if NewsFeed object is empty
-            if is empty return True - main() function should stop rss feed processing
-            because no data received
+        """is_empty() static function - returns True if NewsFeed object is empty
+        if is empty return True - main() function should stop rss feed processing
+        because no data received
         """
         return not bool(self.number_of_entries)
 
     @staticmethod
     def html2text(html):
-        """ html2text() static function - removing all html tags from input string and returning plain text """
+        """html2text() static function - removing all html tags from input string and returning plain text"""
         soup = BeautifulSoup(html, "lxml")
         return soup.get_text()
 
@@ -98,36 +111,14 @@ class RssParser:
                 continue
             logging.info(f"append_links:Adding reference link: {link_src['href']})")
 
-    # @staticmethod
-    # def find_links(all_links, html_snippet):  # *args
-        # pass
-        """ method find_links() takes as an argument HTML string and seeking for tags
-            <a href=""> </a> - links
-            <img src="" alt=""> - images
-            extracted from tags links are added to all_links
-            ['https://www.example.com (link)', 'https://www.w3schools.com/images/w3schools_green.jpg (image)',
-            'https://www.w3schools.com/ (link)']
-        """
-    """
-        soup = BeautifulSoup(html_snippet, "lxml")
-
-        for image_src in soup.find_all("img"):
-            all_links.append(image_src['src'] + " (image)")
-            logging.info(f"Adding image link: {image_src['src']}")
-
-        for link_src in soup.find_all("a"):
-            all_links.append(link_src['href'] + " (link)")
-            logging.info(f"Adding reference link: {link_src['href']})")
-    """
-
     @staticmethod
     def links_list2links_dict(all_links):
-        """ receives list of links. Links are just strings like "http://www.example.com (link)" or
-            "https://www.somesite.com/image.jpg (image)"
-            removing duplicate links while preserving list order
-            returning dictionary:
-             {"http://www.example.com (link)" : 1, "https://www.somesite.com/image.jpg (image)" : 2,
-             "some_other_link_url (link)" : 3}
+        """receives list of links. Links are just strings like "http://www.example.com (link)" or
+        "https://www.somesite.com/image.jpg (image)"
+        removing duplicate links while preserving list order
+        returning dictionary:
+        {"http://www.example.com (link)" : 1, "https://www.somesite.com/image.jpg (image)" : 2,
+        "some_other_link_url (link)" : 3}
         """
         unique_links = list(dict.fromkeys(all_links))  # should preserve order and remove duplicates
         links_dict = {}  # will contain unique links and their sequential numbers
@@ -207,13 +198,16 @@ class RssParser:
 
     def dump_raw_json(self):
         """ dump_raw_json prints list of dictionaries contained in raw_json_list variable) """
+        if not len(self.raw_json_list):
+            print("RSS feed data not available")
+            return None
+
         for dct in self.raw_json_list[:self.limit]:
-            json.dump(dct, sys.stdout, indent=2)
+            json.dump(dct, sys.stdout, indent=2, ensure_ascii=False)
 
     @staticmethod
     def tags2text(raw_html, found_links_dict):
-        """
-        tags2text(soup object) returns str containing html markup, where some html tags substituted with plain text
+        """tags2text(soup object) returns str containing html markup, where some html tags substituted with plain text
         Tags for:
         1. image links <a href=""><img src="" alt=""></a>
         2. images <img src="" alt="">
@@ -313,11 +307,6 @@ class RssParser:
 
         return modified_html
 
-    def dump_clean_json(self):
-        """ dump_clean_json prints list of dictionaries contained in clean_json_list variable) """
-        for dct in self.clean_json_list[:self.limit]:
-            json.dump(dct, sys.stdout, indent=2)
-
     def raw_json2clean_json(self):
         logging.info("raw_json2clean_json:new cycle")
         for entry in self.raw_json_list[:self.limit]:
@@ -333,10 +322,27 @@ class RssParser:
 
             self.clean_json_list.append(clean_json_entry)
 
-    def print_clean_json(self):
-        """ print_clean_json
+    def dump_json(self):
+        """dump_json - news (list of dictionaries) are printed to stdout in a JSON format"""
+        logging.info("dump_json: Printing news in JSON format")
 
+        if not len(self.clean_json_list):
+            print("RSS feed data not available")
+            return None
+
+        for dct in self.clean_json_list[:self.limit]:
+            json.dump(dct, sys.stdout, indent=2, ensure_ascii=False)
+            print("")
+
+    def print_json(self):
+        """print_json - news (list of dictionaries) are printed to stdout as a formatted text
+        The following dictionary keys are displayed: Feed, Title, Date, Link, Summary, Content, Links
         """
+        if not len(self.clean_json_list):
+            print("RSS feed data not available")
+            return None
+
+        logging.info("print_json: Printing news in plain text format")
         for entry in self.clean_json_list[:self.limit]:
             print("-" * 80, flush=True)
             print(f'Feed: {entry["Feed"]}', flush=True)
