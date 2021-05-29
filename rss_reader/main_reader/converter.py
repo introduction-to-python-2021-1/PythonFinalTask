@@ -13,13 +13,14 @@ from jinja2 import Template
 from xhtml2pdf import pisa
 
 
-def make_html(newsdict, one_news):
-    """
-    Make html file from all news from newsdict
+def make_html(newsdict: dict, one_news: dict):
+    """ Make html file from all news from newsdict.
+
     :param newsdict: dictionary with parsed news "news"
     :param one_news: one news from newsdict
     :return: html file with all news, rendered by template
     """
+
     template = Template(
         open(os.path.join(os.getcwd(), "html_template.html")).read()
     )
@@ -27,8 +28,8 @@ def make_html(newsdict, one_news):
 
 
 def save_html(user_path: str, newsdict: dict, number_of_news_to_show: int):
-    """
-    Save news in html in a directory, chosen by user, in a volume (number of news), chosen by user.
+    """ Save news in html in a directory, chosen by user, in a volume (number of news), chosen by user.
+
     Name of the file include exact time of making file (joined on one string without spaces) to avoid rewritings.
     :param user_path: path to the file on users PC, chosen by him
     :param newsdict: dictionary with parsed news "news"
@@ -36,6 +37,7 @@ def save_html(user_path: str, newsdict: dict, number_of_news_to_show: int):
     :return: first write chosen number of news to html file, than return path to it
     If user_path is invalid, FileNotFoundError is raising and user-friendly message is printing
     """
+
     filename = "".join(str(time.time()))
     file_path = os.path.join(user_path, f"News from time {filename}.html")
     print(file_path)
@@ -51,14 +53,13 @@ def save_html(user_path: str, newsdict: dict, number_of_news_to_show: int):
 
 
 def safe_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
-    """
-    Call function safe_html to make html file with number of news, chosen by user, create a pdf file in a directory,
-    chosen by user, and write there converted html.
+    """ Make html file with chosen number of news, create a pdf file in a chosen directory,write there converted html.
+
     Name of the file include exact time of making file (joined on one string without spaces) to avoid rewritings.
     :param user_path: path to the file on users PC, chosen by him
     :param newsdict: dictionary with parsed news "news"
     :param number_of_news_to_show: limit number of news for saving
-    :return: return False on success and True on errors
+    :return: False on success and True on errors
     If user_path is invalid, FileNotFoundError is raising and user-friendly message is printing
     """
 

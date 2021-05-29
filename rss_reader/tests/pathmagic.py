@@ -1,4 +1,4 @@
-"""Path hack to make tests work."""
+"""Path hack to make tests work. """
 import os
 import sys
 

@@ -1,7 +1,4 @@
-"""
-Main test module for basic reading news from from external resources and cash
-"""
-
+""" Main test module for basic reading news from from external resources and cash. """
 import json
 import os
 import unittest
@@ -19,15 +16,18 @@ NEWSLINK = "https://news.yahoo.com/rss/"
 
 
 class TestMainReader(unittest.TestCase):
-    """
-    Tests for effective parsing links, making news dictionaries, printing news in json and normal format,
+    """ Tests for main logic and settings of the reader.
+
+    Include effective parsing links, making news dictionaries, printing news in json and normal format,
     setting and working limits of the numbers of news, verbose flag.
+    Positional argument "mock_print" with patch "@patch("builtins.print", autospec=True, side_effect=print)"
+    allow to catch stdout prints.
     """
 
     #  Tests for function "open_rss_link"
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_bad_link(self, mock_print):
-        # Test URLError is raising and user-friendly message is printing to stdout, if we give a bad link
+        """ Test URLError is raising and user-friendly message is printing to stdout, if we give a bad link. """
         bad_link = "https://news.yaom/rss/"
         rs.open_rss_link(bad_link, verbose=None)
         message = mock_print.call_args_list[0].args[0]
@@ -35,19 +35,19 @@ class TestMainReader(unittest.TestCase):
 
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_no_link(self, mock_print):
-        # Test ValueError is raising and user-friendly message is printing to stdout, if we give a bad link
+        """ Test ValueError is raising and user-friendly message is printing to stdout, if we give a bad link. """
         rs.open_rss_link("", verbose=None)
         message = mock_print.call_args_list[0].args[0]
         self.assertEqual(message, "Please insert rss link")
 
     def test_normal_link(self):
-        # Test parsing of the normal link goes good and we receive expected header
+        """ Test parsing of the normal link goes good and we receive expected header. """
         content = rs.open_rss_link("../rss_reader/data/fake_rss_site.xml", verbose=None)
         self.assertEqual(content.feed.title, "W3Schools Home Page")
 
     # Tests for verbose argument
     def test_verbose_none(self):
-        # Test if verbose=None and logs save to chosen file, function "open_rss_link" print to file 1 log as expected
+        """ Test if verbose=None and logs save to file, function "open_rss_link" print to file 1 log as expected. """
         logfile = open("logs.log", "r")
         len_before = len(logfile.readlines())
         logfile.close()
@@ -72,7 +72,7 @@ class TestMainReader(unittest.TestCase):
     # Tests for function "printing_parsing_news"
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_normal_print(self, mock_print):
-        # Test we have print as expected
+        """ Test we have print as expected. """
         rs.printing_parsing_news(td.TEST_NEWSDICT, 1)
         message_head = mock_print.call_args_list[0].args[0]
         news_title = mock_print.call_args_list[1].args[0]
@@ -85,14 +85,14 @@ class TestMainReader(unittest.TestCase):
 
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_limit_really_limit_one(self, mock_print):
-        # Test number of output lines is equal limit * 6 (number of lines in one news WITHOUT logs no json)
+        """ Test number of output lines is equal limit * 6 (number of lines in one news WITHOUT logs no json). """
         rs.printing_parsing_news(td.TEST_NEWSDICT, 1)
         news = mock_print.call_args_list
         self.assertEqual(len(news), (1 * 6) + 1)
 
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_limit_really_three(self, mock_print):
-        # Test number of output lines is equal limit * 6 (number of lines in one news WITHOUT logs no json)
+        """ Test number of output lines is equal limit * 6 (number of lines in one news WITHOUT logs no json). """
         rs.printing_parsing_news(td.TEST_NEWSDICT, 3)
         news = mock_print.call_args_list
         self.assertEqual(len(news), (3 * 6) + 1)
@@ -100,36 +100,35 @@ class TestMainReader(unittest.TestCase):
     # Tests for function "printing_news_in_json"
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_printing_parsing_news_in_json(self, mock_print):
-        # Test output have the first key of our json dictionary ("source"), which is not present in the regular output
+        """ Test output have the first key of json dictionary "source", which is not present in the regular output. """
         rs.printing_news_in_json(td.TEST_NEWSDICT, 1)
         first_row = mock_print.call_args_list[0].args[0]
         self.assertTrue("source" in first_row)
 
     # Tests for function "set_limit"
     def test_limit_is_not_passed(self):
-        # Test case user do not pass any limit
+        """ Test user do not pass any limit. """
         len_news = 7
         limit = None
         number_of_news_to_show = rs.set_limit(len_news, limit)
         self.assertEqual(number_of_news_to_show, len_news)
 
     def test_limit_is_small(self):
-        # Test case user pass limit that smaller than total number of news (3)
+        """ Test user pass limit that smaller than len_news. """
         len_news = 7
         limit = 2
         number_of_news_to_show = rs.set_limit(len_news, limit)
         self.assertEqual(number_of_news_to_show, 2)
 
     def test_limit_is_big(self):
-        # Test case user pass limit that bigger than total number of news (3), should set number_of_news_to_show as
-        # maximum, means len(content.entries)
+        """ Test user pass limit bigger than len_news, should set number_of_news_to_show as len_news. """
         len_news = 7
         limit = 100500
         number_of_news_to_show = rs.set_limit(len_news, limit)
         self.assertEqual(number_of_news_to_show, len_news)
 
     def test_limit_is_invalid(self):
-        # Test case user pass 0 or negative int, should print user-friendly message and exit
+        """ Test user pass negative int, should print user-friendly message and exit. """
         len_news = 7
         limit = -1
         with self.assertRaises(SystemExit):
@@ -137,7 +136,7 @@ class TestMainReader(unittest.TestCase):
 
     # Test for function "make_news_dictionary"
     def test_made_newsdict(self):
-        # Test all data from FeedParserDict parse correctly, including entries and especially images links
+        """ Test all data from FeedParserDict parse correctly, including entries and especially images links. """
         content = mock.MagicMock()
         content.entries = td.TEST_ENTRIES
         content.feed.title = NEWSLINK
@@ -157,26 +156,26 @@ class TestMainReader(unittest.TestCase):
 
     # Test for function "date_compare"
     def test_date_compare_true(self):
-        # Pass two equal dates
+        """ Pass two equal dates. """
         user_date = datetime.strptime("20210521", '%Y%m%d')
         self.assertTrue(rs.date_compare("Fri, 21 May 2021 12:51:18 -0400", user_date))
 
     def test_date_compare_false(self):
-        # Pass two non equal dates
+        """ Pass two non equal dates. """
         user_date = datetime.strptime("20210521", '%Y%m%d')
         self.assertFalse(rs.date_compare("Fri, 21 February 2021 12:51:18 -0400", user_date))
 
     # Tests for function "making_cashed_news_dict"
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_invalid_date(self, mock_print):
-        # Test ValueError was cached and user-friendly message is printing to stdout, if we give a bad date
+        """ Test ValueError was catched and user-friendly message is printing to stdout, if we give a bad date. """
         rs.parsing_user_date("12345")
         message = mock_print.call_args_list[0].args[0]
         self.assertEqual(message, "Invalid date, please insert date like '14100715'")
 
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_no_cashed_news(self, mock_print):
-        # Test AttributeError was cached and user-friendly message is printing to stdout, if we give a bad date
+        """ Test AttributeError was cached and user-friendly message is printing to stdout, if we give a bad date. """
         with mock.patch("main_reader.rss_reader.find_cashed_news") as cashMock:
             cashMock.side_effect = AttributeError(mock.Mock)
             rs.parsing_user_date("20210101")
@@ -184,7 +183,7 @@ class TestMainReader(unittest.TestCase):
             self.assertEqual(message, "No news from this date")
 
     def test_return_valid_cashed_dict_with_valid_len_news(self):
-        # Test take newsdict from find_cashed_news, valid count it's len_news and return it
+        """ Test take newsdict from find_cashed_news, valid count it's len_news and return it. """
         with mock.patch("main_reader.rss_reader.find_cashed_news") as cashMock:
             cashMock = td.TEST_NEWSDICT
             newsdict, len_news = rs.parsing_user_date("20210521")
@@ -192,7 +191,7 @@ class TestMainReader(unittest.TestCase):
 
     # Test for function "write_cash"
     def test_cash_writing(self):
-        # Test our dict are in cash file
+        """ Test our dict are in cash file. """
         rs.write_cash(td.TEST_NEWSDICT)
         cash_file_name = os.path.join(os.getcwd(), "cashed_news.txt")
         with open(cash_file_name, "r") as cash_file:
@@ -203,17 +202,17 @@ class TestMainReader(unittest.TestCase):
 
     # Tests for function "find_cashed_news"
     def test_news_find_by_date_only(self):
-        # Test for valid user date
+        """ Test for valid user date. """
         user_date = datetime.strptime("20210521", '%Y%m%d')
         self.assertTrue(rs.find_cashed_news(user_date))
 
     def test_news_find_by_date_and_link(self):
-        # Test for valid user date and source
+        """ Test for valid user date and source. """
         user_date = datetime.strptime("20210521", '%Y%m%d')
         self.assertTrue(rs.find_cashed_news(user_date, source=NEWSLINK))
 
     def test_news_not_find_by_date_and_link(self):
-        # Test for invalid user date and source - AttributeError is raising
+        """ Test for invalid user date and source - AttributeError is raising. """
         user_date = datetime.strptime("14100521", '%Y%m%d')
         with self.assertRaises(AttributeError):
             rs.find_cashed_news(user_date, source=NEWSLINK)
