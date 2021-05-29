@@ -214,8 +214,7 @@ git push origin main v0.0.2
 ### Run the release pipeline to upload to [TestPyPI][]
 
 ```shell
-rm -rf ./build/*
-rm -rf ./dist/*
+python scripts/clean_release.py
 python setup.py sdist bdist_wheel
 twine check dist/*
 twine upload --repository testpypi dist/*
