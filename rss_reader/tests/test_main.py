@@ -166,7 +166,7 @@ class TestMainReader(unittest.TestCase):
         user_date = datetime.strptime("20210521", '%Y%m%d')
         self.assertFalse(rs.date_compare("Fri, 21 February 2021 12:51:18 -0400", user_date))
 
-    # Tests for function "parsing_user_date"
+    # Tests for function "making_cashed_news_dict"
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_invalid_date(self, mock_print):
         # Test ValueError was cached and user-friendly message is printing to stdout, if we give a bad date

@@ -72,7 +72,7 @@ def make_news_dictionary(source: str, content) -> dict:
 
     for news in content.entries:
         for item in NEWS_PARTS:
-            if item in news.keys():
+            if item in news:
                 if item == "media_content" or item == "storyimage":
                     innerdict["Image"] = news[item][0]["url"]
                 else:
@@ -126,7 +126,7 @@ def date_compare(dict_date, converted_user_date):
     :return: True if dates are equal, else False
     """
     converted_dict_date = dateparser.parse(dict_date, date_formats=["%y/%m/%d"])
-    return True if converted_dict_date.date() == converted_user_date.date() else False
+    return converted_dict_date.date() == converted_user_date.date()
 
 
 def write_cash(newsdict: dict):
@@ -156,9 +156,8 @@ def find_cashed_news(converted_user_date, source=None):
             for json_dict in cash_file:
                 newsdict = jsn.loads(json_dict)
 
-                if source:
-                    if source != newsdict["source"]:
-                        continue
+                if source and source != newsdict["source"]:
+                    continue
                 for one_news in newsdict["news"]:
                     if date_compare(one_news["Published"], converted_user_date):
                         newslist.append(one_news)
@@ -198,7 +197,7 @@ def open_rss_link(source, verbose):
     return content
 
 
-def parsing_user_date(user_date: str, source: str = None):
+def making_cashed_news_dict(user_date: str, source: str = None):
     """
     Receive user date in str format, convert it to datetime,
     call "find_cashed_news" function to find siutable cashed news.
@@ -211,9 +210,10 @@ def parsing_user_date(user_date: str, source: str = None):
 
     try:
         converted_user_date = datetime.strptime(user_date, "%Y%m%d")
-
     except ValueError:
-        return print("Invalid date, please insert date like '14100715'")
+        return print("Invalid date, please insert date like '20210715'")
+    if converted_user_date < datetime.strptime("20210501", "%Y%m%d"):
+        raise ValueError("Cashing news starts from May 1, 2021")
     try:
         newsdict = find_cashed_news(converted_user_date, source)
         len_news = len(newsdict["news"])
@@ -248,10 +248,10 @@ def parse_command_line_arguments():
         "--date", type=str, help="Return news from date yyyymmdd from cash"
     )
     parser.add_argument(
-        "--to-pdf", type=str, help="Save news in pdf format in chosen path"
+        "--to-pdf", type=str, help="Save news in pdf format in chosen path, eg 'E:\data' or '/home/user/data'"
     )
     parser.add_argument(
-        "--to-html", type=str, help="Save news in html format in chosen path"
+        "--to-html", type=str, help="Save news in html format in chosen path, eg 'E:\data' or '/home/user/data'"
     )
     arguments = parser.parse_args()
     return arguments
@@ -269,7 +269,7 @@ def main():
 
     if arguments.date:
         try:
-            newsdict, len_news = parsing_user_date(arguments.date, arguments.source)
+            newsdict, len_news = making_cashed_news_dict(arguments.date, arguments.source)
             logger.info(f"News will be reading from cash")
         except (AttributeError, ValueError, TypeError, FileNotFoundError):
             sys.exit()
