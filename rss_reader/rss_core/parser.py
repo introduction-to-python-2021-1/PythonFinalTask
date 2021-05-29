@@ -4,7 +4,7 @@
 """
 import re
 import xml.etree.ElementTree as ElementTree
-from sys import exit
+# from sys import exit
 from abc import abstractmethod, ABC
 from rss_core.reader import Reader
 from rss_core.rss_classes import RssItem
@@ -62,7 +62,7 @@ class XmlParser(Parser):
             util.log(show_on_console=True,
                      flag="ERROR",
                      msg=f"Error has occurred while parsing xml (Check if parsed string is valid xml) {str(err)}")
-            exit(1)
+            raise SystemExit(1)
         except ConnectionError as err:
             util.log(show_on_console=True,
                      flag="ERROR",
