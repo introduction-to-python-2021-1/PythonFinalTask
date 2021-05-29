@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="rss_reader",
-    version="3.0.1",
+    version="4.0.2",
     description="Python RSS-reader with possibility to open from bash without installation",
     url="https://github.com/Bulachka/PythonFinalTask",
     author="Valodzina Aliaksandra",

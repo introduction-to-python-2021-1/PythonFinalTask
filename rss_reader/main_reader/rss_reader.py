@@ -231,7 +231,7 @@ def parse_command_line_arguments():
     parser.add_argument(
         "--version",
         action="version",
-        version="Version 3.0.1",
+        version="Version 4.0.2",
         help="Print version info",
     )
     parser.add_argument("source", type=str, nargs="?", default=None, help="RSS URL")
