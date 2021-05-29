@@ -7,12 +7,11 @@ import argparse
 import logging
 import logging.handlers
 import sys
-import feedparser
 from urllib.error import URLError
 
 
 def command_arguments_parser(args):
-    """Adds positional and optional arguments """
+    """Adds positional and optional arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", action="version", help="Print version info", version="Version 1.2")
     parser.add_argument("source", type=str, help="RSS URL")
@@ -26,23 +25,32 @@ def command_arguments_parser(args):
 
 def server_answer(source):
     """Getting answer from server"""
+
     try:
         answer = requests.get(source)
-        if answer.status_code == 200:
+        if not source:
+            print("Input the url, please")
+        elif answer.status_code == 200:
             return answer
-    except Exception:
-        print("Xml was failed. Input the correct URL, please")
+        elif answer.status_code == 403:
+            print("Error 403. Forbidden. Access denied")
+        elif answer.status_code == 404:
+            print("Error 404. Please try to reload the page")
+        else:
+            print("Input the correct URL, please")
+    except URLError as e:
+        print(f"Error {e} in opening the link {source}")
 
 
-def parses_data(information, limit):
+def parses_data(content, limit):
     """Parses data from the xml"""
     list_of_news = []
     data = {}
 
     try:
-        buitiful_soup = BeautifulSoup(information, "xml")
+        buitiful_soup = BeautifulSoup(content, "xml")
         data["feed"] = buitiful_soup.find("title").text
-        news_for_print = buitiful_soup.findAll("item", limit = limit)
+        news_for_print = buitiful_soup.findAll("item", limit=limit)
         for alone_news in news_for_print:
             title = alone_news.find("title").text
             pub_date = alone_news.find("pubDate").text
@@ -77,49 +85,19 @@ def printing_json(data):
     print(json.dumps(data, indent=3))
 
 
-def configurates_logger(verbose):
-    """Selects output data for logs and configures the logger"""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        handlers=[
-            logging.StreamHandler(sys.stdout),
-        ]
-        if verbose
-        else [
-            logging.FileHandler("logs.log"),
-        ],
-    )
-    logger = logging.getLogger()
-    return logger
-
-
-def open_rss_link(source, verbose):
-    """Retrieves and processes URLs, print logs"""
-    logger = configurates_logger(verbose)
-
-    try:
-        news = feedparser.parse(source)
-        if not source:
-            raise ValueError
-        logger.info(f"Reading link {source}")
-    except URLError as e:
-        logger.error(f"Error {e} in opening the link {source}")
-        return print("Wrong link, try again, please")
-    except ValueError as e:
-        logger.error(f"Error {e} in opening the link {source}")
-        return print("Input link, please")
-    return news
-
-
 def main():
     args = command_arguments_parser(sys.argv[1:])
     answer = server_answer(args.source)
-    logger = configurates_logger(args.verbose)
 
-    if args.limit == 0:
-        print("Invalid limit. Enter the limit (greater than 0), please")
-        sys.exit(0)
+    if args.limit is not None:
+        if args.limit <= 0:
+            print("Invalid limit. Enter the limit (greater than 0), please")
+            sys.exit()
+
+    if args.verbose:
+        logging.basicConfig(level=logging.INFO)
+    else:
+        logging.basicConfig(level=logging.ERROR)
 
     try:
         logging.info("Getting access to the RSS")
@@ -131,16 +109,12 @@ def main():
             printing_json(number_of_news)
         else:
             printing_news(number_of_news)
-    except (AttributeError, ValueError, TypeError, FileNotFoundError):
-            sys.exit()
-
     except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL):
         print("ConnectionError. Correct the URL, please")
 
     except requests.exceptions.MissingSchema:
-        print("Incorrect URL. This is not the rss feed address.")
+        print("Incorrect URL. This is not the rss feed address")
 
-    logger.info(f"End of reading")
 
 if __name__ == "__main__":
     main()
