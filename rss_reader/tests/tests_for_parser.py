@@ -39,16 +39,6 @@ class TestParser(unittest.TestCase):
     Test XmlParser
     """
 
-    def test_empty_reader(self):
-        """
-        Test work of parser with empty reader
-
-        """
-        parser = XmlParser()
-        parser.parse_news("http")
-        # with self.assertRaises(AttributeError):
-        #     parser.parse_news("http")
-
     def test_not_empty_parser(self):
         """
         Test correct work parse_news method with correct xml info

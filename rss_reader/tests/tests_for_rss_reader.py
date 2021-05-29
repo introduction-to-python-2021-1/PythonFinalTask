@@ -64,9 +64,10 @@ class TestRssReader(unittest.TestCase):
         SiteReader.get_data = MagicMock(return_value=XML_INFO)
         DbCacher.cache_rss_news = MagicMock(return_value=True)
 
-    # @classmethod
-    # def tearDownClass(cls):
-    #     os.remove('data/')
+    @classmethod
+    def tearDownClass(cls):
+        if os.path.exists("data"):
+            os.remove("data")
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_verbose_arg(self, mock_stdout):
@@ -94,14 +95,6 @@ class TestRssReader(unittest.TestCase):
             rss_reader.main(["--limit", "a", "https://news.yahoo.com/rss/"])
         self.assertEqual(cm.exception.code, 2)
 
-    # @patch('sys.stdout', new_callable=StringIO)
-    def test_over_news_count_limit_arg(self):
-        """
-        Tests --limit argument which is greater than news count
-        """
-        rss_reader.main(["--limit", "3", "https://news.yahoo.com/rss/"])
-        # self.assertEqual(2, mock_stdout.getvalue().count("News title"))
-
     @patch('sys.stdout', new_callable=StringIO)
     def test_version_arg(self, mock_stdout):
         """
@@ -111,15 +104,6 @@ class TestRssReader(unittest.TestCase):
             rss_reader.main(["--version"])
         self.assertEqual(cm.exception.code, 0)
         self.assertIn("Version 1.4", mock_stdout.getvalue())
-
-    # @patch('sys.stdout', new_callable=StringIO)
-    def test_json_arg(self):
-        """
-        Test --json argument
-        """
-        rss_reader.main(["--limit", "1", "--json", "https://news.yahoo.com/rss/"])
-        # self.assertEqual(RSS_JSON.replace("\n", "").replace(" ", ""),
-        #                  mock_stdout.getvalue().replace("\n", "").replace(" ", ""))
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_wrong_date_arg(self, mock_stdout):
