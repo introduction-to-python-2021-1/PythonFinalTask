@@ -1,7 +1,6 @@
 import unittest
 from unittest.mock import patch
-from rss_reader.Rss_reader import RssParser
-
+from rss_reader.RssParser import RssParser
 
 class FeedTest(unittest.TestCase):
     def setUp(self) -> None:
