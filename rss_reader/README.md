@@ -1,6 +1,29 @@
-#Python RSS reader.
+<h1>Python RSS reader.</h1>
 
-#JSON structure
+<h2> Installation </h2>
+<pre>
+pip install .
+</pre>
+<h2> Interface description </h2>
+<pre>
+usage: rss-reader [-h] [--version] [--json] [--verbose] [--limit LIMIT] [--date DATE] [--to-html PATH] [--to-pdf PATH] source
+
+positional arguments:
+ url(example: https://news.yahoo.com/rss)
+
+optional arguments:
+  -h, --help      Show help message and exit
+  --version       Print version and stop
+  --json          Output news in json format
+  --verbose       Output verbose status messages
+  --limit         Limit news topics if provided
+  --date DATE     Return news with the specified data (date format: "yyyymmdd")
+  --to-pdf PATH   Convert news in pdf format
+  --to-html PATH  Convert news in html format
+  
+</pre>
+
+<h2> JSON structure </h2>
 <pre>
 {
     'url': 'https://news.yahoo.com/rss/'

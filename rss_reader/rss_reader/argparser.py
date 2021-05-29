@@ -10,7 +10,7 @@ def get_args():
     """
     Parses arguments
     """
-    parser = argparse.ArgumentParser(description='Python RSS-rss_reader',
+    parser = argparse.ArgumentParser(description='Python rss_reader',
                                      prog='rss_parser',
                                      )
 
@@ -27,18 +27,18 @@ def get_args():
 
     parser.add_argument('--verbose',
                         action='store_true',
-                        help='Outputs verbose status messages',
+                        help='Output verbose status messages',
                         )
 
     parser.add_argument('--json',
                         action='store_true',
-                        help='Outputs news in json format',
+                        help='Output news in json format',
                         )
 
     parser.add_argument('--version',
                         action='version',
                         version='Rss rss_reader 1.0.',
-                        help='Prints version and stop',
+                        help='Print version and stop',
                         )
 
     parser.add_argument('--date',
