@@ -43,7 +43,7 @@ feed_item = Template('''
             <b>Images:</b><br>
             {% for img in img %}
                 <img src={{img['src']}} alt={{img['alt']}}><br>
-            {% endfor %} 
+            {% endfor %}
             <br>
         </div>
     </div>

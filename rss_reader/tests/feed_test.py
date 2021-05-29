@@ -1,10 +1,5 @@
 import unittest
 from unittest.mock import patch
-import os
-import sys
-
-
-sys.path.append(os.path.dirname((os.path.dirname(__file__))))
 from rss_reader.RssParser import RssParser
 
 
