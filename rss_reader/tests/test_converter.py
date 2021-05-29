@@ -3,11 +3,10 @@ Module with tests for converter module
 """
 
 import os
-import sys
 import unittest
 
 # Make tests crossplatform
-sys.path.append(os.getcwd())
+import pathmagic  # noqa
 
 from main_reader import converter
 import data_for_tests as td
