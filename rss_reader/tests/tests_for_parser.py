@@ -45,8 +45,9 @@ class TestParser(unittest.TestCase):
 
         """
         parser = XmlParser()
-        with self.assertRaises(AttributeError):
-            parser.parse_news("http")
+        parser.parse_news("http")
+        # with self.assertRaises(AttributeError):
+        #     parser.parse_news("http")
 
     def test_not_empty_parser(self):
         """
