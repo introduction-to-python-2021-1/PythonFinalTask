@@ -48,7 +48,6 @@ class TestParser(unittest.TestCase):
         news_dict = parser.parse_news("http://abc")
         self.assertTrue(isinstance(news_dict, dict))
 
-
     def test_strip_text(self):
         """
         Test replacing wrong character
