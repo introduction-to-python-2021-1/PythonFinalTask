@@ -76,7 +76,7 @@ source .venv/bin/activate
    the following in your virtual environment:
 
    ```shell
-   (.venv) $ pip install -r requirements-dev.txt
+   (.venv) $ pip install -e .[dev,test]
    (.venv) $ pre-commit install --install-hooks
    ```
 
@@ -134,9 +134,6 @@ source .venv/bin/activate
 - Run the tests:
 
   ```shell
-  # note: add 'src' directory to PYTHONPATH beforehand
-  source .env
-
   pytest
   ```
 
@@ -172,6 +169,76 @@ For details see [GitHub.com Help Documentation][]
 **IMPORTANT**: By submitting a patch, you agree to allow the project owners to
 license your work under the terms of the [MIT License][].
 
+## Making a release
+
+**Note**: This tutorial is only for contributors who have access to the main
+repository.
+
+**Note**: This project adheres to [PEP 440 - Version Identification][pep 440].
+
+### Checkout and update `main`
+
+```shell
+git checkout main
+git pull upstream main
+```
+
+### Change a version number and commit the changes
+
+See current version:
+
+```shell
+$ python setup.py --version
+0.0.1
+```
+
+Replace the current version with a new one in the following files:
+
+- `setup.cfg`;
+- `src/ap_rss_reader/__init__.py`.
+
+### Update the [CHANGELOG.md][] and commit the changes
+
+### Tag the release
+
+```shell
+git tag -s -a v0.0.2 -m "Release 0.0.2"
+```
+
+### Push origin
+
+```shell script
+git push origin main v0.0.2
+```
+
+### Run the release pipeline to upload to [TestPyPI][]
+
+```shell
+rm -rf ./build/*
+rm -rf ./dist/*
+python setup.py sdist bdist_wheel
+twine check dist/*
+twine upload --repository testpypi dist/*
+```
+
+If it looks good on TestPyPI, run the release pipeline to upload to [PyPI][]
+
+```shell
+twine upload --repository pypi dist/*
+```
+
+### Create a new GitHub Release
+
+Using the [GitHub CLI][], with the version number as the title, the changelog
+as the description, and the distribution packages as assets
+
+```shell
+version=v0.0.2
+hub release create -m $version -e $(find dist/* -exec echo "-a {}" \;) $version
+```
+
+Add the `-p` flag for pre-releases.
+
 [how to contribute]: https://kcd.im/pull-request
 [code of conduct]:
   https://github.com/aplatkouski/ap-rss-reader/blob/main/CODE_OF_CONDUCT.md
@@ -200,3 +267,9 @@ license your work under the terms of the [MIT License][].
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:
   https://github.com/aplatkouski/ap-rss-reader/blob/main/LICENSE.md
+[pep 440]: https://www.python.org/dev/peps/pep-0440/
+[changelog.md]:
+  https://github.com/aplatkouski/ap-rss-reader/blob/main/CHANGELOG.md
+[testpypi]: https://test.pypi.org/project/ap-rss-reader/
+[pypi]: https://pypi.org/project/ap-rss-reader/
+[github cli]: https://hub.github.com/

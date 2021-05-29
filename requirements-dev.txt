@@ -17,3 +17,4 @@ pylint==2.8.2
 pytest==6.2.4
 pytest-cov==2.12.0
 pyupgrade==2.14.0
+twine==3.4.1
