@@ -42,16 +42,16 @@ def server_answer(source):
         print(f"Error {e} in opening the link {source}")
 
 
-def parses_data(content):
+def parses_data(answer):
     """Parses data from the xml"""
     list_of_news = []
     data = {}
 
     try:
-        buitiful_soup = BeautifulSoup(content, "xml")
+        buitiful_soup = BeautifulSoup(answer.content, "xml")
         data["feed"] = buitiful_soup.find("title").text
-        news_for_print = buitiful_soup.findAll("item")
-        for alone_news in news_for_print:
+        all_news = buitiful_soup.findAll("item")
+        for alone_news in all_news:
             title = alone_news.find("title").text
             pub_date = alone_news.find("pubDate").text
             link = alone_news.find("link").text
@@ -68,46 +68,24 @@ def parses_data(content):
     return data
 
 
-def parses_data_with_limit(content, limit):
-    """Parses data from the xml with limit"""
-    list_of_news = []
-    data = {}
-
-    try:
-        buitiful_soup = BeautifulSoup(content, "xml")
-        data["feed"] = buitiful_soup.find("title").text
-        news_for_print = buitiful_soup.findAll("item", limit=limit)
-        for alone_news in news_for_print:
-            title = alone_news.find("title").text
-            pub_date = alone_news.find("pubDate").text
-            link = alone_news.find("link").text
-            images = []
-            images_find = alone_news.findAll("media:content")
-            for image in images_find:
-                link_of_image = image.get("url")
-                images.append(link_of_image)
-            news_dictionary = {"title": title, "pubDate": pub_date, "link": link, "images": images}
-            list_of_news.append(news_dictionary)
-        data["news"] = list_of_news
-    except Exception:
-        print("Xml was failed")
-    return data
-
-
-def printing_news(data):
+def printing_news(data, limit):
     """Print news on console"""
-    print("\nfeed:", data["feed"], "\n")
-    for part in data["news"]:
+    for num, part in enumerate(data["news"]):
+        if num == limit:
+            break
         print("title:", part["title"])
         print("pubDate:", part["pubDate"])
         print("link:", part["link"])
         print("images:", len(part["images"]))
         print('\n'.join(part["images"]), "\n")
-    print("Amount of news:", len(data["news"]), "\n")
+        print("Amount of news:", len(data["news"]), "\n")
 
 
-def printing_json(data):
+def printing_json(data, limit):
     """Print json news on console"""
+    for num, part in enumerate(data["news"]):
+        if num == limit:
+            break
     print(json.dumps(data, indent=3))
 
 
@@ -115,10 +93,13 @@ def main():
     args = command_arguments_parser(sys.argv[1:])
     answer = server_answer(args.source)
 
-    if args.limit is not None:
-        if args.limit <= 0:
-            print("Invalid limit. Enter the limit (greater than 0), please")
-            sys.exit()
+    try:
+        if args.limit is not None:
+            if args.limit <= 0:
+                print("Invalid limit. Enter the limit (greater than 0), please")
+                sys.exit()
+    except TypeError:
+        pass
 
     if args.verbose:
         logging.basicConfig(level=logging.INFO)
@@ -127,16 +108,21 @@ def main():
 
     try:
         logging.info("Getting access to the RSS")
-        number_of_news = parses_data_with_limit(answer.text, args.limit)
+        data = parses_data(answer)
+
         if args.limit:
             logging.info(f"Reads amount of news - {args.limit}")
+
         if args.json:
             logging.info("In json")
-            printing_json(number_of_news)
+            printing_json(data, args.limit)
+
         else:
-            printing_news(number_of_news)
+            printing_news(data, args.limit)
+
     except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL):
         print("ConnectionError. Correct the URL, please")
+        sys.exit(0)
 
     except requests.exceptions.MissingSchema:
         print("Incorrect URL. This is not the rss feed address")
