@@ -1,4 +1,5 @@
 import sys
+
 import argparse
 
 import app_logger
@@ -42,6 +43,8 @@ class args_Parser:
     # parses all command line parameters and stores them in class storage
     def __parse_Args(self):
         self.args_Space = self.parser.parse_args()
+        if self.args_Space.verbose:
+            logger.info("govno")
 
     def __args_Validation(self):
 
@@ -64,4 +67,6 @@ class args_Parser:
         if type(self.args_Space.verbose) != bool:
             logger.error("Bad parameter: --verbose. Do not use this parameter with value.")
             sys.exit()
+
+
 
