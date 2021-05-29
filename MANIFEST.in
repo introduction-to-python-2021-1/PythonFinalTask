@@ -17,5 +17,5 @@ include CONTRIBUTING.md
 recursive-exclude .github *
 recursive-exclude .idea *
 recursive-exclude src .pydocstyle.ini
-recursive-exclude tests .pydocstyle.ini
+recursive-exclude tests *
 recursive-include src *.typed
