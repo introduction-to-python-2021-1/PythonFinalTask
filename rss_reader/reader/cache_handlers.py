@@ -6,7 +6,7 @@ This module provides tools for working with cache
 import os
 import json
 import time
-from rss_reader import str_funcs
+from reader import str_funcs
 
 
 def get_feed_from_cache(date, limit):

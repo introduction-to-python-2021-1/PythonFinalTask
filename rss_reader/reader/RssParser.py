@@ -4,8 +4,8 @@ import time
 import json
 import requests
 from bs4 import BeautifulSoup
-from rss_reader.cache_handlers import save_feed_into_cache
-from rss_reader import str_funcs
+from reader.cache_handlers import save_feed_into_cache
+from reader import str_funcs
 
 
 class RssParser:

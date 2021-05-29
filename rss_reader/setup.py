@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(
-    name='rss_reader',
+    name='reader',
     version='3.0',
     author='Vlad Sheydenkov',
     author_email='vladsheydenkov@gmail.com',
@@ -11,6 +11,6 @@ setuptools.setup(
     python_requires='>=3.8',
     install_requires=['requests', 'bs4', 'feedparser', 'lxml', 'reportlab', 'jinja2'],
     entry_points={
-        'console_scripts': ['rss_reader=rss_reader.rss_reader_main:main'],
+        'console_scripts': ['reader=reader.rss_reader_main:main'],
     }
 )

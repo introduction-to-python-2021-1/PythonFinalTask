@@ -2,13 +2,13 @@ import os
 import sys
 
 
-# sys.path.append(os.path.dirname((os.path.dirname(__file__))))
-from rss_reader.argparser import get_args
-from rss_reader.logger_conf import create_root_logger, add_console_handler
-from rss_reader.RssParser import RssParser
-from rss_reader.cache_handlers import get_feed_from_cache, print_cached_feed
-from rss_reader.pdf_converter import convert_to_pdf
-from rss_reader.html_converter import convert_to_html
+sys.path.append(os.path.dirname((os.path.dirname(__file__))))
+from reader.argparser import get_args
+from reader.logger_conf import create_root_logger, add_console_handler
+from reader.RssParser import RssParser
+from reader.cache_handlers import get_feed_from_cache, print_cached_feed
+from reader.pdf_converter import convert_to_pdf
+from reader.html_converter import convert_to_html
 
 
 def main():
