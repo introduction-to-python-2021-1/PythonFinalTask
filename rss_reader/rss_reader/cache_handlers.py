@@ -47,6 +47,10 @@ def print_cached_feed(feed_list):
 
 
 def save_feed_into_cache(item):
+    """
+    This function saves feed item into file in json format
+    :param item: feed item
+    """
     date = time.strftime('%Y%m%d', item.date)
     dir_path = os.path.abspath(os.path.dirname(__file__)) + os.path.sep + 'feed_cache' + os.path.sep
     if not os.path.exists(dir_path):

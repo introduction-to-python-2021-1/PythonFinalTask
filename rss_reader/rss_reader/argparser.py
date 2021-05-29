@@ -1,7 +1,15 @@
+"""
+This module provides tools for parsing arguments
+"""
+
+
 import argparse
 
 
 def get_args():
+    """
+    Parses arguments
+    """
     parser = argparse.ArgumentParser(description='Python RSS-rss_reader',
                                      prog='rss_parser',
                                      )

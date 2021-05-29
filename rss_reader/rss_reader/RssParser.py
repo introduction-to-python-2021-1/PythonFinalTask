@@ -1,3 +1,8 @@
+"""
+This module contains class for fetching and showing rss-feed
+"""
+
+
 import feedparser
 from collections import namedtuple
 import time
@@ -9,6 +14,9 @@ from rss_reader import str_funcs
 
 
 class RssParser:
+    """
+    This class parses rss-feed and presents it in readable format
+    """
     def __init__(self, url, limit):
         self.url = url
         self.limit = limit
@@ -16,6 +24,10 @@ class RssParser:
         self.name = ''
 
     def get_feed(self):
+        """
+        This function parses rss-feed
+        :return: list with namedtuples representing feed items
+        """
         data = feedparser.parse(self.url)
         if data['bozo']:
             raise ValueError("Please check URL and Internet connection")
@@ -24,6 +36,10 @@ class RssParser:
         return self.items
 
     def get_content(self, data):
+        """
+        This function aggregates feed from row data
+        :param data: a bunch of row data
+        """
         for feed in data['entries'][:self.limit]:
             title = feed.get('title', 'Absence of title')
             link = feed.get('link', 'Absence of link')
@@ -43,6 +59,9 @@ class RssParser:
             self.items.append(item)
 
     def convert_to_json(self):
+        """
+        Converts feed items in json format
+        """
         return json.dumps({'url': self.url,
                            'feed': {'name': self.name,
                                     'items': [item._asdict() for item in self.items]}}, ensure_ascii=False)
@@ -61,6 +80,11 @@ class RssParser:
 
 
 def get_img(link):
+    """
+    This function parses html page to find images related to feed
+    :param link: html page
+    :return: list with dicts representing image as link('src') and description('alt')
+    """
     img_list = []
     request = requests.get(link)
     soup = BeautifulSoup(request.text, 'lxml')
@@ -76,6 +100,11 @@ def get_img(link):
 
 
 def if_link_is_image(links_list):
+    """
+    This function checks if links are images
+    :param links_list: list with links to check
+    :return: list containing images links
+    """
     img_list = []
     for link in links_list:
         if link['type'] == 'image/jpeg':
