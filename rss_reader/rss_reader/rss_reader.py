@@ -42,8 +42,34 @@ def server_answer(source):
         print(f"Error {e} in opening the link {source}")
 
 
-def parses_data(content, limit):
+def parses_data(content):
     """Parses data from the xml"""
+    list_of_news = []
+    data = {}
+
+    try:
+        buitiful_soup = BeautifulSoup(content, "xml")
+        data["feed"] = buitiful_soup.find("title").text
+        news_for_print = buitiful_soup.findAll("item")
+        for alone_news in news_for_print:
+            title = alone_news.find("title").text
+            pub_date = alone_news.find("pubDate").text
+            link = alone_news.find("link").text
+            images = []
+            images_find = alone_news.findAll("media:content")
+            for image in images_find:
+                link_of_image = image.get("url")
+                images.append(link_of_image)
+            news_dictionary = {"title": title, "pubDate": pub_date, "link": link, "images": images}
+            list_of_news.append(news_dictionary)
+        data["news"] = list_of_news
+    except Exception:
+        print("Xml was failed")
+    return data
+
+
+def parses_data_with_limit(content, limit):
+    """Parses data from the xml with limit"""
     list_of_news = []
     data = {}
 
@@ -80,7 +106,7 @@ def printing_news(data):
     print("Amount of news:", len(data["news"]), "\n")
 
 
-def printing_json(data):
+def printing_json(data, limit):
     """Print json news on console"""
     print(json.dumps(data, indent=3))
 
@@ -101,7 +127,7 @@ def main():
 
     try:
         logging.info("Getting access to the RSS")
-        number_of_news = parses_data(answer.text, args.limit)
+        number_of_news = parses_data_with_limit(answer.text, args.limit)
         if args.limit:
             logging.info(f"Reads amount of news - {args.limit}")
         if args.json:
