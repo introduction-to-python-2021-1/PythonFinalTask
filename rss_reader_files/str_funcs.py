@@ -1,3 +1,8 @@
+"""
+This module provides tools for presentation parts of news in readable format
+"""
+
+
 def get_str_content(list_with_content):
     if not list_with_content:
         return ''

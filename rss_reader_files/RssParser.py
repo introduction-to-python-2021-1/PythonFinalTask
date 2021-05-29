@@ -36,7 +36,7 @@ class RssParser:
             if feed.get('links'):
                 uncleaned_links = feed.get('links')
                 links = str_funcs.get_links(uncleaned_links)
-                img.extend(if_links_is_image(uncleaned_links))
+                img.extend(if_link_is_image(uncleaned_links))
             fields = 'title, link, date, img, content, links'
             item = namedtuple('item', fields)._make((title, link, date, img, summary_list, links))
             save_feed_into_cache(item)
@@ -75,7 +75,7 @@ def get_img(link):
     return img_list
 
 
-def if_links_is_image(links_list):
+def if_link_is_image(links_list):
     img_list = []
     for link in links_list:
         if link['type'] == 'image/jpeg':

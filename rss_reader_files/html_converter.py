@@ -9,6 +9,8 @@ import time
 def convert_to_html(feed, path):
     """
     Convert feed to html format
+    :param feed: feed object
+    :param path: directory where news.html file will be saved
     """
     feed_items_html = []
     for item in feed.items:
@@ -16,7 +18,9 @@ def convert_to_html(feed, path):
                                                     date=time.strftime("%y-%m-%d %H:%M", item.date),
                                                     content=item.content,
                                                     link=item.link,
-                                                    links=item.links)
+                                                    links=item.links,
+                                                    img=item.img,
+                                                    )
 
         feed_items_html.append(feed_item)
     html_page = html_templates.feed.render(news=feed_items_html, title=feed.name)

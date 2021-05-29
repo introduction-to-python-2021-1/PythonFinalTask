@@ -38,10 +38,13 @@ def main():
             logger.error(error_message)
             if not arguments.verbose:
                 print(error_message)
+
         if arguments.json:
             print(get_data.convert_to_json())
+
         elif not arguments.to_pdf and not arguments.to_html:
             print(get_data)
+
         if arguments.to_pdf:
             path_to_pdf_file = arguments.to_pdf + os.path.sep + 'news.pdf'
             try:
@@ -50,6 +53,7 @@ def main():
                 logger.error(err)
                 if not arguments.verbose:
                     print(err)
+
         if arguments.to_html:
             path_to_html_file = arguments.to_html + os.path.sep + 'news.html'
             try:

@@ -29,15 +29,21 @@ feed_item = Template('''
     <h2>{{title}}</h2>
     <div>
         <div>
-            <h3>{{date}}</h3>
+            <h5>{{date}}</h5>
             <p>
+            {% for content in content %}
                 {{content}}
+            {% endfor %}
             </p><br>
-            <b>Link: </b><a href="{{link}}">{{link}}</a>
-            <b>Links</b><br>
+            <b>Link: </b><a href="{{link}}">{{link}}</a><br>
+            <b>Links:</b><br>
             {% for link in links %}
                 <a href="{{link}}">{{link}}</a><br>
             {% endfor %}
+            <b>Images:</b><br>
+            {% for img in img %}
+                <img src={{img['src']}} alt={{img['alt']}}><br>
+            {% endfor %}      
             <br>
         </div>
     </div>
