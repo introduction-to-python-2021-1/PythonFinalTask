@@ -1,4 +1,5 @@
 black==21.5b1
+coverage==5.5
 darglint==1.8.0
 flake8==3.9.2
 flake8-bugbear==21.4.3
@@ -14,4 +15,5 @@ pre-commit-hooks==3.4.0
 pydocstyle==6.0.0
 pylint==2.8.2
 pytest==6.2.4
+pytest-cov==2.12.0
 pyupgrade==2.14.0

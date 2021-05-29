@@ -94,7 +94,7 @@ source .venv/bin/activate
      actual function/method implementation
    - [mypy][] is a static type checker for Python
    - [flake8][] to identify coding errors and check code style
-   - [pytest][] to run the tests
+   - [pytest][] and [coverage.py][] to run the tests
 
 **Congratulations!** You're now all set to begin development.
 
@@ -195,6 +195,7 @@ license your work under the terms of the [MIT License][].
 [mypy]: https://mypy.readthedocs.io/en/stable/
 [flake8]: https://flake8.pycqa.org/en/latest/
 [pytest]: https://docs.pytest.org/en/latest/
+[coverage.py]: https://coverage.readthedocs.io/en/latest/
 [github.com help documentation]:
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:

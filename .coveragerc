@@ -1,0 +1,29 @@
+[run]
+branch = True
+command_line = -m pytest
+omit =
+    */setup.py
+    */**/__init__.py
+    */**/__main__.py
+    */ap_typing.py
+source = ap_rss_reader
+
+[report]
+exclude_lines =
+    # a more strict default pragma
+    \# pragma: no cover\b
+    # repl
+    def __repr__
+    # allow defensive code
+    ^\s*raise AssertionError\b
+    ^\s*raise NotImplementedError\b
+    ^\s*return NotImplemented\b
+    ^\s*raise$
+    # typing-related code
+    if TYPE_CHECKING:
+    : \.\.\.$
+    ^ +\.\.\.$
+    -> NoReturn:
+    # non-runnable code
+    if sys.version_info < .+:$
+    if __name__ == ['"]__main__['"]:$
