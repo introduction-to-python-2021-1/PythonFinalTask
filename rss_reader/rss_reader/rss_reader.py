@@ -1,4 +1,5 @@
 import argparse
+import sys
 import xml.etree.ElementTree as Et
 import urllib.request
 import urllib.error
@@ -8,7 +9,7 @@ import json
 VERSION = "1.0"
 
 
-def build_args():
+def build_args(args):
     """This function builds parser-object with command line args and return this object"""
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
     parser.add_argument(
@@ -28,18 +29,17 @@ def build_args():
         "--limit", type=int, help="Limit news topics if this parameter provided"
     )
 
-    return parser.parse_args()
+    return parser.parse_args(args)
 
 
 def get_response(link):
     """Function knocks on the link nad returns response"""
-    response = None
     try:
         logging.info(f"Connection to {link} ...")
         response = urllib.request.urlopen(link)
     except (urllib.error.URLError, ValueError):
         logging.error(f"Connection to {link} failed. Does your URL correct?")
-        exit()
+        sys.exit()
 
     return response
 
@@ -47,7 +47,12 @@ def get_response(link):
 def parse_response(xml):
     """This function provides parse of xml with help of xml.etree.ElementTree: receive xml parameter
     and returns list of news"""
-    tree = Et.parse(xml)
+    tree = None
+    try:
+        tree = Et.parse(xml)
+    except Et.ParseError:
+        logging.error("Error occurred during parsing the document")
+        sys.exit()
     root = tree.getroot()
     news = []
     channel = root.findtext("channel/title")
@@ -65,15 +70,18 @@ def parse_response(xml):
 
 def print_news(news, limit):
     """Function prints news in stdout"""
-    for item in news[:limit]:
-        print(
-            f'Feed: {item["Feed"]}',
-            f'Title: {item["Title"]}',
-            f'Date: {item["Date"]}',
-            f'Link: {item["Link"]}',
-            "....................",
-            sep="\n",
-        )
+    try:
+        for item in news[:limit]:
+            print(
+                f'Feed: {item["Feed"]}',
+                f'Title: {item["Title"]}',
+                f'Date: {item["Date"]}',
+                f'Link: {item["Link"]}',
+                "....................",
+                sep="\n",
+            )
+    except KeyError:
+        logging.error("Error during printing news. Possible problem in xml structure")
 
 
 def print_json(news, limit):
@@ -84,17 +92,17 @@ def print_json(news, limit):
 def main():
     """This function is entry point.Parser arguments are processed and checked here and in accordance with this,
     output format is selected"""
-    args = build_args()
+    args = build_args(sys.argv[1:])
     if args.verbose:
         logging.basicConfig(level=logging.INFO)
     limit = args.limit
-    if limit and limit <= 0:
-        logging.error("Limit is incorrect")
-        exit()
+    # if limit == 0 or limit < 0:
+    #     logging.error("Limit is incorrect")
+    #     sys.exit()
     response = get_response(args.source)
     if not response:
         logging.info("No data for requested URL")
-        exit()
+        sys.exit()
     logging.info("Trying to get data...")
     news = parse_response(response)
     if not limit:

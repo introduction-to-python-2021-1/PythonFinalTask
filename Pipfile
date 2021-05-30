@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pycodestyle = "==2.4.0"
+nose = "==1.3.7"
+coverage = "==4.5.1"
+termcolor = "==1.1.0"
+
+[dev-packages]
+black = "==21.5b1"
+
+[requires]
+python_version = "3.8"

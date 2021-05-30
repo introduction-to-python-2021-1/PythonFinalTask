@@ -1,0 +1,25 @@
+<rss xmlns:media="http://search.yahoo.com/mrss/" version="2.0">
+    <channel>
+        <title>Yahoo News - Latest News &amp; Headlines</title>
+        <link>https://www.yahoo.com/news</link>
+        <description>The latest news and headlines from Yahoo! News. Get breaking news stories and in-depth coverage with videos and photos.</description>
+        <language>en-US</language>
+        <copyright>Copyright (c) 2021 Yahoo! Inc. All rights reserved</copyright>
+        <pubDate>Sat, 29 May 2021 16:37:10 -0400</pubDate>
+        <ttl>5</ttl>
+        <image>
+            <title>Yahoo News - Latest News &amp; Headlines</title>
+            <link>https://www.yahoo.com/news</link>
+            <url>http://l.yimg.com/rz/d/yahoo_news_en-US_s_f_p_168x21_news.png</url>
+        </image>
+        <item>
+            <title>Body of missing man found inside dinosaur statue</title>
+            <link>https://news.yahoo.com/body-missing-man-found-inside-153542409.html</link>
+            <pubDate>2021-05-24T15:35:42Z</pubDate>
+            <source url="https://www.miamiherald.com/">Miami Herald</source>
+            <guid isPermaLink="false">seven-people-shot-friday-night-122308764.html</guid>
+            <media:content height="86" url="https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/599080625878337ea39fc911f9b92c0e" width="130"/>
+            <media:credit role="publishing company"/>
+        </item>
+    </channel>
+</rss>
