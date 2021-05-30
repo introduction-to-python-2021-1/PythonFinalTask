@@ -5,6 +5,7 @@ exclude .gitlint
 exclude .pre-commit-config.yaml
 exclude .prettierrc.yaml
 exclude .pylintrc
+exclude FinalTask.md
 exclude requirements-dev.txt
 exclude tox.ini
 include CHANGELOG.md

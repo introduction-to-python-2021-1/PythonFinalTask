@@ -8,6 +8,7 @@ setup(
         dev=[
             "black==21.5b1",
             "bump2version==1.0.1",
+            "check-manifest==0.46",
             "darglint==1.8.0",
             "flake8==3.9.2",
             "flake8-bugbear==21.4.3",
