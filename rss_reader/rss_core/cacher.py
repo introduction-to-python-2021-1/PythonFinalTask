@@ -121,8 +121,10 @@ class DbCacher(Cacher):
 
         if not chanel_ids:
             self.db_processor.insert(table_name="channels",
-                                     insert_values={"rss_link": rss_link, "title": rss_news.title,
-                                                    "link": rss_news.link, "description": rss_news.description},
+                                     insert_values={"rss_link": rss_link,
+                                                    "title": rss_news.title,
+                                                    "link": rss_news.link,
+                                                    "description": rss_news.description},
                                      ignore=False)
 
             chanel_ids = self.db_processor.select(f"SELECT id FROM channels WHERE rss_link = '{rss_link}'")
@@ -174,7 +176,9 @@ class DbCacher(Cacher):
             picture = sqlite3.Binary(response.content)
             md5_hash = hashlib.md5(url_to_picture.encode('utf-8')).hexdigest()
             self.db_processor.insert(table_name="content",
-                                     insert_values={"news_id": news_id, "link": url_to_picture, "image": picture,
+                                     insert_values={"news_id": news_id,
+                                                    "link": url_to_picture,
+                                                    "image": picture,
                                                     "md5_hash": str(md5_hash)},
                                      ignore=True)
 
