@@ -8,7 +8,7 @@ from components.news import News
 class Feed:
     """This class represents a feed"""
 
-    def __init__(self, source_url, news_limit, to_json, logger, feed_title, cache, news_items=None, news_list=[]):
+    def __init__(self, source_url, news_limit, to_json, logger, feed_title, cache, news_items=None, news_list=None):
         """
         This class constructor initializes the required variables for the feed class
         and calls the method that creates news objects and adds them to news list
@@ -28,12 +28,14 @@ class Feed:
         self.news_limit = news_limit
         self.to_json = to_json
         self.source_url = source_url
-        self.news_list = news_list
         self.feed_title = feed_title
         self.cache = cache
-        if not self.news_list:
+        if not news_list:
+            self.news_list = []
             self.news_items = news_items
             self.__create_feed()
+        else:
+            self.news_list = news_list
 
     def __create_feed(self):
         """This method creates news objects and adds them to the news list"""
