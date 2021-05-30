@@ -23,23 +23,49 @@ def command_arguments_parser(args):
     return args
 
 
-def server_answer(source):
-    """Getting answer from server"""
+def create_logger(verbose):
+    """Create the output for logs"""
 
+    handlers = [logging.StreamHandler(sys.stdout)] if verbose else [logging.FileHandler("logs.log")]
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=handlers,
+    )
+    logger = logging.getLogger()
+    return logger
+
+
+def server_answer(source, verbose):
+    """Getting answer from server"""
+    logger = create_logger(verbose)
     try:
         answer = requests.get(source)
-        if not source:
-            print("Input the url, please")
-        elif answer.status_code == 200:
-            return answer
-        elif answer.status_code == 403:
+        if answer.status_code == 403:
+            logger.info("Error 403. Forbidden. Access denied")
             print("Error 403. Forbidden. Access denied")
+            sys.exit()
         elif answer.status_code == 404:
+            logger.info("Error 404. Please try to reload the page")
             print("Error 404. Please try to reload the page")
-        else:
-            print("Input the correct URL, please")
+            sys.exit()
+        elif not source:
+            logger.info("Input url, please")
+            print("Input url, please")
+            sys.exit()
+        elif answer.status_code == 200:
+            logger.info(f"Starting reading link {source}")
+            print(f"Starting reading link {source}")
+        return answer
     except URLError as e:
-        print(f"Error {e} in opening the link {source}")
+        logger.error(f"Error {e} in opening the link {source}")
+        print("Wrong link, try again, please")
+        sys.exit()
+
+    except ValueError as e:
+        logger.error(f"Error {e} in opening link {source}")
+        print("Insert rss link, please")
+        sys.exit()
 
 
 def parses_data(answer):
@@ -48,10 +74,10 @@ def parses_data(answer):
     data = {}
 
     try:
-        buitiful_soup = BeautifulSoup(answer.content, "xml")
+        buitiful_soup = BeautifulSoup(answer, "xml")
         data["feed"] = buitiful_soup.find("title").text
-        all_news = buitiful_soup.findAll("item")
-        for alone_news in all_news:
+        news_for_print = buitiful_soup.findAll("item")
+        for alone_news in news_for_print:
             title = alone_news.find("title").text
             pub_date = alone_news.find("pubDate").text
             link = alone_news.find("link").text
@@ -68,38 +94,31 @@ def parses_data(answer):
     return data
 
 
-def printing_news(data, limit):
+def printing_news(data):
     """Print news on console"""
-    for num, part in enumerate(data["news"]):
-        if num == limit:
-            break
+    print("\nfeed:", data["feed"], "\n")
+    for part in data["news"]:
         print("title:", part["title"])
         print("pubDate:", part["pubDate"])
         print("link:", part["link"])
         print("images:", len(part["images"]))
         print('\n'.join(part["images"]), "\n")
-        print("Amount of news:", len(data["news"]), "\n")
+    print("Amount of news:", len(data["news"]), "\n")
 
 
-def printing_json(data, limit):
+def printing_json(data):
     """Print json news on console"""
-    for num, part in enumerate(data["news"]):
-        if num == limit:
-            break
     print(json.dumps(data, indent=3))
 
 
 def main():
     args = command_arguments_parser(sys.argv[1:])
-    answer = server_answer(args.source)
+    answer = server_answer(args.source, args.verbose)
 
-    try:
-        if args.limit is not None:
-            if args.limit <= 0:
-                print("Invalid limit. Enter the limit (greater than 0), please")
-                sys.exit()
-    except TypeError:
-        pass
+    if args.limit is not None:
+        if args.limit <= 0:
+            print("Invalid limit. Enter the limit (greater than 0), please")
+            sys.exit()
 
     if args.verbose:
         logging.basicConfig(level=logging.INFO)
@@ -108,21 +127,16 @@ def main():
 
     try:
         logging.info("Getting access to the RSS")
-        data = parses_data(answer)
-
+        number_of_news = parses_data(answer.text)
         if args.limit:
             logging.info(f"Reads amount of news - {args.limit}")
-
         if args.json:
             logging.info("In json")
-            printing_json(data, args.limit)
-
+            printing_json(number_of_news)
         else:
-            printing_news(data, args.limit)
-
+            printing_news(number_of_news)
     except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL):
         print("ConnectionError. Correct the URL, please")
-        sys.exit(0)
 
     except requests.exceptions.MissingSchema:
         print("Incorrect URL. This is not the rss feed address")
