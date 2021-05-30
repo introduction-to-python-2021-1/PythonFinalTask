@@ -11,7 +11,8 @@ setup(
         'components': ['fonts/DejaVuSans.ttf', 'templates/template.html']
     },
     install_requires=['bs4==0.0.1', 'beautifulsoup4==4.9.3', 'lxml==4.6.3', 'python-dateutil==2.8.1',
-                      'requests==2.25.1', 'pathvalidate==2.4.1', 'jinja2==2.11.3', 'xhtml2pdf==0.2.5', ],
+                      'requests==2.25.1', 'pathvalidate==2.4.1', 'jinja2==2.11.3', 'xhtml2pdf==0.2.5',
+                      'colorlog==5.0.1'],
     python_requires='>=3.8',
     entry_points={
         'console_scripts': [
