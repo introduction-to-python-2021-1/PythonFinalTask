@@ -57,10 +57,9 @@ class News:
         """This method parses the publication date of the feed item"""
         if self.item.pubDate:
             date = self.item.pubDate.text
-            return parse(date)
         elif self.item.published:
             date = self.item.published.text
-            return parse(date)
+        return parse(date)
 
     def __format_links(self) -> str:
         """This method returns the formatted links contained in the feed item"""
@@ -118,13 +117,9 @@ class News:
             str: Content type
         """
         response = requests.head(content['url'])
-        try:
-            content_type = response.headers['content-type']
-        except KeyError:
-            content_type = None
+        content_type = response.headers.get('content-type')
         if content_type is None:
-            try:
-                content_type = content['type']
-            except KeyError:
+            content_type = content.get('type')
+            if content_type is None:
                 content_type = 'unknown'
         return content_type
