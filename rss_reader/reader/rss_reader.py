@@ -6,7 +6,8 @@ from reader.functions import make_json, check_limit, create_arguments, get_from_
     store_news
 
 
-def main(args=create_arguments(sys.argv)):
+def main(argv=sys.argv):
+    args = create_arguments(argv)
     """Creating logger"""
     logger = create_logger()
 
