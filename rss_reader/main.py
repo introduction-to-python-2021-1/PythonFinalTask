@@ -9,12 +9,12 @@ import rss_reader.rss_parser as rp
 
 def main():
     """main() method is parsing command line arguments with argparse module and defines program control flow
-    :return: exit codes:
-    os.EX_USAGE - misuse of command line arguments
-    os.EX_NOHOST - RSS feed url not responding or no internet connection
-    os.EX_OK - program finished successfully
+    Return: Exit codes:
+        os.EX_USAGE - misuse of command line arguments
+        os.EX_NOHOST - RSS feed url not responding or no internet connection
+        os.EX_OK - program finished successfully
     """
-    # To process command line arguments using module argparse
+    # Processing command line arguments using module argparse
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
 
     # Adding command line arguments to the application
@@ -39,7 +39,7 @@ def main():
 
     if args.version:  # [--version] argument passed - print version and exit
         print("Version 1.2", flush=True)
-        exit(0)
+        exit(sys.exit(os.EX_OK))
 
     logging.info(f"URL: {args.source}")
     if 255 < len(args.source) < 3:  # Checking [source] URL validity here
@@ -53,8 +53,7 @@ def main():
         print("Error: [limit] must be positive number", flush=True)
         exit(sys.exit(os.EX_USAGE))
     else:
-        # Handling url, parsing and reading rss as list of dictionaries
-        # rss_feed is list of dictionaries. Each dictionary contains RSS metadata
+        # RssParser downloading xml from url, parsing and reading rss as list of dictionaries
         # RssParser provides error handling and prints to stdout error messages in case of problems with
         # URL or connection
         rss_feed = rp.RssParser(args.source, args.limit)
@@ -68,6 +67,7 @@ def main():
         rss_feed.dump_json()
     else:  # by default: news are printed to stdout as formatted text
         logging.info("Print RSS in plain text")
+        rss_feed.dump_raw_json()
         rss_feed.print_json()
 
     # Program finished successfully: exit(0)
