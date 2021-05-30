@@ -8,6 +8,7 @@ from reader.article import Article
 
 
 class TestMain(unittest.TestCase):
+    """Test cases to test main function"""
 
     def setUp(self):
         self.url = 'Some_URL'
@@ -80,7 +81,10 @@ class TestMain(unittest.TestCase):
         """Checks that the program returns news for a given date in json format if --date and --json are specified"""
         store.return_value = [self.article_a]
         with io.StringIO() as term_value, redirect_stdout(term_value):
-            main([None, self.url, '--date', '20210528', '--json'])
+            self.date = '20210528'
+            main([None, self.url, '--date', self.date, '--json'])
+            self.assertEqual(store.call_args.args[0], self.date)
+            self.assertEqual(store.call_args.args[2], self.url)
             self.assertEqual(term_value.getvalue(), self.json + '\n')
 
     @patch('reader.functions.execute_news')

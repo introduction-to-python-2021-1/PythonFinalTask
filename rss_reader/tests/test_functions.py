@@ -6,7 +6,7 @@ from unittest.mock import patch
 from urllib.error import URLError
 
 from reader.article import Article
-from reader.functions import parse_news, make_json, check_limit, get_from_url, create_arguments
+from reader.functions import parse_news, make_json, check_limit, get_from_url, create_arguments, execute_news
 
 
 class TestFunctions(unittest.TestCase):
@@ -62,7 +62,7 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(the_exception.args[0], "Sorry, no news to parse!")
 
     def test_make_json(self):
-        """Checks that туцы is converted to json format correctly"""
+        """Checks that news is converted to json format correctly"""
         self.assertEqual(make_json(self.article_a), self.json)
 
     def test_check_limit(self):
@@ -95,7 +95,7 @@ class TestFunctions(unittest.TestCase):
 
     @patch('feedparser.parse')
     def test_bad_link(self, mock_api_call):
-        """Tests check_url function if url returns empty news list"""
+        """Tests get_from_url function if url returns empty news list"""
         mock_api_call.return_value = {'entries': []}
         with self.assertRaises(SystemExit) as cm:
             get_from_url(self.url)
@@ -105,7 +105,7 @@ class TestFunctions(unittest.TestCase):
 
     @patch('feedparser.parse')
     def test_unvalid_url(self, mock_api_call):
-        """Tests check_url function if url is not available"""
+        """Tests get_from_url function if url is not available"""
         mock_api_call.side_effect = MagicMock(side_effect=URLError('foo'))
         with self.assertRaises(SystemExit) as cm:
             get_from_url(self.url)
@@ -115,7 +115,7 @@ class TestFunctions(unittest.TestCase):
 
     @patch('feedparser.parse')
     def test_valid_url(self, parser):
-        """Tests check_url function if url returns correct news list"""
+        """Tests get_from_url function if url returns correct news list"""
         parser.return_value = {'entries': self.entries}
 
         self.actual = get_from_url(self.entries)
@@ -136,8 +136,32 @@ class TestFunctions(unittest.TestCase):
                 self.assertEqual(term_value.getvalue(), 'Version 1.3')
 
     def test_json_args(self):
+        """Checks that create_arguments function correctly recognizes passed arguments"""
         self.actual = create_arguments([None, self.url, '--json'])
         self.assertTrue(self.actual['json'])
+
+    def test_execute_news(self):
+        """Checks if --source and --date are specified the execute_news function will execute the required sql query"""
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        date = '20210521'
+        execute_news(date, mock_connection, self.url)
+        self.assertEqual(mock_cursor.execute.call_args.args[0], 'SELECT title, link, full_date, source, description, '
+                                                                'image, url FROM news WHERE date=:date and url=:url')
+        self.assertEqual(mock_cursor.execute.call_args.args[1]['date'], date)
+        self.assertEqual(mock_cursor.execute.call_args.args[1]['url'], self.url)
+
+    def test_execute_news_without_url(self):
+        """Checks if only --date is specified the execute_news function will execute the required sql query"""
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connection.cursor.return_value = mock_cursor
+        date = '20210521'
+        execute_news(date, mock_connection, None)
+        self.assertEqual(mock_cursor.execute.call_args.args[0],
+                         'SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date')
+        self.assertEqual(mock_cursor.execute.call_args.args[1]['date'], date)
 
 
 if __name__ == "__main__":
