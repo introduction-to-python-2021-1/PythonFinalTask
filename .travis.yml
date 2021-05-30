@@ -2,11 +2,10 @@ language: python
 python:
   - "3.8"
 install:
-  - pip install pipenv
-  - PIPENV_IGNORE_VIRTUALENVS=1 pipenv install
+  - pip install -r requirements.txt
 script:
   - cd rss_reader
-  - pipenv update
+  - pip install .
   - nosetests --cover-branches --with-coverage --cover-min-percentage=50 --cover-package=rss_reader
   - pycodestyle --max-line-length=120 .
   - python ./../rss_reader_checker.py
