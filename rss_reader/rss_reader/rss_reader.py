@@ -36,7 +36,7 @@ def create_logger(verbose):
     return logger
 
 
-def server_answer(source, verbose):
+def server_answer(source, verbose=None):
     """Getting answer from server"""
     logger = create_logger(verbose)
     try:
@@ -94,16 +94,16 @@ def parses_data(answer):
     return data
 
 
-def printing_news(data):
+def printing_news(data, limit):
     """Print news on console"""
-    print("\nfeed:", data["feed"], "\n")
-    for part in data["news"]:
+    for num, part in enumerate(data["news"]):
+        if num == limit:
+            break
         print("title:", part["title"])
         print("pubDate:", part["pubDate"])
         print("link:", part["link"])
         print("images:", len(part["images"]))
         print('\n'.join(part["images"]), "\n")
-    print("Amount of news:", len(data["news"]), "\n")
 
 
 def printing_json(data):
@@ -130,11 +130,12 @@ def main():
         number_of_news = parses_data(answer.text)
         if args.limit:
             logging.info(f"Reads amount of news - {args.limit}")
+            print("Reads amount of news:", args.limit, "\n")
         if args.json:
             logging.info("In json")
             printing_json(number_of_news)
         else:
-            printing_news(number_of_news)
+            printing_news(number_of_news, args.limit)
     except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL):
         print("ConnectionError. Correct the URL, please")
 
