@@ -9,10 +9,6 @@ DESCRIPTION = "Pure Python command-line RSS reader."
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 ROOT_DIR = BASE_DIR / "rss_reader"
-README = BASE_DIR / "README.md"
-
-with open(README, "r") as fp:
-    readme = fp.read()
 
 
 setup(
@@ -23,7 +19,6 @@ setup(
     description=(f"{DESCRIPTION}"),
     license="BSD",
     packages=["rss_reader"],
-    long_description=readme,
     entry_points={
         "console_scripts": [
             "rss_reader=rss_reader.rss_reader:main",
