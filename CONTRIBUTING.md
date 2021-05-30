@@ -243,7 +243,7 @@ Using the [GitHub CLI][], with the version number as the title, the changelog
 as the description, and the distribution packages as assets
 
 ```shell
-hub release create -m $version -e $(find dist/* -exec echo "-a {}" \;) $version
+gh release create $version -t $version ./dist/*
 ```
 
 Add the `-p` flag for pre-releases.
