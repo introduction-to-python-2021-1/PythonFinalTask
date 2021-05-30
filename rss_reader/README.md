@@ -41,7 +41,7 @@ If argument specified with date, only news which was published on this date will
 If the argument goes without a specific date, all news will be loaded from the cache
 N.B. `source` does affect on loading news from the cache. If it is specified, news for this channel will be loaded 
 from the cache. Otherwise, news for all channels will be loaded
-Pay attention that date should be passed in  %yyyy%mm%dd format. All other variants will be rejected
+Pay attention that date should be passed in %Y%m%d format. All other variants will be rejected
 ## `--to-html`
 Save news into html file. You should specify file name to writing html or directory, where html should be written. 
 In case of specifying directory, file name will be generated automatically
