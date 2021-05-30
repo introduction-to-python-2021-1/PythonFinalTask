@@ -15,8 +15,10 @@ def get_args():
                                      )
 
     parser.add_argument('url',
+                        nargs='?',
                         type=str,
                         help='URL to parse.',
+                        default=None,
                         )
 
     parser.add_argument('--limit',
@@ -37,7 +39,7 @@ def get_args():
 
     parser.add_argument('--version',
                         action='version',
-                        version='Rss rss_reader 1.0.',
+                        version='Rss rss_reader 4.0.',
                         help='Print version and stop',
                         )
 

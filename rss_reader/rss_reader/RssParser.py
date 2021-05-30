@@ -2,7 +2,6 @@
 This module contains class for fetching and showing rss-feed
 """
 
-
 import feedparser
 from collections import namedtuple
 import time
@@ -17,6 +16,7 @@ class RssParser:
     """
     This class parses rss-feed and presents it in readable format
     """
+
     def __init__(self, url, limit):
         self.url = url
         self.limit = limit
@@ -28,10 +28,12 @@ class RssParser:
         This function parses rss-feed
         :return: list with namedtuples representing feed items
         """
+        if not self.url:
+            print("URL is empty, please input URL")
+            return
         data = feedparser.parse(self.url)
         if data['bozo']:
             raise ValueError("Please check URL and Internet connection")
-        self.name = data['feed'].get('title')
         self.get_content(data)
         return self.items
 
@@ -40,6 +42,7 @@ class RssParser:
         This function aggregates feed from row data
         :param data: a bunch of row data
         """
+        self.name = name = data['feed'].get('title')
         for feed in data['entries'][:self.limit]:
             title = feed.get('title', 'Absence of title')
             link = feed.get('link', 'Absence of link')
@@ -53,23 +56,14 @@ class RssParser:
                 uncleaned_links = feed.get('links')
                 links = str_funcs.get_links(uncleaned_links)
                 img.extend(if_link_is_image(uncleaned_links))
-            fields = 'title, link, date, img, content, links'
-            item = namedtuple('item', fields)._make((title, link, date, img, summary_list, links))
+            fields = 'name, title, link, date, img, content, links'
+            item = namedtuple('item', fields)._make((name, title, link, date, img, summary_list, links))
             save_feed_into_cache(item)
             self.items.append(item)
-
-    def convert_to_json(self):
-        """
-        Converts feed items in json format
-        """
-        return json.dumps({'url': self.url,
-                           'feed': {'name': self.name,
-                                    'items': [item._asdict() for item in self.items]}}, ensure_ascii=False)
 
     def __str__(self):
         result_str = self.name + '\n'
         for item in self.items:
-            print(item.link)
             item_as_str = (f'Title: {item.title}\nLink: {item.link}\n'
                            f'Date: {time.strftime("%y-%m-%d %H:%M", item.date)}')
             result_str += item_as_str
@@ -77,6 +71,13 @@ class RssParser:
             result_str += str_funcs.get_img_as_str(item.img)
             result_str += str_funcs.get_links_as_str(item.links) + '\n\n'
         return result_str
+
+
+def convert_to_json(data):
+    """
+    Converts feed items in json format
+    """
+    return json.dumps({'items': [item._asdict() for item in data]}, ensure_ascii=False)
 
 
 def get_img(link):

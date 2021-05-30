@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='rss_reader',
-    version='3.0',
+    version='4.0',
     author='Vlad Sheydenkov',
     author_email='vladsheydenkov@gmail.com',
     url='https://github.com/vladsheydenkov/PythonFinalTask.git',

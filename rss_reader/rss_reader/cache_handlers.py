@@ -2,7 +2,6 @@
 This module provides tools for working with cache
 """
 
-
 import os
 import json
 import time
@@ -35,14 +34,14 @@ def print_cached_feed(feed_list):
     result_str = ''
     for feed in feed_list:
         loaded_feed = json.loads(feed)
-        result_str = (f'Title: {loaded_feed["title"]}\nLink: {loaded_feed["link"]}\n'
-                      f'Date: {time.strftime("%y-%m-%d %H:%M", tuple(loaded_feed["date"]))}\n')
+        result_str += '\n' + (f'Title: {loaded_feed["title"]}\nLink: {loaded_feed["link"]}\n'
+                              f'Date: {time.strftime("%y-%m-%d %H:%M", tuple(loaded_feed["date"]))}')
         links = loaded_feed.get('links')
         result_str += str_funcs.get_links_as_str(links)
         content_list = loaded_feed.get('content')
         result_str += str_funcs.get_str_content(content_list)
         img = loaded_feed.get('img')
-        result_str += str_funcs.get_img_as_str(img)
+        result_str += str_funcs.get_img_as_str(img) + '\n'
     return result_str
 
 

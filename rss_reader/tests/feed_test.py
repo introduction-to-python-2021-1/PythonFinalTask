@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
-from rss_reader.RssParser import RssParser
+from rss_reader.RssParser import RssParser, convert_to_json
+from collections import namedtuple
 
 
 class FeedTest(unittest.TestCase):
@@ -42,8 +43,25 @@ class FeedTest(unittest.TestCase):
         self.assertEqual(feed_item.date, test_time)
 
     def test_convert_to_json(self):
-        json_news = '{"url": "url", "feed": {"name": "", "items": []}}'
-        self.assertEqual(self.parser.convert_to_json(), json_news)
+        name = 'test_name'
+        title = 'test_title'
+        link = 'test_link'
+        date = 'test_date'
+        img = 'test_img'
+        summary_list = 'test_content'
+        links = 'test_links'
+        fields = 'name, title, link, date, img, content, links'
+        item = namedtuple('item', fields)._make((name, title, link, date, img, summary_list, links))
+        json_news = ('{"items": ['
+                     '{"name": "test_name", '
+                     '"title": "test_title", '
+                     '"link": "test_link", '
+                     '"date": "test_date", '
+                     '"img": "test_img", '
+                     '"content": "test_content", '
+                     '"links": "test_links"}]}')
+
+        self.assertEqual(convert_to_json([item]), json_news)
 
 
 if __name__ == '__main__':

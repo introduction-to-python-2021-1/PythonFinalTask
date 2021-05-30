@@ -11,13 +11,13 @@ class StringFunctionsTest (unittest.TestCase):
 
     def test_get_img_as_str(self):
         list_with_img = [{'src': 'test_src', 'alt': 'test_alt'}]
-        pretty_str = 'Image № 1: test_src\nDescription: test_alt'
+        pretty_str = '\nImage № 1: test_src\nDescription: test_alt'
         self.assertEqual('', str_funcs.get_img_as_str([]))
         self.assertEqual(pretty_str, str_funcs.get_img_as_str(list_with_img))
 
     def test_get_links_as_str(self):
         list_with_links = ['link 1', 'link 2']
-        pretty_str = 'Links: \nlink 1\nlink 2'
+        pretty_str = '\nLinks: \nlink 1\nlink 2'
         self.assertEqual('', str_funcs.get_links_as_str([]))
         self.assertEqual(pretty_str, str_funcs.get_links_as_str(list_with_links))
 

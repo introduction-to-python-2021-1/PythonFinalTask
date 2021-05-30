@@ -17,7 +17,7 @@ def get_img_as_str(list_with_img):
         return ''
     pretty_str = ''
     for num, img in enumerate(list_with_img):
-        images_as_str = f'Image № {str(num + 1)}: {img["src"]}'
+        images_as_str = '\n' + f'Image № {str(num + 1)}: {img["src"]}'
         pretty_str += images_as_str
         if img['alt']:
             img_desc = f'Description: {img["alt"]}'
@@ -28,7 +28,7 @@ def get_img_as_str(list_with_img):
 def get_links_as_str(list_with_links):
     if not list_with_links:
         return ''
-    pretty_str = 'Links: '
+    pretty_str = '\nLinks: '
     for link in list_with_links:
         pretty_str += '\n' + link
     return pretty_str
