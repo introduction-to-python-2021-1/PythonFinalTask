@@ -41,7 +41,28 @@ from ap_rss_reader import cli
 cli.main()
 ```
 
+## Development & Contributing
+
+Development of this happens on GitHub, patches including tests, documentation
+are very welcome, as well as bug reports!
+
+This project has a [code of conduct][]. By interacting with this repository,
+organization, or community you agree to abide by its terms.
+
+See also our [CONTRIBUTING.md][].
+
+## Copyright
+
+Copyright (c) 2021 Artsiom Platkouski. `ap-rss-reader` is licensed under the
+MIT License - see the [LICENSE.txt][] file for details.
+
 [python]: https://www.python.org/
 [pypi ap-rss-reader]: https://pypi.org/project/ap-rss-reader/
 [github]: https://github.com
 [aplatkouski/ap-rss-reader]: https://github.com/aplatkouski/ap-rss-reader
+[code of conduct]:
+  https://github.com/aplatkouski/ap-rss-reader/blob/master/CODE_OF_CONDUCT.md
+[contributing.md]:
+  https://github.com/aplatkouski/ap-rss-reader/blob/master/CONTRIBUTING.md
+[license.txt]:
+  https://github.com/aplatkouski/ap-rss-reader/blob/master/LICENSE.txt
