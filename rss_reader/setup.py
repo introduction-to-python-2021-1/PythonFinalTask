@@ -8,7 +8,7 @@ setuptools.setup(
     version="1.4",
     author="Margarita Bobich",
     author_email="bobich.margarita@gmail.com",
-    description="RSS reader is a command-line utility which receives RSS URL and prints results in human-readable format",
+    description="RSS reader is a command-line utility which receives RSS URL and prints results in readable format",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/margarita-bobich/PythonFinalTask/tree/main/rss_reader",
@@ -20,7 +20,7 @@ setuptools.setup(
         ],
     },
     install_requires=[
-        'elementpath', 'requests', 'argparse', 'jinja2', 'xhtml2pdf',
+        'elementpath', 'requests', 'argparse', 'jinja2', 'xhtml2pdf', 'ddt',
     ],
     zip_safe=False
 )
