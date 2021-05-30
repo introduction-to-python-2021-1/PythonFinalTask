@@ -83,7 +83,7 @@ class Cache:
                     cached_data = json.load(file)
                     return cached_data
                 except json.JSONDecodeError:
-                    self.logger.error(f' Unable to parse JSON from "{cache_file_path}". '
+                    self.logger.error(f'Unable to parse JSON from "{cache_file_path}". '
                                       f'This file is corrupted or empty and will be deleted.')
                     os.remove(cache_file_path)
         return None
@@ -110,7 +110,7 @@ class Cache:
             source_url (str or NoneType): Link to the source from which the news was received
             to_json (bool): If True news will be printed in JSON format
         """
-        self.logger.info(' Trying to get news from cache')
+        self.logger.info('Trying to get news from cache')
         cache_file_path = f'{self.cache_folder_path}{publication_date}.json'
         feeds_list = []
         retrieved_news_amount = 0
@@ -135,12 +135,12 @@ class Cache:
                     break
             if source_url and not feeds_list:
                 self.logger.error(
-                    f' Cache for published date "{date_object.date()}" and source URL "{source_url}" was not found')
+                    f'Cache for published date "{date_object.date()}" and source URL "{source_url}" was not found')
                 sys.exit()
-            self.logger.info(f' Retrieved {retrieved_news_amount} news from cache')
+            self.logger.info(f'Retrieved {retrieved_news_amount} news from cache')
             return feeds_list
         else:
-            self.logger.error(f' No cached news found with published date {date_object.date()}')
+            self.logger.error(f'No cached news found with published date {date_object.date()}')
             sys.exit()
 
     def __cache_images(self, news):

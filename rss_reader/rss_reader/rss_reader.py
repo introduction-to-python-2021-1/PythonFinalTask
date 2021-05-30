@@ -4,6 +4,7 @@ import logging
 import sys
 
 from bs4 import BeautifulSoup
+from colorlog import ColoredFormatter
 import requests
 
 from components.cache import Cache
@@ -21,11 +22,18 @@ def main(argv=sys.argv[1:]):
     """
     parser = Parser()
     args = parser.parse_args(argv)
+    log_handler = logging.StreamHandler()
     if args.verbose:
-        logging.basicConfig(level=logging.INFO)
+        logging.root.setLevel(logging.INFO)
     else:
-        logging.basicConfig(level=logging.ERROR)
-    logger = logging
+        logging.root.setLevel(logging.ERROR)
+    if args.colorize:
+        log_handler.setFormatter(
+            ColoredFormatter('%(log_color)s%(levelname)s%(reset)s | %(log_color)s%(message)s%(reset)s'))
+    else:
+        log_handler.setFormatter(logging.Formatter('%(levelname)s | %(message)s'))
+    logger = logging.getLogger('root')
+    logger.addHandler(log_handler)
     converter = Converter(logger)
     cache = Cache(logger)
     if args.date:
@@ -41,7 +49,7 @@ def main(argv=sys.argv[1:]):
         if soup:
             feed_title = soup.find('title').text
             items = soup.find_all('item')
-            logger.info(f' Founded {len(items)} news items')
+            logger.info(f'Founded {len(items)} news items')
             if items:
                 feed = Feed(args.source, args.limit, args.json, logger, feed_title, cache, news_items=items)
                 if args.to_pdf is not None:
@@ -49,9 +57,9 @@ def main(argv=sys.argv[1:]):
                 if args.to_html is not None:
                     converter.to_html([feed], args.limit, path=args.to_html)
                 print(feed)
-            logger.info(' Successfully completed')
+            logger.info('Successfully completed')
     else:
-        logger.error(' Source URL not specified. Please check your input and try again')
+        logger.error('Source URL not specified. Please check your input and try again')
 
 
 def get_data_from_url(logger, source_url):
@@ -67,20 +75,20 @@ def get_data_from_url(logger, source_url):
         None: If specified URL does not contain RSS, invalid URL or connection error
     """
     try:
-        logger.info(' Sending GET request to the specified URL')
+        logger.info('Sending GET request to the specified URL')
         response = requests.get(source_url)
     except requests.exceptions.ConnectionError:
-        logger.error(' An error occurred while sending a GET request to the specified URL. Check the specified URL'
+        logger.error('An error occurred while sending a GET request to the specified URL. Check the specified URL'
                      ' and your internet connection')
     except requests.exceptions.MissingSchema:
-        logger.error(f' Invalid URL "{source_url}". The specified URL should look like "http://www.example.com/"')
+        logger.error(f'Invalid URL "{source_url}". The specified URL should look like "http://www.example.com/"')
     else:
-        logger.info(' Parsing XML from the specified URL')
+        logger.info('Parsing XML from the specified URL')
         soup = BeautifulSoup(response.content, 'lxml-xml')
         if soup.find('rss'):
             return soup
         else:
-            logger.error(' Specified URL does not contain RSS. Please check the specified URL and try again')
+            logger.error('Specified URL does not contain RSS. Please check the specified URL and try again')
     return None
 
 

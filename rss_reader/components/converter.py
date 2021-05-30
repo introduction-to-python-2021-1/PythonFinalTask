@@ -36,16 +36,15 @@ class Converter:
             feeds_list (list): List of objects of class Feed
             news_limit (int or NoneType): Value that limits the number of news
         """
-        self.logger.info(' Start converting news feed to PDF format')
+        self.logger.info('Start converting news feed to PDF format')
         output_filepath = self.prepare_output_filepath(path, pdf=True)
         if output_filepath:
             try:
                 with open(output_filepath, 'w+b') as file:
                     pisa.CreatePDF(self.to_html(feeds_list, news_limit, pdf=True), file, )
-                    self.logger.info(f' PDF file created and saved at {output_filepath}')
+                    self.logger.info(f'PDF file created and saved at {output_filepath}')
             except PermissionError:
-                self.logger.error(
-                    f' Unable to save PDF file at {output_filepath}. Permission denied.')
+                self.logger.error(f'Unable to save PDF file at {output_filepath}. Permission denied.')
 
     def __get_image(self, url, cached_image_filename):
         """
@@ -61,8 +60,8 @@ class Converter:
         """
         cached_image_file_path = glob.glob(os.path.join(self.cache_images_folder_path, f'{cached_image_filename}.*'))
         if not cached_image_file_path:
-            self.logger.error(f' Could not find image with file name "{cached_image_filename}".')
-            self.logger.info(f' Trying to get image from link')
+            self.logger.error(f'Could not find image with file name "{cached_image_filename}".')
+            self.logger.info(f'Trying to get image from link')
             cached_image_file_path = self.cache_images_folder_path + cached_image_filename
             try:
                 urllib.request.urlretrieve(url, cached_image_file_path)
@@ -70,7 +69,7 @@ class Converter:
                 os.rename(cached_image_file_path, f'{cached_image_file_path}.{image_format}')
                 return os.path.abspath(f'{cached_image_file_path}.{image_format}')
             except urllib.error.URLError:
-                self.logger.error(' Unable to get image from link')
+                self.logger.error('Unable to get image from link')
                 return None
         else:
             return os.path.abspath(cached_image_file_path[0])
@@ -88,7 +87,7 @@ class Converter:
         Returns:
             str: HTML code required to get PDF if pdf is True
         """
-        self.logger.info(' Start converting news feed to HTML format')
+        self.logger.info('Start converting news feed to HTML format')
         env = Environment(loader=PackageLoader('components', 'templates'))
         env.filters['news_description_to_html'] = self.news_description_to_html
         env.filters['news_enclosures_to_html'] = self.news_enclosures_to_html
@@ -106,10 +105,9 @@ class Converter:
                 try:
                     with open(output_filepath, 'w') as file:
                         file.write(template.render(news_list=news_list[:news_limit], ))
-                        self.logger.info(f' HTML file created and saved as {output_filepath}')
+                        self.logger.info(f'HTML file created and saved as {output_filepath}')
                 except PermissionError:
-                    self.logger.error(
-                        f' Unable to save HTML file at {output_filepath}. Permission denied.')
+                    self.logger.error(f'Unable to save HTML file at {output_filepath}. Permission denied.')
 
     def prepare_output_filepath(self, path, pdf=False, html=False):
         """
@@ -138,7 +136,7 @@ class Converter:
                 try:
                     os.makedirs(output_path, exist_ok=True)
                 except PermissionError:
-                    self.logger.error(f' Unable to create directory {output_path}. Permission denied.')
+                    self.logger.error(f'Unable to create directory {output_path}. Permission denied.')
                     return None
         return output_path + output_filename
 

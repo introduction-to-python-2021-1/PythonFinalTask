@@ -24,7 +24,7 @@ class Feed:
             news_list (list): List of objects of class News
         """
         self.logger = logger
-        self.logger.info(' Preparing a feed')
+        self.logger.info('Preparing a feed')
         self.news_limit = news_limit
         self.to_json = to_json
         self.source_url = source_url
@@ -45,7 +45,7 @@ class Feed:
     def __str__(self) -> str:
         """This method override default __str__ method which computes the string representation of an object"""
         if self.to_json:
-            self.logger.info(' Printing news to STDOUT in JSON')
+            self.logger.info('Printing news to STDOUT in JSON')
             return json.dumps({0: {'title': self.feed_title,
                                    'source': self.source_url,
                                    'items': {
@@ -53,5 +53,5 @@ class Feed:
                                        enumerate(self.news_list[:self.news_limit])
                                    }}}, indent=4, ensure_ascii=False)
         else:
-            self.logger.info(' Printing news to STDOUT')
+            self.logger.info('Printing news to STDOUT')
             return '\n\n'.join(str(news) for news in self.news_list[:self.news_limit])

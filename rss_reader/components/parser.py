@@ -30,6 +30,8 @@ class Parser:
                                  dest='to_pdf')
         self.parser.add_argument('--to-html', type=validate_filepath_arg, help='Converts news to HTML format',
                                  dest='to_html')
+        self.parser.add_argument('--colorize', help='Print the result of the utility in colorized mode',
+                                 action='store_true')
 
     def parse_args(self, argv) -> argparse.Namespace:
         """
@@ -68,10 +70,9 @@ def validate_limit_arg(input_value) -> int:
     try:
         input_value = int(input_value)
     except ValueError:
-        raise argparse.ArgumentTypeError(f' The limit argument must be an integer ({input_value} was passed)')
+        raise argparse.ArgumentTypeError(f'The limit argument must be an integer ({input_value} was passed)')
     else:
         if input_value < 1:
-            raise argparse.ArgumentTypeError(
-                f' The limit argument must be greater than zero ({input_value} was passed)')
+            raise argparse.ArgumentTypeError(f'The limit argument must be greater than zero ({input_value} was passed)')
         else:
             return input_value

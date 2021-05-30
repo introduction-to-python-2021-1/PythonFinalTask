@@ -6,7 +6,7 @@ Pure Python command-line RSS reader.
 
 ```shell 
 usage: rss_reader [-h] [--version] [--json] [--verbose] [--limit LIMIT] [--date DATE] [--to-pdf TO_PDF] 
-                  [--to-html TO_HTML] [source]
+                  [--to-html TO_HTML] [--colorize] [source]
 
 Pure Python command-line RSS reader.
 
@@ -22,6 +22,7 @@ optional arguments:
   --date DATE        Print cached news for specified date
   --to-pdf TO_PDF    Converts news to PDF format
   --to-html TO_HTML  Converts news to HTML format
+  --colorize         Print the result of the utility in colorized mode
 ```
 
 ## Expected arguments values

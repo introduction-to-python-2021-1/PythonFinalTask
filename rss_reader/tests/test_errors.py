@@ -13,7 +13,7 @@ class TestRssReader(unittest.TestCase):
         with self.assertLogs('root', level='ERROR') as cm:
             main(argv)
         self.assertIn(
-            'ERROR:root: An error occurred while sending a GET request to the specified URL. Check the specified URL'
+            'ERROR:root:An error occurred while sending a GET request to the specified URL. Check the specified URL'
             ' and your internet connection', cm.output)
 
     @patch('sys.stderr', new_callable=StringIO)
@@ -40,7 +40,7 @@ class TestRssReader(unittest.TestCase):
         with self.assertLogs('root', level='ERROR') as cm:
             main(argv)
         self.assertIn(
-            'ERROR:root: Invalid URL "url.com". The specified URL should look like "http://www.example.com/"',
+            'ERROR:root:Invalid URL "url.com". The specified URL should look like "http://www.example.com/"',
             cm.output)
 
     def test_url_does_not_contain_rss(self):
@@ -48,7 +48,7 @@ class TestRssReader(unittest.TestCase):
         argv = ['https://yahoo.com/rss/']
         with self.assertLogs('root', level='ERROR') as cm:
             main(argv)
-        self.assertIn('ERROR:root: Specified URL does not contain RSS. Please check the specified URL and try again',
+        self.assertIn('ERROR:root:Specified URL does not contain RSS. Please check the specified URL and try again',
                       cm.output)
 
     def test_url_not_specified(self):
@@ -56,7 +56,7 @@ class TestRssReader(unittest.TestCase):
         argv = ['']
         with self.assertLogs('root', level='ERROR') as cm:
             main(argv)
-        self.assertIn('ERROR:root: Source URL not specified. Please check your input and try again', cm.output)
+        self.assertIn('ERROR:root:Source URL not specified. Please check your input and try again', cm.output)
 
 
 if __name__ == '__main__':
