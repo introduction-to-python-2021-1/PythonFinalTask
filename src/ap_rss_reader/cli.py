@@ -190,7 +190,14 @@ def main(arguments: Optional[List[str]] = None) -> None:
     if args.verbose:
         logger.setLevel(logging.DEBUG)
 
+    logger.debug("Next args were passed:")
+    for arg in vars(args):
+        logger.debug(f"{arg}: {getattr(args, arg)}")
+
+    logger.debug(f"\nStart load data from {args.source}...")
     channel = load_channel(url=args.source, limit=args.limit)
+    logger.debug("\nData was loaded!")
+
     if args.json:
         logger.info(
             json.dumps(
