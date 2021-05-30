@@ -1,7 +1,6 @@
 exclude .bumpversion.cfg
 exclude .darglint
 exclude .env
-exclude .flake8
 exclude .gitignore
 exclude .gitlint
 exclude .isort
