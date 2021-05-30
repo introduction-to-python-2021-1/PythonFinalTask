@@ -6,12 +6,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setuptools.setup(
     name="rss_reader",
     version="1.4",
-    author="Example Author",
-    author_email="author@example.com",
-    description="A small example package",
+    author="Margarita Bobich",
+    author_email="bobich.margarita@gmail.com",
+    description="RSS reader is a command-line utility which receives RSS URL and prints results in human-readable format",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pypa/sampleproject",
+    url="https://github.com/margarita-bobich/PythonFinalTask/tree/main/rss_reader",
     packages=setuptools.find_packages(exclude=("tests",)),
     python_requires=">=3.8",
     entry_points={

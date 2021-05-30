@@ -10,48 +10,7 @@ from io import StringIO
 from rss_core.reader import SiteReader
 from rss_core.cacher import DbCacher
 from rssreader import rss_reader
-
-XML_INFO = """<?xml version="1.0" encoding="UTF-8"?>
-            <rss xmlns:media="http://search/">
-               <channel>
-                  <title>Chanel title</title>
-                  <link>Chanel link</link>
-                  <description>Chanel description</description>
-                  <item>
-                     <title>News title</title>
-                     <link>News link</link>
-                     <pubDate>News date</pubDate>
-                     <guid>news id</guid>
-                     <media:content url="Media url" />
-                  </item>
-                  <item>
-                     <title>News title</title>
-                     <link>News link</link>
-                     <pubDate>News date</pubDate>
-                     <guid>news id</guid>
-                     <media:content url="Media url" />
-                  </item>
-               </channel>
-            </rss>"""
-
-RSS_JSON = """[
-    {
-        "Link": "Chanel link",
-        "Description": "Chanel description",
-        "Title": "Chanel title",
-        "News": [
-            {
-                "Title": "News title",
-                "Date": "News date",
-                "Link": "News link",
-                "Media": [
-                    "Media url"
-                ]
-            }
-        ]
-    }
-]
-"""
+from tests.tests_data import XML_INFO
 
 
 class TestRssReader(unittest.TestCase):
@@ -61,7 +20,7 @@ class TestRssReader(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        SiteReader.get_data = MagicMock(return_value=XML_INFO)
+        SiteReader.get_data = MagicMock(return_value=XML_INFO.replace("\n", ""))
         DbCacher.cache_rss_news = MagicMock(return_value=True)
 
     @classmethod
@@ -108,7 +67,7 @@ class TestRssReader(unittest.TestCase):
     @patch('sys.stdout', new_callable=StringIO)
     def test_wrong_date_arg(self, mock_stdout):
         """
-        Test --date argument
+        Test wrong --date argument
         """
         with self.assertRaises(SystemExit) as cm:
             rss_reader.main(["--date", "2020-05-27", "https://news.yahoo.com/rss/"])
@@ -123,7 +82,7 @@ class TestRssReader(unittest.TestCase):
         DbCacher._get_channels_info_from_db = MagicMock(
             return_value=[{"id": -1, "title": "", "link": "", "description": ""}])
         rss_reader.main(["--date", "20200527", "--to-html", "a.txt"])
-        self.assertIn("File for writing news as html should ends with '.html'", mock_stdout.getvalue())
+        self.assertIn("File should be in 'html' format", mock_stdout.getvalue())
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_getting_cache_with_wrong_date(self, mock_stdout):

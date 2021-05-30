@@ -6,7 +6,6 @@ import json
 import sys
 
 from rss_core.cacher import DbCacher
-from rss_core.converter import RssConverter
 from rss_core.news_processor import NewsProcessor
 from rss_core.parser import XmlParser
 from rss_core.reader import SiteReader
@@ -20,8 +19,8 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
     arg_parser = init_arg_parser()
-    my_args = arg_parser.parse_args(argv)
-    news_limit = my_args.limit
+    given_arguments = arg_parser.parse_args(argv)
+    news_limit = given_arguments.limit
     if news_limit is not None and news_limit <= 0:
         util.log(show_on_console=True, flag="ERROR", msg=f"[ERROR] Limit should be positive integer")
         exit(1)
@@ -29,26 +28,25 @@ def main(argv=None):
     try:
         parser = XmlParser(reader=SiteReader())
         cacher = DbCacher(RSS_DB)
-        rss_converter = RssConverter()
-        news_processor = NewsProcessor(parser=parser, cacher=cacher, converter=rss_converter, show_logs=my_args.verbose)
-        if my_args.date:
-            news_processor.restore_news_from_cache(my_args.date, my_args.source)
-        elif my_args.source:
-            news_processor.load_news(my_args.source)
+        news_processor = NewsProcessor(parser=parser, cacher=cacher, show_logs=given_arguments.verbose)
+        if given_arguments.date:
+            news_processor.restore_news_from_cache(given_arguments.date, given_arguments.source)
+        elif given_arguments.source:
+            news_processor.load_news(given_arguments.source)
         else:
             util.log(show_on_console=True, flag="ERROR",
                      msg=f"Please, enter source or --date for correct work of rss_reader")
             exit(1)
 
-        if my_args.json:
+        if given_arguments.json:
             print(json.dumps(news_processor.get_news_as_json(news_limit), indent=4, ensure_ascii=False))
         else:
             print(news_processor.get_news_as_str(news_limit))
 
-        if my_args.to_html:
-            news_processor.save_news_as_html(my_args.to_html, news_limit)
-        if my_args.to_pdf:
-            news_processor.save_news_as_pdf(my_args.to_pdf, news_limit)
+        if given_arguments.to_html:
+            news_processor.save_news_as_html(given_arguments.to_html, news_limit)
+        if given_arguments.to_pdf:
+            news_processor.save_news_as_pdf(given_arguments.to_pdf, news_limit)
     except Exception as err:
         util.log(show_on_console=True, flag="ERROR", msg=f"Unexpected error has occurred: {str(err)}")
 
@@ -71,4 +69,5 @@ def init_arg_parser():
 
 
 if __name__ == "__main__":
-    main()
+    main(["https://www.yahoo.com/news/rss", "--verbose", "--to-html", "",
+          "--to-pdf", ""])

@@ -101,14 +101,13 @@ class DbCacher(Cacher):
         :param show_logs: show or hide logs
         :return: None
         """
+        util.log(msg="Start creating cache...", flag="INFO", show_on_console=show_logs)
         try:
-            util.log(msg="Start creating cache...", flag="INFO", show_on_console=show_logs)
             channel_id = self._create_channel_cache(rss_link=rss_link, rss_news=rss_news)
             self._create_news_cache(channel_id=channel_id, rss_news=rss_news)
-            util.log(msg="Nes was cached successfully", flag="INFO", show_on_console=show_logs)
-
-        except LookupError as err:
+        except sqlite3.DataError as err:
             util.log(msg=f"Error has happened while caching: {str(err)}", flag="ERROR", show_on_console=True)
+        util.log(msg="Nes was cached successfully", flag="INFO", show_on_console=show_logs)
 
     def _create_channel_cache(self, rss_link: str, rss_news: RssNews):
         """
@@ -128,7 +127,7 @@ class DbCacher(Cacher):
 
             chanel_ids = self.db_processor.select(f"SELECT id FROM channels WHERE rss_link = '{rss_link}'")
             if not chanel_ids:
-                raise LookupError(f"Can't create cache for chanel {rss_link}")
+                raise sqlite3.DataError(f"Can't create cache for chanel {rss_link}")
 
         chanel_id = chanel_ids[0]['id']
         return chanel_id
@@ -144,11 +143,17 @@ class DbCacher(Cacher):
             simple_date = self._extract_date_from_string(news_item.pub_date)
             md5_hash = hashlib.md5(news_item.link.encode('utf-8')).hexdigest()
             self.db_processor.insert(table_name="news",
-                                     insert_values={"channel_id": channel_id, "guid": news_item.guid,
-                                                    "title": news_item.title, "link": news_item.link,
-                                                    "short_date": simple_date, "pub_date": news_item.pub_date,
+                                     insert_values={"channel_id": channel_id,
+                                                    "guid": news_item.guid,
+                                                    "title": news_item.title,
+                                                    "link": news_item.link,
+                                                    "short_date": simple_date,
+                                                    "pub_date": news_item.pub_date,
                                                     "description": news_item.description,
-                                                    "category": news_item.category, "md5_hash": md5_hash}, ignore=True)
+                                                    "category": news_item.category,
+                                                    "md5_hash": md5_hash
+                                                    },
+                                     ignore=True)
 
             news_ids = self.db_processor.select(f"SELECT id FROM news WHERE link = '{news_item.link}'")
             if not news_ids:
@@ -296,6 +301,7 @@ class DbCacher(Cacher):
         """
 
         image_names = {}
+        util.create_directory(path_to_imgs)
         for channel in news_for_restoring:
             for news in channel["News"]:
                 if not news.get("Media"):
@@ -327,6 +333,6 @@ class DbCacher(Cacher):
                     md5_hash = hashlib.md5(img_link.encode('utf-8')).hexdigest()
                     img_info = self.db_processor.select(f"SELECT * FROM content WHERE md5_hash=\"{md5_hash}\"")
                     image_str = base64.b64encode(img_info[0]["image"])
-                    images[img_link] = "data:image/png;base64," + str(image_str)
+                    images[img_link] = "data:image/png;base64," + str(image_str)[2:-1]
 
         return images

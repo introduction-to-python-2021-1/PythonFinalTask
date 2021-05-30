@@ -94,7 +94,7 @@ class RssNews:
         :return: str
         """
         try:
-            news_limit = self._positive_integer_upper_bounded(value=limit, upper_limit=len(self.news))
+            news_limit = self._positive_integer_upper_bounded(checking_value=limit, upper_limit=len(self.news))
             news_str = "\n{0} [link: {1}]\n{2}\n\n".format(self.title, self.link,
                                                            f"({self.description})" if self.description else "")
             news_str += "\n\n".join([str(item) for item in self.news[:news_limit]]) if len(self.news) else "No news"
@@ -109,7 +109,7 @@ class RssNews:
         :return: str in json format
         """
         try:
-            news_limit = self._positive_integer_upper_bounded(value=limit, upper_limit=len(self.news))
+            news_limit = self._positive_integer_upper_bounded(checking_value=limit, upper_limit=len(self.news))
             news_dict = {"Link": self.link, "Description": self.description, "Title": self.title, "News": []}
             news_dict["News"].extend([news.as_dict() for news in self.news[:news_limit]])
             return news_dict
@@ -117,24 +117,24 @@ class RssNews:
             util.log(flag="ERROR", msg=str(err), show_on_console=True)
             exit(1)
 
-    def _positive_integer_upper_bounded(self, value, upper_limit: int):
+    def _positive_integer_upper_bounded(self, checking_value, upper_limit: int):
         """
         Check value if value is int>0 or None.
         value = upper_limit when value = upper_limit or value is None
 
-        :param value: value for checking and limitation
+        :param checking_value: value for checking and limitation
         :param upper_limit: limit for value. Value can't be greater then upper_limit
         :return: return limited value or throw error if value does't match condition int>0 or None
         """
         if upper_limit is None or upper_limit == 0:
             return 0
-        checked_value = value
+        checked_value = checking_value
         if checked_value is None:
             checked_value = upper_limit
         if not isinstance(checked_value, int):
-            raise TypeError(f"Limit should be int, but {type(value)} was received")
+            raise TypeError(f"Limit should be int, but {type(checking_value)} was received")
         if checked_value <= 0:
-            raise ValueError(f"Limit should be positive integer, but {value} was received")
+            raise ValueError(f"Limit should be positive integer, but {checking_value} was received")
         if checked_value > upper_limit:
             checked_value = upper_limit
         return checked_value

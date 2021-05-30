@@ -28,12 +28,12 @@ class SiteReader(Reader):
         :param link: link for connecting
         :return: site source
         """
+        if not link.startswith(("https://", "http://")):
+            util.log(show_on_console=True,
+                     flag="ERROR",
+                     msg=f"Can't get data from site: Link should starts with http:// or https://")
+            exit(1)
         try:
-            if not link.startswith(("https://", "http://")):
-                util.log(show_on_console=True,
-                         flag="ERROR",
-                         msg=f"Can't get data from site: Link should starts with http:// or https://")
-                exit(1)
             response = requests.get(url=link)
             response.encoding = 'utf-8'
             if response.ok:

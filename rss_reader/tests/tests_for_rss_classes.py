@@ -14,7 +14,7 @@ class TestRssItem(unittest.TestCase):
     Test RssItem class
     """
 
-    def test_RssItem_init(self):
+    def test_rss_item_init(self):
         """
         Check if RssItem initializing from dirt in right way +
         checking work of overloaded __str__

@@ -23,8 +23,5 @@ class TestCacher(unittest.TestCase):
         """
         cacher = DbCacher(DB_NAME)
         news = RssNews(**{})
-        try:
-            cacher.cache_rss_news(news, "http://a")
-            cacher.db_processor.close_connection()
-        except Exception:
-            self.assertTrue(False)
+        cacher.cache_rss_news(news, "http://a")
+        cacher.db_processor.close_connection()

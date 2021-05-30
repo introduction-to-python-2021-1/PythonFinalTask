@@ -5,31 +5,7 @@ import unittest
 from unittest.mock import MagicMock
 from rss_core.parser import XmlParser
 from rss_core.reader import SiteReader
-
-XML_INFO = """<?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:media="http://search/">
-<channel>
-<title>Chanel title</title>
-<link>Chanel link</link>
-<description>Chanel description</description>
-<item>
-<title>News title</title>
-<link>News link</link>
-<pubDate>News date</pubDate>
-<guid>news id</guid>
-<media:content url="Media url" />
-</item>
-<item>
-<title>News title</title>
-<link>News link</link>
-<pubDate>News date</pubDate>
-<guid>news id</guid>
-<media:content url="Media url" />
-</item>
-</channel>
-</rss>""".replace("\n", "").replace("\t", "")
-
-print(XML_INFO)
+from tests.tests_data import XML_INFO
 
 CORRECT_NEWS_DICT = {}
 

@@ -14,7 +14,7 @@ def create_directory(full_path: str):
     """
 
     directory = ""
-    if "." in full_path:
+    if re.search(r'\.\w+$', full_path):
         parts = re.findall(r"^(.+?)(?:[/\\])(\w+\.\w+)\s*$", full_path)
         directory = parts[0][0] if parts else ""
     else:

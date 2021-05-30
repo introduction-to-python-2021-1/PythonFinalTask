@@ -4,7 +4,7 @@
 """
 import re
 import xml.etree.ElementTree as ElementTree
-# from sys import exit
+from sys import exit
 from abc import abstractmethod, ABC
 from rss_core.reader import Reader
 from rss_core.rss_classes import RssItem
@@ -45,7 +45,7 @@ class XmlParser(Parser):
         try:
             if not isinstance(link, str):
                 raise TypeError(f"Illegal type for 'link': {str(link)}. It mast be string ")
-            if len(link) == 0:
+            if not link:
                 raise ValueError("Link mast be not empty str")
             if self.reader is None:
                 raise AttributeError("Reader is not initialized. Can't perform reader.get_data")
@@ -62,7 +62,7 @@ class XmlParser(Parser):
             util.log(show_on_console=True,
                      flag="ERROR",
                      msg=f"Error has occurred while parsing xml (Check if parsed string is valid xml) {str(err)}")
-            raise SystemExit(1)
+            raise exit(1)
         except ConnectionError as err:
             util.log(show_on_console=True,
                      flag="ERROR",
@@ -90,27 +90,28 @@ class XmlParser(Parser):
         :param news_items: array ox xml items
         :return: array of RssItems
         """
-        news = []
-        for item in news_items:
-            cur_news = {elem.tag: self.strip_tag_text(elem.text) for elem in item.iter() if
-                        self.strip_tag_text(elem.text) is not None or "content" in elem.tag}
+        rss_news = []
+        for news_item in news_items:
+            current_news = {elem.tag: self.strip_tag_text(elem.text) for elem in news_item.iter() if
+                            self.strip_tag_text(elem.text) is not None or "content" in elem.tag}
 
             cur_news_content = []
-            content_elements = {key: value for key, value in cur_news.items() if "content" in key}
+            content_elements = {tag_name: tag_content for tag_name, tag_content in current_news.items() if
+                                "content" in tag_name}
             for content_element in content_elements:
-                cur_news_content += [content.attrib['url'] for content in item.findall(content_element) if
+                cur_news_content += [content.attrib['url'] for content in news_item.findall(content_element) if
                                      "url" in content.attrib]
 
-            cur_news["content"] = cur_news_content
-            news.append(RssItem(**cur_news))
-        return news
+            current_news["content"] = cur_news_content
+            rss_news.append(RssItem(**current_news))
+        return rss_news
 
     def strip_tag_text(self, tag_text: str):
         """
         Delete or replace all wrong characters from tag text
         return: performed str
         """
-        if not tag_text or len(tag_text) == 0:
+        if not tag_text:
             return tag_text
         for wrong_chr, right_chr in CORRECT_CHARS.items():
             tag_text = tag_text.replace(wrong_chr, right_chr)
