@@ -44,6 +44,7 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
+        exclude: .bumpversion.cfg
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.3.0
     hooks:
