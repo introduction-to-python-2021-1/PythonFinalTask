@@ -1,5 +1,4 @@
 exclude .bumpversion.cfg
-exclude .coveragerc
 exclude .darglint
 exclude .env
 exclude .flake8
