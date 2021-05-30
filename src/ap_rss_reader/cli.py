@@ -1,7 +1,7 @@
 """Single point of application run."""
-
 from argparse import ArgumentParser
 from datetime import datetime
+import json
 import logging
 import re
 import sys
@@ -20,6 +20,7 @@ from ap_rss_reader.ap_constants import CHANNEL_ITEM_SELECTOR
 from ap_rss_reader.ap_constants import CHANNEL_SELECTOR
 from ap_rss_reader.ap_constants import HELLO_WORLD
 from ap_rss_reader.ap_constants import TITLE
+from ap_rss_reader.ap_typing import ChannelAsDict
 from ap_rss_reader.log import logger
 
 __all__ = ("main", "create_parser", "get_beautiful_soup")
@@ -50,6 +51,11 @@ def create_parser() -> ArgumentParser:
         action="version",
         help="Shows the version of the program and exits",
         version=f"{TITLE} {ap_rss_reader.__version__}",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print result as JSON in stdout",
     )
     return parser
 
@@ -111,6 +117,32 @@ def load_channel(url: str, limit: int = 0) -> Channel:
     return channel
 
 
+def convert_channel_to_dict(channel: Channel) -> ChannelAsDict:
+    """Convert `Channel` to dict.
+
+    Args:
+        channel (Channel): RSS channel.
+
+    Returns:
+        :obj:`dict`: channel as dictionary with predefined fields.
+
+    """
+    return ChannelAsDict(
+        title=channel.title,
+        items=[
+            {
+                "title": item.title,
+                "link": item.link,
+                "date": item.date.strftime("%Y-%m-%d %H:%M:%S"),
+                "source": item.source,
+                "source_url": item.source_url,
+                "media_content_url": item.media_content_url,
+            }
+            for item in channel.items
+        ],
+    )
+
+
 def print_news(channel: Channel) -> None:
     """Print channel title and all items from channel.
 
@@ -159,4 +191,11 @@ def main(arguments: Optional[List[str]] = None) -> None:
         logger.setLevel(logging.DEBUG)
 
     channel = load_channel(url=args.source, limit=args.limit)
-    print_news(channel)
+    if args.json:
+        logger.info(
+            json.dumps(
+                convert_channel_to_dict(channel), indent=4, sort_keys=True
+            )
+        )
+    else:
+        print_news(channel)
