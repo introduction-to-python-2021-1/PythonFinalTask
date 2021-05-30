@@ -15,7 +15,7 @@
 
 The project has been tested only with [python 3.8][python] on Ubuntu Linux and
 Windows 10. If you have python 3.8 and above installed in your machine, just
-install the AP Games from [PyPI][pypi ap-rss-reader]:
+install the AP RSS-reader from [PyPI][pypi ap-rss-reader]:
 
 ```shell
 python --version
@@ -27,19 +27,61 @@ You can find source code of this package on [github][]. See
 
 ## How to use it
 
-Run module:
+```shell
+$ ap_rss_reader "https://news.yahoo.com/rss/" --limit 1
+
+Feed: Yahoo News - Latest News & Headlines
+
+Title: Nestor heads into Georgia after tornados damage Florida
+Date: Sun, 20 Oct 2019 04:21:44 +0300
+Link: https://news.yahoo.com/wet-weekend-tropical-storm-warnings-131131925.html
+
+
+Links:
+[1]: https://news.yahoo.com/wet-weekend-tropical-storm-warnings-131131925.html (link)
+[2]: http://l2.yimg.com/uu/api/res/1.2/Liyq2kH4HqlYHaS5BmZWpw--/YXBwaWQ9eXRhY2h5b247aD04Njt3PTEzMDs-/https://media.zenfs.com/en/ap.org/5ecc06358726cabef94585f99050f4f0 (image)
+
+```
+
+Utility provides the following interface:
 
 ```shell
-python -m ap_rss_reader
+usage: ap_rss_reader [-h] [--limit LIMIT] [--verbose] [--version] [--json] source
+
+AP RSS-reader with CLI.
+
+positional arguments:
+  source         RSS URL
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --limit LIMIT  Limit news topics if this parameter provided
+  --verbose      Provides additional details as to what the program is doing
+  --version      Shows the version of the program and exits
+  --json         Print result as JSON in stdout
+
 ```
 
-Or open the python console and type:
+In case of using `--json` argument utility converts the news into
+[JSON](https://en.wikipedia.org/wiki/JSON) format:
 
-```python
-# Python version 3.8+
-from ap_rss_reader import cli
-cli.main()
+```json
+{
+  "channel_items": [
+    {
+      "date": "2021-05-30 12:19:27",
+      "link": "https://news.yahoo.com/mexico-cartels-hunting-down-police-121927049.html",
+      "media_content_url": "https://s.yimg.com/uu/api/res/1.2/laxRlIvAURG7aPTJU6a.Cw--~B/aD0zNjQ4O3c9NTQ3MjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/cdd01711ada54152f19140789ed6fcb4",
+      "source": "Associated Press",
+      "source_url": "http://www.ap.org/",
+      "title": "In Mexico, cartels are hunting down police at their homes"
+    }
+  ],
+  "title": "Yahoo News - Latest News & Headlines"
+}
 ```
+
+With the argument `--verbose` your program prints all logs in stdout.
 
 ## Development & Contributing
 
