@@ -6,7 +6,7 @@ import sys
 __all__ = ("logger",)
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 stream_handler = logging.StreamHandler(stream=sys.stdout)
 stream_handler.setLevel(logging.DEBUG)
