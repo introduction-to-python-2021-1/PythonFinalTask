@@ -24,6 +24,7 @@ setup(
             "pydocstyle==6.1.1",
             "pylint==2.8.2",
             "pyupgrade==2.19.0",
+            "tox==3.23.1",
             "twine==3.4.1",
         ],
     ),

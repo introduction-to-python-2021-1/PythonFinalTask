@@ -11,26 +11,37 @@
 [![codecov](https://codecov.io/gh/aplatkouski/ap-rss-reader/branch/main/graph/badge.svg?token=FHs5Yrro0x)](https://codecov.io/gh/aplatkouski/ap-rss-reader)
 [![Requirements Status](https://requires.io/github/aplatkouski/ap-rss-reader/requirements.svg?branch=main)](https://requires.io/github/aplatkouski/ap-rss-reader/requirements/?branch=main)
 
-## How to use it
+## Installation
 
-### Add `src` directory to `PYTHONPATH` beforehand
+The project has been tested only with [python 3.8][python] on Ubuntu Linux and
+Windows 10. If you have python 3.8 and above installed in your machine, just
+install the AP Games from [PyPI][pypi ap-rss-reader]:
 
 ```shell
-export PYTHONPATH=".:src/"
+python --version
+pip install ap-rss-reader
 ```
 
-### Run module
+You can find source code of this package on [github][]. See
+[aplatkouski/ap-rss-reader][] repository.
 
-Run app from source
+## How to use it
+
+Run module:
 
 ```shell
 python -m ap_rss_reader
 ```
 
-or from Python console:
+Or open the python console and type:
 
 ```python
 # Python version 3.8+
 from ap_rss_reader import cli
 cli.main()
 ```
+
+[python]: https://www.python.org/
+[pypi ap-rss-reader]: https://pypi.org/project/ap-rss-reader/
+[github]: https://github.com
+[aplatkouski/ap-rss-reader]: https://github.com/aplatkouski/ap-rss-reader

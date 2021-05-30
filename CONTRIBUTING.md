@@ -95,6 +95,7 @@ source .venv/bin/activate
    - [mypy][] is a static type checker for Python
    - [flake8][] to identify coding errors and check code style
    - [pytest][] and [coverage.py][] to run the tests
+   - [tox][] to run common development tasks
 
 **Congratulations!** You're now all set to begin development.
 
@@ -124,8 +125,8 @@ source .venv/bin/activate
 
 - Run the formatters and linters:
 
-  ```shell script
-  pre-commit run --all-files # --show-diff-on-failure
+  ```shell
+  tox -e check
   ```
 
   These checks are also run on every commit via [pre-commit hooks][]. Please
@@ -137,7 +138,20 @@ source .venv/bin/activate
   pytest
   ```
 
+- Run the tests and generate a coverage report:
+
+  ```shell
+  tox -e py,coverage
+  ```
+
   Please add or update tests to ensure the coverage doesn't drop.
+
+- Run the tests in all supported Python versions, generate a coverage report,
+  and run the checks
+
+  ```shell
+  tox
+  ```
 
 - Commit your changes in logical chunks
 
@@ -214,16 +228,13 @@ git push origin main $version
 ### Run the release pipeline to upload to [TestPyPI][]
 
 ```shell
-python scripts/clean_release.py
-python setup.py sdist bdist_wheel
-twine check dist/*
-twine upload --repository testpypi dist/*
+tox -e release
 ```
 
 If it looks good on TestPyPI, run the release pipeline to upload to [PyPI][]
 
 ```shell
-twine upload --repository pypi dist/*
+tox -e release pypi
 ```
 
 ### Create a new GitHub Release
@@ -261,6 +272,7 @@ Add the `-p` flag for pre-releases.
 [flake8]: https://flake8.pycqa.org/en/latest/
 [pytest]: https://docs.pytest.org/en/latest/
 [coverage.py]: https://coverage.readthedocs.io/en/latest/
+[tox]: https://tox.readthedocs.io/en/latest/
 [github.com help documentation]:
   https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
 [mit license]:
