@@ -11,5 +11,3 @@ if TYPE_CHECKING:
 
 HELLO_WORLD: Final[HelloWorld] = "Hello, World!"
 TITLE: Final[str] = "AP RSS-reader"
-CHANNEL_SELECTOR: Final[str] = "rss channel"
-CHANNEL_ITEM_SELECTOR: Final[str] = "item"

@@ -15,10 +15,3 @@ class ChannelItem(NamedTuple):
     source: str
     source_url: str
     media_content_url: str
-
-
-class Channel(NamedTuple):
-    """RSS Feed."""
-
-    title: str
-    items: list[ChannelItem]
