@@ -20,6 +20,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install pytest
         run: python -m pip install --upgrade pip pytest pytest-cov
+      - name: Install requirements
+        run: python -m pip install -r requirements.txt
       - name: Export PYTHONPATH and generate coverage report
         run: source .env && pytest
       - name: Upload coverage to Codecov

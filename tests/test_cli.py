@@ -25,5 +25,6 @@ def test_create_parser() -> None:
 
 
 def test_arg_version_exist() -> None:
-    args = create_parser().parse_args(['--verbose'])
-    assert hasattr(args, 'verbose')
+    args = create_parser().parse_args(["https://a.b", "--verbose"])
+    assert hasattr(args, "source")
+    assert hasattr(args, "verbose")
