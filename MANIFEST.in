@@ -4,7 +4,6 @@ exclude .gitignore
 exclude .gitlint
 exclude .pre-commit-config.yaml
 exclude .prettierrc.yaml
-exclude .pydocstyle.ini
 exclude .pylintrc
 exclude requirements-dev.txt
 exclude tox.ini
