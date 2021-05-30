@@ -1,7 +1,6 @@
 import sys
 import os
 import logging
-import json
 
 import pandas as pd
 
@@ -54,8 +53,9 @@ class Data:
         if verbose:
             logger.setLevel(logging.INFO)
         count = 0
-        if os.path.getsize("data.csv") == 0:
-            print("Empty file")
+        if os.path.getsize("data.csv") == 1:
+            logger.error("Empty file")
+            os.remove("data.csv")
             sys.exit()
         self.data = pd.read_csv("data.csv")
         all_data = self.data['Date']

@@ -117,21 +117,18 @@ def print_news(args, feed_news):
 def main():
     args = create_parser(sys.argv[1:])
     data = Data()
+
     if args.verbose:
         logger.setLevel(logging.INFO)
 
     if args.url:
         parse_news(args, data)
-    if args.date and not args.url:
-        logger.error("Empty file")
-        os.remove("data.csv")
-        sys.exit()
     data.append_cache()
 
     if args.date:
         if len(args.date) == 8 and int(args.date) and int(args.date) > 20210500:
-            a = data.sort_data(args.date, args.limit, args.verbose)
-            print_news(args, a)
+            news = data.sort_data(args.date, args.limit, args.verbose)
+            print_news(args, news)
 
         else:
             logger.error(f"Bad date format")
