@@ -9,6 +9,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Run tests](https://github.com/aplatkouski/ap-rss-reader/workflows/Run%20tests/badge.svg)](https://github.com/aplatkouski/ap-rss-reader/actions?query=workflow%3A%22Run+tests%22+branch%3Amaster)
 [![codecov](https://codecov.io/gh/aplatkouski/ap-rss-reader/branch/main/graph/badge.svg?token=FHs5Yrro0x)](https://codecov.io/gh/aplatkouski/ap-rss-reader)
+[![Requirements Status](https://requires.io/github/aplatkouski/ap-rss-reader/requirements.svg?branch=main)](https://requires.io/github/aplatkouski/ap-rss-reader/requirements/?branch=main)
 
 ## How to use it
 
