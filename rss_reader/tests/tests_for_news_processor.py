@@ -95,15 +95,13 @@ class TestNewsProcessor(unittest.TestCase):
         """
         proc = NewsProcessor(XmlParser(SiteReader()))
         proc.save_news_as_html(output_to="a.pdf")
-        self.assertEqual("[ERROR] Error has occurred while converting news to html: File should be in 'html' format",
-                         mock_stdout.getvalue().replace("\n", ""))
+        self.assertIn("File should be in 'html' format", mock_stdout.getvalue())
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_save_as_pdf_into_wrong_file(self, mock_stdout):
         proc = NewsProcessor(XmlParser(SiteReader()))
         proc.save_news_as_pdf(output_to="a.html")
-        self.assertEqual("[ERROR] Error has occurred while converting news to html: File should be in 'pdf' format",
-                         mock_stdout.getvalue().replace("\n", ""))
+        self.assertIn("File should be in 'pdf' format", mock_stdout.getvalue())
 
     @data([None, 2, 2], [3, 2, 1])
     def test_get_news_as_json(self, value):
