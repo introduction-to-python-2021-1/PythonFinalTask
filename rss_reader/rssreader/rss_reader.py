@@ -71,5 +71,4 @@ def init_arg_parser():
 
 
 if __name__ == "__main__":
-    main(["--limit", "100", "--verbose", "https://rss.dw.com/xml/rss-en-all", "--date", "20210529",
-          "--to-html", "dumps/as_html.html"])
+    main()

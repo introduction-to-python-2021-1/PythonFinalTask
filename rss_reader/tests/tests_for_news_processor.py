@@ -85,6 +85,11 @@ class TestNewsProcessor(unittest.TestCase):
         proc.load_news("http://aaa")
         self.assertEqual("[WARNING] Cacher is not initialized. Cache won't be create!", mock_stdout.getvalue().strip())
 
+    def test_save_as_html_into_wrong_file(self):
+        proc = NewsProcessor(XmlParser(SiteReader()))
+        with self.assertRaises(ValueError):
+            proc.save_news_as_html(target_file="a.pdf")
+
     def test_get_news_as_json(self):
         """
         Test getting news as json without limit
