@@ -1,5 +1,4 @@
 exclude .bumpversion.cfg
-exclude .darglint
 exclude .env
 exclude .gitignore
 exclude .gitlint
