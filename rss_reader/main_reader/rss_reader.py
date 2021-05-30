@@ -239,10 +239,10 @@ def parse_command_line_arguments():
         "--date", type=str, help="Return news from date yyyymmdd from cash"
     )
     parser.add_argument(
-        "--to-pdf", type=str, help="Save news in pdf format in chosen path, eg 'E:\data' or '/home/user/data'"
+        "--to-pdf", type=str, help=r"Save news in pdf format in chosen path, eg 'E:\data' or '/home/user/data'"
     )
     parser.add_argument(
-        "--to-html", type=str, help="Save news in html format in chosen path, eg 'E:\data' or '/home/user/data'"
+        "--to-html", type=str, help=r"Save news in html format in chosen path, eg 'E:\data' or '/home/user/data'"
     )
     arguments = parser.parse_args()
     return arguments
