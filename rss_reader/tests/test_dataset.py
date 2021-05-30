@@ -4,6 +4,7 @@ import unittest
 import io
 import sys
 
+import pandas.errors
 import pandas as pd
 
 from rss_reader.dataset import Data
@@ -20,7 +21,7 @@ class TestFile(unittest.TestCase):
 
     def test_date_empty(self):
         """Test Empty result"""
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(pandas.errors.EmptyDataError):
             self.assertEqual(
                 self.data.sort_data(
                     20210519, 1, None), "Empty file")
@@ -69,12 +70,12 @@ class TestArg(unittest.TestCase):
 
     def test_verbose(self):
         """Test verbose lvl"""
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(pandas.errors.EmptyDataError):
             self.assertLogs(self.data.sort_data(20210523, 1, logging.INFO), logging.INFO)
 
     def test_negative_limit(self):
         """Test negative limit"""
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(pandas.errors.EmptyDataError):
             self.assertIsNone(self.data.sort_data(20210523, -2, None))
 
     def tearDown(self):
