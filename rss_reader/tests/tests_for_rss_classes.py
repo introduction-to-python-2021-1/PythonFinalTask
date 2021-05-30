@@ -22,7 +22,7 @@ class TestRssItem(unittest.TestCase):
         item = RssItem(**RSS_ITEM_DICT)
         self.assertEqual(RSS_ITEM_STR, str(item))
 
-    def test_RssItem_as_dict(self):
+    def test_rss_item_as_dict(self):
         """
         Check as_dict
         """
@@ -35,12 +35,12 @@ class TestRssNews(unittest.TestCase):
     Testing of RssNews
     """
 
-    def test_RssNews_str(self):
+    def test_rss_news_str(self):
         """
         Test as_str function
         """
         self.assertEqual("\n [link: ]\n\n\nNo news", RssNews(**{}).as_str())
 
-    def test_RssNews_json(self):
+    def test_rss_news_json(self):
         """Check as_json function"""
         self.assertEqual({"Link": "", "Description": "", "Title": "", "News": []}, RssNews(**{}).as_json())
