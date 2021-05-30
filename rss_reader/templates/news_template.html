@@ -33,7 +33,7 @@
 
         {% if news_item["Media"] is not none %}
         {% for media_link in news_item["Media"] %}
-        <a href="{{media_link}}"><img height="200pt" width="200pt" src="{{media_link}}"></a>
+        <a href="{{media_link}}"><img height="200pt" width="200pt" src="{{img_files[media_link]}}"></a>
         <br>
         {%endfor%}
         {% endif %}

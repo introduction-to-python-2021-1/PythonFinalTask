@@ -9,6 +9,8 @@ from rss_core.rss_classes import RssNews
 from utils import util
 from sys import exit
 
+IMAGE_FOLDER = "/static/src/"
+
 
 class NewsProcessor:
     """
@@ -107,9 +109,14 @@ class NewsProcessor:
         try:
             util.log(msg="Start creating html file...", flag="INFO", show_on_console=self.show_logs)
             util.log(msg=f"Checking directory for {target_file}...", flag="INFO", show_on_console=self.show_logs)
-            util.create_directory(target_file)
+            img_directory = util.create_directory(target_file)
+            util.create_directory(img_directory + IMAGE_FOLDER)
             util.log(msg="Directory is OK", flag="INFO", show_on_console=self.show_logs)
-            page = self.converter.get_news_template(rss_news=self.get_news_as_json(news_limit),
+            news_for_printing = self.get_news_as_json(news_limit)
+            img_files = self.cacher.restore_imgs_from_db_into_folder(news_for_restoring=news_for_printing,
+                                                                     path_to_imgs=img_directory + "static/imgs/")
+            page = self.converter.get_news_template(rss_news=news_for_printing,
+                                                    img_files=img_files,
                                                     show_logs=self.show_logs)
             util.log(msg="Start writing data into file", flag="INFO", show_on_console=self.show_logs)
             with open(target_file, "w", encoding='utf-8') as fh:
@@ -120,6 +127,12 @@ class NewsProcessor:
                      show_on_console=True)
 
     def save_news_as_pdf(self, target_file, news_limit: int = None):
+        """
+        Dump loaded news into pdf file
+        :param target_file: file for writing
+        :param news_limit: count of news to be showen
+        :return: None
+        """
         if not target_file.endswith(".pdf"):
             raise ValueError("File for writing news as pdf should ends with '.pdf'")
         try:
@@ -129,7 +142,10 @@ class NewsProcessor:
             util.log(msg=f"Checking directory for {target_file}...", flag="INFO", show_on_console=self.show_logs)
             util.create_directory(target_file)
             util.log(msg="Directory is OK", flag="INFO", show_on_console=self.show_logs)
-            page = self.converter.get_news_template(rss_news=self.get_news_as_json(news_limit),
+            news_for_printing = self.get_news_as_json(news_limit)
+            img_files = self.cacher.get_images_from_db(news_for_restoring=news_for_printing)
+            page = self.converter.get_news_template(rss_news=news_for_printing,
+                                                    img_files=img_files,
                                                     show_logs=self.show_logs)
             util.log(msg="Start writing data into file", flag="INFO", show_on_console=self.show_logs)
             with open(target_file, "w+b") as resultFile:

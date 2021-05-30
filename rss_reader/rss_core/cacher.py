@@ -1,10 +1,12 @@
 """
     Contains class for working working with cache
 """
+import base64
 import calendar
+import hashlib
 import re
+import requests
 import sqlite3
-from sys import exit
 from abc import ABC, abstractmethod
 from rss_core.rss_classes import RssNews, RssItem
 from utils import util
@@ -25,6 +27,14 @@ class Cacher(ABC):
     @abstractmethod
     def load_from_cache(self, rss_link: str, date: str = None, show_logs: bool = False):
         """Restore RssNews object from cache"""
+
+    @abstractmethod
+    def restore_imgs_from_db_into_folder(self, news_for_restoring, path_to_imgs: str = ""):
+        """Restore images to path_to_imgs folder"""
+
+    @abstractmethod
+    def get_images_from_db(self, news_for_restoring):
+        """Get binary images"""
 
 
 class DbCacher(Cacher):
@@ -52,6 +62,7 @@ class DbCacher(Cacher):
                     "rss_link"    TEXT NOT NULL DEFAULT '' UNIQUE,
                     "title"    TEXT NOT NULL DEFAULT '',
                     "link"    TEXT NOT NULL DEFAULT '',
+                    "md5_hash" BINARY(16),
                     "description"    TEXT NOT NULL DEFAULT '',
                     PRIMARY KEY("id" AUTOINCREMENT));"""
         self.db_processor.perform_query(query)
@@ -61,11 +72,12 @@ class DbCacher(Cacher):
                             "channel_id" INTEGER NOT NULL DEFAULT -1,
                             "guid" TEXT NOT NULL DEFAULT '',
                             "title"    TEXT NOT NULL DEFAULT '',
-                            "link"    TEXT NOT NULL DEFAULT '' UNIQUE,
+                            "link"    TEXT NOT NULL DEFAULT '' ,
                             "short_date" DATE NOT NULL DEFAULT '0000-0-0',
                             "pub_date"    TEXT NOT NULL DEFAULT '',
                             "description"    TEXT NOT NULL DEFAULT '',
                             "category"    TEXT NOT NULL DEFAULT '',
+                            "md5_hash" BINARY(16) UNIQUE,
                             PRIMARY KEY("id" AUTOINCREMENT));"""
         self.db_processor.perform_query(query)
 
@@ -76,12 +88,9 @@ class DbCacher(Cacher):
                     "id"    INTEGER,
                     "news_id" INTEGER NOT NULL DEFAULT -1,
                     "link"    TEXT NOT NULL DEFAULT '',
+                    "image" BLOB,
+                    "md5_hash" BINARY(16) UNIQUE,
                     PRIMARY KEY("id" AUTOINCREMENT));"""
-        self.db_processor.perform_query(query)
-
-        query = """CREATE INDEX IF NOT EXISTS content_by_news_id ON content (news_id ASC);"""
-        self.db_processor.perform_query(query)
-        query = """CREATE UNIQUE INDEX IF NOT EXISTS "unique_links_for_news" ON "content" ("news_id","link");"""
         self.db_processor.perform_query(query)
 
     def cache_rss_news(self, rss_news: RssNews, rss_link: str, show_logs: bool = False):
@@ -133,12 +142,13 @@ class DbCacher(Cacher):
         """
         for news_item in rss_news.news:
             simple_date = self._extract_date_from_string(news_item.pub_date)
+            md5_hash = hashlib.md5(news_item.link.encode('utf-8')).hexdigest()
             self.db_processor.insert(table_name="news",
                                      insert_values={"channel_id": channel_id, "guid": news_item.guid,
                                                     "title": news_item.title, "link": news_item.link,
                                                     "short_date": simple_date, "pub_date": news_item.pub_date,
                                                     "description": news_item.description,
-                                                    "category": news_item.category}, ignore=True)
+                                                    "category": news_item.category, "md5_hash": md5_hash}, ignore=True)
 
             news_ids = self.db_processor.select(f"SELECT id FROM news WHERE link = '{news_item.link}'")
             if not news_ids:
@@ -154,9 +164,14 @@ class DbCacher(Cacher):
         :param content_links: array of links to be cached
         :return: None
         """
-        for content in content_links:
+        for url_to_picture in content_links:
+            response = requests.get(url_to_picture)
+            picture = sqlite3.Binary(response.content)
+            md5_hash = hashlib.md5(url_to_picture.encode('utf-8')).hexdigest()
             self.db_processor.insert(table_name="content",
-                                     insert_values={"news_id": news_id, "link": content}, ignore=True)
+                                     insert_values={"news_id": news_id, "link": url_to_picture, "image": picture,
+                                                    "md5_hash": str(md5_hash)},
+                                     ignore=True)
 
     def _extract_date_from_string(self, pub_date: str):
         """
@@ -271,3 +286,47 @@ class DbCacher(Cacher):
         correct_date = f"{ymd[0][0]}-{ymd[0][1]}-{ymd[0][2]}"
         correct_date = re.sub(r'-0', '-', correct_date)
         return correct_date
+
+    def restore_imgs_from_db_into_folder(self, news_for_restoring, path_to_imgs: str = ""):
+        """
+        Restore images from  db to folder for html
+        :param news_for_restoring: news to bt saved
+        :param path_to_imgs: path to target folder
+        :return: dict image_link: name of saved image
+        """
+
+        image_names = {}
+        for channel in news_for_restoring:
+            for news in channel["News"]:
+                if not news.get("Media"):
+                    continue
+                for img in news["Media"]:
+                    img_link = img
+                    md5_hash = hashlib.md5(img_link.encode('utf-8')).hexdigest()
+                    img_info = self.db_processor.select(f"SELECT * FROM content WHERE md5_hash=\"{md5_hash}\"")
+                    filename = path_to_imgs + str(img_info[0]["md5_hash"]) + ".png"
+                    with open(filename, "wb") as img_file:
+                        img_file.write(img_info[0]["image"])
+                    image_names[img_link] = filename
+
+        return image_names
+
+    def get_images_from_db(self, news_for_restoring, ):
+        """
+        Get immages from db for creating pdf
+        :param news_for_restoring:  news to be shown
+        :return: dict link: image
+        """
+        images = {}
+        for channel in news_for_restoring:
+            for news in channel["News"]:
+                if not news.get("Media"):
+                    continue
+                for img in news["Media"]:
+                    img_link = img
+                    md5_hash = hashlib.md5(img_link.encode('utf-8')).hexdigest()
+                    img_info = self.db_processor.select(f"SELECT * FROM content WHERE md5_hash=\"{md5_hash}\"")
+                    image_str = base64.b64encode(img_info[0]["image"])
+                    images[img_link] = "data:image/png;base64," + str(image_str)
+
+        return images

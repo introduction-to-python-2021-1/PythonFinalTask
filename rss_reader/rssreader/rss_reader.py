@@ -13,7 +13,7 @@ from rss_core.reader import SiteReader
 from utils import util
 
 __version__ = "1.4"
-RSS_DB = "data/rss_news_bd.db"
+RSS_DB = "data/rss_news_db.db"
 
 
 def main(argv=None):
@@ -71,4 +71,5 @@ def init_arg_parser():
 
 
 if __name__ == "__main__":
-    main()
+    main(["--limit", "100", "--verbose", "https://rss.dw.com/xml/rss-en-all", "--date", "20210529",
+          "--to-html", "dumps/as_html.html"])
