@@ -164,7 +164,7 @@ def parsed_args():
     # Positional arguments
     parser.add_argument('source', type=str, help='RSS URL')
     # Optional arguments
-    parser.add_argument('--version', action='version', version='"Version 1.1"', help='Print version info')
+    parser.add_argument('--version', action='version', version='"Version 1.2"', help='Print version info')
     parser.add_argument('--json', action='store_true', help='Print result as JSON in stdout')
     parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
     parser.add_argument('--limit', type=int, default=0, help='Limit news topics if this parameter provided')
