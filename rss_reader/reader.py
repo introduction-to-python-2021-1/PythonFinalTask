@@ -1,5 +1,5 @@
 import cl_parser as psr
-from feed_container import feed_container
+from feed_container import FeedContainer
 import app_logger
 
 import logging
@@ -14,7 +14,7 @@ def main():
     if parser.args_Space.verbose:
         logger.handlers[1].setLevel("INFO")
 
-    feed = feed_container(url=parser.args_Space.source, args=parser.args_Space)
+    feed = FeedContainer(url=parser.args_Space.source)
 
     feed.print_feed_Info()
     feed.print_news(parser.args_Space.limit)

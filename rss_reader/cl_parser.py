@@ -12,17 +12,17 @@ logger = app_logger.get_logger(__name__)
 class args_Parser:
 	def __init__(self):
 		self.parser = argparse.ArgumentParser(prog="RSS_reader",
-						                      formatter_class=argparse.RawDescriptionHelpFormatter,
-											  description="---------------------------------------------------------\n"
-														  "This script allows you to view RSS feeds in the console. \n"
-														  "---------------------------------------------------------\n",
-											  add_help=True)
-		self.__parametеrs_Init()
+						                      formatter_class = argparse.RawDescriptionHelpFormatter,
+											  description = "---------------------------------------------------------\n"
+														    "This script allows you to view RSS feeds in the console. \n"
+															"---------------------------------------------------------\n",
+											  add_help = True)
+		self.__parameters_init()
 		self.__parse_Args()
 		self.__args_Validation()
 
 	# initialization of all arguments
-	def __parametеrs_Init(self):
+	def __parameters_init(self):
 		self.parser.add_argument("source",
 								 type=str,
 								 help="RSS URL")
