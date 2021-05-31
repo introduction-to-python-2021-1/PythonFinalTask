@@ -18,7 +18,6 @@ def command_arguments_parser(args):
     parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
-    parser.add_argument("--date", type=str)
     args = parser.parse_args(args)
     return args
 
@@ -41,11 +40,7 @@ def server_answer(source, verbose=None):
     logger = create_logger(verbose)
     try:
         answer = requests.get(source)
-        if answer.status_code == 403:
-            logger.info("Error 403. Forbidden. Access denied")
-            print("Error 403. Forbidden. Access denied")
-            sys.exit()
-        elif answer.status_code == 404:
+        if answer.status_code == 404:
             logger.info("Error 404. Please try to reload the page")
             print("Error 404. Please try to reload the page or check the link you entered")
             sys.exit()
