@@ -89,12 +89,15 @@ class TestReader(unittest.TestCase):
                                                                             "-no-more-uk-112645101.html")
         self.assertEqual(rss_reader.parses_data(answer)["news"][1]["pubDate"], "2021-05-27T11:26:45Z")
         self.assertIsInstance(rss_reader.parses_data(answer), dict)
+        self.assertLogs(rss_reader.parses_data(answer)["news"][1], "Reads amount of news - 1")
+        self.assertLogs(answer, "Starting reading link")
 
     def test_good_link_in_json(self):
-        """Test for dictionary in json"""
+        """Test for data in json"""
         with open("file_json_format.json", "r") as rssfile:
             answer = rssfile.read()
         self.assertIsInstance(rss_reader.parses_data(answer), dict)
+        self.assertLogs(answer, "In json")
 
     def test_for_printing_news(self):
         """Test for def printing_news"""
