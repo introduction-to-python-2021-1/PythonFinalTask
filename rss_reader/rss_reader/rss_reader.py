@@ -48,10 +48,10 @@ def server_answer(source):
         elif answer.status_code == 200:
             print(f"Starting reading link {source}")
         return answer
-    except URLError as e:
+    except URLError:
         print("Wrong link, try again, please")
         sys.exit()
-    except ValueError as e:
+    except ValueError:
         print("Insert rss link, please")
         sys.exit()
 
