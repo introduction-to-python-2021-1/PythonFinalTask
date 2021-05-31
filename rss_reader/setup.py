@@ -6,7 +6,7 @@ setup(
     description='Command-line RSS reader',
     author='Kolesnikov Viktor',
     url='https://github.com/MackDillan/PythonFinalTask',
-    install_requires=['beautifulsoup4', 'lxml', 'requests', 'peewee', ],
+    install_requires=['beautifulsoup4', 'lxml', 'requests', 'peewee', 'xhtml2pdf', ],
     python_requires='>=3.8',
     packages=['rss_reader'],
     entry_points={

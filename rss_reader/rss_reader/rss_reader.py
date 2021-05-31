@@ -12,11 +12,13 @@ try:
     from rss_reader.rss_parser import RssParser
     from rss_reader.db_worker import RssStorage, get_path
     from rss_reader.db_worker import db as rss_db
+    from rss_reader.converter import save_html, save_pdf
 
 except ModuleNotFoundError:
     from rss_parser import RssParser
     from db_worker import RssStorage, get_path, db
     from db_worker import db as rss_db
+    from converter import save_html, save_pdf
 
 
 def main(args=sys.argv[1:]):
@@ -39,6 +41,11 @@ def main(args=sys.argv[1:]):
         news, items = get_news_from_storage(storage, parsed_arg)
 
     print_news(parsed_arg.json, news)
+    if parsed_arg.to_html:
+        save_html(items, parsed_arg.to_html, datetime.now().strftime("%m.%d %H.%M.%S"))
+
+    if parsed_arg.to_pdf:
+        save_pdf(items, parsed_arg.to_pdf, datetime.now().strftime("%m.%d %H.%M.%S"))
 
 
 def get_arg_parser():
@@ -51,6 +58,7 @@ def get_arg_parser():
     parser.add_argument('--limit', type=int, help='Limit news topics')
     parser.add_argument('--date', type=str, help='Print cached news')
     parser.add_argument('--to_html', type=str, help='Convert news to html file')
+    parser.add_argument('--to_pdf', type=str, help='Convert news to html file')
     return parser
 
 
@@ -104,14 +112,6 @@ def get_news_from_storage(storage, parsed_arg):
     news = dict()
     collected_items = list()
     for num, item in enumerate(storage):
-        if parsed_arg.limit is None or num < parsed_arg.limit:
-            if parsed_arg.json:
-                news[num] = RssParser.json_format(item)
-
-            else:
-                news[num] = RssParser.default_format(item)
-            collected_items.append(item)
-
         if not parsed_arg.date:
             try:
                 with rss_db.connection_context():
@@ -120,6 +120,13 @@ def get_news_from_storage(storage, parsed_arg):
             except peewee.IntegrityError:
                 pass
 
+        if parsed_arg.limit is None or num < parsed_arg.limit:
+            collected_items.append(item)
+            if parsed_arg.json:
+                news[num] = RssParser.json_format(item)
+
+            else:
+                news[num] = RssParser.default_format(item)
     return news, collected_items
 
 
