@@ -5,9 +5,7 @@ import logging
 import logging.handlers
 from unittest.mock import patch
 from rss_reader.rss_reader import test_data
-import sys
-import io
-from urllib.error import URLError
+
 
 class TestReader(unittest.TestCase):
     """Tests for parsing links, making news dictionaries, printing news, setting limits, verbose flag"""
