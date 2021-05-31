@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='rss_reader',
@@ -9,7 +9,7 @@ setup(
     author_email='Yuliya-litvinko@mail.ru',
     install_requires=['requests', 'beautifulsoup4', 'lxml'],
     python_requires='>=3.8',
-    packages=['rss_reader'],
+    packages=find_packages(include=['rss_reader', 'rss_reader.*']),
     entry_points={
         "console_scripts": [
             "rss_reader=rss_reader.rss_reader:main",

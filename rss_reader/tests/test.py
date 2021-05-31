@@ -110,7 +110,7 @@ class TestReader(unittest.TestCase):
         self.assertLogs(news, "https://s.yimg.com/uu/api/res/1.2/QWIOjpHY_PnmbmE8juiviQ--~B/aD0zOTEyO3c9NTM4NzthcHBp"
                               "ZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/ed73fe1143664266ccc00d223d7f84c2")
 
- # Tests for function "printing_news_in_json"
+    # Tests for function "printing_json"
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_printing_json(self, mock_print):
         """ Test for output in json format"""
