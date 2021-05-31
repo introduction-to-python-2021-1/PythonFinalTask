@@ -41,15 +41,12 @@ def server_answer(source, verbose=None):
     try:
         answer = requests.get(source)
         if answer.status_code == 404:
-            logger.info("Error 404. Please try to reload the page")
             print("Error 404. Please try to reload the page or check the link you entered")
             sys.exit()
         elif not source:
-            logger.info("Input url, please")
             print("Input url, please")
             sys.exit()
         elif answer.status_code == 200:
-            logger.info(f"Starting reading link {source}")
             print(f"Starting reading link {source}")
         return answer
     except URLError as e:
