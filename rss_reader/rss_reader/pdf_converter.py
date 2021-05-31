@@ -7,7 +7,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 import time
-from rss_reader import str_funcs
+from rss_reader import string_handlers
 
 pdfmetrics.registerFont(TTFont('DejaVuSerif', 'DejaVuSerif.ttf'))
 
@@ -26,7 +26,7 @@ def convert_to_pdf(feed, path):
             result_str += (f'<br/> Title: {item.title} <br/> '
                            f'Link: {item.link} <br/> '
                            f'Date: {time.strftime("%y-%m-%d %H:%M", tuple(item.date))} <br/>')
-            result_str += str_funcs.get_str_content(item.content) + '<br/>'
+            result_str += string_handlers.get_str_content(item.content) + '<br/>'
             parts.append(Paragraph(result_str, style=custom_style))
             if item.img:
                 for img in item.img:

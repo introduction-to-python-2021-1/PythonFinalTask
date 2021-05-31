@@ -4,15 +4,21 @@ This module provides tools for presentation parts of news in readable format
 
 
 def get_str_content(list_with_content):
+    """
+    Return readable content
+    """
     if not list_with_content:
         return ''
-    pretty_str = 'Content: '
+    pretty_str = f'Content: '
     for record in list_with_content:
         pretty_str += '\n' + record
     return pretty_str
 
 
 def get_img_as_str(list_with_img):
+    """
+    Takes list with images and return it in readable format
+    """
     if not list_with_img:
         return ''
     pretty_str = ''
@@ -26,6 +32,9 @@ def get_img_as_str(list_with_img):
 
 
 def get_links_as_str(list_with_links):
+    """
+    Takes list containing links and return it in readable format
+    """
     if not list_with_links:
         return ''
     pretty_str = '\nLinks: '
@@ -34,10 +43,13 @@ def get_links_as_str(list_with_links):
     return pretty_str
 
 
-def get_links(links_list):
-    if not links_list:
+def get_links(list_with_uncleaned_links):
+    """
+    Trying to get clean links and put them into list
+    """
+    if not list_with_uncleaned_links:
         return ''
     clean_data = []
-    for link in links_list:
+    for link in list_with_uncleaned_links:
         clean_data.append(link['href'])
     return clean_data
