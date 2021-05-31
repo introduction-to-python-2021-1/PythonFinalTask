@@ -4,14 +4,19 @@ import os
 import os.path
 import peewee
 import datetime
+import re
+import json
 from rss_reader.rss_reader import create_db, get_storage, get_arg_parser, get_news_from_storage, print_news
 from rss_reader.db_worker import get_path, RssStorage
 from rss_reader.db_worker import db as rss_db
 from contextlib import redirect_stdout
-import re
-import json
-from test_arguments import create_test_data
 from bs4 import BeautifulSoup
+
+try:
+    from tests.test_arguments import create_test_data
+
+except ModuleNotFoundError:
+    from test_arguments import create_test_data
 
 
 class TestRssReaderDB(unittest.TestCase):
