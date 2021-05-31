@@ -10,9 +10,6 @@ setup(
     install_requires=['requests', 'beautifulsoup4', 'lxml'],
     python_requires='>=3.8',
     packages=['rss_reader'],
-    package_data={
-        "rss_reader": ["package_data/**/*"]
-    },
     entry_points={
         "console_scripts": [
             "rss_reader=rss_reader.rss_reader:main",
