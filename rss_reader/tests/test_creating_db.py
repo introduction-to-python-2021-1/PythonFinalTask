@@ -5,8 +5,12 @@ import os.path
 from rss_reader.rss_reader import create_db, get_storage, get_arg_parser, main
 from rss_reader.db_worker import get_path
 from contextlib import redirect_stdout
-from test_arguments import create_test_data
 from bs4 import BeautifulSoup
+try:
+    from tests.test_arguments import create_test_data
+
+except ModuleNotFoundError:
+    from test_arguments import create_test_data
 
 
 class TestRssReaderDB(unittest.TestCase):
