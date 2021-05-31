@@ -16,7 +16,6 @@ class RssParser:
     """
     This class parses rss-feed and presents it in readable format
     """
-
     def __init__(self, url, limit):
         self.url = url
         self.limit = limit
@@ -29,11 +28,11 @@ class RssParser:
         :return: list with namedtuples representing feed items
         """
         if not self.url:
-            print("URL is empty, please input URL")
+            print('URL is empty, please input URL')
             sys.exit()
         data = feedparser.parse(self.url)
         if data['bozo']:
-            print("Please check URL(is RSS?) and Internet connection")
+            print('Please check URL(is RSS?) and Internet connection')
             sys.exit()
         self.get_content(data)
         return self.items

@@ -1,15 +1,17 @@
 """
 Main module of rss_reader
 """
-import json
+
+
 import os
+import sys
+
 from rss_reader.argparser import get_args
 from rss_reader.logger_conf import create_root_logger, add_console_handler
 from rss_reader.RssParser import RssParser, convert_to_json, print_feed
-from rss_reader.cache_handlers import get_feed_from_cache
+from rss_reader.cache_handlers import get_feed_from_cache, create_item_list_from_cache
 from rss_reader.pdf_converter import convert_to_pdf
 from rss_reader.html_converter import convert_to_html
-from collections import namedtuple
 
 
 def main():
@@ -18,18 +20,16 @@ def main():
     if arguments.verbose:
         add_console_handler(logger)
     logger.info('Starting script')
+    if arguments.limit is not None and arguments.limit <= 0:
+        print('limit should be positive number')
+        sys.exit()
     logger.info(f'Program started, url: {arguments.url}')
     if arguments.date:
         if arguments.url:
             get_data = RssParser(arguments.url, arguments.limit)
             get_data.get_feed()
         feed_list = get_feed_from_cache(arguments.date, arguments.limit)
-        data = []
-        for item in feed_list:
-            loaded_dict = json.loads(item)
-            tuple_item = namedtuple('item', loaded_dict)
-            item = tuple_item(**loaded_dict)
-            data.append(item)
+        data = create_item_list_from_cache(feed_list)
     else:
         get_data = RssParser(arguments.url, arguments.limit)
         data = get_data.get_feed()

@@ -5,6 +5,7 @@ This module provides tools for working with cache
 import os
 import json
 import time
+from collections import namedtuple
 
 
 def get_feed_from_cache(date, limit):
@@ -48,3 +49,18 @@ def save_feed_into_cache(item):
     with open(file_path, 'w', encoding='utf-8') as fp:
         json.dump(feed_list, fp)
     return
+
+
+def create_item_list_from_cache(list_with_feed):
+    """
+    Creates list with feed items from cached feed
+    :param list_with_feed: list with cached feed
+    :return: list with feed items
+    """
+    data = []
+    for item in list_with_feed:
+        loaded_dict = json.loads(item)
+        tuple_item = namedtuple('item', loaded_dict)
+        item = tuple_item(**loaded_dict)
+        data.append(item)
+    return data
