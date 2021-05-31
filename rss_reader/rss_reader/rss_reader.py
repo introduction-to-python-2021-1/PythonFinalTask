@@ -47,7 +47,7 @@ def server_answer(source, verbose=None):
             sys.exit()
         elif answer.status_code == 404:
             logger.info("Error 404. Please try to reload the page")
-            print("Error 404. Please try to reload the page")
+            print("Error 404. Please try to reload the page or check the link you entered")
             sys.exit()
         elif not source:
             logger.info("Input url, please")
