@@ -106,9 +106,10 @@ def printing_news(data, limit):
         print('\n'.join(part["images"]), "\n")
 
 
-def printing_json(data):
+def printing_json(data, limit):
     """Print json news on console"""
-    print(json.dumps(data, indent=3))
+    data_json =data["news"][:limit]
+    print(json.dumps(data_json, indent=3))
 
 
 def main():
@@ -130,10 +131,10 @@ def main():
         number_of_news = parses_data(answer.text)
         if args.limit:
             logging.info(f"Reads amount of news - {args.limit}")
-            print("Reads amount of news:", args.limit, "\n")
+            print("Reads amount of news:", args.limit)
         if args.json:
             logging.info("In json")
-            printing_json(number_of_news)
+            printing_json(number_of_news, args.limit)
         else:
             printing_news(number_of_news, args.limit)
     except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL):
