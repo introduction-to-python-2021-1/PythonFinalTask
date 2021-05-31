@@ -56,7 +56,6 @@ def server_answer(source, verbose=None):
         logger.error(f"Error {e} in opening the link {source}")
         print("Wrong link, try again, please")
         sys.exit()
-
     except ValueError as e:
         logger.error(f"Error {e} in opening link {source}")
         print("Insert rss link, please")

@@ -35,6 +35,7 @@ class TestReader(unittest.TestCase):
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
         self.assertTrue(parser.verbose)
         self.assertLogs(parser, "Getting access to the RSS")
+        self.assertLogs(parser, "Starting reading link https://news.yahoo.com/rss/")
 
     def test_checking_json_format(self):
         """Test json format"""
