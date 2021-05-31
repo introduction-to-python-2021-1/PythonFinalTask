@@ -3,7 +3,8 @@ import unittest
 from rss_reader.rss_reader import rss_reader
 import logging
 import logging.handlers
-
+from unittest.mock import patch
+from rss_reader.rss_reader import test_data
 
 class TestReader(unittest.TestCase):
     """Tests for parsing links, making news dictionaries, printing news, setting limits, verbose flag"""
@@ -107,6 +108,14 @@ class TestReader(unittest.TestCase):
             news = rss_reader.printing_news(data, 1)
         self.assertLogs(news, "https://s.yimg.com/uu/api/res/1.2/QWIOjpHY_PnmbmE8juiviQ--~B/aD0zOTEyO3c9NTM4NzthcHBp"
                               "ZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/ed73fe1143664266ccc00d223d7f84c2")
+
+   # Tests for function "printing_json"
+    @patch("builtins.print", autospec=True, side_effect=print)
+    def test_printing_json(self, mock_print):
+        """ Test for output in json format"""
+        rss_reader.printing_json(test_data.DATA_FOR_TEST, 1)
+        first = mock_print.call_args_list[0].args[0]
+        self.assertTrue("Title" in first)
 
 
 if __name__ == "__main__":
