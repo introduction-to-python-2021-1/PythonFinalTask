@@ -36,7 +36,7 @@ def create_logger(verbose):
     return logger
 
 
-def server_answer(source, verbose = None):
+def server_answer(source, verbose=None):
     """Getting answer from server"""
     logger = create_logger(verbose)
     try:
@@ -108,7 +108,7 @@ def printing_news(data, limit):
 
 def printing_json(data, limit):
     """Print json news on console"""
-    data_json =data["news"][:limit]
+    data_json = data["news"][:limit]
     print(json.dumps(data_json, indent=3))
 
 
