@@ -4,7 +4,7 @@ from rss_reader.rss_reader import main
 from contextlib import redirect_stdout
 
 
-class TestRssReader(unittest.TestCase):
+class TestRssReaderErrors(unittest.TestCase):
     def test_negative_limit(self):
         with self.assertRaises(SystemExit):
             with io.StringIO() as buf, redirect_stdout(buf):

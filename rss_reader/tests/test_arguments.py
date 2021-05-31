@@ -2,16 +2,15 @@ import unittest
 import io
 import re
 import json
-from rss_reader.rss_reader import main, collect_news_and_print, arg_parser_func
-
+from rss_reader.rss_reader import main, get_arg_parser, get_storage, get_news_from_storage, print_news, create_db
 from bs4 import BeautifulSoup
 from contextlib import redirect_stdout
 
 
 def create_test_data():
     data = str()
-    for _ in range(50):
-        data += '<item>\n<title>title</title>' \
+    for i in range(50):
+        data += f'<item>\n<title>title {i}</title>' \
                 '<link>https://news.yahoo.com/</link>' \
                 '<pubDate>2021-05-27T20:06:59Z</pubDate>' \
                 '<source url="https://news.yahoo.com/">Yahoo News</source>' \
@@ -22,61 +21,68 @@ def create_test_data():
     return data
 
 
-class TestRssReader(unittest.TestCase):
-    def setUp(self):
-        self.soup = BeautifulSoup(create_test_data(), 'lxml-xml')
+class TestRssArguments(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.arg_parser = get_arg_parser()
+        create_db()
+        cls.soup = BeautifulSoup(create_test_data(), 'lxml-xml')
 
     def test_version(self):
         """Tests --version argument"""
         with io.StringIO() as buf, redirect_stdout(buf):
             with self.assertRaises(SystemExit):
                 main(args=['--version', ])
-                self.assertEqual(buf.getvalue(), 'Version 0.2\n')
+                self.assertEqual(buf.getvalue(), 'Version 0.4\n')
 
     def test_version_with_other_arg(self):
         """Tests --version argument with other"""
         with io.StringIO() as buf, redirect_stdout(buf):
             with self.assertRaises(SystemExit):
                 main(args=['src', '--version', ])
-                self.assertEqual(buf.getvalue(), 'Version 0.2\n')
+                self.assertEqual(buf.getvalue(), 'Version 0.4\n')
 
     def test_limit(self):
         """Tests --limit argument"""
         args = ['https://news.yahoo.com/rss', '--limit=5', ]
-        arg_parser = arg_parser_func()
+        parsed_arg = self.arg_parser.parse_args(args)
+        storage = get_storage(parsed_arg, self.soup)
+        news, items = get_news_from_storage(storage, parsed_arg)
         with io.StringIO() as buf, redirect_stdout(buf):
-            parsed_arg = arg_parser.parse_args(args)
-            collect_news_and_print(parsed_arg, self.soup)
+            print_news(parsed_arg.json, news)
             result_news_dates_and_links = re.findall('Date: .+\nLink: .+\n', buf.getvalue())
             self.assertEqual(len(result_news_dates_and_links), 5)
 
     def test_large_limit(self):
         """Tests --limit argument large than feed size"""
         args = ['https://news.yahoo.com/rss', '--limit=100', ]
-        arg_parser = arg_parser_func()
+        parsed_arg = self.arg_parser.parse_args(args)
+        storage = get_storage(parsed_arg, self.soup)
+        news, items = get_news_from_storage(storage, parsed_arg)
         with io.StringIO() as buf, redirect_stdout(buf):
-            parsed_arg = arg_parser.parse_args(args)
-            collect_news_and_print(parsed_arg, self.soup)
+            print_news(parsed_arg.json, news)
             result_news_dates_and_links = re.findall('Date: .+\nLink: .+\n', buf.getvalue())
             self.assertEqual(len(result_news_dates_and_links), 50)
 
     def test_without_limit(self):
         """Tests without --limit argument"""
         args = ['https://news.yahoo.com/rss', ]
-        arg_parser = arg_parser_func()
+        parsed_arg = self.arg_parser.parse_args(args)
+        storage = get_storage(parsed_arg, self.soup)
+        news, items = get_news_from_storage(storage, parsed_arg)
         with io.StringIO() as buf, redirect_stdout(buf):
-            parsed_arg = arg_parser.parse_args(args)
-            collect_news_and_print(parsed_arg, self.soup)
+            print_news(parsed_arg.json, news)
             result_news_dates_and_links = re.findall('Date: .+\nLink: .+\n', buf.getvalue())
             self.assertEqual(len(result_news_dates_and_links), 50)
 
     def test_json_output(self):
         """Tests --json argument"""
         args = ['https://news.yahoo.com/rss', '--json', ]
-        arg_parser = arg_parser_func()
+        parsed_arg = self.arg_parser.parse_args(args)
+        storage = get_storage(parsed_arg, self.soup)
+        news, items = get_news_from_storage(storage, parsed_arg)
         with io.StringIO() as buf, redirect_stdout(buf):
-            parsed_arg = arg_parser.parse_args(args)
-            collect_news_and_print(parsed_arg, self.soup)
+            print_news(parsed_arg, news)
             try:
                 json.loads(buf.getvalue())
             except json.JSONDecodeError:
@@ -85,10 +91,11 @@ class TestRssReader(unittest.TestCase):
     def test_json_output_with_limit(self):
         """Tests --json argument and --limit"""
         args = ['https://news.yahoo.com/rss', '--json', '--limit=5', ]
-        arg_parser = arg_parser_func()
+        parsed_arg = self.arg_parser.parse_args(args)
+        storage = get_storage(parsed_arg, self.soup)
+        news, items = get_news_from_storage(storage, parsed_arg)
         with io.StringIO() as buf, redirect_stdout(buf):
-            parsed_arg = arg_parser.parse_args(args)
-            collect_news_and_print(parsed_arg, self.soup)
+            print_news(parsed_arg.json, news)
             try:
                 res = json.loads(buf.getvalue())
             except json.JSONDecodeError:
@@ -99,10 +106,11 @@ class TestRssReader(unittest.TestCase):
     def test_json_output_without_limit(self):
         """Tests --json argument without --limit"""
         args = ['https://news.yahoo.com/rss', '--json', ]
-        arg_parser = arg_parser_func()
+        parsed_arg = self.arg_parser.parse_args(args)
+        storage = get_storage(parsed_arg, self.soup)
+        news, items = get_news_from_storage(storage, parsed_arg)
         with io.StringIO() as buf, redirect_stdout(buf):
-            parsed_arg = arg_parser.parse_args(args)
-            collect_news_and_print(parsed_arg, self.soup)
+            print_news(parsed_arg.json, news)
             try:
                 res = json.loads(buf.getvalue())
             except json.JSONDecodeError:
@@ -113,10 +121,11 @@ class TestRssReader(unittest.TestCase):
     def test_json_output_large_limit(self):
         """Tests --json argument and large --limit"""
         args = ['https://news.yahoo.com/rss', '--json', '--limit=555', ]
-        arg_parser = arg_parser_func()
+        parsed_arg = self.arg_parser.parse_args(args)
+        storage = get_storage(parsed_arg, self.soup)
+        news, items = get_news_from_storage(storage, parsed_arg)
         with io.StringIO() as buf, redirect_stdout(buf):
-            parsed_arg = arg_parser.parse_args(args)
-            collect_news_and_print(parsed_arg, self.soup)
+            print_news(parsed_arg.json, news)
             try:
                 res = json.loads(buf.getvalue())
             except json.JSONDecodeError:

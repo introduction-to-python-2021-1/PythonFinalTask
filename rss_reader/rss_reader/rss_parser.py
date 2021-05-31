@@ -1,4 +1,4 @@
-from dateutil import parser as date_parser
+from datetime import datetime
 
 
 class RssParser:
@@ -6,6 +6,7 @@ class RssParser:
         soup (bs4.BeautifulSoup): Object of class bs4.BeautifulSoup containing data from xml file
     """
     def __init__(self, soup):
+
         self.soup = soup
 
     def get_news(self):
@@ -16,7 +17,9 @@ class RssParser:
             for tag in ['title', 'link']:
                 news_data[tag] = item.find(tag).get_text()
 
-            news_data['pubDate'] = date_parser.parse(item.find('pubDate').get_text())
+            news_data['pubDate'] = datetime.strptime(item.
+                                                     find('pubDate').get_text(),
+                                                     '%Y-%m-%dT%H:%M:%SZ')
             media = item.find('media:content')
 
             if media:
@@ -26,7 +29,8 @@ class RssParser:
 
             yield news_data
 
-    def json_format(self, data):
+    @staticmethod
+    def json_format(data):
         """This method format data from xml file JSON style"""
         return {
             'Title': data['title'],
@@ -35,7 +39,8 @@ class RssParser:
             'Image link': data['media'],
             }
 
-    def default_format(self, data):
+    @staticmethod
+    def default_format(data):
         """This method format data from xml file default style"""
         return '\n\n\nTitle: {0}\nDate: {1}\nLink: {2}\n\nImages links: {3}'.format(
                                                                             data['title'],
