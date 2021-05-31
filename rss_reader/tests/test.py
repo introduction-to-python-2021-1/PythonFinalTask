@@ -34,12 +34,6 @@ class TestReader(unittest.TestCase):
         self.assertTrue(parser.verbose)
         self.assertLogs(parser, "Getting access to the RSS")
 
-    def test_checking_verbose_plus(self):
-        """Test verbose status message"""
-        parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
-        data = rss_reader.server_answer(parser, "verbose")
-        self.assertLogs(data, "Reads amount of news - 1")
-
     def test_checking_json_format(self):
         """Test json format"""
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--json"])
@@ -49,6 +43,13 @@ class TestReader(unittest.TestCase):
         """Test without link"""
         parser = rss_reader.command_arguments_parser([""])
         self.assertTrue(parser)
+        self.assertLogs(parser, "Insert rss link, please")
+
+    def test_checking_wrong(self):
+        """Test wrong link"""
+        parser = rss_reader.command_arguments_parser(["ghhkkk"])
+        self.assertTrue(parser)
+        self.assertLogs(parser, "Insert rss link, please")
 
     def test_logging_INFO(self):
         """Test verbose"""
