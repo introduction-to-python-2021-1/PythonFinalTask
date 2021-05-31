@@ -1,6 +1,7 @@
 """
 This module contains class for fetching and showing rss-feed
 """
+import sys
 
 import feedparser
 from collections import namedtuple
@@ -29,11 +30,11 @@ class RssParser:
         """
         if not self.url:
             print("URL is empty, please input URL")
-            return
+            sys.exit()
         data = feedparser.parse(self.url)
         if data['bozo']:
-            print("Please check URL and Internet connection")
-            return
+            print("Please check URL(is RSS?) and Internet connection")
+            sys.exit()
         self.get_content(data)
         return self.items
 
@@ -61,16 +62,20 @@ class RssParser:
             save_feed_into_cache(item)
             self.items.append(item)
 
-    def __str__(self):
-        result_str = self.name + '\n'
-        for item in self.items:
-            item_as_str = (f'Title: {item.title}\nLink: {item.link}\n'
-                           f'Date: {time.strftime("%y-%m-%d %H:%M", item.date)}')
-            result_str += item_as_str
-            result_str += string_handlers.get_str_content(item.content)
-            result_str += string_handlers.get_img_as_str(item.img)
-            result_str += string_handlers.get_links_as_str(item.links) + '\n\n'
-        return result_str
+
+def print_feed(list_with_items):
+    """
+    Prints feed in readable format
+    """
+    result_str = list_with_items[0].name
+    for item in list_with_items:
+        item_as_str = (f'Title: {item.title}\nLink: {item.link}\n'
+                       f'Date: {time.strftime("%y-%m-%d %H:%M", tuple(item.date))}')
+        result_str += item_as_str
+        result_str += string_handlers.get_str_content(item.content)
+        result_str += string_handlers.get_img_as_str(item.img)
+        result_str += string_handlers.get_links_as_str(item.links) + '\n\n'
+    return result_str
 
 
 def convert_to_json(data):

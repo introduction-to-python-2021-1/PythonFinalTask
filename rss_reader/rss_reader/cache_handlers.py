@@ -5,7 +5,6 @@ This module provides tools for working with cache
 import os
 import json
 import time
-from rss_reader import string_handlers
 
 
 def get_feed_from_cache(date, limit):
@@ -23,26 +22,6 @@ def get_feed_from_cache(date, limit):
     except FileNotFoundError:
         print('Can\'t find news with this date')
     return False
-
-
-def print_cached_feed(feed_list):
-    """
-    Makes readable str containing news
-    :param feed_list: List with news to be shown
-    :return: String with news
-    """
-    result_str = ''
-    for feed in feed_list:
-        loaded_feed = json.loads(feed)
-        result_str += '\n' + (f'Title: {loaded_feed["title"]}\nLink: {loaded_feed["link"]}\n'
-                              f'Date: {time.strftime("%y-%m-%d %H:%M", tuple(loaded_feed["date"]))}')
-        links = loaded_feed.get('links')
-        result_str += string_handlers.get_links_as_str(links)
-        content_list = loaded_feed.get('content')
-        result_str += string_handlers.get_str_content(content_list)
-        img = loaded_feed.get('img')
-        result_str += string_handlers.get_img_as_str(img) + '\n'
-    return result_str
 
 
 def save_feed_into_cache(item):

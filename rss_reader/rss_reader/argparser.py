@@ -11,7 +11,7 @@ def get_args():
     Parses arguments
     """
     parser = argparse.ArgumentParser(description='Python rss_reader',
-                                     prog='rss_parser',
+                                     prog='rss_reader',
                                      )
 
     parser.add_argument('url',
