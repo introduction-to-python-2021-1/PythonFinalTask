@@ -22,7 +22,7 @@ class FeedTest(unittest.TestCase):
     def test_empty_items(self):
         self.assertEqual(self.parser.items, [])
 
-    @patch('rss_reader.RssParser.get_img')
+    @patch('rss_reader.RssParser.get_img_container')
     @patch('feedparser.parse')
     def test_feed_parser(self, parse_mock, get_img_mock):
         test_time = (2021, 5, 19, 21, 22, 56, 2, 139, 0)

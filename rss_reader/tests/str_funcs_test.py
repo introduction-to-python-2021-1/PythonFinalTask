@@ -26,3 +26,7 @@ class StringFunctionsTest (unittest.TestCase):
         list_with_clean_data = ['link']
         self.assertEqual('', string_handlers.get_links([]))
         self.assertEqual(list_with_clean_data, string_handlers.get_links(list_with_links))
+
+
+if __name__ == '__main__':
+    unittest.main()
