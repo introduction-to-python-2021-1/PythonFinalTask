@@ -20,7 +20,7 @@ class TestRssReader(unittest.TestCase):
             cls.soup = BeautifulSoup(file.read(), 'lxml-xml')
         cls.example_feed_title = cls.soup.find('title').text
         cls.example_items = cls.soup.find_all('item')
-        cls.example_feed = Feed('https://www.yahoo.com/news', None, False, logging, cls.example_feed_title,
+        cls.example_feed = Feed('https://www.yahoo.com/news', None, False, False, logging, cls.example_feed_title,
                                 Cache(logging, cls.cache_folder), news_items=cls.example_items)
         cls.example_news_list = cls.example_feed.news_list
         shutil.rmtree(cls.cache_folder)
@@ -40,21 +40,21 @@ class TestRssReader(unittest.TestCase):
     def test_get_news_from_cache(self):
         """Tests that news are correctly fetched from the cache"""
         self.cache.cache_news(self.example_news_list[0])
-        feeds_list = self.cache.get_news_from_cache('20210505', None, None, False)
+        feeds_list = self.cache.get_news_from_cache('20210505', None, None, False, False)
         self.assertEqual(feeds_list[0].news_list[0].to_dict(), self.example_news_list[0].to_dict())
 
     def test_get_news_from_cache_with_limit(self):
         """Tests that the --limit argument affects the news feed fetched from the cache"""
         for example_news in self.example_news_list:
             self.cache.cache_news(example_news)
-        feeds_list = self.cache.get_news_from_cache('20210505', None, 2, False)
+        feeds_list = self.cache.get_news_from_cache('20210505', None, 2, False, False)
         self.assertEqual(len(feeds_list[0].news_list), 2)
 
     def test_get_news_from_cache_with_json(self):
         """Tests that the --json argument affects the news feed fetched from the cache"""
         for example_news in self.example_news_list:
             self.cache.cache_news(example_news)
-        feeds_list = self.cache.get_news_from_cache('20210505', None, None, True)
+        feeds_list = self.cache.get_news_from_cache('20210505', None, None, True, False)
         try:
             json.loads(str(feeds_list[0]))
         except json.JSONDecodeError:
@@ -64,7 +64,7 @@ class TestRssReader(unittest.TestCase):
         """Tests that the --json and --limit argument affects the news feed fetched from the cache"""
         for example_news in self.example_news_list:
             self.cache.cache_news(example_news)
-        feeds_list = self.cache.get_news_from_cache('20210505', None, 2, True)
+        feeds_list = self.cache.get_news_from_cache('20210505', None, 2, True, False)
         try:
             result_json = json.loads(str(feeds_list[0]))
         except json.JSONDecodeError:

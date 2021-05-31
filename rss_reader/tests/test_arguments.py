@@ -23,7 +23,7 @@ class TestRssReader(unittest.TestCase):
             cls.soup = BeautifulSoup(file.read(), 'lxml-xml')
         cls.example_feed_title = cls.soup.find('title').text
         cls.example_items = cls.soup.find_all('item')
-        cls.example_feed = Feed('https://www.yahoo.com/news', None, False, logging, cls.example_feed_title,
+        cls.example_feed = Feed('https://www.yahoo.com/news', None, False, False, logging, cls.example_feed_title,
                                 Cache(logging, cls.cache_folder), news_items=cls.example_items)
         cls.example_news_list = cls.example_feed.news_list
         shutil.rmtree(cls.cache_folder)
@@ -34,7 +34,7 @@ class TestRssReader(unittest.TestCase):
         argv = ['--version']
         with self.assertRaises(SystemExit):
             main(argv)
-        self.assertEqual(mock_stdout.getvalue(), 'Version 0.4\n')
+        self.assertEqual(mock_stdout.getvalue(), 'Version 0.5\n')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_version_with_the_provided_source(self, mock_stdout):
@@ -42,7 +42,7 @@ class TestRssReader(unittest.TestCase):
         argv = ['https://news.yahoo.com/rss/', '--version']
         with self.assertRaises(SystemExit):
             main(argv)
-        self.assertEqual(mock_stdout.getvalue(), 'Version 0.4\n')
+        self.assertEqual(mock_stdout.getvalue(), 'Version 0.5\n')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_limit(self, mock_stdout):

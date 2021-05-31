@@ -20,7 +20,7 @@ class Parser:
     def __add_arguments(self):
         """This method adds command-line arguments"""
         self.parser.add_argument('source', nargs='?', type=str, help='RSS URL', default=None)
-        self.parser.add_argument('--version', help='Print version info', action='version', version=f'Version 0.4')
+        self.parser.add_argument('--version', help='Print version info', action='version', version=f'Version 0.5')
         self.parser.add_argument('--json', help='Print result as JSON in stdout', action='store_true')
         self.parser.add_argument('--verbose', help='Outputs verbose status messages', action='store_true')
         self.parser.add_argument('--limit', type=validate_limit_arg,

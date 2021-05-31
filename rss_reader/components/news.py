@@ -10,7 +10,7 @@ import requests
 class News:
     """This class represents a feed item"""
 
-    def __init__(self, feed_title, item, source_url, logger, cache):
+    def __init__(self, feed_title, item, source_url, logger, cache, to_colorized_format):
         """
         This class constructor initializes the required variables for the news class
 
@@ -20,12 +20,14 @@ class News:
             source_url (str): Link to RSS Feed
             logger (module): logging module
             cache (Cache): Object of class Cache
+            to_colorized_format (bool): If True colors the result
         """
         self.feed_title = feed_title
         self.item = item
         self.source_url = source_url
         self.logger = logger
         self.cache = cache
+        self.to_colorized_format = to_colorized_format
         if isinstance(self.item, dict):
             self.__from_cache()
         else:
@@ -75,11 +77,18 @@ class News:
 
     def __str__(self) -> str:
         """This method override default __str__ method which computes the string representation of an object"""
-        return f'[{self.feed_title}] {self.title}\n' \
-               f'Date: {self.formatted_date}\n' \
-               f'Link: {self.link}\n\n' \
-               f'{self.description if self.description else ""}\n\n' \
-               f'{"Links:" + self.__format_links() if self.links else ""}'.rstrip()
+        if self.to_colorized_format:
+            return f'[{self.colorize_string(self.feed_title, "red")}] {self.colorize_string(self.title, "yellow")}\n' \
+                   f'{self.colorize_string("Date:", "cyan")} {self.colorize_string(self.formatted_date, "yellow")}\n' \
+                   f'{self.colorize_string("Link:", "cyan")} {self.link}\n\n' \
+                   f'{self.colorize_string(self.description, "yellow") if self.description else ""}\n\n' \
+                   f'{self.colorize_string("Links:", "cyan") + self.__format_links() if self.links else ""}'.rstrip()
+        else:
+            return f'[{self.feed_title}] {self.title}\n' \
+                   f'Date: {self.formatted_date}\n' \
+                   f'Link: {self.link}\n\n' \
+                   f'{self.description if self.description else ""}\n\n' \
+                   f'{"Links:" + self.__format_links() if self.links else ""}'.rstrip()
 
     def __from_cache(self):
         """This method retrieves news variables from cached news"""
@@ -123,3 +132,18 @@ class News:
             if content_type is None:
                 content_type = 'unknown'
         return content_type
+
+    @staticmethod
+    def colorize_string(string, color):
+        """
+        This method wraps the string with ANSI escape codes to change the color of the text
+
+        Parameters:
+            string (str): String to be escaped
+            color (str): Color name
+
+        Returns:
+            str: ANSI escaped string
+        """
+        colors = {'cyan': '\033[1;36m', 'yellow': '\033[1;33m', 'red': '\033[1;31m', 'reset': '\033[0m'}
+        return colors[color] + string + colors['reset']

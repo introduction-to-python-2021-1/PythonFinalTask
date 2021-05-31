@@ -96,11 +96,11 @@ class Cache:
             cache_file_path (str): Path to file with cache
             data (dict): Dictionary with data to write to cache file
         """
-        self.logger.info(' Caching news')
+        self.logger.info('Caching news')
         with open(cache_file_path, 'w') as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
 
-    def get_news_from_cache(self, publication_date, source_url, news_limit, to_json) -> list:
+    def get_news_from_cache(self, publication_date, source_url, news_limit, to_json, to_colorized_format) -> list:
         """
         This method get news in JSON format from cached data, creates news objects and returns cached feeds list
 
@@ -109,6 +109,7 @@ class Cache:
             news_limit (int or NoneType): Value that limits the number of news
             source_url (str or NoneType): Link to the source from which the news was received
             to_json (bool): If True news will be printed in JSON format
+            to_colorized_format (bool): If True colors the result
         """
         self.logger.info('Trying to get news from cache')
         cache_file_path = f'{self.cache_folder_path}{publication_date}.json'
@@ -124,12 +125,14 @@ class Cache:
                 news_list = []
                 for cached_news in cached_feed['items'].values():
                     if retrieved_news_amount != news_limit:
-                        news = News(cached_feed['title'], cached_news, cached_feed['source'], self.logger, self)
+                        news = News(cached_feed['title'], cached_news, cached_feed['source'], self.logger, self,
+                                    to_colorized_format)
                         news_list.append(news)
                         retrieved_news_amount += 1
                     else:
                         break
-                feed = Feed(source_url, None, to_json, self.logger, feed_title, self, news_list=news_list)
+                feed = Feed(source_url, None, to_json, to_colorized_format, self.logger, feed_title, self,
+                            news_list=news_list)
                 feeds_list.append(feed)
                 if retrieved_news_amount == news_limit:
                     break
