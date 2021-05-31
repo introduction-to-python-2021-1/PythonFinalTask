@@ -1,4 +1,4 @@
-import parser_debug as psr
+import cl_parser as psr
 from feed_container import feed_container
 import app_logger
 

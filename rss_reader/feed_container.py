@@ -97,20 +97,21 @@ class feed_container:
 
 	# this method return news
 	def get_news(self, limit):
-		size = limit
-		news = []
-
-		for item in islice(self.channel_items, 0, size):
-			news.append(item)
-
-		return news
+		# size = limit
+		# news = []
+		#
+		# for item in islice(self.channel_items, 0, size):
+		# 	news.append(item)
+		#
+		# return news
+		return self.channel_items[0:limit]
 
 	# this method saves news in json format
 	def save_as_json(self, limit):
 		size = limit
 		news = []
-
+		file = open("news.json", "w")
 		for item in islice(self.channel_items, 0, size):
 			news.append(item)
-			with open("news.json", "w") as file:
-				json.dump(news, file, indent=4)
+			json.dump(news, file, indent=4)
+		file.close()
