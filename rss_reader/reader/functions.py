@@ -5,6 +5,10 @@ import feedparser
 import urllib.error
 import logging.handlers
 import datetime
+import os
+from dominate.tags import *
+from pathlib import Path
+from xhtml2pdf import pisa
 
 from reader.article import Article
 
@@ -132,7 +136,8 @@ def create_arguments(argv):
     parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
     parser.add_argument('--limit', help='Limit news topics if this parameter provided')
     parser.add_argument('--date', type=str, nargs='?', default='', help='Sets the date the news will be displayed')
-    parser.add_argument('--to_html', type=str, help='The path where new file will be saved')
+    parser.add_argument('--to-html', type=Path, help='The path where new .html file will be saved')
+    parser.add_argument('--to-pdf', type=Path, help='The path where new .pdf file will be saved')
     args = parser.parse_args(argv[1:])
     return vars(args)
 
@@ -148,3 +153,66 @@ def create_logger():
     logger.addHandler(handler)
     logging.disable()
     return logger
+
+
+def check_path_to_directory(path_to_directory, logger):
+    """Checks if the path to the folder exists"""
+    logger.info('Checking the entered path...')
+    if os.path.isdir(path_to_directory) is False:
+        logger.error('Entered path is invalid: not a folder')
+        raise NotADirectoryError('Entered path is invalid: not a folder')
+    elif not os.path.exists(path_to_directory):
+        logger.error('Entered path is invalid')
+        raise FileExistsError('Entered path is invalid')
+    else:
+        return True
+
+
+def html_factory(article, html_file):
+    """Represents Article object in html-form"""
+    with html_file:
+        h1(article.title)
+        p(b('Title: '), article.title)
+        p(b('Link: ', a(b(article.link), href=article.link, )))
+        p(b('Date: '), article.date.strftime("%a, %d %B, %Y"))
+        p(b('Source: '), article.source)
+        p(b('Description: '), article.description)
+        p(img(style="width:360px", src=article.image))
+    return html_file
+
+
+def save_news_in_html_file(news, path_to_html, logger):
+    """Creates html-file and saves news in it"""
+    check_path_to_directory(path_to_html, logger)
+    html_file = html(title='RSS news')
+    html_file.add(head(meta(charset='utf-8')))
+
+    for article in news:
+        html_factory(article, html_file)
+
+    path = os.path.join(path_to_html, 'rss_news.html')
+    try:
+        logger.info('Creating html-file...')
+        with open(path, 'w', encoding='utf-8') as file_html:
+            file_html.write(str(html_file))
+        logger.info('Html-file is created successfully!')
+        return file_html
+    except FileNotFoundError:
+        logger.error('There is no html-file in indicated directory')
+        raise SystemExit('There is no html-file in indicated directory')
+
+
+def pdf_factory(news, path_to_pdf, logger, html_args=None):
+    check_path_to_directory(path_to_pdf, logger)
+    html_file = save_news_in_html_file(news, path_to_pdf, logger)
+    path = os.path.join(path_to_pdf, 'rss_news.pdf')
+    try:
+        with open(path, 'wb') as pdf_file, open(html_file.name, 'r', encoding='utf-8') as html_file:
+            logger.info('Creating pdf-file...')
+            pisa.CreatePDF(src=html_file, dest=pdf_file)
+            logger.info(f"Pdf-file '{pdf_file}' is created successfully!")
+        if html_args is None:
+            os.remove(html_file.name)
+            logger.info(f"Html-file '{html_file}' was deleted")
+    except FileNotFoundError:
+        raise SystemExit('Please, check the existing of file')
