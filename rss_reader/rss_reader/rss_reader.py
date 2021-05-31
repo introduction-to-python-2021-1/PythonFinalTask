@@ -36,7 +36,7 @@ def create_logger(verbose):
     return logger
 
 
-def server_answer(source, verbose=None):
+def server_answer(source, verbose = None):
     """Getting answer from server"""
     logger = create_logger(verbose)
     try:
