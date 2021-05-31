@@ -15,6 +15,8 @@ _test_data_xml_filename = r'tests/test_rss.xml'
 _test_data_json_filename = r'tests/test_storage.json'
 _test_results_txt_filename = r'tests/test_results.txt'
 _test_tmp_json_filename = r'tests/test_temp_storage.json'
+_test_tmp_fb2_filename = r'tests/test_temp_fb2.fb2'
+_test_tmp_html_filename = r'tests/test_temp_html.html'
 
 
 class RSSReaderTests(unittest.TestCase):
@@ -76,6 +78,7 @@ class RSSReaderTests(unittest.TestCase):
                       'link': 'https://news.ru/last_news.html',
                       'author': 'Alexey Morozov',
                       'date': 'Mon, 24 May, 2021 10:14 AM',
+                      'image': 'http://test.com/image.jpg',
                       'description': 'Last news'},
                  ]}]
         self.assertEqual(RSSReader(date='20210524')._load_from_storage(_test_data_json_filename), data)
@@ -111,12 +114,14 @@ class RSSReaderTests(unittest.TestCase):
                       'link': 'https://news.ru/last_news.html',
                       'author': 'Alexey Morozov',
                       'date': 'Mon, 24 May, 2021 10:14 AM',
+                      'image': '',
                       'description': 'Last news'},
                      {'number': 2,
                       'title': 'Next news',
                       'link': 'https://super_news.ru/next_news.html',
                       'author': '',
                       'date': '',
+                      'image': '',
                       'description': ''},
                  ]}]
         RSSReader()._save_to_storage(_test_tmp_json_filename, data)
@@ -140,6 +145,21 @@ class RSSReaderTests(unittest.TestCase):
         self.assertEqual(RSSReader()._format_date(strptime('Sun, 23 May, 2021 05:30 PM', '%a, %d %b, %Y %I:%M %p'),
                                                   '%a, %d %b, %Y %I:%M %p'), 'Sun, 23 May, 2021 05:30 PM')
 
+    def test_get_image_link_for_enclosure_tag(self):
+        """Test _get_image_link() function for <enclosure> tag."""
+        parser = feedparser.parse("""<item><enclosure url="http://test.com/image.jpg" type="image/jpeg"/></item>""")
+        self.assertEqual(RSSReader()._get_image_link(parser.entries[0]), 'http://test.com/image.jpg')
+
+    def test_get_image_link_for_figure_tag(self):
+        """Test _get_image_link() function for <figure> tag."""
+        parser = feedparser.parse("""<item><figure><img src="http://test.com/image.jpg"></figure></item>)""")
+        self.assertEqual(RSSReader()._get_image_link(parser.entries[0]), 'http://test.com/image.jpg')
+
+    def test_get_image_link_for_media_content_tag(self):
+        """Test _get_image_link() function for <media:content> tag."""
+        parser = feedparser.parse("""<item><media:content url="http://test.com/image.jpg"/></item>)""")
+        self.assertEqual(RSSReader()._get_image_link(parser.entries[0]), 'http://test.com/image.jpg')
+
     def test_load_data_for_None(self):
         """Test _load_date() function for None."""
         self.assertIsNone(RSSReader()._load_data(None))
@@ -160,22 +180,27 @@ class RSSReaderTests(unittest.TestCase):
                       'link': 'https://news.ru/last_news.html',
                       'author': 'Alexey Morozov',
                       'date': 'Mon, 24 May, 2021 10:14 AM',
+                      'image': 'http://test.com/image.jpg',
                       'description': 'Last news'},
                      {'number': 2,
                       'title': 'Next news',
                       'link': 'https://super_news.ru/next_news.html',
                       'author': '',
                       'date': '',
+                      'image': '',
                       'description': ''},
                  ]}]
         self.assertEqual(RSSReader()._load_data(parser), data)
 
     @staticmethod
-    def _test_result(filename, beg_line, end_line):
+    def _test_result(filename, beg_line=0, end_line=None):
         """Read data from file."""
         with open(filename, 'r', encoding="utf-8") as f:
             result = f.readlines()
-        return "".join(result[beg_line:end_line + 1])
+        if end_line:
+            return "".join(result[beg_line:end_line + 1])
+        else:
+            return "".join(result[beg_line:])
 
     def _test_print(self, func, data, expected):
         """Write data to fake output."""
@@ -208,12 +233,14 @@ class RSSReaderTests(unittest.TestCase):
                       'link': 'https://news.ru/last_news.html',
                       'author': 'Alexey Morozov',
                       'date': 'Sun, 23 May, 2021 05:30 PM',
+                      'image': 'http://test.com/image.jpg',
                       'description': 'Last news'},
                      {'number': 2,
                       'title': 'Next news',
                       'link': 'https://super_news.ru/next_news.html',
                       'author': '',
                       'date': '',
+                      'image': '',
                       'description': ''},
                  ]}]
         expected = self._test_result(_test_results_txt_filename, 5, 18)
@@ -244,16 +271,120 @@ class RSSReaderTests(unittest.TestCase):
                       'link': 'https://news.ru/last_news.html',
                       'author': 'Alexey Morozov',
                       'date': 'Sun, 23 May, 2021 05:30 PM',
+                      'image': 'http://test.com/image.jpg',
                       'description': 'Last news'},
                      {'number': 2,
                       'title': 'Next news',
                       'link': 'https://super_news.ru/next_news.html',
                       'author': '',
                       'date': '',
+                      'image': '',
                       'description': ''},
                  ]}]
-        expected = self._test_result(_test_results_txt_filename, 29, 52)
+        expected = self._test_result(_test_results_txt_filename, 29, 54)
         self._test_print(RSSReader()._print_as_json, data, expected)
+
+    def test_check_filename_for_None(self):
+        """Test _check_filename() function for None."""
+        self.assertIsNone(RSSReader()._check_filename(None, '.fb2'))
+
+    def test_check_filename_for_empty_name(self):
+        """Test _check_filename() function for empty name."""
+        self.assertIsNone(RSSReader()._check_filename('', '.fb2'))
+
+    def test_check_filename_for_folder(self):
+        """Test _check_filename() function for folder."""
+        self.assertIsNone(RSSReader()._check_filename('temp/', '.fb2'))
+
+    def test_check_filename_for_incorrect_extention(self):
+        """Test _check_filename() function for incorrect extention."""
+        self.assertIsNone(RSSReader()._check_filename('test.txt', '.fb2'))
+
+    def test_check_filename_for_correct_short_name(self):
+        """Test _check_filename() function for correct short name."""
+        self.assertEqual(RSSReader()._check_filename('test', '.fb2'), 'test.fb2')
+
+    def test_check_filename_for_correct_full_name(self):
+        """Test _check_filename() function for correct full name."""
+        self.assertEqual(RSSReader()._check_filename('C://PythonTest/test.fb2', '.fb2'), 'C://PythonTest/test.fb2')
+
+    def test_save_to_fb2_for_None(self):
+        """Test _save_to_fb2() function for None."""
+        self._test_delete_file(_test_tmp_fb2_filename)
+        RSSReader()._save_to_fb2(_test_tmp_fb2_filename, None)
+        self.assertFalse(os.path.isfile(_test_tmp_fb2_filename))
+        self._test_delete_file(_test_tmp_fb2_filename)
+
+    def test_save_to_fb2_for_empty_data(self):
+        """Test _save_to_fb2() function for empty data."""
+        self._test_delete_file(_test_tmp_fb2_filename)
+        RSSReader()._save_to_fb2(_test_tmp_fb2_filename, {})
+        self.assertFalse(os.path.isfile(_test_tmp_fb2_filename))
+        self._test_delete_file(_test_tmp_fb2_filename)
+
+    def test_save_to_fb2_for_full_data(self):
+        """Test _save_to_fb2() function for full data."""
+        self._test_delete_file(_test_tmp_fb2_filename)
+        data = [{'channel_id': 'https://news.ru/',
+                 'channel_title': 'News channel',
+                 'news': [
+                     {'number': 1,
+                      'title': 'Last news',
+                      'link': 'https://news.ru/last_news.html',
+                      'author': 'Alexey Morozov',
+                      'date': 'Sun, 23 May, 2021 05:30 PM',
+                      'image': '',
+                      'description': 'Last news'},
+                     {'number': 2,
+                      'title': 'Next news',
+                      'link': 'https://super_news.ru/next_news.html',
+                      'author': '',
+                      'date': '',
+                      'image': '',
+                      'description': ''},
+                 ]}]
+        RSSReader()._save_to_fb2(_test_tmp_fb2_filename, data)
+        self.assertTrue(os.path.exists(_test_tmp_fb2_filename))
+        self._test_delete_file(_test_tmp_fb2_filename)
+
+    def test_save_to_html_for_None(self):
+        """Test _save_to_html() function for None."""
+        self._test_delete_file(_test_tmp_html_filename)
+        RSSReader()._save_to_html(_test_tmp_html_filename, None)
+        self.assertFalse(os.path.isfile(_test_tmp_html_filename))
+        self._test_delete_file(_test_tmp_html_filename)
+
+    def test_save_to_html_for_empty_data(self):
+        """Test _save_to_html() function for empty data."""
+        self._test_delete_file(_test_tmp_html_filename)
+        RSSReader()._save_to_html(_test_tmp_html_filename, {})
+        self.assertFalse(os.path.isfile(_test_tmp_html_filename))
+        self._test_delete_file(_test_tmp_html_filename)
+
+    def test_save_to_html_for_full_data(self):
+        """Test _save_to_html() function for full data."""
+        self._test_delete_file(_test_tmp_html_filename)
+        data = [{'channel_id': 'https://news.ru/',
+                 'channel_title': 'News channel',
+                 'news': [
+                     {'number': 1,
+                      'title': 'Last news',
+                      'link': 'https://news.ru/last_news.html',
+                      'author': 'Alexey Morozov',
+                      'date': 'Sun, 23 May, 2021 05:30 PM',
+                      'image': '',
+                      'description': 'Last news'},
+                     {'number': 2,
+                      'title': 'Next news',
+                      'link': 'https://super_news.ru/next_news.html',
+                      'author': '',
+                      'date': '',
+                      'image': '',
+                      'description': ''},
+                 ]}]
+        RSSReader()._save_to_html(_test_tmp_html_filename, data)
+        self.assertTrue(os.path.exists(_test_tmp_html_filename))
+        self._test_delete_file(_test_tmp_html_filename)
 
 
 if __name__ == '__main__':

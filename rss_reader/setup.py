@@ -5,14 +5,14 @@ with open("README.md") as file:
 
 setuptools.setup(
     name="rss-reader",
-    version="3.0",
+    version="4.0",
     author="Julia Los",
     author_email="los.julia.v@gmail.com",
     description="A Python command-line RSS reader",
     long_description=read_me_description,
     long_description_content_type="text/markdown",
     packages=['rss_reader'],
-    install_requires=['feedparser>=6.0.2'],
+    install_requires=['feedparser>=6.0.2', 'jinja2>=3.0.1'],
     python_requires='>=3.8',
     entry_points={
         'console_scripts': [

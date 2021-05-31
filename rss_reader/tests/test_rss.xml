@@ -9,6 +9,7 @@
 <author>Alexey Morozov</author>
 <link>https://news.ru/last_news.html</link>
 <pubDate>2021-05-24T10:14:55Z</pubDate>
+<media:content url="http://test.com/image.jpg"/>
 <description>Last news</description>
 </item>
 <item>

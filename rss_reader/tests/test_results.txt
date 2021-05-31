@@ -11,7 +11,7 @@ Title: Last news
 Link: https://news.ru/last_news.html
 Author: Alexey Morozov
 Date: Sun, 23 May, 2021 05:30 PM
-
+Image: http://test.com/image.jpg
 Last news
 ----------------------------------------------------------------------------------------------------
 News № 2
@@ -38,6 +38,7 @@ Result of test_print_as_json(), full data:
                 "link": "https://news.ru/last_news.html",
                 "author": "Alexey Morozov",
                 "date": "Sun, 23 May, 2021 05:30 PM",
+                "image": "http://test.com/image.jpg",
                 "description": "Last news"
             },
             {
@@ -46,6 +47,7 @@ Result of test_print_as_json(), full data:
                 "link": "https://super_news.ru/next_news.html",
                 "author": "",
                 "date": "",
+                "image": "",
                 "description": ""
             }
         ]
