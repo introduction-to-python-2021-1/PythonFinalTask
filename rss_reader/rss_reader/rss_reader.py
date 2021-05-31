@@ -35,9 +35,8 @@ def create_logger(verbose):
     return logger
 
 
-def server_answer(source, verbose=None):
+def server_answer(source):
     """Getting answer from server"""
-    logger = create_logger(verbose)
     try:
         answer = requests.get(source)
         if answer.status_code == 404:
@@ -50,11 +49,9 @@ def server_answer(source, verbose=None):
             print(f"Starting reading link {source}")
         return answer
     except URLError as e:
-        logger.error(f"Error {e} in opening the link {source}")
         print("Wrong link, try again, please")
         sys.exit()
     except ValueError as e:
-        logger.error(f"Error {e} in opening link {source}")
         print("Insert rss link, please")
         sys.exit()
 
@@ -105,7 +102,7 @@ def printing_json(data, limit):
 
 def main():
     args = command_arguments_parser(sys.argv[1:])
-    answer = server_answer(args.source, args.verbose)
+    answer = server_answer(args.source)
     logger = create_logger(args.verbose)
 
     if args.limit is not None:
