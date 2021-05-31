@@ -109,31 +109,26 @@ def printing_json(data, limit):
 def main():
     args = command_arguments_parser(sys.argv[1:])
     answer = server_answer(args.source, args.verbose)
+    logger = create_logger(args.verbose)
 
     if args.limit is not None:
         if args.limit <= 0:
             print("Invalid limit. Enter the limit (greater than 0), please")
             sys.exit()
 
-    if args.verbose:
-        logging.basicConfig(level=logging.INFO)
-    else:
-        logging.basicConfig(level=logging.ERROR)
-
     try:
-        logging.info("Getting access to the RSS")
+        logger.info("Getting access to the RSS")
         number_of_news = parses_data(answer.text)
         if args.limit:
-            logging.info(f"Reads amount of news - {args.limit}")
+            logger.info(f"Reads amount of news - {args.limit}")
             print("Reads amount of news:", args.limit)
         if args.json:
-            logging.info("In json")
+            logger.info("In json")
             printing_json(number_of_news, args.limit)
         else:
             printing_news(number_of_news, args.limit)
     except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL):
         print("ConnectionError. Correct the URL, please")
-
     except requests.exceptions.MissingSchema:
         print("Incorrect URL. This is not the rss feed address")
 

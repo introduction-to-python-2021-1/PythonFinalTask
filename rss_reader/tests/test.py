@@ -93,7 +93,6 @@ class TestReader(unittest.TestCase):
         self.assertEqual(rss_reader.parses_data(answer)["news"][1]["pubDate"], "2021-05-27T11:26:45Z")
         self.assertIsInstance(rss_reader.parses_data(answer), dict)
         self.assertLogs(rss_reader.parses_data(answer)["news"][1], "Reads amount of news - 1")
-        self.assertLogs(answer, "Starting reading link")
 
     def test_good_link_in_json(self):
         """Test for data in json"""
@@ -114,7 +113,7 @@ class TestReader(unittest.TestCase):
     # Tests for function "printing_json"
     @patch("builtins.print", autospec=True, side_effect=print)
     def test_printing_json(self, mock_print):
-        """ Test for output in json format"""
+        """Test for output in json format"""
         rss_reader.printing_json(test_data.DATA_FOR_TEST, 1)
         first = mock_print.call_args_list[0].args[0]
         self.assertTrue("Title" in first)
