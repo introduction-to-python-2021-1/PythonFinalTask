@@ -54,6 +54,12 @@ class TestReader(unittest.TestCase):
         self.assertTrue(parser)
         self.assertLogs(parser, "Insert rss link, please")
 
+    def test_checking_wrong_url(self):
+        """Test wrong link"""
+        parser = rss_reader.command_arguments_parser(["https://news.sahoo.com/rss/"])
+        self.assertTrue(parser)
+        self.assertLogs(parser, "ConnectionError, try again, please")
+
     def test_logging_INFO(self):
         """Test verbose"""
         parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rss/", "--verbose"])
