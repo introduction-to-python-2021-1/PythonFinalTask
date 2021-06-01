@@ -12,7 +12,7 @@ Methods:
     append_links(links: list, html_snippet: str) -> None
     links_list2links_dict(all_links: str) -> dict
     rss2raw_json(self) -> None
-    raw_json2clean_json(self) -> None
+    html_json2text_json(self) -> None
     dump_raw_json(self) -> None
     dump_json(self) -> None
     print_raw_rss(self) -> None
@@ -20,8 +20,8 @@ Methods:
 
 Attributes:
 ----------
-    clean_json_list: list
-    raw_json_list: list
+    text_json_list: list
+    html_json_list: list
     url: str
     limit: int
     NewsFeed: list
@@ -33,7 +33,8 @@ import time
 import datetime
 import json
 
-import feedparser as fp
+import xml.etree.ElementTree as xmlTree
+import requests
 from bs4 import BeautifulSoup
 from typing import List
 
@@ -51,19 +52,19 @@ class RssParser:
 
     Attributes:
     ----------
-    raw_json_list: list of dict
+    html_json_list: list of dict
         Stores not processed data, received from RSS feed.
 
-        clean_json_list contains dictionaries with structure:
+        text_json_list contains dictionaries with structure:
         {"Feed": str, "Title": str, "Date": datetime.datetime, "Link": str, "Summary": str, "Content": str,
         "Links": dict}
             Links dictionary structure:
             "Links" : { 1 : str, 2 : str, 3 : str, ...}
 
-    clean_json_list: list of dict
+    text_json_list: list of dict
         Stores human readable text without html tags.
 
-        clean_json_list contains dictionaries with structure:
+        text_json_list contains dictionaries with structure:
         {"Feed": str, "Title": str, "Date": str, "Link": str, "Summary": str, "Content": str, "Links": dict}
             Links dictionary structure:
             "Links" : { 1 : str, 2 : str, 3 : str, ...}
@@ -99,15 +100,13 @@ class RssParser:
         Appends URL's found in html_snippet to the links argument.
     links_list2links_dict(all_links: list) -> dict
         Returns dictionary of unique links (keys) with serial numbers (values).
-    print_raw_rss(self) -> None
-        Prints to stdout RSS feed data produced by feedparser module.
     rss2raw_json(self) -> None
         Converts RSS feed in feedparser format to JSON format usable for storage.
     dump_raw_json(self) -> None
         Prints to stdout RSS feed in JSON format usable for storage.
     tags2text(raw_html: str, found_links_dict: dict) -> str
         Returns string, where URL's replaced by their reference numbers from found_links_dict.
-    raw_json2clean_json(self)
+    html_json2text_json(self)
         Converts JSON format usable for storage to user readable JSON format.
     dump_json(self) -> None
         Prints to stdout RSS feed in user readable JSON format.
@@ -126,21 +125,20 @@ class RssParser:
 
         Attributes:
         ----------
-        self.clean_json_list = [] -
-        self.raw_json_list = [] -
+        self.text_json_list = [] -
+        self.html_json_list = [] -
         self.url = url: str - contains full URL of the rss feed
         self.limit = limit: int - contains number of rss feed news to display
         self.NewsFeed = [] - parsed data from URL, provided by feedparser module
         self.number_of_entries = 0 - total number of news received from rss feed
         """
         logging.info("rss_parser module activated")
-        self.clean_json_list = []  # list of JSON items containing Feed, Title, Date information in plain text
-        self.raw_json_list = []  # will be used to store JSON data on disc (iteration 3)
+        self.text_json_list = []  # list of JSON items containing Feed, Title, Date information in plain text
+        self.html_json_list = []  # will be used to store JSON data on disc (iteration 3)
         self.url = url  # rss feed url
         self.limit = limit  # number of rss feed entries to show
         logging.info(f"Number of news to read: {self.limit}")
-        self.NewsFeed = []
-        self.number_of_entries = 0
+        self.xml_root = []
 
     def parse_url(self):
         """
@@ -158,6 +156,26 @@ class RssParser:
             self.NewsFeed: list - RSS feed in feedparser format.
             self.number_of_entries: int - Number of entries (news) in the self.NewsFeed.
         """
+        try:
+            response = requests.get(self.url, stream=True, headers={'user-agent': 'rss_reader/1.2'})
+        except Exception as e:
+            print(f"RSS feed with URL {self.url} Not responding\n\nError: {e}")
+            return False
+
+        if response.status_code == 200:
+            logging.info(f"Connected to rss feed to: {self.url}")
+        else:
+            print(f"Error: RSS feed with URL {self.url} Not responding. Status code {response.status_code}")
+            return False
+
+        try:
+            self.xml_root = xmlTree.fromstring(response.text)
+        except Exception as e:
+            print(f"RSS feed with URL {self.url} provided incompatible data\n\nError: {e}")
+            return False
+
+        return True
+        """
         # Loading and parsing data from target url
         try:
             self.NewsFeed = fp.parse(self.url)
@@ -173,6 +191,7 @@ class RssParser:
             self.NewsFeed = []
             self.number_of_entries = 0
             return self.number_of_entries
+        """
 
     @property
     def is_empty(self):
@@ -183,13 +202,13 @@ class RssParser:
 
         Side effects:
         ------------
-        if RSS feed available, calls:
-            self.rss2raw_json() - Converts RSS feed in feedparser format to JSON format usable for storage.
-            self.raw_json2clean_json() - Converts JSON format usable for storage to user readable JSON format.
+        When RSS feed available, calls:
+            self.xml2html_json() - Converts RSS feed in XML format to JSON format usable for storage.
+            self.html_json2text_json() - Converts JSON format usable for storage to user readable JSON format.
         """
         if self.parse_url():
-            self.rss2raw_json()
-            self.raw_json2clean_json()
+            self.xml2html_json()
+            self.html_json2text_json()
             return False  # Rss Feed not empty
         return True
 
@@ -205,6 +224,9 @@ class RssParser:
         _______
         String of plain text without html markup
         """
+        if not html:
+            return ""
+
         soup = BeautifulSoup(html, "lxml")
         return soup.get_text()
 
@@ -223,6 +245,9 @@ class RssParser:
         <a href="www.example.com">example</a>  appended as:
         'https://www.example.com (link)'
         """
+        if not html_snippet:
+            return None
+
         logging.info(f"append_links: Starting...")
         soup = BeautifulSoup(html_snippet, "lxml")
 
@@ -239,6 +264,8 @@ class RssParser:
             except TypeError:
                 continue
             logging.info(f"append_links:Added reference link: {link_src['href']})")
+
+        return None
 
     @staticmethod
     def links_list2links_dict(all_links):
@@ -262,6 +289,8 @@ class RssParser:
                 "https://www.somesite.com/image.jpg (image)" : 2,
                 "some_other_link_url (link)" : 3}
         """
+
+
         unique_links = list(dict.fromkeys(all_links))  # should preserve order and remove duplicates
         links_dict = {}  # will contain unique links and their sequential numbers
         # links_dict = {"link": sequential number i}
@@ -271,99 +300,147 @@ class RssParser:
             links_dict[link] = i
         return links_dict
 
-    def print_raw_rss(self):
-        """print_raw_rss() - Prints to stdout RSS feed data produced by feedparser module.
+
+    def xml2html_json(self):
+        """rss2raw_json() - Converts RSS data from XML to JSON format
+
+        XML time converted to local timezone and saved to JSON in ISO format:
+        XML 'Sun, 31 May 2021 09:00:17 -0400'
+        JSON '2021-05-31 16:00:17+03:00'
+
+        EST time 'Sun, 31 May 2021 09:00:17 EST' considered to be equal to '-0400'
+        timezone 'Sun, 31 May 2021 09:00:17 -0400'
+
+        JSON key 'Links' contains links collected from JSON 'Link' and 'Summary' values
+
+        Format conversion:
+        -----------------
+        XML key -> JSON key
+        'title' -> 'Feed'
+        'item'/'title' -> 'Title'
+        'item'/'pubDate' -> 'Date'
+        'item'/'link' -> 'Link'
+        'item'/'description' -> 'Summary'
+
         Side effects:
         ------------
-        Number of printed news is limited by value in self.limit attribute.
-
         Reads attributes:
-            self.NewsFeed.entries: feedparser - Contains feedparser RSS feed data
-            self.limit: int - Number of news to print
+            self.xml_root - Parsed XML.
+        Writes attributes:
+            self.html_json_list - List of dictionaries, containing RSS data in HTML format.
         """
-        for entry in self.NewsFeed.entries[:self.limit]:
-            print("-" * 80, flush=True)
-            logging.info("printing raw rss feed")
-            for key, val in entry.items():
-                print(f"{key}: {val}", flush=True)
+        try:
+            feed_name = self.xml_root[0].find("title").text  # Feed name
+            logging.info(f"xml2html_json:Feed name is {feed_name}")
+        except AttributeError:
+            logging.info("xml2html_json:Warning:Feed name not available")
+            feed_name = ""
 
-    def rss2raw_json(self):
-        """
-        rss2raw_json method extracts data from feedparser module and filling in dictionary raw_json_entry
-        Raw means that the data stored in the dictionary as received from the rss feed - containing html tags
-        the only exclusions are Date (converted to local time), and Links (collected from Link, Summary, Content
-        sections)
-        """
-        for entry in self.NewsFeed.entries[:]:
-            logging.info("rss2raw_json:new cycle")
-            raw_json_entry = {"Feed": "", "Title": "", "Date": "", "Link": "", "Summary": "", "Content": "",
-                              "Links": {}}
+        for item in self.xml_root[0].findall("item"):
+            logging.info("xml2html_json:Parsing next item")
+
+            html_json_entry = {"Feed": "", "Title": "", "Date": "", "Link": "", "Summary": "", "Links": {}}
 
             found_links = []  # list of links found in <a href= /> and <img src= /> will be stored here
 
-            try:
-                raw_json_entry["Feed"] = str(self.NewsFeed.feed.title)
-            except AttributeError:
-                logging.info("rss2raw_json:Warning:Feed name not available")
+            html_json_entry["Feed"] = feed_name
 
             try:
-                raw_json_entry["Title"] = str(entry.title)
+                html_json_entry["Title"] = item.find("title").text
+                logging.info(f"xml2html_json:Title found:{html_json_entry['Title']}")
             except AttributeError:
-                logging.info("rss2raw_json:Warning:Title not available")
+                logging.info("xml2html_json:Warning:Title not available")
 
             try:
                 # converting time.time to datetime.datetime
-                published_date = datetime.datetime.fromtimestamp(time.mktime(entry.published_parsed))
+                #published_date = datetime.datetime.fromtimestamp(time.mktime(entry.published_parsed))
+
+                date = item.find("pubDate").text
+                logging.info(f"xml2html_json:Date found:{date}")
+                if date.endswith("EST"):  # eastern standard time in USA - not matches %z
+                    date = date.replace("EST", "-0400")
+                published_date = datetime.datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %z")
                 published_date_utc = published_date.replace(tzinfo=datetime.timezone.utc)
                 published_date_local = published_date_utc.astimezone()
-                #  raw_json_entry["Date"] = str(published_date_local.strftime("%a, %d %b %Y %H:%M:%S %z"))
-                #  raw_json_entry["short_date"] = str(published_date_local.strftime("%Y%m%d"))
-                #  raw_json_entry["short_time"] = str(published_date_local.strftime("%H%M%S"))
-                raw_json_entry["Date"] = str(published_date_local)
+                html_json_entry["Date"] = str(published_date_local)
             except AttributeError:
-                logging.info("rss2raw_json:Warning:Date not available")
+                logging.info("xml2html_json:Warning:Date not available")
 
             try:
-                raw_json_entry["Link"] = str(entry.link)
-                found_links.append(entry.link + " (link)")
+                html_json_entry["Link"] = item.find("link").text
+                logging.info(f"xml2html_json:Link found:{html_json_entry['Link']}")
+                found_links.append(item.find("link").text + " (link)")
             except AttributeError:
-                logging.info("rss2raw_json:Warning:Link not available")
+                logging.info("xml2html_json:Warning:Link not available")
 
             try:
-                raw_json_entry["Summary"] = str(entry.summary)
-                self.append_links(found_links, raw_json_entry["Summary"]) # was find_linsk()
+                html_json_entry["Summary"] = item.find("description").text
+                self.append_links(found_links, item.find("description").text)
+                logging.info(f"xml2html_json:Summary found:{html_json_entry['Summary']}")
             except AttributeError:
-                logging.info("rss2raw_json:Warning:Summary not available")
+                logging.info("xml2html_json:Warning:Summary not available")
 
-            try:
-                raw_json_entry["Content"] = str(entry.content[-1]['value'])
-                self.append_links(found_links, raw_json_entry["Content"])
-            except AttributeError:
-                logging.info("rss2raw_json:Warning:Content not available")
+            html_json_entry["Links"] = self.links_list2links_dict(found_links)
 
-            raw_json_entry["Links"] = self.links_list2links_dict(found_links)
-            # raw_json_entry["url"] = self.url
+            self.html_json_list.append(html_json_entry)  # html_json_entry dictionary filled and appended to the list
 
-            self.raw_json_list.append(raw_json_entry)  # raw_json_entry dictionary was filled and now appended to list
+        logging.info(f"xml2html_json:Length of html_json_list = {len(self.html_json_list)}")
 
-    def dump_raw_json(self):
-        """ dump_raw_json prints list of dictionaries contained in raw_json_list variable) """
-        if not len(self.raw_json_list):
+    def dump_html_json(self):
+        """dump_raw_json() - Prints list of dictionaries contained in html_json_list variable.
+
+        Side effects:
+        ------------
+        Prints 'RSS feed data not available' when self.html_json_list == [].
+
+        Reads attribute:
+            self.html_json_list - List of dictionaries, containing RSS data in HTML format.
+            self.limit - Number of news to print.
+        """
+        if not self.html_json_list:
             print("RSS feed data not available")
             return None
 
-        for dct in self.raw_json_list[:self.limit]:
+        for dct in self.html_json_list[:self.limit]:
             json.dump(dct, sys.stdout, indent=2, ensure_ascii=False, default=str)
+
+        return None
 
     @staticmethod
     def tags2text(raw_html, found_links_dict):
-        """tags2text(soup object) returns str containing html markup, where some html tags substituted with plain text
-        Tags for:
-        1. image links <a href=""><img src="" alt=""></a>
-        2. images <img src="" alt="">
-        3. links <a href=""> </a>
-        are substituted with their short description and reference number. Reference number is taken from link_dict.
+         """tags2text(raw_html, found_links_dict) - Substitutes html tags for links, images, and image links
+         by plain text references.
+
+        Parameters:
+        ----------
+        arg1:
+            raw_html: str - Text containing html markup
+        arg2:
+            found_links_dict: dictionary - Contain URL as a key and URL's sequential number as a value.
+
+        Returns:
+        ------
+        String containing html markup, html tags for links, images, and image links substituted with plain text
+        references to found_links_dict
+
+        Example:
+        found_links_dict = {"http://www.example.com (link)" : 1,
+                            "https://www.somesite.com/image.jpg (image)" : 2,
+                            "some_other_link_url (link)" : 3}}
+
+        Links:
+            <a href="http://www.example.com">linkText</a> substituted as
+             [link [1] linkText]
+        Images:
+            <img src="https://www.somesite.com/image.jpg" alt="imageDescription"> as
+            [image [2] imageDescription]
+        Image links:
+            <a href="some_other_link_url"><img src="https://www.somesite.com/image.jpg" alt="altText"></a> as
+            [link [3] image [2] altText]
         """
+        if not raw_html:  # Prevents BeautifulSoup from crashing
+            return ""
+
         soup_html = BeautifulSoup(raw_html, "lxml")
 
         # Pass 1 - Find image links:
@@ -457,21 +534,41 @@ class RssParser:
 
         return modified_html
 
-    def raw_json2clean_json(self):
-        logging.info("raw_json2clean_json:new cycle")
-        for entry in self.raw_json_list[:self.limit]:
-            date = datetime.datetime.fromisoformat(entry["Date"])
+    def html_json2text_json(self):
+        """html_json2text_json - Converts JSON where values contain html markup to JSON containing values in plain text.
+
+        Side effects:
+        ------------
+        Number of converted dictionaries is limited by value in self.limit attribute.
+        Date value (dictionary key='Date') converted from ISO format string '2021-05-31 09:00:17+03:00' to
+         'Sun, 31 May 2021 09:00:17 +0300'
+
+        Reads attributes:
+            self.text_json_list: list - List of dictionaries, containing RSS data in plain text format.
+            self.limit: int - Number of of dictionaries to convert
+        Writes attributes:
+            self.html_json_list - List of dictionaries, containing RSS data in plain html format.
+        """
+        logging.info("html_json2text_json:new cycle")
+        for entry in self.html_json_list[:self.limit]:
+
+            if entry["Date"]:
+                date = datetime.datetime.fromisoformat(entry["Date"])
+                date = str(date.strftime("%a, %d %b %Y %H:%M:%S %z"))
+            else:
+                date = ""
+
             clean_json_entry = {"Feed": entry["Feed"],
                                 "Title": entry["Title"],
-                                "Date": str(date.strftime("%a, %d %b %Y %H:%M:%S %z")),
+                                "Date": date,
                                 "Link": entry["Link"],
                                 # substituting images links ans image links for plain text references
                                 # removing all html tags
                                 "Summary": self.html2text(self.tags2text(entry["Summary"], entry["Links"])),
-                                "Content": self.html2text(self.tags2text(entry["Content"], entry["Links"])),
                                 "Links": entry["Links"]}
 
-            self.clean_json_list.append(clean_json_entry)
+            self.text_json_list.append(clean_json_entry)
+        logging.info(f"html_json2text_json:Length of text_json_list = {len(self.text_json_list)}")
 
     def dump_json(self):
         """dump_json() - Prints to stdout RSS feed in user readable JSON format.
@@ -481,18 +578,20 @@ class RssParser:
         Number of printed news is limited by value in self.limit attribute.
 
         Reads attributes:
-            self.clean_json_list: list - List of dictionaries, containing RSS data in plain text format.
+            self.text_json_list: list - List of dictionaries, containing RSS data in plain text format.
             self.limit: int - Number of news to print
         """
         logging.info("dump_json: Printing news in JSON format")
 
-        if not len(self.clean_json_list):
+        if not self.text_json_list:
             print("RSS feed data not available")
             return None
 
-        for dct in self.clean_json_list[:self.limit]:
+        for dct in self.text_json_list[:self.limit]:
             json.dump(dct, sys.stdout, indent=2, ensure_ascii=False)
             print("")
+
+        return None
 
     def print_json(self):
         """print_json() - Prints to stdout RSS feed in user readable JSON format as formatted plain text.
@@ -502,18 +601,18 @@ class RssParser:
         Number of printed news is limited by value in self.limit attribute.
 
         Reads attributes:
-            self.clean_json_list: list - List of dictionaries, containing RSS data in plain text format.
+            self.text_json_list: list - List of dictionaries, containing RSS data in plain text format.
             self.limit: int - Number of news to print
 
         Dictionary keys that are always displayed: Feed, Title, Date, Link, Links
         Keys which are displayed if not empty: Summary, Content
         """
-        if not self.clean_json_list:
+        if not self.text_json_list:
             print("RSS feed data not available")
             return None
 
         logging.info("print_json: Printing news in plain text format")
-        for entry in self.clean_json_list[:self.limit]:
+        for entry in self.text_json_list[:self.limit]:
             print("-" * 80, flush=True)
             print(f'Feed: {entry["Feed"]}', flush=True)
             print(f'Title: {entry["Title"]}', flush=True)
@@ -521,8 +620,6 @@ class RssParser:
             print(f'Link: {entry["Link"]}', flush=True)
             if entry["Summary"]:
                 print(f'\nSummary: {entry["Summary"]}', flush=True)
-            if entry["Content"]:
-                print(f'\nContent: {entry["Content"]}', flush=True)
             print("\nLinks:")
             for link, i in entry["Links"].items():
                 print(f"[{i}] {link}")
