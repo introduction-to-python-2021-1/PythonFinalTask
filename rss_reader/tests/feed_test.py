@@ -1,3 +1,8 @@
+"""
+Module for testing RssParser class, json converter
+"""
+
+
 import unittest
 from unittest.mock import patch
 from rss_reader.RssParser import RssParser, convert_to_json
@@ -11,20 +16,29 @@ class FeedTest(unittest.TestCase):
         self.parser = RssParser(self.url, self.limit)
 
     def test_url(self):
+        """
+        Tests if url parses correctly
+        """
         self.assertEqual(self.parser.url, self.url)
 
-    def test_count(self):
-        self.assertEqual(self.parser.limit, self.limit)
-
     def test_limit(self):
+        """
+        Tests if limit parses correctly
+        """
         self.assertEqual(self.parser.limit, self.limit)
 
     def test_empty_items(self):
+        """
+        Tests condition of feed absence
+        """
         self.assertEqual(self.parser.items, [])
 
     @patch('rss_reader.RssParser.get_img_container')
     @patch('feedparser.parse')
     def test_feed_parser(self, parse_mock, get_img_mock):
+        """
+        Tests if RssParser creates correct list with feed items
+        """
         test_time = (2021, 5, 19, 21, 22, 56, 2, 139, 0)
         links_list = [{'rel': 'alternate', 'type': 'text/html', 'href': 'https://www'}]
         parse_mock.return_value = {'bozo': None, 'feed': {'title': 'test_title'},
@@ -43,6 +57,9 @@ class FeedTest(unittest.TestCase):
         self.assertEqual(feed_item.date, test_time)
 
     def test_convert_to_json(self):
+        """
+        Tests that feed is correctly converts in json format
+        """
         name = 'test_name'
         title = 'test_title'
         link = 'test_link'

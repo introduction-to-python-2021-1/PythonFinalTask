@@ -8,7 +8,7 @@ import sys
 
 from rss_reader.argparser import get_args
 from rss_reader.logger_conf import create_root_logger, add_console_handler
-from rss_reader.RssParser import RssParser, convert_to_json, print_feed
+from rss_reader.RssParser import RssParser, convert_to_json, print_feed, print_json
 from rss_reader.cache_handlers import get_feed_from_cache, create_item_list_from_cache
 from rss_reader.pdf_converter import convert_to_pdf
 from rss_reader.html_converter import convert_to_html
@@ -37,7 +37,8 @@ def main():
         print(print_feed(data))
     if arguments.json:
         logger.info('Printing feed in json format')
-        print(convert_to_json(data))
+        converted_data = convert_to_json(data)
+        print_json(converted_data)
     if arguments.to_pdf:
         logger.info('Converting feed to pdf')
         path_to_pdf_file = arguments.to_pdf + os.path.sep + 'news.pdf'

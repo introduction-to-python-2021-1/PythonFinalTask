@@ -82,3 +82,14 @@ def convert_to_json(data):
     Converts feed items in json format
     """
     return json.dumps({'items': [item._asdict() for item in data]}, ensure_ascii=False)
+
+
+def print_json(json_data):
+    """
+    Prints out feed converted to json in readable format
+    """
+    loaded_json_data = json.loads(json_data)
+    print('Items: ')
+    for item in loaded_json_data['items']:
+        print(item)
+        print('\n')
