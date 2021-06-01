@@ -46,7 +46,7 @@ class TestReader(unittest.TestCase):
         """Test without link"""
         parser = rss_reader.command_arguments_parser([""])
         self.assertTrue(parser)
-        self.assertLogs(parser, "Insert rss link, please")
+        self.assertLogs(parser, "Incorrect URL. This is not the rss feed address")
 
     def test_checking_wrong(self):
         """Test wrong link"""
@@ -59,6 +59,11 @@ class TestReader(unittest.TestCase):
         parser = rss_reader.command_arguments_parser(["https://news.sahoo.com/rss/"])
         self.assertTrue(parser)
         self.assertLogs(parser, "ConnectionError, try again, please")
+
+    def test_checking_url(self):
+        """Test wrong link"""
+        parser = rss_reader.command_arguments_parser(["https://news.yahoo.com/rs/"])
+        self.assertTrue(parser, "Error 404. Please try to reload the page or check the link you entered")
 
     def test_logging_INFO(self):
         """Test verbose"""
