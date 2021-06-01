@@ -123,10 +123,8 @@ def main():
             printing_json(number_of_news, args.limit)
         else:
             printing_news(number_of_news, args.limit)
-    except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL):
-        print("Connection error or URL error. Correct the URL, please")
-    except requests.exceptions.MissingSchema:
-        print("Incorrect URL. This is not the rss feed address")
+    except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.MissingSchema):
+        return print()
 
 
 if __name__ == "__main__":
