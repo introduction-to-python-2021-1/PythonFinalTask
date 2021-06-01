@@ -7,7 +7,6 @@ import argparse
 import logging
 import logging.handlers
 import sys
-from urllib.error import URLError
 
 
 def command_arguments_parser(args):
@@ -48,11 +47,14 @@ def server_answer(source):
         elif answer.status_code == 200:
             print(f"Starting reading link {source}")
         return answer
-    except URLError:
+    except requests.exceptions.ConnectionError:
+        print("ConnectionError, try again, please")
+        sys.exit()
+    except requests.exceptions.InvalidURL:
         print("Wrong link, try again, please")
         sys.exit()
-    except ValueError:
-        print("Insert rss link, please")
+    except requests.exceptions.MissingSchema:
+        print("Incorrect URL. This is not the rss feed address")
         sys.exit()
 
 
@@ -122,7 +124,7 @@ def main():
         else:
             printing_news(number_of_news, args.limit)
     except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL):
-        print("ConnectionError. Correct the URL, please")
+        print("Connection error or URL error. Correct the URL, please")
     except requests.exceptions.MissingSchema:
         print("Incorrect URL. This is not the rss feed address")
 
