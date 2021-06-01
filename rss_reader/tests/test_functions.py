@@ -4,9 +4,12 @@ from contextlib import redirect_stdout
 from unittest.mock import MagicMock
 from unittest.mock import patch
 from urllib.error import URLError
+import PyPDF2
+import os
 
 from reader.article import Article
-from reader.functions import parse_news, make_json, check_limit, get_from_url, create_arguments, execute_news
+from reader.functions import parse_news, make_json, check_limit, get_from_url, create_arguments, execute_news, \
+    check_path_to_directory, save_news_in_html_file, pdf_factory
 
 
 class TestFunctions(unittest.TestCase):
@@ -45,6 +48,35 @@ class TestFunctions(unittest.TestCase):
                     '    "Description": "---",\n' \
                     '    "Image": "https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAw' \
                     'MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc"\n}'
+        self.html = """<html title="RSS news">
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <h1>Japan reporter freed from Myanmar says inmates were abused</h1>
+  <p>
+    <b>Title: </b>Japan reporter freed from Myanmar says inmates were abused
+  </p>
+  <p>
+    <b>Link: 
+      <a href="https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html">
+        <b>https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html</b>
+      </a>
+    </b>
+  </p>
+  <p>
+    <b>Date: </b>Fri, 21 May, 2021
+  </p>
+  <p>
+    <b>Source: </b>Associated Press
+  </p>
+  <p>
+    <b>Description: </b>---
+  </p>
+  <p>
+    <img src="https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAwMDthcHBpZD15dGFjaHlvbg--\
+/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc" style="width:360px">
+  </p>
+</html>"""
 
     def test_parse_news(self):
         """Checks that processing the entries creates an object of the Article class"""
@@ -162,6 +194,37 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(mock_cursor.execute.call_args.args[0],
                          'SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date')
         self.assertEqual(mock_cursor.execute.call_args.args[1]['date'], date)
+
+    def test_valid_path_to_directory(self):
+        """Checks that the specified path exists"""
+        path = os.path.abspath(os.curdir)
+        mock_logger = MagicMock(return_value=None)
+        self.actual = check_path_to_directory(path, mock_logger)
+        self.assertEqual(self.actual, True)
+
+    def test_non_existent_folder(self):
+        """Tests check_path_to_directory function if the folder does not exist"""
+        path = 'C:/Test/Test/Test/Test'
+        mock_logger = MagicMock(return_value=None)
+        with self.assertRaises(NotADirectoryError) as cm:
+            check_path_to_directory(path, mock_logger)
+
+        the_exception = cm.exception
+        self.assertEqual(the_exception.args[0], 'Entered path is invalid: folder does not exist')
+
+    @patch('reader.functions.check_path_to_directory')
+    def test_save_news_in_html(self, checker):
+        """Checks that the function is converting the passed object to html-format"""
+        checker.return_value = True
+        path = os.path.abspath(os.curdir)
+        mock_logger = MagicMock(return_value=None)
+        html = save_news_in_html_file([self.article_a], path, mock_logger)
+        with io.StringIO() as term_value, redirect_stdout(term_value):
+            f = open(html.name, 'r')
+            print(f.read())
+            self.assertEqual(term_value.getvalue(), self.html + '\n')
+            f.close()
+        os.remove(html.name)
 
 
 if __name__ == "__main__":

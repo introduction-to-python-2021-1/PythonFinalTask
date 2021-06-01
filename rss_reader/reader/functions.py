@@ -160,16 +160,13 @@ def check_path_to_directory(path_to_directory, logger):
     logger.info('Checking the entered path...')
     if os.path.isdir(path_to_directory) is False:
         logger.error('Entered path is invalid: not a folder')
-        raise NotADirectoryError('Entered path is invalid: not a folder')
-    elif not os.path.exists(path_to_directory):
-        logger.error('Entered path is invalid')
-        raise FileExistsError('Entered path is invalid')
+        raise NotADirectoryError('Entered path is invalid: folder does not exist')
     else:
         return True
 
 
 def html_factory(article, html_file):
-    """Represents Article object in html-form"""
+    """Represents Article object in html-format"""
     with html_file:
         h1(article.title)
         p(b('Title: '), article.title)
@@ -191,18 +188,15 @@ def save_news_in_html_file(news, path_to_html, logger):
         html_factory(article, html_file)
 
     path = os.path.join(path_to_html, 'rss_news.html')
-    try:
-        logger.info('Creating html-file...')
-        with open(path, 'w', encoding='utf-8') as file_html:
-            file_html.write(str(html_file))
-        logger.info('Html-file is created successfully!')
-        return file_html
-    except FileNotFoundError:
-        logger.error('There is no html-file in indicated directory')
-        raise SystemExit('There is no html-file in indicated directory')
+    logger.info('Creating html-file...')
+    with open(path, 'w', encoding='utf-8') as file_html:
+        file_html.write(str(html_file))
+    logger.info('Html-file is created successfully!')
+    return file_html
 
 
 def pdf_factory(news, path_to_pdf, logger, html_args=None):
+    """Represents articles in pdf-format"""
     check_path_to_directory(path_to_pdf, logger)
     html_file = save_news_in_html_file(news, path_to_pdf, logger)
     path = os.path.join(path_to_pdf, 'rss_news.pdf')
@@ -211,8 +205,9 @@ def pdf_factory(news, path_to_pdf, logger, html_args=None):
             logger.info('Creating pdf-file...')
             pisa.CreatePDF(src=html_file, dest=pdf_file)
             logger.info(f"Pdf-file '{pdf_file}' is created successfully!")
-        if html_args is None:
-            os.remove(html_file.name)
-            logger.info(f"Html-file '{html_file}' was deleted")
+            if html_args is None:
+                os.remove(html_file.name)
+                logger.info(f"Html-file '{html_file}' was deleted")
+            return pdf_file
     except FileNotFoundError:
         raise SystemExit('Please, check the existing of file')
