@@ -5,7 +5,6 @@ Main module of rss_reader
 
 import os
 import sys
-
 from rss_reader.argparser import get_args
 from rss_reader.logger_conf import create_root_logger, add_console_handler
 from rss_reader.RssParser import RssParser, convert_to_json, print_feed, print_json

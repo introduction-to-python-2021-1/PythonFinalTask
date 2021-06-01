@@ -2,6 +2,7 @@
 This module contains class for fetching and showing rss-feed
 """
 import sys
+import urllib.error
 
 import feedparser
 from collections import namedtuple
@@ -30,7 +31,11 @@ class RssParser:
         if not self.url:
             print('URL is empty, please input URL')
             sys.exit()
-        data = feedparser.parse(self.url)
+        try:
+            data = feedparser.parse(self.url)
+        except urllib.error.URLError:
+            print('Please input correct URL')
+            sys.exit()
         if data['bozo']:
             print('Please check URL(is RSS?) and Internet connection')
             sys.exit()

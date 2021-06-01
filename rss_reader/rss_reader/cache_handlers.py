@@ -4,8 +4,10 @@ This module provides tools for working with cache
 
 import os
 import json
-import time
+import sys
 from collections import namedtuple
+from dateutil.parser import parse
+import time
 
 
 def get_feed_from_cache(date, limit):
@@ -15,19 +17,31 @@ def get_feed_from_cache(date, limit):
     :param limit: Number of news to be added
     :return: List with news items
     """
+    check_if_date_correct(date)
     dir_path = os.path.abspath(os.path.dirname(__file__)) + os.path.sep + 'feed_cache' + os.path.sep + date + '.json'
     try:
         with open(dir_path) as dp:
             news = json.load(dp)
             return news[:limit]
     except FileNotFoundError:
-        print('Can\'t find news with this date')
-    return False
+        print('Can\'t find news with this date, make sure you entered date in correct format yyyymmdd')
+        return sys.exit()
 
 
 def save_feed_into_cache(item):
     """
-    This function saves feed item into file in json format
+    This function saves feed item to file in json format.
+
+    Name of file is date.
+
+    File stores list which contains feed items related to certain date.
+
+    If file does not exists, this function creates it.
+
+    If file was created earlier function loads list with feed items
+    from file, checks if feed was cached earlier, if not add it to list
+    and saves updated list to file.
+
     :param item: feed item
     """
     date = time.strftime('%Y%m%d', item.date)
@@ -64,3 +78,17 @@ def create_item_list_from_cache(list_with_feed):
         item = tuple_item(**loaded_dict)
         data.append(item)
     return data
+
+
+def check_if_date_correct(date):
+    """
+    Check if parsed date correct
+    :param date: date to check
+    :return: None if date is correct, exit, if date is not correct
+    """
+    try:
+        parse(date)
+        return True
+    except ValueError:
+        print(f'You input incorrect date: {date}, please follow format yyyymmdd')
+        return sys.exit()
