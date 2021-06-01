@@ -26,6 +26,7 @@ def get_args():
         parser.add_argument('--limit', type=int, help="Limit news topics if this parameter provided", default=0)
 
         args = parser.parse_args()
+        print(args)
         return args
 
     except argparse.ArgumentError:
@@ -34,6 +35,7 @@ def get_args():
 
 def verbose_args(args):
     """prints arguments info"""
+
     print("Verbosity is turned on.")
     print("Program runs with the given argument's values:")
     print(f"rss_url = {args.rss_url}, json = {args.json}, verbose = {args.verbose}, limit = {args.limit}")
@@ -41,13 +43,15 @@ def verbose_args(args):
 
 def get_response(url):
     """tries to get the server’s response"""
-    # print(f"Getting xml HTTP response: {response.status_code}")
     try:
         response = requests.get(url)
+        # if args.verbose:
+        #     print(f"Getting xml HTTP response: {response.status_code}")
         if response.status_code == 200:
+            print(type(response))
             return response
     except Exception as e:
-        print(f"Enter the correct URL!\nException message:\n{e}")
+        print(f"Failed to establish a new connection. Check the URL you have entered.")
 
 
 def extract_xml(content, limit):
@@ -93,9 +97,11 @@ def print_news(data):
 
 def print_json(data):
     """prints data in JSON format into STDOUT"""
-    print(json.dumps(data, indent=3))
-    with open("json_format", "w") as file: #??? ../
-        json.dump(data, file, indent=3)
+    json_data = json.dumps(data, indent=3)
+    print(json_data)
+    return json_data
+    # with open("json_format", "w") as file: #??? ../
+    #     json.dump(data, file, indent=3)
 
 
 def main():
