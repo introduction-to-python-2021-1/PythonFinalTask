@@ -129,6 +129,12 @@ class TestReader(unittest.TestCase):
         first = mock_print.call_args_list[0].args[0]
         self.assertTrue("Title" in first)
 
+    def test_for_logger(self):
+        "Test for logs with verbose argument"
+        logger = rss_reader.create_logger("verbose")
+        self.assertTrue(logger, "%(asctime)s - %(levelname)s - %(message)s")
+        self.assertTrue(logging.INFO, "Getting access to the RSS")
+
 
 if __name__ == "__main__":
     unittest.main()
