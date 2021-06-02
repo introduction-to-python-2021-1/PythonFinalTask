@@ -45,10 +45,10 @@ def main(argv=sys.argv[1:]):
         for feed in feeds_list:
             print(feed)
     elif args.source:
-        soup = get_data_from_url(logger, args.source)
-        if soup:
-            feed_title = soup.find('title').text
-            items = soup.find_all('item')
+        document_data = get_data_from_url(logger, args.source)
+        if document_data:
+            feed_title = document_data.find('title').text
+            items = document_data.find_all('item')
             logger.info(f'Founded {len(items)} news items')
             if items:
                 feed = Feed(args.source, args.limit, args.json, args.colorize, logger, feed_title, cache,
@@ -85,9 +85,9 @@ def get_data_from_url(logger, source_url):
         logger.error(f'Invalid URL "{source_url}". The specified URL should look like "http://www.example.com/"')
     else:
         logger.info('Parsing XML from the specified URL')
-        soup = BeautifulSoup(response.content, 'lxml-xml')
-        if soup.find('rss'):
-            return soup
+        document_data = BeautifulSoup(response.content, 'lxml-xml')
+        if document_data.find('rss'):
+            return document_data
         else:
             logger.error('Specified URL does not contain RSS. Please check the specified URL and try again')
     return None

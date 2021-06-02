@@ -41,7 +41,8 @@ class Converter:
         if output_filepath:
             try:
                 with open(output_filepath, 'w+b') as file:
-                    pisa.CreatePDF(self.to_html(feeds_list, news_limit, pdf=True), file, )
+                    pisa.CreatePDF(self.to_html(feeds_list, news_limit, pdf=True, output_filepath=output_filepath),
+                                   file, )
                     self.logger.info(f'PDF file created and saved at {output_filepath}')
             except PermissionError:
                 self.logger.error(f'Unable to save PDF file at {output_filepath}. Permission denied.')
@@ -74,7 +75,7 @@ class Converter:
         else:
             return os.path.abspath(cached_image_file_path[0])
 
-    def to_html(self, feeds_list, news_limit, path=None, pdf=False):
+    def to_html(self, feeds_list, news_limit, path=None, pdf=False, output_filepath=None):
         """
         This method converts news feed to HTML format
 
@@ -83,6 +84,7 @@ class Converter:
             news_limit (int or NoneType): Value that limits the number of news
             path (str): Output filepath
             pdf (bool): If True prepares HTML for conversion to PDF
+            output_filepath (str): Formatted output filepath (for calls from to_pdf)
 
         Returns:
             str: HTML code required to get PDF if pdf is True
@@ -96,15 +98,18 @@ class Converter:
         news_list = []
         for feed in feeds_list:
             news_list += feed.news_list
-        if pdf:
-            return template.render(news_list=news_list[:news_limit],
-                                   fonts=os.path.join(os.path.dirname(__file__), 'fonts'))
-        else:
+        font_absolute_path = os.path.join(os.path.dirname(__file__), 'fonts' + os.path.sep + 'DejaVuSans.ttf')
+        if not output_filepath:
             output_filepath = self.prepare_output_filepath(path, html=True)
+        font_relative_path = os.path.relpath(font_absolute_path,
+                                             f'{os.path.sep}'.join(output_filepath.split(os.path.sep)[:-1]))
+        if pdf:
+            return template.render(news_list=news_list[:news_limit], font=font_relative_path)
+        else:
             if output_filepath:
                 try:
                     with open(output_filepath, 'w') as file:
-                        file.write(template.render(news_list=news_list[:news_limit], ))
+                        file.write(template.render(news_list=news_list[:news_limit], font=font_relative_path))
                         self.logger.info(f'HTML file created and saved as {output_filepath}')
                 except PermissionError:
                     self.logger.error(f'Unable to save HTML file at {output_filepath}. Permission denied.')

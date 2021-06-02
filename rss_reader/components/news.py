@@ -44,8 +44,8 @@ class News:
     def __parse_description(self) -> str:
         """This method parses the description of the feed item and formats it"""
         if self.item.description:
-            soup = BeautifulSoup(self.item.description.text, 'html.parser')
-            images = soup.find_all('img')
+            document_data = BeautifulSoup(self.item.description.text, 'html.parser')
+            images = document_data.find_all('img')
             for image in images:
                 item_position = len(self.links)
                 response = requests.head(image['url'])
@@ -53,7 +53,7 @@ class News:
                 self.links[item_position] = {'enclosure': False, 'media': False, 'type': image_type,
                                              'url': image['src'], 'attributes': {'alt': image['alt']}}
                 image.replace_with(f'[image {item_position}{": " + image["alt"] + "] " if image["alt"] else "] "}')
-            return soup.text
+            return document_data.text
 
     def __parse_date(self) -> datetime:
         """This method parses the publication date of the feed item"""
