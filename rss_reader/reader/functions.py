@@ -6,13 +6,13 @@ import urllib.error
 import logging.handlers
 import datetime
 import os
-from dominate.tags import *
+from dominate import tags
 from pathlib import Path
 from xhtml2pdf import pisa
 
 from reader.article import Article
 
-__version__ = '1.3'
+__version__ = '1.4'
 
 
 def parse_news(news):
@@ -168,21 +168,21 @@ def check_path_to_directory(path_to_directory, logger):
 def html_factory(article, html_file):
     """Represents Article object in html-format"""
     with html_file:
-        h1(article.title)
-        p(b('Title: '), article.title)
-        p(b('Link: ', a(b(article.link), href=article.link, )))
-        p(b('Date: '), article.date.strftime("%a, %d %B, %Y"))
-        p(b('Source: '), article.source)
-        p(b('Description: '), article.description)
-        p(img(style="width:360px", src=article.image))
+        tags.h1(article.title)
+        tags.p(tags.b('Title: '), article.title)
+        tags.p(tags.b('Link: ', tags.a(tags.b(article.link), href=article.link, )))
+        tags.p(tags.b('Date: '), article.date.strftime("%a, %d %B, %Y"))
+        tags.p(tags.b('Source: '), article.source)
+        tags.p(tags.b('Description: '), article.description)
+        tags.p(tags.img(style="width:360px", src=article.image))
     return html_file
 
 
 def save_news_in_html_file(news, path_to_html, logger):
     """Creates html-file and saves news in it"""
     check_path_to_directory(path_to_html, logger)
-    html_file = html(title='RSS news')
-    html_file.add(head(meta(charset='utf-8')))
+    html_file = tags.html(title='RSS news')
+    html_file.add(tags.head(tags.meta(charset='utf-8')))
 
     for article in news:
         html_factory(article, html_file)

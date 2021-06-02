@@ -4,7 +4,6 @@ from contextlib import redirect_stdout
 from unittest.mock import MagicMock
 from unittest.mock import patch
 from urllib.error import URLError
-import PyPDF2
 import os
 
 from reader.article import Article
@@ -48,35 +47,35 @@ class TestFunctions(unittest.TestCase):
                     '    "Description": "---",\n' \
                     '    "Image": "https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAw' \
                     'MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc"\n}'
-        self.html = """<html title="RSS news">
-  <head>
-    <meta charset="utf-8">
-  </head>
-  <h1>Japan reporter freed from Myanmar says inmates were abused</h1>
-  <p>
-    <b>Title: </b>Japan reporter freed from Myanmar says inmates were abused
-  </p>
-  <p>
-    <b>Link: 
-      <a href="https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html">
-        <b>https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html</b>
-      </a>
-    </b>
-  </p>
-  <p>
-    <b>Date: </b>Fri, 21 May, 2021
-  </p>
-  <p>
-    <b>Source: </b>Associated Press
-  </p>
-  <p>
-    <b>Description: </b>---
-  </p>
-  <p>
+        self.html = '<html title="RSS news">\n\
+  <head>\n\
+    <meta charset="utf-8">\n\
+  </head>\n\
+  <h1>Japan reporter freed from Myanmar says inmates were abused</h1>\n\
+  <p>\n\
+    <b>Title: </b>Japan reporter freed from Myanmar says inmates were abused\n\
+  </p>\n\
+  <p>\n\
+    <b>Link: \n\
+      <a href="https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html">\n\
+        <b>https://news.yahoo.com/japan-reporter-freed-myanmar-says-082138070.html</b>\n\
+      </a>\n\
+    </b>\n\
+  </p>\n\
+  <p>\n\
+    <b>Date: </b>Fri, 21 May, 2021\n\
+  </p>\n\
+  <p>\n\
+    <b>Source: </b>Associated Press\n\
+  </p>\n\
+  <p>\n\
+    <b>Description: </b>---\n\
+  </p>\n\
+  <p>\n\
     <img src="https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAwMDthcHBpZD15dGFjaHlvbg--\
-/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc" style="width:360px">
-  </p>
-</html>"""
+/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc" style="width:360px">\n\
+  </p>\n\
+</html>'
 
     def test_parse_news(self):
         """Checks that processing the entries creates an object of the Article class"""
