@@ -13,6 +13,8 @@ def main(argv=sys.argv):
     """Creating connection"""
     connection = sqlite3.connect('news.db')
 
+    functions.init_database(connection)
+
     if args.get('limit'):
         limit = functions.check_limit(args.get('limit'))
     else:
@@ -28,14 +30,12 @@ def main(argv=sys.argv):
     html = args.get('to_html')
     pdf = args.get('to_pdf')
 
-    if not date:
-        logger.info(f"Retrieves news from {url}...")
-        result = functions.get_from_url(url)
-        functions.store_news(result, connection, url)
-    else:
-        logger.info(
-            f"Retrieves news for the selected date ({date}) ...")
+    logger.info(f"Downloading news from {url}...")
+    result = functions.get_from_url(url)
+    functions.store_news(result, connection, url)
+    if date:
         result = functions.get_from_db(date, url, connection, logger)
+        logger.info(f"Retrieves news for the selected date ({date}) from database...")
 
     if limit > 0:
         logger.info(f'Working with limited by user number ({limit} items) of articles...')

@@ -83,13 +83,7 @@ class TestFunctions(unittest.TestCase):
 
     def test_empty_news(self):
         """Checks that the program exits after recieving an empty input"""
-        self.entries = {'entries': []}
-
-        with self.assertRaises(SystemExit) as cm:
-            functions.parse_news(self.entries)
-
-        the_exception = cm.exception
-        self.assertEqual(the_exception.args[0], "Sorry, no news to parse!")
+        self.assertEqual(functions.parse_news([]), [])
 
     def test_make_json(self):
         """Checks that news is converted to json format correctly"""
@@ -239,6 +233,21 @@ class TestFunctions(unittest.TestCase):
         html.close()
         self.assertTrue(os.path.join(path, 'rss_news.pdf'))
         os.remove(pdf.name)
+
+    def test_check_date(self):
+        """Tests check_date function with valid values (date in YYYYMMDD format)"""
+        mock_logger = MagicMock(return_value=None)
+        self.assertEqual(functions.check_date('20210528', mock_logger), True)
+
+    def test_check_invalid_format_date(self):
+        """Tests check_date function with invalid values"""
+        mock_logger = MagicMock()
+        date = '20210588'
+        with self.assertRaises(SystemExit) as cm:
+            functions.check_date(date, mock_logger)
+
+        the_exception = cm.exception
+        self.assertEqual(the_exception.args[0], 'Please, enter the date in "YYYYMMDD" format')
 
 
 if __name__ == "__main__":

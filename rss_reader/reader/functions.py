@@ -9,6 +9,7 @@ import os
 from dominate import tags
 from pathlib import Path
 from xhtml2pdf import pisa
+import sqlite3
 
 from reader.article import Article
 
@@ -17,31 +18,27 @@ __version__ = '1.4'
 
 def parse_news(news):
     """Creating list of news"""
-    try:
-        default_value = '---'
+    default_value = '---'
 
-        news_list = []
-        for entry in news:
-            title = entry.get('title', default_value)
-            link = entry.get('link', default_value)
-            published = entry.get('published', default_value)
-            source = entry.get('source', default_value)
-            description = entry.get('description', default_value)
-            media_content = entry.get('media_content', default_value)
+    news_list = []
+    for entry in news:
+        title = entry.get('title', default_value)
+        link = entry.get('link', default_value)
+        published = entry.get('published', default_value)
+        source = entry.get('source', default_value)
+        description = entry.get('description', default_value)
+        media_content = entry.get('media_content', default_value)
 
-            source_title = default_value
-            if source != default_value:
-                source_title = source['title']
+        source_title = default_value
+        if source != default_value:
+            source_title = source['title']
 
-            image = default_value
-            if media_content != image:
-                image = media_content[0]['url']
+        image = default_value
+        if media_content != image:
+            image = media_content[0]['url']
 
-            article = Article(title, link, published, source_title, description, image)
-            news_list.append(article)
-
-    except AttributeError:
-        raise SystemExit('Sorry, no news to parse!')
+        article = Article(title, link, published, source_title, description, image)
+        news_list.append(article)
 
     return news_list
 
@@ -66,12 +63,18 @@ def check_limit(limit_value):
             return limit
 
 
+def init_database(connection):
+    """Creating required table"""
+    cursor = connection.cursor()
+    with open("init.sql") as sql_file:
+        sql_as_string = sql_file.read()
+        cursor.executescript(sql_as_string)
+        connection.commit()
+
+
 def store_news(list_of_news, connection, url):
     """Storing news in a local storage"""
     cursor = connection.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS news
-                   (title text, link text UNIQUE, full_date text, date text, source text, description text,
-                   image text, url text)''')
     list_of_values = []
     for item in list_of_news:
         new_date = item.date.strftime('%Y%m%d')
@@ -85,10 +88,10 @@ def store_news(list_of_news, connection, url):
 
 
 def execute_news(date, connection, url, logger):
-    """Retrieving news for the selected date"""
+    """Retrieving news for the selected date and (or) from selected url"""
     cursor = connection.cursor()
     if url:
-        logger.info(f"Retrieves news from the selected url ({url})...")
+        logger.info(f"Retrieves news for the selected url ({url}) from database...")
         cursor.execute('SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date '
                        'and url=:url', {'date': date, 'url': url})
     else:
@@ -115,17 +118,24 @@ def get_from_url(source):
             return result
 
 
+def check_date(date, logger):
+    """Checks if the date is ina right format"""
+    logger.info('Checking the entered date...')
+    try:
+        (datetime.datetime.strptime(date, '%Y%m%d')).date()
+        return True
+    except Exception:
+        raise SystemExit('Please, enter the date in "YYYYMMDD" format')
+
+
 def get_from_db(date, source, connection, logger):
     """Get data from DB by url and date"""
-    try:
-        args_date = (datetime.datetime.strptime(date, '%Y%m%d')).date()
-        result = execute_news(date, connection, source, logger)
-        if len(result) == 0:
-            raise SystemExit(f"Sorry, there are no articles for {args_date}!")
-        else:
-            return result
-    except ValueError:
-        raise SystemExit('Please, enter the date in the following format: "YYYYMMDD".')
+    check_date(date, logger)
+    result = execute_news(date, connection, source, logger)
+    if len(result) == 0:
+        raise SystemExit(f"Sorry, there are no articles for {date}!")
+    else:
+        return result
 
 
 def create_arguments(argv):
