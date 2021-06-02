@@ -101,19 +101,17 @@ class TestParserArguments(unittest.TestCase):
         rss_parser = rss_reader.build_args(url)
         self.assertLogs(rss_parser, logging.ERROR)
 
-    def test_limit(self):
+    @ddt.data(("https://news.yahoo.com/rss/", "1"))
+    @ddt.unpack
+    def test_limit(self, source, limit):
         """Tests if --limit argument is True"""
-        rss_parser = rss_reader.build_args(["https://news.yahoo.com/rss/", "--limit=1"])
+        rss_parser = rss_reader.build_args([source, f"--limit={limit}"])
         self.assertTrue(rss_parser.limit)
 
-    def test_incorrect_limit_0(self):
-        rss_parser = rss_reader.build_args(["https://news.yahoo.com/rss/", "--limit=0"])
-        self.assertLogs(rss_parser, logging.ERROR)
-
-    def test_incorrect_limit_negative(self):
-        rss_parser = rss_reader.build_args(
-            ["https://news.yahoo.com/rss/", "--limit=-1"]
-        )
+    @ddt.data(("https://news.yahoo.com/rss/", "1"), ("https://news.yahoo.com/rss/", "0"))
+    @ddt.unpack
+    def test_incorrect_limit(self, source, limit):
+        rss_parser = rss_reader.build_args([source, f"--limit={limit}"])
         self.assertLogs(rss_parser, logging.ERROR)
 
     @mock.patch(
