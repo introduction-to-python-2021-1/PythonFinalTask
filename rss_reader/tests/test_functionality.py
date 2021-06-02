@@ -95,10 +95,9 @@ class TestParserArguments(unittest.TestCase):
         rss_parser = rss_reader.build_args(["https://news.yahoo.com/rss/", "--json"])
         self.assertTrue(rss_parser.json)
 
-    @ddt.data("", "https://newssdasd2213.yahoo.com/rss/")
-    def test_incorrect_url(self, url):
+    def test_incorrect_url(self):
         """Tests logging if url is incorrect"""
-        rss_parser = rss_reader.build_args(url)
+        rss_parser = rss_reader.build_args(["https://news.yahoo.com/rss/", "--limit=1"])
         self.assertLogs(rss_parser, logging.ERROR)
 
     @ddt.data(("https://news.yahoo.com/rss/", "1"))
@@ -108,7 +107,7 @@ class TestParserArguments(unittest.TestCase):
         rss_parser = rss_reader.build_args([source, f"--limit={limit}"])
         self.assertTrue(rss_parser.limit)
 
-    @ddt.data(("https://news.yahoo.com/rss/", "1"), ("https://news.yahoo.com/rss/", "0"))
+    @ddt.data(("https://news.yahoo.com/rss/", "-1"), ("https://news.yahoo.com/rss/", "0"))
     @ddt.unpack
     def test_incorrect_limit(self, source, limit):
         rss_parser = rss_reader.build_args([source, f"--limit={limit}"])
