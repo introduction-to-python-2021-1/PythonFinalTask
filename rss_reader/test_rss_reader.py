@@ -4,7 +4,7 @@ from unittest.mock import patch, Mock
 from argparse import Namespace
 from contextlib import contextmanager
 from io import StringIO
-from rss_reader.rss_reader.rss_reader import *
+from rss_reader.rss_reader import *
 
 
 @contextmanager
@@ -20,7 +20,6 @@ def captured_output():
 
 class TestRssReader(unittest.TestCase):
 
-
     def test_verbose_args(self):
         args = Namespace(rss_url='https://www.theguardian.com/world/rss', json=False, verbose=True, limit=1)
 
@@ -29,7 +28,6 @@ class TestRssReader(unittest.TestCase):
 
         output = out.getvalue().strip()
         self.assertIn('Verbosity is turned on.', output)
-
 
     def test_print_news(self):
         data = {
@@ -56,7 +54,6 @@ class TestRssReader(unittest.TestCase):
         response = get_response('https://www.theguardian.com/world/rss')
         self.assertEqual(response.status_code, 200)
 
-
     def test_extract_xml(self):
         with open("rss-test-theguardian.xml", "r") as file:
             content = file.read()
@@ -64,7 +61,6 @@ class TestRssReader(unittest.TestCase):
         self.assertIsInstance(extract_xml(content, 0), dict)
         self.assertEqual(len(extract_xml(content, 0)["News"]), 41)
         self.assertIsInstance(extract_xml(content, 0)["News"][0], dict)
-
 
     def test_print_json(self):
         data = {}
