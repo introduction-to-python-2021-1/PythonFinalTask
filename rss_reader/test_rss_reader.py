@@ -60,7 +60,6 @@ class TestRssReader(unittest.TestCase):
         filename = os.path.join(file_dir, 'rss-test-theguardian.xml')
         with open(filename, "r") as file:
             content = file.read()
-            print(len(extract_xml(content, 0)["News"]))
         self.assertIsInstance(extract_xml(content, 0), dict)
         self.assertEqual(len(extract_xml(content, 0)["News"]), 41)
         self.assertIsInstance(extract_xml(content, 0)["News"][0], dict)
