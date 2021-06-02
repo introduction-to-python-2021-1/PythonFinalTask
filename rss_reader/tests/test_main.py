@@ -45,7 +45,7 @@ class TestMain(unittest.TestCase):
     @patch('reader.functions.get_from_url')
     @patch('reader.functions.init_database')
     @patch('reader.functions.store_news')
-    def test_json_conversion(self, store,init, get_url):
+    def test_json_conversion(self, store, init, get_url):
         """Checks that the program converts the news into JSON format when --json is specified"""
         get_url.return_value = [self.article_a]
         init.return_value = ''
