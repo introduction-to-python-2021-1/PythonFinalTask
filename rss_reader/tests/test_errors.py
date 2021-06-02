@@ -5,9 +5,12 @@ import os
 import unittest
 from unittest.mock import patch
 
+import ddt
+
 from rss_reader.rss_reader import rss_reader
 
 
+@ddt.ddt
 class TestRssReader(unittest.TestCase):
     @staticmethod
     def mock_response(status, content):
@@ -72,6 +75,28 @@ class TestRssReader(unittest.TestCase):
         with self.assertLogs('root', level='ERROR') as cm:
             rss_reader.main(argv)
         self.assertIn('ERROR:root:Source URL not specified. Please check your input and try again', cm.output)
+
+    @ddt.data('123', 'date', '123456789')
+    def test_wrong_date_format(self, date_value):
+        """Tests that if specified date doesn't match the format app should print error"""
+        with patch('sys.stderr', new_callable=StringIO) as mock_stderr:
+            argv = ['https://news.yahoo.com/rss/', f'--date={date_value}']
+            with self.assertRaises(SystemExit):
+                with self.assertRaises(argparse.ArgumentTypeError):
+                    rss_reader.main(argv)
+            self.assertIn(f'Invalid date "{date_value}". The specified date does not match the format "%Y%m%d"',
+                          mock_stderr.getvalue())
+
+    @ddt.data('20211301', '20210001', '20210132', '20210100')
+    def test_nonexistent_dates(self, date_value):
+        """Tests that if specified date contains a nonexistent month or day app should print error"""
+        with patch('sys.stderr', new_callable=StringIO) as mock_stderr:
+            argv = ['https://news.yahoo.com/rss/', f'--date={date_value}']
+            with self.assertRaises(SystemExit):
+                with self.assertRaises(argparse.ArgumentTypeError):
+                    rss_reader.main(argv)
+            self.assertIn(f'Invalid date "{date_value}". The specified date does not match the format "%Y%m%d"',
+                          mock_stderr.getvalue())
 
 
 if __name__ == '__main__':

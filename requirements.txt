@@ -12,3 +12,4 @@ jinja2==2.11.3
 xhtml2pdf==0.2.5
 colorlog==5.0.1
 Pygments==2.9.0
+ddt==1.4.2
