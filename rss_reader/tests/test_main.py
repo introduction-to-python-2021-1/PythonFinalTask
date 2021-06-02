@@ -47,7 +47,7 @@ class TestMain(unittest.TestCase):
     def test_json_conversion(self, init, parser):
         """Checks that the program converts the news into JSON format when --json is specified"""
         parser.return_value = {'entries': self.entries}
-        init.return_value =''
+        init.return_value = ''
         with io.StringIO() as term_value, redirect_stdout(term_value):
             main([None, self.url, '--json'])
             self.assertEqual(term_value.getvalue(), self.json + '\n')

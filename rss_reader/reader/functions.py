@@ -9,7 +9,6 @@ import os
 from dominate import tags
 from pathlib import Path
 from xhtml2pdf import pisa
-import sqlite3
 
 from reader.article import Article
 

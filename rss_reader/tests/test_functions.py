@@ -221,8 +221,10 @@ class TestFunctions(unittest.TestCase):
         os.remove(html.name)
 
     @patch('reader.functions.save_news_in_html_file')
-    def test_save_news_in_pdf(self, html_saver):
+    @patch('xhtml2pdf.pisa.CreatePDF')
+    def test_save_news_in_pdf(self, pisa, html_saver):
         """Checks that the function is converting the passed object to pdf-format"""
+        pisa.return_value = ''
         path = os.path.abspath(os.curdir)
         mock_logger = MagicMock(return_value=None)
         html_file = os.path.join(path, 'test.html')
@@ -230,7 +232,6 @@ class TestFunctions(unittest.TestCase):
             html.write(self.html)
         html_saver.return_value = html
         pdf = functions.save_news_in_pdf_file(self.article_a, path, mock_logger)
-        html.close()
         self.assertTrue(os.path.join(path, 'rss_news.pdf'))
         os.remove(pdf.name)
 
