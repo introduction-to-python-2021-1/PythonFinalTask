@@ -29,52 +29,33 @@ def main(argv=sys.argv):
     pdf = args.get('to_pdf')
 
     if not date:
-        logger.info(
-            f"Retrieves news from url ({url}) ...")
+        logger.info(f"Retrieves news from {url}...")
         result = functions.get_from_url(url)
         functions.store_news(result, connection, url)
     else:
         logger.info(
             f"Retrieves news for the selected date ({date}) ...")
-        result = functions.get_from_db(date, url, connection)
-        if html:
-            functions.save_news_in_html_file(result, html, logger)
-        if pdf:
-            functions.pdf_factory(result, pdf, logger)
+        result = functions.get_from_db(date, url, connection, logger)
 
     if limit > 0:
-        logger.info(f'Working with limited by user number ({limit} items) of articles')
-        logger.info('Creating the list of news for limited articles...' + '\n')
-        for item in result[:limit]:
-            if args.get('json'):
-                json_item = functions.make_json(item)
-                print(json_item)
-            else:
-                print(item)
-            if html:
-                functions.save_news_in_html_file(result[:limit], html, logger)
-            if pdf:
-                functions.pdf_factory(result[:limit], pdf, logger)
-        logger.info('The list of news was created successfully!')
-    elif args.get('json'):
-        logger.info('Creating the list of news in json format...')
+        logger.info(f'Working with limited by user number ({limit} items) of articles...')
+        logger.info('Creating the list of news...' + '\n')
+        result = result[:limit]
+    if args.get('json'):
+        logger.info('Converting to json format...')
         for item in result:
             json_item = functions.make_json(item)
             print(json_item)
-        if html:
-            functions.save_news_in_html_file(result, html, logger)
-        if pdf:
-            functions.pdf_factory(result, pdf, logger)
-        logger.info('The list of news was created successfully!')
     else:
-        logger.info('Creating the list of news...')
         for article in result:
             print(article)
-        logger.info('The list of news was created successfully!')
-        if html:
-            functions.save_news_in_html_file(result, html, logger)
-        if pdf:
-            functions.pdf_factory(result, pdf, logger)
+
+    logger.info('The list of news was created successfully!')
+
+    if pdf or (html and pdf):
+        functions.save_news_in_pdf_file(result, pdf, logger, html)
+    if html and pdf is None:
+        functions.save_news_in_html_file(result, html, logger)
 
 
 if __name__ == '__main__':

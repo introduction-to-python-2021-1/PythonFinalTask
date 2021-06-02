@@ -7,8 +7,7 @@ from urllib.error import URLError
 import os
 
 from reader.article import Article
-from reader.functions import parse_news, make_json, check_limit, get_from_url, create_arguments, execute_news, \
-    check_path_to_directory, save_news_in_html_file, pdf_factory
+from reader import functions
 
 
 class TestFunctions(unittest.TestCase):
@@ -79,7 +78,7 @@ class TestFunctions(unittest.TestCase):
 
     def test_parse_news(self):
         """Checks that processing the entries creates an object of the Article class"""
-        self.actual = parse_news(self.entries)[0]
+        self.actual = functions.parse_news(self.entries)[0]
         self.assertEqual(self.actual, self.article_a)
 
     def test_empty_news(self):
@@ -87,23 +86,23 @@ class TestFunctions(unittest.TestCase):
         self.entries = {'entries': []}
 
         with self.assertRaises(SystemExit) as cm:
-            parse_news(self.entries)
+            functions.parse_news(self.entries)
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], "Sorry, no news to parse!")
 
     def test_make_json(self):
         """Checks that news is converted to json format correctly"""
-        self.assertEqual(make_json(self.article_a), self.json)
+        self.assertEqual(functions.make_json(self.article_a), self.json)
 
     def test_check_limit(self):
         """Tests check_limit function with valid values (positive numbers)"""
-        self.assertEqual(check_limit('2'), 2)
+        self.assertEqual(functions.check_limit('2'), 2)
 
     def test_check_limit_value_error(self):
         """Tests check_limit function with unvalid values (letters)"""
         with self.assertRaises(SystemExit) as cm:
-            check_limit('symbol')
+            functions.check_limit('symbol')
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], 'The argument "limit" should be a positive number')
@@ -111,7 +110,7 @@ class TestFunctions(unittest.TestCase):
     def test_check_limit_negative(self):
         """Tests check_limit function with unvalid values (negative numbers)"""
         with self.assertRaises(SystemExit) as cm:
-            check_limit('-10')
+            functions.check_limit('-10')
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], 'The argument "limit" should be greater than 0')
@@ -119,7 +118,7 @@ class TestFunctions(unittest.TestCase):
     def test_check_limit_zero(self):
         """Tests check_limit function with unvalid values (zero)"""
         with self.assertRaises(SystemExit) as cm:
-            check_limit('0')
+            functions.check_limit('0')
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], 'The argument "limit" should be greater than 0')
@@ -129,7 +128,7 @@ class TestFunctions(unittest.TestCase):
         """Tests get_from_url function if url returns empty news list"""
         mock_api_call.return_value = {'entries': []}
         with self.assertRaises(SystemExit) as cm:
-            get_from_url(self.url)
+            functions.get_from_url(self.url)
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], "Please, check if the entered link is correct!")
@@ -139,7 +138,7 @@ class TestFunctions(unittest.TestCase):
         """Tests get_from_url function if url is not available"""
         mock_api_call.side_effect = MagicMock(side_effect=URLError('foo'))
         with self.assertRaises(SystemExit) as cm:
-            get_from_url(self.url)
+            functions.get_from_url(self.url)
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], "Source isn't available")
@@ -149,26 +148,26 @@ class TestFunctions(unittest.TestCase):
         """Tests get_from_url function if url returns correct news list"""
         parser.return_value = {'entries': self.entries}
 
-        self.actual = get_from_url(self.entries)
+        self.actual = functions.get_from_url(self.entries)
         self.assertEqual(self.actual[0], self.article_a)
 
     def test_version_only(self):
         """Checks that the program stops after printing a version when --version is specified"""
         with io.StringIO() as term_value, redirect_stdout(term_value):
             with self.assertRaises(SystemExit):
-                create_arguments([None, '--version'])
+                functions.create_arguments([None, '--version'])
                 self.assertEqual(term_value.getvalue(), 'Version 1.3')
 
     def test_version_and_other_arg(self):
         """Checks that the program stops after printing a version when --version and another arg are specified"""
         with io.StringIO() as term_value, redirect_stdout(term_value):
             with self.assertRaises(SystemExit):
-                create_arguments([None, self.url, '--version'])
+                functions.create_arguments([None, self.url, '--version'])
                 self.assertEqual(term_value.getvalue(), 'Version 1.3')
 
     def test_json_args(self):
         """Checks that create_arguments function correctly recognizes passed arguments"""
-        self.actual = create_arguments([None, self.url, '--json'])
+        self.actual = functions.create_arguments([None, self.url, '--json'])
         self.assertTrue(self.actual['json'])
 
     def test_execute_news(self):
@@ -176,8 +175,9 @@ class TestFunctions(unittest.TestCase):
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
         mock_connection.cursor.return_value = mock_cursor
+        mock_logger = MagicMock()
         date = '20210521'
-        execute_news(date, mock_connection, self.url)
+        functions.execute_news(date, mock_connection, self.url, mock_logger)
         self.assertEqual(mock_cursor.execute.call_args.args[0], 'SELECT title, link, full_date, source, description, '
                                                                 'image, url FROM news WHERE date=:date and url=:url')
         self.assertEqual(mock_cursor.execute.call_args.args[1]['date'], date)
@@ -188,8 +188,9 @@ class TestFunctions(unittest.TestCase):
         mock_connection = MagicMock()
         mock_cursor = MagicMock()
         mock_connection.cursor.return_value = mock_cursor
+        mock_logger = MagicMock()
         date = '20210521'
-        execute_news(date, mock_connection, None)
+        functions.execute_news(date, mock_connection, None, mock_logger)
         self.assertEqual(mock_cursor.execute.call_args.args[0],
                          'SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date')
         self.assertEqual(mock_cursor.execute.call_args.args[1]['date'], date)
@@ -198,7 +199,7 @@ class TestFunctions(unittest.TestCase):
         """Checks that the specified path exists"""
         path = os.path.abspath(os.curdir)
         mock_logger = MagicMock(return_value=None)
-        self.actual = check_path_to_directory(path, mock_logger)
+        self.actual = functions.check_path_to_directory(path, mock_logger)
         self.assertEqual(self.actual, True)
 
     def test_non_existent_folder(self):
@@ -206,7 +207,7 @@ class TestFunctions(unittest.TestCase):
         path = 'C:/Test/Test/Test/Test'
         mock_logger = MagicMock(return_value=None)
         with self.assertRaises(NotADirectoryError) as cm:
-            check_path_to_directory(path, mock_logger)
+            functions.check_path_to_directory(path, mock_logger)
 
         the_exception = cm.exception
         self.assertEqual(the_exception.args[0], 'Entered path is invalid: folder does not exist')
@@ -217,7 +218,7 @@ class TestFunctions(unittest.TestCase):
         checker.return_value = True
         path = os.path.abspath(os.curdir)
         mock_logger = MagicMock(return_value=None)
-        html = save_news_in_html_file([self.article_a], path, mock_logger)
+        html = functions.save_news_in_html_file([self.article_a], path, mock_logger)
         with io.StringIO() as term_value, redirect_stdout(term_value):
             f = open(html.name, 'r')
             print(f.read())

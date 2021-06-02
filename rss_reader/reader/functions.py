@@ -84,10 +84,11 @@ def store_news(list_of_news, connection, url):
     connection.commit()
 
 
-def execute_news(date, connection, url):
+def execute_news(date, connection, url, logger):
     """Retrieving news for the selected date"""
     cursor = connection.cursor()
     if url:
+        logger.info(f"Retrieves news from the selected url ({url})...")
         cursor.execute('SELECT title, link, full_date, source, description, image, url FROM news WHERE date=:date '
                        'and url=:url', {'date': date, 'url': url})
     else:
@@ -101,7 +102,7 @@ def execute_news(date, connection, url):
 
 
 def get_from_url(source):
-    """Checking the validity of user-entered URL"""
+    """Parses the received data from user-entered URL"""
     try:
         rss_news = feedparser.parse(source)
         result = parse_news(rss_news['entries'])
@@ -114,11 +115,11 @@ def get_from_url(source):
             return result
 
 
-def get_from_db(date, source, connection):
+def get_from_db(date, source, connection, logger):
     """Get data from DB by url and date"""
     try:
         args_date = (datetime.datetime.strptime(date, '%Y%m%d')).date()
-        result = execute_news(date, connection, source)
+        result = execute_news(date, connection, source, logger)
         if len(result) == 0:
             raise SystemExit(f"Sorry, there are no articles for {args_date}!")
         else:
@@ -136,8 +137,8 @@ def create_arguments(argv):
     parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
     parser.add_argument('--limit', help='Limit news topics if this parameter provided')
     parser.add_argument('--date', type=str, nargs='?', default='', help='Sets the date the news will be displayed')
-    parser.add_argument('--to-html', type=Path, help='The path where new .html file will be saved')
-    parser.add_argument('--to-pdf', type=Path, help='The path where new .pdf file will be saved')
+    parser.add_argument('--to-html', type=Path, help='The absolute path where new .html file will be saved')
+    parser.add_argument('--to-pdf', type=Path, help='The absolute path where new .pdf file will be saved')
     args = parser.parse_args(argv[1:])
     return vars(args)
 
@@ -174,7 +175,10 @@ def html_factory(article, html_file):
         tags.p(tags.b('Date: '), article.date.strftime("%a, %d %B, %Y"))
         tags.p(tags.b('Source: '), article.source)
         tags.p(tags.b('Description: '), article.description)
-        tags.p(tags.img(style="width:360px", src=article.image))
+        if article.image != '---':
+            tags.p(tags.img(style="width:360px", src=article.image))
+        else:
+            tags.p(tags.b('Sorry, no images for this article'))
     return html_file
 
 
@@ -184,6 +188,7 @@ def save_news_in_html_file(news, path_to_html, logger):
     html_file = tags.html(title='RSS news')
     html_file.add(tags.head(tags.meta(charset='utf-8')))
 
+    logger.info('Converting news to html format...')
     for article in news:
         html_factory(article, html_file)
 
@@ -195,19 +200,19 @@ def save_news_in_html_file(news, path_to_html, logger):
     return file_html
 
 
-def pdf_factory(news, path_to_pdf, logger, html_args=None):
+def save_news_in_pdf_file(news, path_to_pdf, logger, html_args=None):
     """Represents articles in pdf-format"""
-    check_path_to_directory(path_to_pdf, logger)
     html_file = save_news_in_html_file(news, path_to_pdf, logger)
     path = os.path.join(path_to_pdf, 'rss_news.pdf')
     try:
         with open(path, 'wb') as pdf_file, open(html_file.name, 'r', encoding='utf-8') as html_file:
             logger.info('Creating pdf-file...')
             pisa.CreatePDF(src=html_file, dest=pdf_file)
-            logger.info(f"Pdf-file '{pdf_file}' is created successfully!")
+            logger.info("Pdf-file is created successfully!")
             if html_args is None:
+                html_file.close()
                 os.remove(html_file.name)
-                logger.info(f"Html-file '{html_file}' was deleted")
+                logger.info("Temporary html-file was deleted")
             return pdf_file
     except FileNotFoundError:
         raise SystemExit('Please, check the existing of file')
