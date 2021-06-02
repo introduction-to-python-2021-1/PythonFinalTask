@@ -42,12 +42,14 @@ class TestMain(unittest.TestCase):
                     '    "Image": "https://s.yimg.com/uu/api/res/1.2/oj6L3nekcGoPEQVuv9hvqA--~B/aD0xOTk4O3c9MzAw' \
                     'MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d2d71e1fafaffbdd78bb05538e0732dc"\n}'
 
-    @patch('feedparser.parse')
+    @patch('reader.functions.get_from_url')
     @patch('reader.functions.init_database')
-    def test_json_conversion(self, init, parser):
+    @patch('reader.functions.store_news')
+    def test_json_conversion(self, store,init, get_url):
         """Checks that the program converts the news into JSON format when --json is specified"""
-        parser.return_value = {'entries': self.entries}
+        get_url.return_value = [self.article_a]
         init.return_value = ''
+        store.return_value = ''
         with io.StringIO() as term_value, redirect_stdout(term_value):
             main([None, self.url, '--json'])
             self.assertEqual(term_value.getvalue(), self.json + '\n')
