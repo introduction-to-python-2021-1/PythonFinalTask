@@ -1,3 +1,4 @@
+import os
 import sys
 import unittest
 from unittest.mock import patch, Mock
@@ -55,7 +56,9 @@ class TestRssReader(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_extract_xml(self):
-        with open("rss-test-theguardian.xml", "r") as file:
+        file_dir = os.path.dirname(os.path.realpath('__file__'))
+        filename = os.path.join(file_dir, 'rss-test-theguardian.xml')
+        with open(filename, "r") as file:
             content = file.read()
             print(len(extract_xml(content, 0)["News"]))
         self.assertIsInstance(extract_xml(content, 0), dict)
