@@ -1,36 +1,10 @@
 import filecmp
 import json
-import logging
-import os
-import shutil
-import unittest
 
-from bs4 import BeautifulSoup
-
-from components.cache import Cache
-from components.feed import Feed
+from rss_reader.tests.testing import BaseTest
 
 
-class TestRssReader(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.data_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data')) + os.path.sep
-        cls.cache_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'cache')) + os.path.sep
-        with open(cls.data_folder + 'example.xml', 'r') as file:
-            cls.soup = BeautifulSoup(file.read(), 'lxml-xml')
-        cls.example_feed_title = cls.soup.find('title').text
-        cls.example_items = cls.soup.find_all('item')
-        cls.example_feed = Feed('https://www.yahoo.com/news', None, False, False, logging, cls.example_feed_title,
-                                Cache(logging, cls.cache_folder), news_items=cls.example_items)
-        cls.example_news_list = cls.example_feed.news_list
-        shutil.rmtree(cls.cache_folder)
-
-    def setUp(self):
-        self.cache = Cache(logging, self.cache_folder)
-
-    def tearDown(self):
-        shutil.rmtree(self.cache_folder)
-
+class TestRssReader(BaseTest):
     def test_cache_news(self):
         """Tests that news is cached to a file"""
         self.cache.cache_news(self.example_news_list[0])
