@@ -22,7 +22,8 @@ setup(
         "setuptools~=49.2.1",
         "requests~=2.25.1",
         "bs4~=0.0.1",
-        "beautifulsoup4~=4.9.3"
+        "beautifulsoup4~=4.9.3",
+        "lxml"
     ],
     entry_points={
         'console_scripts': [
