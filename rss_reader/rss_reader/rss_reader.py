@@ -1,12 +1,12 @@
 import argparse
-import sys
-import xml.etree.ElementTree as Et
-import urllib.request
-import urllib.error
-import logging
 import json
+import logging
+import sys
+import urllib.error
+import urllib.request
+import xml.etree.ElementTree as Et
 
-VERSION = "1.0"
+VERSION = "2.0"
 
 
 def build_args(args):
@@ -33,7 +33,7 @@ def build_args(args):
 
 
 def get_response(link):
-    """Function knocks on the link nad returns response"""
+    """Function knocks on the link and returns response"""
     try:
         logging.info(f"Connection to {link} ...")
         response = urllib.request.urlopen(link)
@@ -54,10 +54,10 @@ def parse_response(xml):
         logging.error("Error occurred during parsing the document")
         sys.exit()
     root = tree.getroot()
-    news = []
+    news_list = []
     channel = root.findtext("channel/title")
     for item in root.iter("item"):
-        news.append(
+        news_list.append(
             {
                 "Feed": channel,
                 "Title": item.findtext("title"),
@@ -65,52 +65,51 @@ def parse_response(xml):
                 "Link": item.findtext("link"),
             }
         )
-    return news
+    return news_list
 
 
 def print_news(news, limit):
     """Function prints news in stdout"""
-    try:
-        for item in news[:limit]:
-            print(
-                f'Feed: {item["Feed"]}',
-                f'Title: {item["Title"]}',
-                f'Date: {item["Date"]}',
-                f'Link: {item["Link"]}',
-                "....................",
-                sep="\n",
-            )
-    except KeyError:
-        logging.error("Error during printing news. Possible problem in xml structure")
+    for item in news[:limit]:
+        print(
+            f'Feed: {item.get("Feed")}',
+            f'Title: {item.get("Title")}',
+            f'Date: {item.get("Date")}',
+            f'Link: {item.get("Link")}',
+            "....................",
+            sep="\n",
+        )
 
 
-def print_json(news, limit):
+def print_json(news_list, limit):
+    if not limit:
+        limit = len(news_list)
     """Function prints news in json format"""
-    print(json.dumps(news[:limit], indent=2, ensure_ascii=False))
+    print(json.dumps(news_list[:limit], indent=2, ensure_ascii=False))
 
 
 def main():
     """This function is entry point.Parser arguments are processed and checked here and in accordance with this,
     output format is selected"""
-    args = build_args(sys.argv[1:])
-    if args.verbose:
+    parser_args = build_args(sys.argv[1:])
+    if parser_args.verbose:
         logging.basicConfig(level=logging.INFO)
-    limit = args.limit
-    # if limit == 0 or limit < 0:
-    #     logging.error("Limit is incorrect")
-    #     sys.exit()
-    response = get_response(args.source)
+    limit = None
+    if parser_args.limit is not None:
+        limit = parser_args.limit
+        if limit == 0 or limit < 0:
+            logging.error("Limit is incorrect")
+            sys.exit()
+    logging.info("Trying to get data...")
+    response = get_response(parser_args.source)
     if not response:
         logging.info("No data for requested URL")
         sys.exit()
-    logging.info("Trying to get data...")
-    news = parse_response(response)
-    if not limit:
-        limit = len(news)
-    if args.json:
-        print_json(news, limit)
+    news_list = parse_response(response)
+    if parser_args.json:
+        print_json(news_list, limit)
     else:
-        print_news(news, limit)
+        print_news(news_list, limit)
 
     logging.info("Data is received")
 

@@ -1,5 +1,6 @@
-from setuptools import setup
 from pathlib import Path
+
+from setuptools import setup
 
 VERSION = 2.0
 AUTHOR = "Evzhenko Ilya"
