@@ -68,9 +68,15 @@ def parse_response(xml):
     return news_list
 
 
-def print_news(news, limit):
+def calculate_news_with_limit(news_list, limit):
+    if not limit:
+        limit = len(news_list)
+    return news_list[:limit]
+
+
+def print_news(news_list):
     """Function prints news in stdout"""
-    for item in news[:limit]:
+    for item in news_list:
         print(
             f'Feed: {item.get("Feed")}',
             f'Title: {item.get("Title")}',
@@ -81,17 +87,15 @@ def print_news(news, limit):
         )
 
 
-def print_json(news_list, limit):
-    if not limit:
-        limit = len(news_list)
+def print_json(news_list):
     """Function prints news in json format"""
-    print(json.dumps(news_list[:limit], indent=2, ensure_ascii=False))
+    print(json.dumps(news_list, indent=2, ensure_ascii=False))
 
 
-def main():
+def main(argv=sys.argv):
     """This function is entry point.Parser arguments are processed and checked here and in accordance with this,
     output format is selected"""
-    parser_args = build_args(sys.argv[1:])
+    parser_args = build_args(argv)
     if parser_args.verbose:
         logging.basicConfig(level=logging.INFO)
     limit = None
@@ -106,10 +110,11 @@ def main():
         logging.info("No data for requested URL")
         sys.exit()
     news_list = parse_response(response)
+    news_list = calculate_news_with_limit(news_list, limit)
     if parser_args.json:
-        print_json(news_list, limit)
+        print_json(news_list)
     else:
-        print_news(news_list, limit)
+        print_news(news_list)
 
     logging.info("Data is received")
 

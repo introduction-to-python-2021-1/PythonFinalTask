@@ -57,6 +57,8 @@ def mocked_urlopen(*args, **kwargs):
 
     if not validators.url(args[0]):
         raise urllib.error.URLError("Incorrect URL")
+    response = mock.MagicMock(status_code=200, payload=json.dumps({"key": "payload"}))
+    return response
 
 
 @ddt.ddt
@@ -71,13 +73,13 @@ class TestParserArguments(unittest.TestCase):
     def test_version(self):
         """Tests printing version with indicated --version argument"""
         with self.assertRaises(SystemExit):
-            rss_reader.build_args([None, "--version"])
+            rss_reader.main([None, "--version"])
         self.assertEqual(self.output.getvalue(), f"Version {VERSION}\n")
 
     def test_version_with_url(self):
         """Tests printing version with indicated --version and source arguments"""
         with self.assertRaises(SystemExit):
-            rss_reader.build_args(["https://news.yahoo.com/rss/", "--version"])
+            rss_reader.main(["https://news.yahoo.com/rss/", "--version"])
         self.assertEqual(self.output.getvalue(), f"Version {VERSION}\n")
 
     def test_verbose(self):
@@ -95,46 +97,70 @@ class TestParserArguments(unittest.TestCase):
         rss_parser = rss_reader.build_args(["https://news.yahoo.com/rss/", "--json"])
         self.assertTrue(rss_parser.json)
 
-    def test_incorrect_url(self):
+    @ddt.data("", "https://newssdasd2213.yahoo.com/rss/")
+    def test_incorrect_url(self, url):
         """Tests logging if url is incorrect"""
-        rss_parser = rss_reader.build_args(["https://news.yahoo.com/rss/", "--limit=1"])
+        rss_parser = rss_reader.main(url)
         self.assertLogs(rss_parser, logging.ERROR)
 
-    @ddt.data(("https://news.yahoo.com/rss/", "1"))
+    @ddt.data(("https://news.yahoo.com/rss/", 1))
     @ddt.unpack
     def test_limit(self, source, limit):
         """Tests if --limit argument is True"""
         rss_parser = rss_reader.build_args([source, f"--limit={limit}"])
         self.assertTrue(rss_parser.limit)
 
-    @ddt.data(("https://news.yahoo.com/rss/", "-1"), ("https://news.yahoo.com/rss/", "0"))
+    @ddt.data(-1, 0)
+    def test_logging_with_incorrect_limit(self, limit):
+        """Tests logging with incorrect limit"""
+        with self.assertRaises(SystemExit):
+            rss_parser = rss_reader.main(
+                ["https://news.yahoo.com/rss/", f"--limit={limit}"]
+            )
+            self.assertLogs(rss_parser, logging.ERROR)
+
+    @ddt.data(1, 23)
+    def test_limit_performance(self, limit):
+        news_list = rss_reader.parse_response(XML)
+        limit_news_list = rss_reader.calculate_news_with_limit(news_list, limit)
+        self.assertEqual(len(limit_news_list), 1)
+
+    @ddt.data(
+        ("httpso://news.yahoo.com/rss/", urllib.error.URLError),
+        ("1313123131", ValueError),
+    )
     @ddt.unpack
-    def test_incorrect_limit(self, source, limit):
-        rss_parser = rss_reader.build_args([source, f"--limit={limit}"])
-        self.assertLogs(rss_parser, logging.ERROR)
+    @mock.patch(
+        "rss_reader.rss_reader.rss_reader.urllib.request.urlopen",
+        side_effect=mocked_urlopen,
+    )
+    def test_response_with_bad_source(self, mocked, source, error):
+        """Tests exceptions connected with getting response from the specified source"""
+        with self.assertRaises(SystemExit):
+            with self.assertRaises(error):
+                rss_reader.get_response(source)
 
     @mock.patch(
         "rss_reader.rss_reader.rss_reader.urllib.request.urlopen",
         side_effect=mocked_urlopen,
     )
-    def test_response(self, mocked):
-        """Tests exceptions connected with getting response from the specified source"""
-        with self.assertRaises(SystemExit):
-            with self.assertRaises(urllib.error.URLError):
-                rss_reader.get_response("httpso://news.yahoo.com/rss/")
-        with self.assertRaises(SystemExit):
-            with self.assertRaises(ValueError):
-                rss_reader.get_response("1313123131")
+    def test_response_with_good_source(self, mocked):
+        """Tests response with good source"""
+        response = rss_reader.get_response("https://news.yahoo.com/rss/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.payload, json.dumps({"key": "payload"}))
 
 
 class TestParsing(unittest.TestCase):
     """This class tests parsing functionality"""
 
     def test_parse_response(self):
-        news = rss_reader.parse_response(XML)
-        self.assertEqual(news, news_mock)
+        """This method tests parsing good xml and compares news list after parsing"""
+        news_list = rss_reader.parse_response(XML)
+        self.assertEqual(news_list, news_mock)
 
     def test_parse_bad_response(self):
+        """This method tests parsing bad xml: raising ParseError"""
         with self.assertRaises(SystemExit):
             with self.assertRaises(xml.etree.ElementTree.ParseError):
                 rss_reader.parse_response(BAD_XML)
@@ -150,8 +176,7 @@ class TestPrintingNews(unittest.TestCase):
 
     def test_custom_print(self):
         """This method tests custom print"""
-        limit = 1
-        rss_reader.print_news(news_mock, limit)
+        rss_reader.print_news(news_mock)
         test_output = "".join(
             [
                 "Feed: Yahoo News - Latest News & Headlines\n",
@@ -165,8 +190,7 @@ class TestPrintingNews(unittest.TestCase):
 
     def test_json_print(self):
         """This method tests printing news in json format"""
-        limit = 1
-        rss_reader.print_json(news_mock, limit)
+        rss_reader.print_json(news_mock)
         test_output = "".join(
             [
                 '[\n  {\n    "Feed": "Yahoo News - Latest News & Headlines",\n',
@@ -180,8 +204,7 @@ class TestPrintingNews(unittest.TestCase):
 
     def test_is_valid_json(self):
         """This method tests if printed json is valid"""
-        limit = 1
-        rss_reader.print_json(news_mock, limit)
+        rss_reader.print_json(news_mock)
         try:
             json.loads(self.output.getvalue())
         except json.JSONDecodeError:
