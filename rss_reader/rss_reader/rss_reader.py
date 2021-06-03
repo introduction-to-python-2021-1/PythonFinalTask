@@ -29,7 +29,7 @@ def build_args(args):
         "--limit", type=int, help="Limit news topics if this parameter provided"
     )
 
-    return parser.parse_args(args)
+    return parser.parse_args(args[1:])
 
 
 def get_response(link):

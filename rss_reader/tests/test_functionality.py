@@ -21,7 +21,7 @@ BAD_XML = TESTS_DIR / "bad.xml"
 
 verbose_url_joint = mock.MagicMock()
 verbose_url_joint.iter.return_value.__iter__.return_value = iter(
-    ["https://news.yahoo.com/rss/", "--verbose"]
+    [None, "https://news.yahoo.com/rss/", "--verbose"]
 )
 verbose_url_joint = list(verbose_url_joint.iter())
 
@@ -79,7 +79,7 @@ class TestParserArguments(unittest.TestCase):
     def test_version_with_url(self):
         """Tests printing version with indicated --version and source arguments"""
         with self.assertRaises(SystemExit):
-            rss_reader.main(["https://news.yahoo.com/rss/", "--version"])
+            rss_reader.main([None, "https://news.yahoo.com/rss/", "--version"])
         self.assertEqual(self.output.getvalue(), f"Version {VERSION}\n")
 
     def test_verbose(self):
@@ -94,20 +94,22 @@ class TestParserArguments(unittest.TestCase):
 
     def test_json(self):
         """Tests if --json argument is True"""
-        rss_parser = rss_reader.build_args(["https://news.yahoo.com/rss/", "--json"])
+        rss_parser = rss_reader.build_args(
+            [None, "https://news.yahoo.com/rss/", "--json"]
+        )
         self.assertTrue(rss_parser.json)
 
     @ddt.data("", "https://newssdasd2213.yahoo.com/rss/")
-    def test_incorrect_url(self, url):
+    def test_incorrect_url(self, source):
         """Tests logging if url is incorrect"""
-        rss_parser = rss_reader.main(url)
+        rss_parser = rss_reader.build_args([None, source])
         self.assertLogs(rss_parser, logging.ERROR)
 
     @ddt.data(("https://news.yahoo.com/rss/", 1))
     @ddt.unpack
     def test_limit(self, source, limit):
         """Tests if --limit argument is True"""
-        rss_parser = rss_reader.build_args([source, f"--limit={limit}"])
+        rss_parser = rss_reader.build_args([None, source, f"--limit={limit}"])
         self.assertTrue(rss_parser.limit)
 
     @ddt.data(-1, 0)
@@ -115,7 +117,7 @@ class TestParserArguments(unittest.TestCase):
         """Tests logging with incorrect limit"""
         with self.assertRaises(SystemExit):
             rss_parser = rss_reader.main(
-                ["https://news.yahoo.com/rss/", f"--limit={limit}"]
+                [None, "https://news.yahoo.com/rss/", f"--limit={limit}"]
             )
             self.assertLogs(rss_parser, logging.ERROR)
 
@@ -134,7 +136,7 @@ class TestParserArguments(unittest.TestCase):
         "rss_reader.rss_reader.rss_reader.urllib.request.urlopen",
         side_effect=mocked_urlopen,
     )
-    def test_response_with_bad_source(self, mocked, source, error):
+    def test_response_with_bad_source(self, source, error, mocked):
         """Tests exceptions connected with getting response from the specified source"""
         with self.assertRaises(SystemExit):
             with self.assertRaises(error):
