@@ -45,7 +45,7 @@ _date_news_format = '%a, %d %b, %Y %I:%M %p'
 _html_template = """<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">          
+    <meta charset="UTF-8">
     <title>{{ title }}</title>
   </head>
   <body>
@@ -53,7 +53,7 @@ _html_template = """<!DOCTYPE html>
     {% for channel in data %}
     <div id={{ channel.channel_id }}>
       <h2 align="center">{{ channel.channel_title }}</h2>
-      {% if channel.news %}     
+      {% if channel.news %}
       {%- for item in channel.news %}
       <div>
         <h3>News № {{ item.number }}</h3>
@@ -64,14 +64,14 @@ _html_template = """<!DOCTYPE html>
         {%- endif %}
         {% if item.date %}
         <p><b>Date:</b> {{ item.date }}</p>
-        {%- endif %}                  
+        {%- endif %}
         {% if item.image %}
         <img src={{ item.image }} width="600" height="400">
-        {%- endif %}                   
+        {%- endif %}
         {% if item.description %}
         <p>{{ item.description }}</p>
         {%- endif %}
-      </div>                   
+      </div>
       {% endfor %}
       {% endif %}
     </div>
