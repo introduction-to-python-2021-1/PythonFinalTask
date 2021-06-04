@@ -194,7 +194,7 @@ class DbCacher(Cacher):
         if pub_date.startswith("0"):
             raise ValueError(f"Can't extract date from pub_date field: {pub_date}")
 
-        matches = re.findall(r"(\d{4})-0*(\d{1,2})-0*(\d{1,2})", pub_date)
+        matches = re.findall(r"(\d{4})-0*(\d{1,2})-(\d{1,2})", pub_date)
         if matches:
             ok_date = f"{matches[0][0]}-{matches[0][1]}-{matches[0][2]}"
             return ok_date
