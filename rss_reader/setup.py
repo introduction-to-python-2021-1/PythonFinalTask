@@ -28,7 +28,7 @@ setuptools.setup(
                       "pycodestyle==2.4.0", "nose==1.3.7", "termcolor==1.1.0", "coverage==4.5.1"],
     entry_points={
         "console_scripts": [
-            'rss_reader=reader:main'
+            'rss_reader=src:reader:main'
             ]
         }
 ) 
