@@ -69,5 +69,4 @@ def init_arg_parser():
 
 
 if __name__ == "__main__":
-    main(["https://www.yahoo.com/news/rss", "--verbose", "--to-html", "",
-          "--to-pdf", ""])
+    main()
