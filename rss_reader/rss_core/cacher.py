@@ -291,11 +291,10 @@ class DbCacher(Cacher):
         """
         if date.startswith("0"):
             raise ValueError(f"Can't parse date '{date}'. Date can't starts with 0")
-        ymd = re.findall(r"^(\d{4})(\d{2})(\d{2})$", date)
+        ymd = re.findall(r"^(\d{4})0*(\d+)(\d{2})$", date)
         if not ymd:
             raise ValueError(f"Can't parse date '{date}'. Check if it is %Y%m%d format")
         correct_date = f"{ymd[0][0]}-{ymd[0][1]}-{ymd[0][2]}"
-        correct_date = re.sub(r'-0', '-', correct_date)
         return correct_date
 
     def restore_imgs_from_db_into_folder(self, news_for_restoring, path_to_imgs: str = ""):
