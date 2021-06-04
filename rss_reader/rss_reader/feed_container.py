@@ -1,7 +1,7 @@
 from itertools import islice
 import json
 
-import rss_reader.channel_Parser as channel_Parser
+import rss_reader.channel_parser as channel_parser
 import rss_reader.app_logger as app_logger
 
 logger = app_logger.get_logger(__name__)
@@ -14,7 +14,7 @@ class FeedContainer:
 
         logger.info(f"Class {self.__class__.__name__}: initialization start.")
 
-        self.root = channel_Parser.get_response(url)
+        self.root = channel_parser.get_response(url)
         self.__get_feed_info()
 
         logger.info(f"Class {self.__class__.__name__}: initialization done.")

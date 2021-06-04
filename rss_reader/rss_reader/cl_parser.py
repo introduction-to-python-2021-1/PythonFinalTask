@@ -9,7 +9,7 @@ logger = app_logger.get_logger(__name__)
 
 # This class handles command line arguments.
 # Stores arguments, checks for correctness
-class args_Parser:
+class args_parser:
     def __init__(self):
         self.parser = argparse.ArgumentParser(prog="RSS_reader",
                                               formatter_class=argparse.RawDescriptionHelpFormatter,

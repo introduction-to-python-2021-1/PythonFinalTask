@@ -6,7 +6,7 @@ logger = app_logger.get_logger(__name__)
 
 
 def main():
-    parser = cl_parser.args_Parser()
+    parser = cl_parser.args_parser()
 
     # verbose check
     if parser.args_Space.verbose:
