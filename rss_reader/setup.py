@@ -2,7 +2,7 @@ import setuptools
 
 with open("README.md", "r", encoding="utf-8") as readme:
     long_description = readme.read()
-    
+
 with open("LICENSE", "r", encoding="utf-8") as lic:
     license = lic.read
 
@@ -14,7 +14,7 @@ setuptools.setup(
     description="Simpl python command-line RSS-reader",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    license = open("LICENSE").read(),
+    license=open("LICENSE").read(),
     url="https://github.com/UrekMazin0/PythonFinalTask/tree/main/rss_reader",
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -28,6 +28,6 @@ setuptools.setup(
     entry_points={
         "console_scripts": [
             'rss_reader=rss_reader.reader:main'
-            ]
-        }
-) 
+        ]
+    }
+)
