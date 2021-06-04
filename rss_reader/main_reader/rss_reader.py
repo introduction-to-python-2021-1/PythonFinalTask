@@ -6,10 +6,12 @@ import logging.handlers
 import os
 import sys
 from datetime import datetime
+from termcolor import colored
 from urllib.error import URLError
 
 import dateparser
 import feedparser
+from main_reader import colorize
 from main_reader import converter
 
 NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
@@ -76,41 +78,66 @@ def make_news_dictionary(source: str, content) -> dict:
     return newsdict
 
 
-def printing_parsing_news(newsdict: dict, number_of_news_to_show: int):
+def printing_parsing_news(newsdict: dict, number_of_news_to_show: int, colorize=None):
     """ Print parsed news to bash.
 
     :param number_of_news_to_show: limit number of news for parsing
     :param newsdict: dictionary with parsed news "news"
+    :param colorize: if True, print news in colorized mode
     """
 
-    print(f"\nFeed: {newsdict['main_title']}")
-    for one_news in newsdict["news"][:number_of_news_to_show]:
-        print(f"\nTitle: {one_news['Title']}")
-        print(f"Date: {one_news['Published']}")
-        print(f"Link: {one_news['Link']}")
-        try:
-            print(f"\nSummary: {one_news['Summary']}")
-            print(f"\nDescription: {one_news['Description']}")
-        except KeyError:
-            pass
-        print("\n\nLinks:")
-        print(f"[1]: {one_news['Link']} (link)")
-        try:
-            print(f"[2]: {one_news['Image']} (image)\n")
-        except KeyError:
-            pass
+    if colorize:
+        colorize.print_roses(f"\nFeed: {newsdict['main_title']}")
+        for one_news in newsdict["news"][:number_of_news_to_show]:
+            colorize.print_red_bold(f"\nTitle: {one_news['Title']}")
+            colorize.print_yellow_on_green(f"Date: {one_news['Published']}")
+            colorize.print_blue(f"Link: {one_news['Link']}")
+            try:
+                print(f"\nSummary: {one_news['Summary']}")
+                print(f"\nDescription: {one_news['Description']}")
+            except KeyError:
+                pass
+            colorize.print_roses("\n\nLinks:")
+            colorize.print_blue(f"[1]: {one_news['Link']} (link)")
+            try:
+                colorize.print_blue(f"[2]: {one_news['Image']} (image)\n")
+            except KeyError:
+                pass
+    else:
+        print(f"\nFeed: {newsdict['main_title']}")
+        for one_news in newsdict["news"][:number_of_news_to_show]:
+            print(f"\nTitle: {one_news['Title']}")
+            print(f"Date: {one_news['Published']}")
+            print(f"Link: {one_news['Link']}")
+            try:
+                print(f"\nSummary: {one_news['Summary']}")
+                print(f"\nDescription: {one_news['Description']}")
+            except KeyError:
+                pass
+            print("\n\nLinks:")
+            print(f"[1]: {one_news['Link']} (link)")
+            try:
+                print(f"[2]: {one_news['Image']} (image)\n")
+            except KeyError:
+                pass
 
 
-def printing_news_in_json(newsdict: dict, number_of_news_to_show: int):
+def printing_news_in_json(newsdict: dict, number_of_news_to_show: int, colorize=None):
     """ Limit number of news for printing, convert newsdict to json format and print it to bash.
 
     :param number_of_news_to_show: limit number of news for parsing
     :param newsdict: dictionary with parsed news "news"
+    :param colorize: if True, print news in colorized mode
     """
 
     limited_news = newsdict["news"][:number_of_news_to_show]
     newsdict["news"] = limited_news
-    print(jsn.dumps(newsdict, indent=1))
+    text = jsn.dumps(newsdict, indent=1)
+
+    if colorize:
+        print(colored(text, "green", "on_yellow"))
+    else:
+        print(text)
 
 
 def date_compare(dict_date: str, converted_user_date: datetime):
@@ -222,7 +249,7 @@ def parse_command_line_arguments():
     parser.add_argument(
         "--version",
         action="version",
-        version="Version 4.0.2",
+        version="Version 5.0.0",
         help="Print version info",
     )
     parser.add_argument("source", type=str, nargs="?", default=None, help="RSS URL")
@@ -234,6 +261,9 @@ def parse_command_line_arguments():
     )
     parser.add_argument(
         "--verbose", action="store_true", help="Outputs verbose status messages"
+    )
+    parser.add_argument(
+        "--colorize", action="store_true", help="Prints news to the console in colorized mode"
     )
     parser.add_argument(
         "--date", type=str, help="Return news from date yyyymmdd from cash"
@@ -285,7 +315,7 @@ def main():
 
     if arguments.json:
         logger.info(f"Convert news in json format")
-        printing_news_in_json(newsdict, number_of_news_to_show)
+        printing_news_in_json(newsdict, number_of_news_to_show, arguments.colorize)
 
     if arguments.to_html:
         logger.info(f"News will be saved in html on path {arguments.to_html}")
@@ -302,7 +332,7 @@ def main():
             logger.error(f"{e} was appearing with the way '{arguments.to_pdf}'")
             sys.exit()
     else:
-        printing_parsing_news(newsdict, number_of_news_to_show)
+        printing_parsing_news(newsdict, number_of_news_to_show, arguments.colorize)
 
     logger.info(f"End of reading")
 
