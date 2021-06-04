@@ -25,10 +25,10 @@ stream_handler.setFormatter(logging.Formatter(_log_stream_format))
 #     return stream_handler
 
 def get_logger(name):
-	global file_handler
-	global stream_handler
-	logger = logging.getLogger(name)
-	logger.setLevel(logging.DEBUG)
-	logger.addHandler(file_handler)
-	logger.addHandler(stream_handler)
-	return logger
+    global file_handler
+    global stream_handler
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
+    return logger
