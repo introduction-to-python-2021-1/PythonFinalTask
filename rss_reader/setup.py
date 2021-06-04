@@ -21,14 +21,13 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "src"},
-    packages=setuptools.find_packages(where="src"),
+    packages=["rss_reader"],
     python_requires=">=3.6",
     install_requires=["argparse==1.4.0", "beautifulsoup4==4.9.3",
                       "pycodestyle==2.4.0", "nose==1.3.7", "termcolor==1.1.0", "coverage==4.5.1"],
     entry_points={
         "console_scripts": [
-            'rss_reader=src:reader:main'
+            'rss_reader=rss_reader.reader:main'
             ]
         }
 ) 
