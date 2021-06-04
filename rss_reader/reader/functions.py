@@ -1,9 +1,7 @@
-import sys
 import json
 import argparse
 import feedparser
 import urllib.error
-import logging.handlers
 import datetime
 import os
 from dominate import tags
@@ -148,21 +146,9 @@ def create_arguments(argv):
     parser.add_argument('--date', type=str, nargs='?', default='', help='Sets the date the news will be displayed')
     parser.add_argument('--to-html', type=Path, help='The absolute path where new .html file will be saved')
     parser.add_argument('--to-pdf', type=Path, help='The absolute path where new .pdf file will be saved')
+    parser.add_argument('--colorize', action='store_true', help='Prints the result of the utility in colorized mode')
     args = parser.parse_args(argv[1:])
     return vars(args)
-
-
-def create_logger():
-    """Creating logger"""
-    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-    logger = logging.getLogger("")
-    logger.setLevel(logging.INFO)
-    handler = logging.handlers.RotatingFileHandler('../../../logs.txt')
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    logging.disable()
-    return logger
 
 
 def check_path_to_directory(path_to_directory, logger):

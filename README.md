@@ -14,12 +14,15 @@ Interface example:
       source         RSS URL
     
     optional arguments:
-      -h, --help     show this help message and exit
-      --version      Print version info
-      --json         Print result as JSON in stdout
-      --verbose      Outputs verbose status messages
-      --limit LIMIT  Limit news topics if this parameter provided
-      --date [DATE]  Sets the date in %Y%m%d format the news will be displayed for
+      -h, --help        show this help message and exit
+      --version         Print version info
+      --json            Print result as JSON in stdout
+      --verbose         Outputs verbose status messages
+      --limit LIMIT     Limit news topics if this parameter provided
+      --date [DATE]     Sets the date in %Y%m%d format the news will be displayed for
+      --to-html TO_HTML The absolute path where new .html file will be saved
+      --to-pdf TO_PDF   The absolute path where new .pdf file will be saved
+      --colorize        Prints the result of the utility in colorized mode
 
 
 JSON structure:

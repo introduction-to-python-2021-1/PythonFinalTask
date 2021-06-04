@@ -3,12 +3,16 @@ import sqlite3
 import sys
 
 from reader import functions
+from reader.colorize_logger import ColorizeLogger
 
 
 def main(argv=sys.argv):
     args = functions.create_arguments(argv)
     """Creating logger"""
-    logger = functions.create_logger()
+    logger = ColorizeLogger()
+
+    if args.get('colorize'):
+        logger.is_colorize = True
 
     """Creating connection"""
     connection = sqlite3.connect('news.db')
@@ -45,10 +49,10 @@ def main(argv=sys.argv):
         logger.info('Converting to json format...')
         for item in result:
             json_item = functions.make_json(item)
-            print(json_item)
+            logger.print(json_item)
     else:
         for article in result:
-            print(article)
+            logger.print(article)
 
     logger.info('The list of news was created successfully!')
 
