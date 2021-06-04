@@ -144,22 +144,23 @@ class DbCacher(Cacher):
         for news_item in rss_news.news:
             simple_date = self._extract_date_from_string(news_item.pub_date)
             md5_hash = hashlib.md5(news_item.link.encode('utf-8')).hexdigest()
-            self.db_processor.insert(table_name="news",
-                                     insert_values={"channel_id": channel_id,
-                                                    "guid": news_item.guid,
-                                                    "title": news_item.title,
-                                                    "link": news_item.link,
-                                                    "short_date": simple_date,
-                                                    "pub_date": news_item.pub_date,
-                                                    "description": news_item.description,
-                                                    "category": news_item.category,
-                                                    "md5_hash": md5_hash
-                                                    },
-                                     ignore=True)
-
-            news_ids = self.db_processor.select(f"SELECT id FROM news WHERE link = '{news_item.link}'")
+            news_ids = self.db_processor.select(f"SELECT id FROM news WHERE md5_hash = \"{md5_hash}\"")
             if not news_ids:
-                raise LookupError(f"Can't create cache for news {str(news_item)}")
+                self.db_processor.insert(table_name="news",
+                                         insert_values={"channel_id": channel_id,
+                                                        "guid": news_item.guid,
+                                                        "title": news_item.title,
+                                                        "link": news_item.link,
+                                                        "short_date": simple_date,
+                                                        "pub_date": news_item.pub_date,
+                                                        "description": news_item.description,
+                                                        "category": news_item.category,
+                                                        "md5_hash": md5_hash
+                                                        })
+
+                news_ids = self.db_processor.select(f"SELECT id FROM news WHERE md5_hash = \"{md5_hash}\"")
+                if not news_ids:
+                    raise sqlite3.DataError(f"Can't create cache for news {str(news_item)}")
 
             news_id = news_ids[0]['id']
             self._create_content_cache(news_id=news_id, content_links=news_item.content)
@@ -172,15 +173,16 @@ class DbCacher(Cacher):
         :return: None
         """
         for url_to_picture in content_links:
-            response = requests.get(url_to_picture)
-            picture = sqlite3.Binary(response.content)
             md5_hash = hashlib.md5(url_to_picture.encode('utf-8')).hexdigest()
-            self.db_processor.insert(table_name="content",
-                                     insert_values={"news_id": news_id,
-                                                    "link": url_to_picture,
-                                                    "image": picture,
-                                                    "md5_hash": str(md5_hash)},
-                                     ignore=True)
+            images = self.db_processor.select(f'SELECT * FROM content WHERE md5_hash = "{md5_hash}"')
+            if not images:
+                response = requests.get(url_to_picture)
+                picture = sqlite3.Binary(response.content)
+                self.db_processor.insert(table_name="content",
+                                         insert_values={"news_id": news_id,
+                                                        "link": url_to_picture,
+                                                        "image": picture,
+                                                        "md5_hash": str(md5_hash)})
 
     def _extract_date_from_string(self, pub_date: str):
         """
@@ -231,8 +233,8 @@ class DbCacher(Cacher):
             util.log(msg=f"Value error has occurred while restoring news from cache: {str(err)}", flag="ERROR",
                      show_on_console=True)
             exit(1)
-        except LookupError as err:
-            util.log(msg=f"Lookup error has occurred while restoring news from cache: {str(err)}", flag="ERROR",
+        except sqlite3.DataError as err:
+            util.log(msg=f"Error has occurred while restoring news from cache: {str(err)}", flag="ERROR",
                      show_on_console=True)
             exit(1)
 
@@ -278,7 +280,7 @@ class DbCacher(Cacher):
         channel_info = self.db_processor.select(query)
 
         if not channel_info:
-            raise LookupError(f"Can't find cache for this chanel :{rss_link}")
+            raise sqlite3.DataError(f"Can't find cache for this chanel :{rss_link}")
         return channel_info
 
     def _cast_date_to_db_view(self, date: str):
