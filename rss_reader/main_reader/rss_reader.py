@@ -313,10 +313,6 @@ def main():
 
     number_of_news_to_show = set_limit(len_news, arguments.limit)
 
-    if arguments.json:
-        logger.info(f"Convert news in json format")
-        printing_news_in_json(newsdict, number_of_news_to_show, arguments.colorize)
-
     if arguments.to_html:
         logger.info(f"News will be saved in html on path {arguments.to_html}")
         try:
@@ -331,6 +327,10 @@ def main():
         except (FileNotFoundError, TypeError) as e:
             logger.error(f"{e} was appearing with the way '{arguments.to_pdf}'")
             sys.exit()
+
+    if arguments.json:
+        logger.info(f"Convert news in json format")
+        printing_news_in_json(newsdict, number_of_news_to_show, arguments.colorize)
     else:
         printing_parsing_news(newsdict, number_of_news_to_show, arguments.colorize)
 
