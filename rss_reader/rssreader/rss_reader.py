@@ -43,10 +43,17 @@ def main(argv=None):
         else:
             print(news_processor.get_news_as_str(news_limit))
 
-        if given_arguments.to_html:
-            news_processor.save_news_as_html(given_arguments.to_html, news_limit)
-        if given_arguments.to_pdf:
-            news_processor.save_news_as_pdf(given_arguments.to_pdf, news_limit)
+        if given_arguments.to_html is not None:
+            if given_arguments.to_html:
+                news_processor.save_news_as_html(given_arguments.to_html, news_limit)
+            else:
+                print("Please, choose dir or filename fro convening to html")
+        if given_arguments.to_pdf is not None:
+            if given_arguments.to_pdf:
+                news_processor.save_news_as_pdf(given_arguments.to_pdf, news_limit)
+            else:
+                print("Please, choose dir or filename fro convening to pdf")
+
     except Exception as err:
         util.log(show_on_console=True, flag="ERROR", msg=f"Unexpected error has occurred: {str(err)}")
 
@@ -69,4 +76,5 @@ def init_arg_parser():
 
 
 if __name__ == "__main__":
-    main()
+    main(["https://www.yahoo.com/news/rss", "--limit", "1", "--verbose", "--to-html", "",
+          "--to-pdf", ""])
