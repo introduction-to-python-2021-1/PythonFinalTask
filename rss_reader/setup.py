@@ -1,10 +1,10 @@
 import setuptools
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+with open("README.md", "r", encoding="utf-8") as readme:
+    long_description = readme.read()
     
-with open("LICENSE", "r", encoding="utf-8") as fh:
-    license = fh.read
+with open("LICENSE", "r", encoding="utf-8") as lic:
+    license = lic.read
 
 setuptools.setup(
     name="rss-reader-UrekMazin0",
@@ -12,9 +12,9 @@ setuptools.setup(
     author="Ivan Rostov-Repin",
     author_email="rostov.repin99@gmail.com",
     description="Simpl python command-line RSS-reader",
-    long_description=long_description,
+    long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    license = license,
+    license = open("LICENSE").read(),
     url="https://github.com/UrekMazin0/PythonFinalTask/tree/main/rss_reader",
     classifiers=[
         "Programming Language :: Python :: 3",
