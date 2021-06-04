@@ -1,4 +1,5 @@
 import sys
+import urllib.error
 import xml.etree.ElementTree as ET
 
 from urllib.request import urlopen
@@ -16,6 +17,9 @@ def get_response(url):
 	except Exception as UrlError:
 		logger.exception(UrlError)
 		# logger.error(f"Bad URL address", exc_info= True)
+		sys.exit()
+	except urllib.error.HTTPError as e:
+		logger.exception(e)
 		sys.exit()
 
 	try:
