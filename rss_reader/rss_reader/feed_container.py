@@ -1,8 +1,8 @@
 from itertools import islice
 import json
 
-import channel_Parser
-import app_logger
+import rss_reader.channel_Parser as channel_Parser
+import rss_reader.app_logger as app_logger
 
 logger = app_logger.get_logger(__name__)
 

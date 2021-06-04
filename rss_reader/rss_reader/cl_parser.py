@@ -2,7 +2,7 @@ import sys
 
 import argparse
 
-import app_logger
+import rss_reader.app_logger as app_logger
 
 logger = app_logger.get_logger(__name__)
 

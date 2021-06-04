@@ -1,6 +1,6 @@
-import cl_parser
-from feed_container import FeedContainer
-import app_logger
+import rss_reader.cl_parser as cl_parser
+import rss_reader.feed_container as feed_container
+import rss_reader.app_logger as app_logger
 
 
 logger = app_logger.get_logger(__name__)
@@ -12,7 +12,7 @@ def main():
     if parser.args_Space.verbose:
         logger.handlers[1].setLevel("INFO")
 
-    feed = FeedContainer(url=parser.args_Space.source)
+    feed = feed_container.FeedContainer(url=parser.args_Space.source)
 
     feed.print_feed_Info()
     feed.print_news(parser.args_Space.limit)
