@@ -1,14 +1,12 @@
-import cl_parser as psr
+import cl_parser
 from feed_container import FeedContainer
 import app_logger
 
-import logging
 
 logger = app_logger.get_logger(__name__)
 
-
 def main():
-    parser = psr.args_Parser()
+    parser = cl_parser.args_Parser()
 
     # verbose check
     if parser.args_Space.verbose:

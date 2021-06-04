@@ -1,7 +1,7 @@
 import sys
+import xml.etree.ElementTree as ET
 
 from urllib.request import urlopen
-import xml.etree.ElementTree as ET
 
 import app_logger
 
@@ -13,8 +13,8 @@ def get_response(url):
 		if xml_url.status != 200:
 			raise Exception("Bad response. Check URL address")
 
-	except Exception:
-		logger.exception(Exception)
+	except Exception as UrlError:
+		logger.exception(UrlError)
 		# logger.error(f"Bad URL address", exc_info= True)
 		sys.exit()
 
