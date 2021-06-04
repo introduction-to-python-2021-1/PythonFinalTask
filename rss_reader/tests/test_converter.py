@@ -20,7 +20,17 @@ class TestConverter(unittest.TestCase):
 
     def test_save_pdf_right(self):
         """ Test html file was rendered and converted to pdf in a right way. """
-        self.assertFalse(converter.safe_pdf(os.getcwd(), td.TEST_NEWSDICT, 1))
+        self.assertFalse(converter.save_pdf(os.getcwd(), td.TEST_NEWSDICT, 1))
+
+    def test_html_error_raised_with_a_wrong_path(self):
+        """ Test FileNotFoundError is raising if user pass the wrong path to a directory with '--to-html'. """
+        with self.assertRaises(FileNotFoundError):
+            converter.save_html("some_wrong_path", td.TEST_NEWSDICT, 1)
+
+    def test_pdf_error_raised_with_a_wrong_path(self):
+        """ Test FileNotFoundError is raising if user pass the wrong path to a directory with '--to-pdf'. """
+        with self.assertRaises(FileNotFoundError):
+            converter.save_pdf("some_wrong_path", td.TEST_NEWSDICT, 1)
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@ from urllib.error import URLError
 
 import dateparser
 import feedparser
-from main_reader import colorize
+from main_reader import add_colors
 from main_reader import converter
 
 NEWS_PARTS = ("title", "published", "summary", "description", "storyimage", "media_content", "link")
@@ -87,20 +87,20 @@ def printing_parsing_news(newsdict: dict, number_of_news_to_show: int, colorize=
     """
 
     if colorize:
-        colorize.print_roses(f"\nFeed: {newsdict['main_title']}")
+        add_colors.print_roses(f"\nFeed: {newsdict['main_title']}")
         for one_news in newsdict["news"][:number_of_news_to_show]:
-            colorize.print_red_bold(f"\nTitle: {one_news['Title']}")
-            colorize.print_yellow_on_green(f"Date: {one_news['Published']}")
-            colorize.print_blue(f"Link: {one_news['Link']}")
+            add_colors.print_red_bold(f"\nTitle: {one_news['Title']}")
+            add_colors.print_yellow_on_green(f"Date: {one_news['Published']}")
+            add_colors.print_blue(f"Link: {one_news['Link']}")
             try:
                 print(f"\nSummary: {one_news['Summary']}")
                 print(f"\nDescription: {one_news['Description']}")
             except KeyError:
                 pass
-            colorize.print_roses("\n\nLinks:")
-            colorize.print_blue(f"[1]: {one_news['Link']} (link)")
+            add_colors.print_roses("\n\nLinks:")
+            add_colors.print_blue(f"[1]: {one_news['Link']} (link)")
             try:
-                colorize.print_blue(f"[2]: {one_news['Image']} (image)\n")
+                add_colors.print_blue(f"[2]: {one_news['Image']} (image)\n")
             except KeyError:
                 pass
     else:
@@ -174,21 +174,17 @@ def find_cashed_news(converted_user_date: datetime, source=None):
     """
 
     cash_file_name = os.path.join(os.getcwd(), "cashed_news.txt")
-    try:
-        with open(cash_file_name, "r") as cash_file:
-            newslist = []
-            newsdict_from_cash = {"source": "from cash file", "main_title": "Cashed news"}
-            for json_dict in cash_file:
-                newsdict = jsn.loads(json_dict)
+    with open(cash_file_name, "r") as cash_file:
+        newslist = []
+        newsdict_from_cash = {"source": "from cash file", "main_title": "Cashed news"}
+        for json_dict in cash_file:
+            newsdict = jsn.loads(json_dict)
 
-                if source and source != newsdict["source"]:
-                    continue
-                for one_news in newsdict["news"]:
-                    if date_compare(one_news["Published"], converted_user_date):
-                        newslist.append(one_news)
-    except FileNotFoundError:
-        return print("There are no cashed news, "
-                     "please read some news from external sources before trying to access cash")
+            if source and source != newsdict["source"]:
+                continue
+            for one_news in newsdict["news"]:
+                if date_compare(one_news["Published"], converted_user_date):
+                    newslist.append(one_news)
     if newslist:
         newsdict_from_cash["news"] = newslist
         return newsdict_from_cash
@@ -221,22 +217,17 @@ def making_cashed_news_dict(user_date: str, source: str = None):
     :param user_date: date given by user in str format
     :param source: link to take news
     :return: newsdict for reading news if there is suitable in cash and number of news in it (len_news)
-    If date is invalid and couldn't be converted in datetime, and ValueError was raising, print user-friendly message
-    If no suitable news was found and AttributeError was raising, print user-friendly message
+    If date is invalid and couldn't be converted in datetime, raise ValueError
     """
 
-    try:
-        converted_user_date = datetime.strptime(user_date, "%Y%m%d")
-    except ValueError:
-        return print("Invalid date, please insert date like '20210715'")
+    converted_user_date = datetime.strptime(user_date, "%Y%m%d")
     if converted_user_date < datetime.strptime("20210501", "%Y%m%d"):
-        raise ValueError("Cashing news starts from May 1, 2021")
-    try:
-        newsdict = find_cashed_news(converted_user_date, source)
-        len_news = len(newsdict["news"])
-        return newsdict, len_news
-    except AttributeError:
-        return print("No news from this date")
+        print("Cashing news starts from May 1, 2021")
+        sys.exit()
+
+    newsdict = find_cashed_news(converted_user_date, source)
+    len_news = len(newsdict["news"])
+    return newsdict, len_news
 
 
 def parse_command_line_arguments():
@@ -292,18 +283,30 @@ def main():
         try:
             newsdict, len_news = making_cashed_news_dict(arguments.date, arguments.source)
             logger.info(f"News will be reading from cash")
-        except (AttributeError, ValueError, TypeError, FileNotFoundError) as e:
+        except (ValueError, TypeError) as e:
             logger.error(f"{e} was appearing with parsing date '{arguments.date}'")
+            print("Invalid date, please insert date like '20210715'.")
+            sys.exit()
+        except AttributeError as e:
+            logger.error(f"{e} was appearing with parsing date '{arguments.date}'")
+            print("No news from this date")
+            sys.exit()
+        except FileNotFoundError as e:
+            logger.error(f"{e} was appearing with parsing date '{arguments.date}'")
+            print("There are no cashed news, "
+                  "please read some news from external sources before trying to access cash")
             sys.exit()
     else:
         try:
             content = open_rss_link(arguments.source, arguments.verbose)
         except URLError as e:
             logger.error(f"Error {e} raised with trying to open link {arguments.source}")
-            return print("Bad link, please try again")
+            print("Bad link, please try again")
+            sys.exit()
         except ValueError as e:
             logger.error(f"Error {e} raised with trying to open link {arguments.source}")
-            return print("Please insert rss link")
+            print("Please insert rss link")
+            sys.exit()
         len_news = len(content.entries)
         newsdict = make_news_dictionary(arguments.source, content)
         write_cash(newsdict)
@@ -313,26 +316,33 @@ def main():
 
     number_of_news_to_show = set_limit(len_news, arguments.limit)
 
+    if arguments.json:
+        logger.info(f"Convert news in json format")
+        printing_news_in_json(newsdict, number_of_news_to_show, arguments.colorize)
+    else:
+        printing_parsing_news(newsdict, number_of_news_to_show, arguments.colorize)
+
     if arguments.to_html:
         logger.info(f"News will be saved in html on path {arguments.to_html}")
         try:
             converter.save_html(arguments.to_html, newsdict, number_of_news_to_show)
         except FileNotFoundError as e:
             logger.error(f"{e} was appearing with the way '{arguments.to_html}'")
+            print("Please write a valid existing absolute path to a destination directory, "
+                  "filename will be generated automatically")
             sys.exit()
     elif arguments.to_pdf:
         logger.info(f"News will be saved in pdf on path {arguments.to_pdf}")
         try:
-            converter.safe_pdf(arguments.to_pdf, newsdict, number_of_news_to_show)
-        except (FileNotFoundError, TypeError) as e:
+            converter.save_pdf(arguments.to_pdf, newsdict, number_of_news_to_show)
+        except TypeError as e:
             logger.error(f"{e} was appearing with the way '{arguments.to_pdf}'")
             sys.exit()
-
-    if arguments.json:
-        logger.info(f"Convert news in json format")
-        printing_news_in_json(newsdict, number_of_news_to_show, arguments.colorize)
-    else:
-        printing_parsing_news(newsdict, number_of_news_to_show, arguments.colorize)
+        except FileNotFoundError as e:
+            logger.error(f"{e} was appearing with the way '{arguments.to_pdf}'")
+            print("Please write a valid existing absolute path to a destination directory, "
+                  "filename will be generated automatically")
+            sys.exit()
 
     logger.info(f"End of reading")
 

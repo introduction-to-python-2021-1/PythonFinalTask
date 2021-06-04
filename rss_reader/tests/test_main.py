@@ -5,7 +5,6 @@ import unittest
 from datetime import datetime
 from unittest import mock
 from unittest.mock import patch
-from urllib.error import URLError
 
 # Make tests crossplatform
 import pathmagic  # noqa
@@ -159,21 +158,15 @@ class TestMainReader(unittest.TestCase):
         self.assertFalse(rs.date_compare("Fri, 21 February 2021 12:51:18 -0400", user_date))
 
     # Tests for function "making_cashed_news_dict"
-    @patch("builtins.print", autospec=True, side_effect=print)
-    def test_invalid_date(self, mock_print):
-        """ Test ValueError was catched and user-friendly message is printing to stdout, if we give a bad date. """
-        rs.making_cashed_news_dict("12345")
-        message = mock_print.call_args_list[0].args[0]
-        self.assertEqual(message, "Invalid date, please insert date like '20210715'")
+    def test_invalid_date(self):
+        """ Test ValueError raises, if we give an invalid number instead of a date. """
+        with self.assertRaises(ValueError):
+            rs.making_cashed_news_dict("12345")
 
-    @patch("builtins.print", autospec=True, side_effect=print)
-    def test_no_cashed_news(self, mock_print):
-        """ Test AttributeError was cached and user-friendly message is printing to stdout, if we give a bad date. """
-        with mock.patch("main_reader.rss_reader.find_cashed_news") as cashMock:
-            cashMock.side_effect = AttributeError(mock.Mock)
-            rs.making_cashed_news_dict("20210505")
-            message = mock_print.call_args_list[0].args[0]
-            self.assertEqual(message, "No news from this date")
+    def test_no_cashed_news(self):
+        """ Test AttributeError raises, if we give a date which is absent in the file with cashed news. """
+        with self.assertRaises(AttributeError):
+            rs.making_cashed_news_dict("20210601")
 
     def test_return_valid_cashed_dict_with_valid_len_news(self):
         """ Test take newsdict from find_cashed_news, valid count it's len_news and return it. """

@@ -35,24 +35,18 @@ def save_html(user_path: str, newsdict: dict, number_of_news_to_show: int):
     :param newsdict: dictionary with parsed news "news"
     :param number_of_news_to_show: limit number of news for saving
     :return: first write chosen number of news to html file, than return path to it
-    If user_path is invalid, FileNotFoundError is raising and user-friendly message is printing
     """
 
     filename = "".join(str(time.time()))
     file_path = os.path.join(user_path, f"News from time {filename}.html")
-    print(file_path)
-    try:
-        with open(file_path, "w", encoding="utf-8") as file:
-            for one_news in newsdict["news"][:number_of_news_to_show]:
-                file.write(make_html(newsdict, one_news))
-            print(f"Your news was successfully save to '{file_path}' in html")
-            return file_path
-    except FileNotFoundError:
-        return print("Please write a valid existing absolute path to a destination directory, "
-                     "filename will be generated automatically")
+    with open(file_path, "w", encoding="utf-8") as file:
+        for one_news in newsdict["news"][:number_of_news_to_show]:
+            file.write(make_html(newsdict, one_news))
+    print(f"Your news was successfully save to '{file_path}' in html")
+    return file_path
 
 
-def safe_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
+def save_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
     """ Make html file with chosen number of news, create a pdf file in a chosen directory,write there converted html.
 
     Name of the file include exact time of making file (joined on one string without spaces) to avoid rewritings.
@@ -60,21 +54,14 @@ def safe_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
     :param newsdict: dictionary with parsed news "news"
     :param number_of_news_to_show: limit number of news for saving
     :return: False on success and True on errors
-    If user_path is invalid, FileNotFoundError is raising and user-friendly message is printing
     """
 
     file_in_path = save_html(user_path, newsdict, number_of_news_to_show)
     filename = "".join(str(time.time()))
     file_out_path = os.path.join(user_path, f"News from time {filename}.pdf")
-    try:
-        with open(file_out_path, "w+b") as file_out, open(file_in_path, "r") as file_in:
-            pisa_status = pisa.CreatePDF(src=file_in, dest=file_out)
-            print(f"Your news was successfully save to '{file_out_path}' in pdf")
-        os.remove(file_in_path)
-        print(f"Temporary html file '{file_in_path}' was removed")
-        return pisa_status.err
-    except TypeError:
-        sys.exit()
-    except FileNotFoundError:
-        return print("Please write a valid existing absolute path to a destination directory, "
-                     "filename will be generated automatically")
+    with open(file_out_path, "w+b") as file_out, open(file_in_path, "r") as file_in:
+        pisa_status = pisa.CreatePDF(src=file_in, dest=file_out)
+        print(f"Your news was successfully save to '{file_out_path}' in pdf")
+    os.remove(file_in_path)
+    print(f"Temporary html file '{file_in_path}' was removed")
+    return pisa_status.err
