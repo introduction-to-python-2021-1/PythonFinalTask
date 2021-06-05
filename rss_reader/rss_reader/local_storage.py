@@ -6,8 +6,8 @@ from pathlib import Path
 
 logger = app_logger.get_logger(__name__)
 
-class local_storage:
-	def __init__(self, url):
-		self.feed = feed_container.FeedContainer(url)
-		self.tmp_path = Path("../tmp")
 
+class local_storage:
+    def __init__(self, url):
+        self.feed = feed_container.FeedContainer(url)
+        self.tmp_path = Path("../tmp")

@@ -42,11 +42,11 @@ class args_parser:
                                  help="logs",
                                  action="store_true")
         self.parser.add_argument("-li", "--limit",
-                                 type= int,
-                                 help= "Limit")
+                                 type=int,
+                                 help="Limit")
         self.parser.add_argument("-d", "--date",
-                                 type= str,
-                                 help= "Selection by dates in format: YearMonthDay, as an example: --date 20201201")
+                                 type=str,
+                                 help="Selection by dates in format: YearMonthDay, as an example: --date 20201201")
 
     # parses all command line parameters and stores them in class storage
     def __parse_Args(self):

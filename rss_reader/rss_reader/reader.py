@@ -23,7 +23,7 @@ def main():
     # --json --date -- limit
     if parser.args_Space.json and parser.args_Space.date:
         feed.save_as_json_by_date(parser.args_Space.date, parser.args_Space.limit)
-    elif parser.args_Space.json :
+    elif parser.args_Space.json:
         feed.save_as_json(parser.args_Space.limit)
 
 

@@ -62,7 +62,7 @@ class FeedContainer:
               f"\nChannel date: {self.feed_date}"
               f"\nChannel copyright: {self.feed_copyright}")
 
-    def print_news(self, limit = 50):
+    def print_news(self, limit=50):
         count = 1
         for item in islice(self.channel_items, 0, limit):
             print(f"\n {count}")
@@ -72,7 +72,7 @@ class FeedContainer:
 
     # 2021 - 06 - 04
     # T19: 08: 27Z
-    def print_news_by_date(self, date, limit= 50):
+    def print_news_by_date(self, date, limit=50):
         news_by_date = []
         count = 1
 
@@ -80,12 +80,12 @@ class FeedContainer:
             item_date = datetime.strptime(item.findtext("pubDate"), "%Y-%m-%dT%H:%M:%SZ")
             item_date = item_date.replace(hour=0, minute=0, second=0)
 
-            if item_date  == datetime.strptime(date, "%Y%m%d"):
+            if item_date == datetime.strptime(date, "%Y%m%d"):
                 news_by_date.append({
                     "Title": item.findtext("title"),
                     "Date": item.findtext("pubDate"),
                     "Link": item.findtext("link"),
-                    })
+                })
 
         for item in islice(news_by_date, 0, limit):
             print(f"\n {count}")
@@ -94,29 +94,29 @@ class FeedContainer:
                 print(f"{key}: {value}")
 
     # this method return news
-    def get_news(self, limit = 50):
+    def get_news(self, limit=50):
         return self.channel_items[:limit]
 
-    def get_news_by_date(self, date, limit= 50):
+    def get_news_by_date(self, date, limit=50):
         news_by_date = []
 
         for i, item in enumerate(self.root.iterfind("channel/item")):
             item_date = datetime.strptime(item.findtext("pubDate"), "%Y-%m-%dT%H:%M:%SZ")
             item_date = item_date.replace(hour=0, minute=0, second=0)
 
-            if item_date  == datetime.strptime(date, "%Y%m%d"):
+            if item_date == datetime.strptime(date, "%Y%m%d"):
                 news_by_date.append({
                     "Title": item.findtext("title"),
                     "Date": item.findtext("pubDate"),
                     "Link": item.findtext("link"),
-                    })
+                })
         return news_by_date[:limit]
 
     # this method saves news in json format
-    def save_as_json(self, limit = 50):
+    def save_as_json(self, limit=50):
         with open("news.json", "w", encoding="utf-8") as file:
             file.write(json.dumps(self.get_news(limit), indent=4, ensure_ascii=False))
 
-    def save_as_json_by_date(self, date, limit = 50):
+    def save_as_json_by_date(self, date, limit=50):
         with open("news.json", "w", encoding="utf-8") as file:
             file.write(json.dumps(self.get_news_by_date(date, limit), indent=4, ensure_ascii=False))
