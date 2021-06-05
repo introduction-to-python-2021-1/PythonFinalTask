@@ -1,13 +1,14 @@
 """ Main test module for basic reading news from from external resources and cash. """
 import json
 import os
+import sys
 import unittest
 from datetime import datetime
 from unittest import mock
 from unittest.mock import patch
 
 # Make tests crossplatform
-import pathmagic  # noqa
+sys.path.append(os.getcwd())  # noqa E402
 
 import data_for_tests as td
 from main_reader import rss_reader as rs
