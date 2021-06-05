@@ -194,16 +194,16 @@ class DbCacher(Cacher):
         if pub_date.startswith("0"):
             raise ValueError(f"Can't extract date from pub_date field: {pub_date}")
 
-        matches = re.findall(r"(\d{4})-0*(\d{1,2})-(\d{1,2})", pub_date)
+        matches = re.findall(r"(\d{4})-0*(\d{1,2})-0*(\d{1,2})", pub_date)
         if matches:
             ok_date = f"{matches[0][0]}-{matches[0][1]}-{matches[0][2]}"
             return ok_date
 
-        matches = re.findall(r"(\d{1,2})\s+(\w{3})\s+(\d{4})", pub_date)
+        matches = re.findall(r"0*(\d{1,2})\s+(\w{3})\s+(\d{4})", pub_date)
         if matches:
             year = matches[0][2]
             month = MONTH_NUM[matches[0][1]]
-            day = "0" + matches[0][0] if len(matches[0][0]) == 1 else matches[0][0]
+            day = matches[0][0]
             ok_date = f"{year}-{month}-{day}"
             return ok_date
 
@@ -294,10 +294,11 @@ class DbCacher(Cacher):
         """
         if date.startswith("0"):
             raise ValueError(f"Can't parse date '{date}'. Date can't starts with 0")
-        ymd = re.findall(r"^(\d{4})0*(\d+)(\d{2})$", date)
+        ymd = re.findall(r"^(\d{4})(\d{2})(\d{2})$", date)
         if not ymd:
             raise ValueError(f"Can't parse date '{date}'. Check if it is %Y%m%d format")
         correct_date = f"{ymd[0][0]}-{ymd[0][1]}-{ymd[0][2]}"
+        correct_date = correct_date.replace("-0", "-")
         return correct_date
 
     def restore_imgs_from_db_into_folder(self, news_for_restoring, path_to_imgs: str = ""):
