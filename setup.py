@@ -4,7 +4,7 @@ from setuptools import setup  # type: ignore
 
 setup(
     extras_require=dict(
-        test=["coverage==5.5", "pytest==6.2.4", "pytest-cov==2.12.0"],
+        test=["coverage==5.5", "pytest==6.2.4"],
         dev=[
             "black==21.5b1",
             "bump2version==1.0.1",
