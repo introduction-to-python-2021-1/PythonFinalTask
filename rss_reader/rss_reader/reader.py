@@ -8,16 +8,22 @@ logger = app_logger.get_logger(__name__)
 def main():
     parser = cl_parser.args_parser()
 
-    # verbose check
-    if parser.args_Space.verbose:
-        logger.handlers[1].setLevel("INFO")
-
     feed = feed_container.FeedContainer(url=parser.args_Space.source)
 
     feed.print_feed_Info()
-    feed.print_news(parser.args_Space.limit)
 
-    if parser.args_Space.json:
+    # This block of code prints news depending on the parameters
+    # --date and --limit
+    if parser.args_Space.date:
+        feed.print_news_by_date(parser.args_Space.date, parser.args_Space.limit)
+    else:
+        feed.print_news(parser.args_Space.limit)
+
+    # This block of code save news as json depending on the parameters
+    # --json --date -- limit
+    if parser.args_Space.json and parser.args_Space.date:
+        feed.save_as_json_by_date(parser.args_Space.date, parser.args_Space.limit)
+    elif parser.args_Space.json :
         feed.save_as_json(parser.args_Space.limit)
 
 

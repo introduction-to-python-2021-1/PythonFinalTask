@@ -1,3 +1,4 @@
+from datetime import datetime
 import sys
 
 import argparse
@@ -20,6 +21,10 @@ class args_parser:
         self.__parameters_init()
         self.__parse_Args()
         self.__args_Validation()
+        logger.info(f"\nRSS Channel positional parameter: {self.args_Space.source}\n"
+                    f"--json optional parameter: {self.args_Space.json}\n"
+                    f"--verbose optional parameter: {self.args_Space.verbose}\n"
+                    f"--limit optional parameter: {self.args_Space.limit}\n")
 
     # initialization of all arguments
     def __parameters_init(self):
@@ -37,8 +42,11 @@ class args_parser:
                                  help="logs",
                                  action="store_true")
         self.parser.add_argument("-li", "--limit",
-                                 type=int,
-                                 help="Limit")
+                                 type= int,
+                                 help= "Limit")
+        self.parser.add_argument("-d", "--date",
+                                 type= str,
+                                 help= "Selection by dates in format: YearMonthDay, as an example: --date 20201201")
 
     # parses all command line parameters and stores them in class storage
     def __parse_Args(self):
@@ -54,7 +62,10 @@ class args_parser:
             else:
                 pass
         else:
-            logger.warning("Bad parameter: --limit = 0, you will not see news")
+            if self.args_Space.limit == 0:
+                logger.warning("Bad parameter: --limit = 0, you will not see news")
+            else:
+                logger.info("--limit is void. See all news")
 
         # parameter <json> validation
         if type(self.args_Space.json) != bool:
@@ -67,3 +78,14 @@ class args_parser:
             logger.error(
                 "Bad parameter: --verbose. Do not use this parameter with value.")
             sys.exit()
+        # verbose check
+        if self.args_Space.verbose:
+            logger.handlers[1].setLevel("INFO")
+
+        # parameter <date> validation
+        if bool(self.args_Space.date):
+            try:
+                logger.info(datetime.strptime(self.args_Space.date, "%Y%m%d"))
+            except ValueError:
+                logger.error("Bad parameter : --date. Check --help")
+                sys.exit()
