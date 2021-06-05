@@ -31,17 +31,9 @@ def get_feed_from_cache(date, limit):
 def save_feed_into_cache(item):
     """
     This function saves feed item to file in json format.
-
     Name of file is date.
-
     File stores list which contains feed items related to certain date.
-
     If file does not exists, this function creates it.
-
-    If file was created earlier function loads list with feed items
-    from file, checks if feed was cached earlier, if not add it to list
-    and saves updated list to file.
-
     :param item: feed item
     """
     date = time.strftime('%Y%m%d', item.date)
@@ -50,19 +42,38 @@ def save_feed_into_cache(item):
         os.mkdir(dir_path)
     file_path = dir_path + date + '.json'
     item_to_cache = json.dumps(item._asdict(), ensure_ascii=False)
-    with open(file_path, 'a', encoding='utf-8') as fp:
-        if os.stat(file_path).st_size == 0:
+    if not os.path.exists(file_path):
+        with open(file_path, 'a', encoding='utf-8') as fp:
             feed_list = [item_to_cache]
             json.dump(feed_list, fp)
-            return
-    with open(file_path, encoding='utf-8') as fp:
+    else:
+        write_into_file(item_to_cache, file_path)
+
+
+def write_into_file(item, path):
+    """
+    Save news item into cache if news item wasn't been cached earlier
+    :param item: news item
+    :param path: path to cache file
+    """
+    feed_list = check_if_cached(item, path)
+    if feed_list:
+        feed_list.append(item)
+        with open(path, 'w', encoding='utf-8') as fp:
+            json.dump(feed_list, fp)
+
+
+def check_if_cached(item, path):
+    """
+    Check if news item was cached earlier
+    :param item: news item
+    :param path: path to cache file
+    :return: list with cached news items to append it with new news
+    """
+    with open(path, encoding='utf-8') as fp:
         feed_list = json.load(fp)
-        if item_to_cache in feed_list:
-            return
-        feed_list.append(item_to_cache)
-    with open(file_path, 'w', encoding='utf-8') as fp:
-        json.dump(feed_list, fp)
-    return
+        if item not in feed_list:
+            return feed_list
 
 
 def create_item_list_from_cache(list_with_feed):

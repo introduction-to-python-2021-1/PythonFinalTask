@@ -28,6 +28,10 @@ class RssParser:
         This function parses rss-feed
         :return: list with namedtuples representing feed items
         """
+        possible_endings = ('rss', 'rss/')
+        if not self.url.endswith(possible_endings):
+            print('Please check URL(is RSS?) and Internet connection')
+            sys.exit()
         if not self.url:
             print('URL is empty, please input URL')
             sys.exit()
@@ -36,19 +40,16 @@ class RssParser:
         except urllib.error.URLError:
             print('Please input correct URL')
             sys.exit()
-        if data['bozo']:
-            print('Please check URL(is RSS?) and Internet connection')
-            sys.exit()
         self.get_content(data)
         return self.items
 
     def get_content(self, data):
         """
         This function aggregates feed from row data
-        :param data: a bunch of row data
+        :param data: a bunch of raw data
         """
         self.name = name = data['feed'].get('title')
-        for feed in data['entries'][:self.limit]:
+        for feed in data['entries']:
             title = feed.get('title', 'Absence of title')
             link = feed.get('link', 'Absence of link')
             date = feed.get('published_parsed', 'Absence of date')
@@ -71,7 +72,7 @@ def print_feed(list_with_items):
     """
     Prints feed in readable format
     """
-    result_str = list_with_items[0].name
+    result_str = list_with_items[0].name + '\n'
     for item in list_with_items:
         item_as_str = (f'Title: {item.title}\nLink: {item.link}\n'
                        f'Date: {time.strftime("%y-%m-%d %H:%M", tuple(item.date))}')
@@ -86,15 +87,4 @@ def convert_to_json(data):
     """
     Converts feed items in json format
     """
-    return json.dumps({'items': [item._asdict() for item in data]}, ensure_ascii=False)
-
-
-def print_json(json_data):
-    """
-    Prints out feed converted to json in readable format
-    """
-    loaded_json_data = json.loads(json_data)
-    print('Items: ')
-    for item in loaded_json_data['items']:
-        print(item)
-        print('\n')
+    return json.dumps({'items': [item._asdict() for item in data]}, ensure_ascii=False, indent=2)

@@ -5,11 +5,14 @@ Module for testing RssParser class, json converter
 
 import unittest
 from unittest.mock import patch
-from rss_reader.RssParser import RssParser, convert_to_json
+from rss_reader.rss_parser import RssParser, convert_to_json
 from collections import namedtuple
 
 
-class FeedTest(unittest.TestCase):
+class TestFeed(unittest.TestCase):
+    """
+    Provides tests for correct processing of parsed data
+    """
     def setUp(self) -> None:
         self.url = 'url'
         self.limit = 2

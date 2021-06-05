@@ -2,17 +2,20 @@ import unittest
 from rss_reader import string_handlers
 
 
-class StringFunctionsTest (unittest.TestCase):
-    def test_get_str_content(self):
+class TestStringMethods(unittest.TestCase):
+    """
+    Provides tests for strings formation
+    """
+    def test_content_as_string(self):
         """
         Tests if correct string is formed from list with content
         """
         list_with_content = ['text']
-        pretty_str = 'Content: \ntext'
+        pretty_str = '\nContent: \ntext'
         self.assertEqual('', string_handlers.get_str_content([]))
         self.assertEqual(pretty_str, string_handlers.get_str_content(list_with_content))
 
-    def test_get_img_as_str(self):
+    def test_image_as_str(self):
         """
         Tests if correct string is formed from list with images
         """
@@ -21,7 +24,7 @@ class StringFunctionsTest (unittest.TestCase):
         self.assertEqual('', string_handlers.get_img_as_str([]))
         self.assertEqual(pretty_str, string_handlers.get_img_as_str(list_with_img))
 
-    def test_get_links_as_str(self):
+    def test_links_as_string(self):
         """
         Tests if correct string is formed from list with links
         """
@@ -30,7 +33,7 @@ class StringFunctionsTest (unittest.TestCase):
         self.assertEqual('', string_handlers.get_links_as_str([]))
         self.assertEqual(pretty_str, string_handlers.get_links_as_str(list_with_links))
 
-    def test_get_links(self):
+    def test_list_of_links_formation(self):
         """
         Tests if correct list is generated from list with uncleaned links
         """
