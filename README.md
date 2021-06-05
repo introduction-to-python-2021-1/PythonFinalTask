@@ -1,15 +1,18 @@
 # AP RSS-reader
 
+[![PyPI](https://img.shields.io/pypi/v/ap-rss-reader)][pypi ap-rss-reader]
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![Python: 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![MyPy](https://img.shields.io/badge/MyPy-passing-success.svg)](https://mypy.readthedocs.io/en/stable/)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/aplatkouski/ap-rss-reader/main.svg)](https://results.pre-commit.ci/latest/github/aplatkouski/ap-rss-reader/main)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/aplatkouski/ap-rss-reader/develop.svg)](https://results.pre-commit.ci/latest/github/aplatkouski/ap-rss-reader/develop)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Run tests](https://github.com/aplatkouski/ap-rss-reader/workflows/Run%20tests/badge.svg)](https://github.com/aplatkouski/ap-rss-reader/actions?query=workflow%3A%22Run+tests%22+branch%3Amaster)
-[![codecov](https://codecov.io/gh/aplatkouski/ap-rss-reader/branch/main/graph/badge.svg?token=FHs5Yrro0x)](https://codecov.io/gh/aplatkouski/ap-rss-reader)
-[![Requirements Status](https://requires.io/github/aplatkouski/ap-rss-reader/requirements.svg?branch=main)](https://requires.io/github/aplatkouski/ap-rss-reader/requirements/?branch=main)
+[![codecov](https://codecov.io/gh/aplatkouski/ap-rss-reader/branch/develop/graph/badge.svg?token=FHs5Yrro0x)](https://codecov.io/gh/aplatkouski/ap-rss-reader)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/96a2cb6578804c48852068a0788b3574)](https://www.codacy.com/gh/aplatkouski/ap-rss-reader/dashboard?utm_source=github.com&utm_medium=referral&utm_content=aplatkouski/ap-rss-reader&utm_campaign=Badge_Grade)
+[![Requirements Status](https://requires.io/github/aplatkouski/ap-rss-reader/requirements.svg?branch=develop)](https://requires.io/github/aplatkouski/ap-rss-reader/requirements/?branch=develop)
+[![Build Status](https://www.travis-ci.com/aplatkouski/ap-rss-reader.svg?branch=develop)](https://www.travis-ci.com/aplatkouski/ap-rss-reader)
 
 ## Installation
 
