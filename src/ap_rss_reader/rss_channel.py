@@ -72,7 +72,8 @@ class RssChannel:
 
     @limit.setter
     def limit(self, limit: int) -> None:
-        self._limit = limit
+        if isinstance(limit, int) and limit >= 0:
+            self._limit = limit
 
     @property
     def channel_items(self) -> List[ChannelItem]:
