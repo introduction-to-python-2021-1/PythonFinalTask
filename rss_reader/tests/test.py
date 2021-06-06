@@ -136,6 +136,5 @@ class TestReader(unittest.TestCase):
         self.assertTrue(logger, "%(asctime)s - %(levelname)s - %(message)s")
         self.assertTrue(logging.INFO, "Getting access to the RSS")
 
-
 if __name__ == "__main__":
     unittest.main()

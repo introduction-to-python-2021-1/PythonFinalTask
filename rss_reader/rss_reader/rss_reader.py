@@ -7,6 +7,9 @@ import argparse
 import logging
 import logging.handlers
 import sys
+import dateparser
+import os
+from datetime import datetime
 
 
 def command_arguments_parser(args):
@@ -17,6 +20,7 @@ def command_arguments_parser(args):
     parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
+    parser.add_argument("--date", type=str, help="Return news from date yyyymmdd from cash")
     args = parser.parse_args(args)
     return args
 
@@ -58,7 +62,7 @@ def server_answer(source):
         sys.exit()
 
 
-def parses_data(answer):
+def parses_data(answer, source):
     """Parses data from the xml"""
     list_of_news = []
     data = {}
@@ -66,6 +70,7 @@ def parses_data(answer):
     try:
         buitiful_soup = BeautifulSoup(answer, "xml")
         data["feed"] = buitiful_soup.find("title").text
+        data["source"] = source
         news_for_print = buitiful_soup.findAll("item")
         for alone_news in news_for_print:
             title = alone_news.find("title").text
@@ -102,29 +107,91 @@ def printing_json(data, limit):
     print(json.dumps(data_json, indent=3))
 
 
+def compare_dates(date_of_publication, user_date_in_converted_format):
+    """Compare date given by user(user_date_in_converted_format) and date from news(date_of_publication)"""
+    converted_date_of_publication = dateparser.parse(date_of_publication, date_formats=["%y/%m/%d"])
+    return converted_date_of_publication.date() == user_date_in_converted_format.date()
+
+
+def news_cashing(data):
+    """Save data in the file "cashed_news.txt" in json format"""
+    file_for_cashing = os.path.join(os.getcwd(), "cashing_news.txt")
+    with open(file_for_cashing, "a") as cash_file:
+        cash_file.write(json.dumps(data))
+        cash_file.write("\n")
+
+
+def find_cashed_news(user_date_in_converted_format, source=None):
+    """Checks the news data file"""
+    cash_file = os.path.join(os.getcwd(), "cashing_news.txt")
+    with open(cash_file, "r") as cash_file:
+        for json_dict in cash_file:
+            data = json.loads(json_dict)
+
+            if source and source != data["source"]:
+                continue
+            for num, part in enumerate(data["news"]):
+                if compare_dates(part["pubDate"], user_date_in_converted_format):
+                    print("title:", part["title"])
+                    print("pubDate:", part["pubDate"])
+                    print("link:", part["link"])
+                    print("images:", len(part["images"]))
+                    print('\n'.join(part["images"]), "\n")
+
+
+def creating_cashing_news_data(user_date, source: str = None):
+    """Receive user date from user, convert it into datetime and find cashed news"""
+    user_date_in_converted_format = datetime.strptime(user_date, "%Y%m%d")
+    if user_date_in_converted_format < datetime.strptime("20210501", "%Y%m%d"):
+        print("Cashing news starts from May 1, 2021")
+        sys.exit()
+
+    data = find_cashed_news(user_date_in_converted_format, source)
+    return data
+
+
 def main():
     args = command_arguments_parser(sys.argv[1:])
     answer = server_answer(args.source)
     logger = create_logger(args.verbose)
 
+
     if args.limit is not None:
         if args.limit <= 0:
             print("Invalid limit. Enter the limit (greater than 0), please")
             sys.exit()
-
-    try:
-        logger.info("Getting access to the RSS")
-        number_of_news = parses_data(answer.text)
-        if args.limit:
-            logger.info(f"Reads amount of news - {args.limit}")
-            print("Reads amount of news:", args.limit)
-        if args.json:
-            logger.info("In json")
-            printing_json(number_of_news, args.limit)
-        else:
-            printing_news(number_of_news, args.limit)
-    except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.MissingSchema):
-        return print()
+    if args.date:
+        try:
+            data = creating_cashing_news_data(args.date, args.source)
+            logger.info(f"News will be reading from cash")
+        except (ValueError, TypeError) as e:
+            logger.error(f"{e} in parsing date '{args.date}'")
+            print("Incorrect date, insert date like '20210601', please")
+            sys.exit()
+        except AttributeError as e:
+            logger.error(f"{e} in parsing date '{args.date}'")
+            print("No news from this date")
+            sys.exit()
+        except FileNotFoundError as e:
+            logger.error(f"{e} with parsing date '{args.date}'")
+            print("Cashed news was not found. Read news from external sources, please")
+            sys.exit()
+    else:
+        try:
+            logger.info("Getting access to the RSS")
+            data = parses_data(answer.text, args.source)
+            if args.limit:
+                logger.info(f"Reads amount of news - {args.limit}")
+                print("Reads amount of news:", args.limit)
+            if args.json:
+                logger.info("In json")
+                printing_json(data, args.limit)
+                news_cashing(data)
+            else:
+                printing_news(data, args.limit)
+                news_cashing(data)
+        except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.MissingSchema):
+            return print()
 
 
 if __name__ == "__main__":
