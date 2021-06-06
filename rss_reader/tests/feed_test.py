@@ -16,7 +16,7 @@ class TestFeed(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        self.url = 'url'
+        self.url = 'rss/'
         self.limit = 2
         self.parser = rss_parser.RssParser(self.url, self.limit)
 

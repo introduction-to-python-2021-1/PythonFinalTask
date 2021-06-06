@@ -10,6 +10,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 import time
 from rss_reader import string_handlers
 
+
 pdfmetrics.registerFont(TTFont('DejaVuSerif', 'DejaVuSerif.ttf'))
 
 
