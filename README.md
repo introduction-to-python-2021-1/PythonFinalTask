@@ -33,23 +33,24 @@ You can find source code of this package on [github][]. See
 ```shell
 $ ap_rss_reader "https://news.yahoo.com/rss/" --limit 1
 
+
 Feed: Yahoo News - Latest News & Headlines
+Url: https://news.yahoo.com/rss/
 
-Title: Nestor heads into Georgia after tornados damage Florida
-Date: Sun, 20 Oct 2019 04:21:44 +0300
-Link: https://news.yahoo.com/wet-weekend-tropical-storm-warnings-131131925.html
-
+Title: No mass protests after Honolulu police shoot, kill Black man
+Date: 2021-06-06 15:56:33
+Link: https://news.yahoo.com/no-mass-protests-honolulu-police-155633667.html
 
 Links:
-[1]: https://news.yahoo.com/wet-weekend-tropical-storm-warnings-131131925.html (link)
-[2]: http://l2.yimg.com/uu/api/res/1.2/Liyq2kH4HqlYHaS5BmZWpw--/YXBwaWQ9eXRhY2h5b247aD04Njt3PTEzMDs-/https://media.zenfs.com/en/ap.org/5ecc06358726cabef94585f99050f4f0 (image)
+[1]: http://www.ap.org/ "Associated Press" (link)
+[2]: https://s.yimg.com/uu/api/res/1.2/7CNq3PcjbHikuOrWqNFt.Q--~B/aD00ODA7dz02NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/ap.org/e2ddde5376d7a2e161502e283f689a5f (image)
 
 ```
 
 Utility provides the following interface:
 
 ```shell
-usage: ap_rss_reader [-h] [--limit LIMIT] [--verbose] [--version] [--json] source
+usage: ap_rss_reader [-h] [--date DATE] [--limit LIMIT] [--verbose] [--version] [--json] [source]
 
 AP RSS-reader with CLI.
 
@@ -58,33 +59,36 @@ positional arguments:
 
 optional arguments:
   -h, --help     show this help message and exit
+  --date DATE    Limit news topics by publishing date: YYYYMMDD
   --limit LIMIT  Limit news topics if this parameter provided
   --verbose      Provides additional details as to what the program is doing
   --version      Shows the version of the program and exits
   --json         Print result as JSON in stdout
-
 ```
 
 In case of using `--json` argument utility converts the news into
 [JSON](https://en.wikipedia.org/wiki/JSON) format:
 
 ```json
-{
-  "channel_items": [
-    {
-      "date": "2021-05-30 12:19:27",
-      "link": "https://news.yahoo.com/mexico-cartels-hunting-down-police-121927049.html",
-      "media_content_url": "https://s.yimg.com/uu/api/res/1.2/laxRlIvAURG7aPTJU6a.Cw--~B/aD0zNjQ4O3c9NTQ3MjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/cdd01711ada54152f19140789ed6fcb4",
-      "source": "Associated Press",
-      "source_url": "http://www.ap.org/",
-      "title": "In Mexico, cartels are hunting down police at their homes"
-    }
-  ],
-  "title": "Yahoo News - Latest News & Headlines"
-}
+[
+  {
+    "channel_items": [
+      {
+        "date": "2021-06-06 15:56:33",
+        "link": "https://news.yahoo.com/no-mass-protests-honolulu-police-155633667.html",
+        "media_content_url": "https://s.yimg.com/uu/api/res/1.2/7CNq3PcjbHikuOrWqNFt.Q--~B/aD00ODA7dz02NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/ap.org/e2ddde5376d7a2e161502e283f689a5f",
+        "source": "Associated Press",
+        "source_url": "http://www.ap.org/",
+        "title": "No mass protests after Honolulu police shoot, kill Black man"
+      }
+    ],
+    "title": "Yahoo News - Latest News & Headlines",
+    "url": "https://news.yahoo.com/rss/"
+  }
+]
 ```
 
-With the argument `--verbose` your program prints all logs in stdout.
+With the argument `--verbose` program prints all logs in stdout.
 
 ## Development & Contributing
 

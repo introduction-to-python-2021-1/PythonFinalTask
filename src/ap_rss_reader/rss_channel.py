@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from itertools import chain
 import json
 import os
 from pathlib import Path
@@ -12,6 +13,7 @@ from typing import Dict
 from typing import Final
 from typing import List
 from typing import Optional
+from typing import Tuple
 
 from bs4 import BeautifulSoup  # type: ignore
 import requests
@@ -32,7 +34,7 @@ class RssChannel:
     ITEM_SELECTOR: Final[str] = "item"
 
     def __init__(
-        self, *, url: Optional[str] = "", limit: int = 0, fetch: bool = True
+        self, *, url: Optional[str] = None, limit: int = 0, fetch: bool = True
     ):
         """Create new rss channel and load all news with the given url.
 
@@ -46,10 +48,13 @@ class RssChannel:
                 `True` by default.
 
         """
+        if not url:
+            url = ""
+
         self._limit = limit
         self._channel_items: List[ChannelItem] = []
         self._title: str = ""
-        self._url: str = ""
+        self._url: str = url
 
         if fetch:
             if not url:
@@ -58,7 +63,6 @@ class RssChannel:
                 )
 
             logger.debug(f"\nCreate new rss-channel with url: {url}...")
-            self._url = url
             beautiful_soup = self._get_beautiful_soup()
             if beautiful_soup:
                 self._title = beautiful_soup.select_one("title").string
@@ -83,7 +87,7 @@ class RssChannel:
                 )
                 self.dump()
         else:
-            self.load()
+            self._channel_items = self.load()
 
     @property
     def url(self) -> str:
@@ -116,36 +120,15 @@ class RssChannel:
 
     def print(self, *, filter_func: Optional[Filter] = None) -> None:
         """Print channel title and all channel items from channel."""
-        logger.info(f"\n{self._title}")
-        logger.info(f"Url: {self._url}\n")
+        self._print_feed_title()
 
-        channel_items = (
+        channel_items: List[ChannelItem] = (
             self.filter(filter_func) if filter_func else self.channel_items
         )
         if not channel_items:
             logger.info("There's no data!")
-        for channel_item in channel_items:
-            logger.info(
-                f"Title: {channel_item.title}\n"
-                f"Date: {channel_item.date}\n"
-                f"Link: {channel_item.link}\n"
-            )
-            if channel_item.media_content_url or channel_item.source_url:
-                logger.info("Links:")
-                counter = 0
-                if channel_item.source_url:
-                    counter += 1
-                    logger.info(
-                        f"[{counter}]: {channel_item.source_url} "
-                        f'"{channel_item.source}" (link)'
-                    )
-                if channel_item.media_content_url:
-                    counter += 1
-                    logger.info(
-                        f"[{counter}]: {channel_item.media_content_url} "
-                        f"(image)"
-                    )
-                logger.info("\n")
+
+        self._print_channel_items(channel_items)
 
     def as_json(self, *, whole: bool = False) -> str:
         """Convert `Channel` to json.
@@ -181,37 +164,108 @@ class RssChannel:
 
     def dump(self, file: str = "") -> None:
         """Write the rss channel on the file (as JSON)."""
-        full_path = self._get_full_path(file)
-        with open(full_path, "w") as df:
-            df.write(self.as_json(whole=True))
+        full_path, data = self._read_file(file)
 
-    def load(self, file: str = "") -> None:
+        if self._url:
+            with open(full_path, "w") as df:
+                current_channel: Dict[str, Any] = next(
+                    filter(lambda channel: channel["url"] == self._url, data),
+                    None,  # type: ignore
+                )
+                if current_channel is not None:
+                    # Convert news from file and from instance to dict
+                    # with "link" as unique key.  Replace old news (from
+                    # file) with news from instance
+                    all_news: List[Dict[str, Any]] = list(
+                        {
+                            **{
+                                channel_item["link"]: channel_item
+                                for channel_item in current_channel[
+                                    "channel_items"
+                                ]
+                            },
+                            **{
+                                channel_item.link: {
+                                    **channel_item._asdict(),
+                                    "date": channel_item.date.strftime(
+                                        "%Y-%m-%d %H:%M:%S"
+                                    ),
+                                }
+                                for channel_item in self._channel_items
+                            },
+                        }.values()
+                    )
+                    # replace current rss channel
+                    data = [
+                        dict(
+                            title=self._title,
+                            url=self._url,
+                            channel_items=all_news,
+                        )
+                        if channel["url"] == self._url
+                        else channel
+                        for channel in data
+                    ]
+                else:
+                    data.append(
+                        dict(
+                            title=self._title,
+                            url=self._url,
+                            channel_items=[
+                                {
+                                    **channel_item._asdict(),
+                                    "date": channel_item.date.strftime(
+                                        "%Y-%m-%d %H:%M:%S"
+                                    ),
+                                }
+                                for channel_item in self._channel_items
+                            ],
+                        )
+                    )
+                json.dump(
+                    data,
+                    df,
+                    indent=4,
+                    sort_keys=True,
+                )
+
+    def load(self, file: str = "") -> List[ChannelItem]:
         """Read the rss channel from the JSON file."""
         logger.debug("\nLoad rss-channel from file...")
-        full_path = self._get_full_path(file)
-        data: Dict[str, Any]
-        with open(full_path) as df:
-            data = json.load(df)
-        if data:
-            self._title = data["title"]
-            self._url = data["url"]
-            self._channel_items.extend(
-                [
-                    ChannelItem(
-                        **{
-                            **channel_item,  # type: ignore
-                            "date": datetime.strptime(
-                                channel_item["date"], "%Y-%m-%d %H:%M:%S"
-                            ),
-                        }
-                    )
-                    for channel_item in data["channel_items"]
-                ]
+        _, data = self._read_file(file)
+
+        all_news: List[Dict[str, Any]]
+        if self._url:
+            current_channel: Dict[str, Any] = next(
+                filter(lambda channel: channel["url"] == self._url, data),
+                None,  # type: ignore
             )
+            if current_channel is not None:
+                self._title = current_channel["title"]
+                all_news = current_channel["channel_items"]
+            else:
+                all_news = []
+        else:
+            all_news = list(
+                chain.from_iterable(
+                    [channel["channel_items"] for channel in data]
+                )
+            )
+        return [
+            ChannelItem(
+                **{
+                    **current_news,  # type: ignore
+                    "date": datetime.strptime(
+                        current_news["date"], "%Y-%m-%d %H:%M:%S"
+                    ),
+                }
+            )
+            for current_news in all_news
+        ]
 
     def filter(self, function: Filter, /) -> List[ChannelItem]:
         """Return news for witch `function` return `True`."""
-        return [item for item in self._channel_items if function(item)]
+        return list(filter(function, self._channel_items))
 
     def _get_beautiful_soup(self) -> BeautifulSoup:
         """Download and convert data to beautiful soup.
@@ -232,6 +286,22 @@ class RssChannel:
         )
         return beautiful_soup
 
+    def _print_feed_title(self) -> None:
+        """Print title and url current rss feed if data exists."""
+        if self._title:
+            logger.info(f"\nFeed: {self._title}")
+        if self._url:
+            logger.info(f"Url: {self._url}\n")
+
+    @classmethod
+    def _read_file(cls, file: str) -> Tuple[Path, List[Dict[str, Any]]]:
+        full_path: Path = cls._get_full_path(file)
+        data: List[Dict[str, Any]] = []
+        if os.path.isfile(full_path):
+            with open(full_path) as fr:
+                data = json.load(fr)
+        return full_path, data
+
     @staticmethod
     def _get_full_path(file: str = "") -> Path:
         """Build full path with given `file` and return :obj:`Path`."""
@@ -251,3 +321,28 @@ class RssChannel:
             r"<\g<tag>_\g<pseudo_class>",
             text,
         )
+
+    @staticmethod
+    def _print_channel_items(channel_items: List[ChannelItem]) -> None:
+        for channel_item in channel_items:
+            logger.info(
+                f"Title: {channel_item.title}\n"
+                f"Date: {channel_item.date}\n"
+                f"Link: {channel_item.link}\n"
+            )
+            if channel_item.media_content_url or channel_item.source_url:
+                logger.info("Links:")
+                counter = 0
+                if channel_item.source_url:
+                    counter += 1
+                    logger.info(
+                        f"[{counter}]: {channel_item.source_url} "
+                        f'"{channel_item.source}" (link)'
+                    )
+                if channel_item.media_content_url:
+                    counter += 1
+                    logger.info(
+                        f"[{counter}]: {channel_item.media_content_url} "
+                        f"(image)"
+                    )
+                logger.info("\n")
