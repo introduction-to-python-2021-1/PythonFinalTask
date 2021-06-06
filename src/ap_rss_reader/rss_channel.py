@@ -7,6 +7,8 @@ import json
 import os
 from pathlib import Path
 import re
+from typing import Any
+from typing import Dict
 from typing import Final
 from typing import List
 from typing import Optional
@@ -29,42 +31,48 @@ class RssChannel:
     SELECTOR: Final[str] = "rss channel"
     ITEM_SELECTOR: Final[str] = "item"
 
-    def __init__(self, *, url: str, limit: int = 0):
+    def __init__(self, *, url: Optional[str] = "", limit: int = 0):
         """Create new rss channel and load all news with the given url.
 
         Args:
-            url (str): Url of rss channel.
+            url (str, optional): Url of rss channel. When `url` is not
+                given, try to load data from file.
             limit (:obj:`int`, optional): Max count of displayed news.
                 0 - if there's no limits.
 
         """
-        self._url = url
         self._limit = limit
         self._channel_items: List[ChannelItem] = []
-        self._title = ""
+        self._title: str = ""
 
-        beautiful_soup = self._get_beautiful_soup()
-        if beautiful_soup:
-            self._title = beautiful_soup.select_one("title").string
-            channel_items = beautiful_soup.select(self.ITEM_SELECTOR)
-            self._channel_items.extend(
-                [
-                    ChannelItem(
-                        title=channel_item.title.string,
-                        link=channel_item.link.next,
-                        date=datetime.strptime(
-                            channel_item.pubdate.string, "%Y-%m-%dT%H:%M:%SZ"
-                        ),
-                        source=channel_item.source.string,
-                        source_url=channel_item.source
-                        and channel_item.source["url"],
-                        media_content_url=channel_item.media_content
-                        and channel_item.media_content["url"],
-                    )
-                    for channel_item in channel_items
-                ]
-            )
-            self.dump()
+        if url:
+            logger.debug(f"\nCreate new rss-channel with url: {url}...")
+            self._url = url
+            beautiful_soup = self._get_beautiful_soup()
+            if beautiful_soup:
+                self._title = beautiful_soup.select_one("title").string
+                channel_items = beautiful_soup.select(self.ITEM_SELECTOR)
+                self._channel_items.extend(
+                    [
+                        ChannelItem(
+                            title=channel_item.title.string,
+                            link=channel_item.link.next,
+                            date=datetime.strptime(
+                                channel_item.pubdate.string,
+                                "%Y-%m-%dT%H:%M:%SZ",
+                            ),
+                            source=channel_item.source.string,
+                            source_url=channel_item.source
+                            and channel_item.source["url"],
+                            media_content_url=channel_item.media_content
+                            and channel_item.media_content["url"],
+                        )
+                        for channel_item in channel_items
+                    ]
+                )
+                self.dump()
+        else:
+            self.load()
 
     @property
     def url(self) -> str:
@@ -99,11 +107,13 @@ class RssChannel:
         """Print channel title and all channel items from channel."""
         logger.info(f"\n{self._title}")
         logger.info(f"Url: {self._url}\n")
-        for channel_item in (
-            self.filter(filter_func)
-            if filter_func is not None
-            else self.channel_items
-        ):
+
+        channel_items = (
+            self.filter(filter_func) if filter_func else self.channel_items
+        )
+        if not channel_items:
+            logger.info("There's no data!")
+        for channel_item in channel_items:
             logger.info(
                 f"Title: {channel_item.title}\n"
                 f"Date: {channel_item.date}\n"
@@ -141,7 +151,7 @@ class RssChannel:
         return json.dumps(
             dict(
                 title=self._title,
-                ulr=self._url,
+                url=self._url,
                 channel_items=[
                     {
                         "title": channel_item.title,
@@ -167,6 +177,32 @@ class RssChannel:
         full_path = self._get_full_path(file)
         with open(full_path, "w") as df:
             df.write(self.as_json(whole=True))
+
+    def load(self, file: str = "") -> None:
+        """Read the rss channel from the JSON file."""
+        logger.debug("\nLoad rss-channel from file...")
+        full_path = self._get_full_path(file)
+        data: Dict[str, Any]
+        with open(full_path) as df:
+            data = json.load(df)
+        if data:
+            self._title = data["title"]
+            self._url = data["url"]
+            self._channel_items.extend(
+                [
+                    ChannelItem(
+                        title=channel_item["title"],
+                        link=channel_item["link"],
+                        date=datetime.strptime(
+                            channel_item["date"], "%Y-%m-%d %H:%M:%S"
+                        ),
+                        source=channel_item["source"],
+                        source_url=channel_item["source_url"],
+                        media_content_url=channel_item["media_content_url"],
+                    )
+                    for channel_item in data["channel_items"]
+                ]
+            )
 
     def filter(self, function: Filter, /) -> List[ChannelItem]:
         """Return news for witch `function` return `True`."""

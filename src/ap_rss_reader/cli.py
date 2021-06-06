@@ -1,5 +1,7 @@
 """Single point of application run."""
 from argparse import ArgumentParser
+from argparse import Namespace
+from datetime import datetime
 import logging
 import sys
 from typing import List
@@ -21,7 +23,13 @@ def create_parser() -> ArgumentParser:
     """Create argument parser, add arguments and return it."""
     parser = ArgumentParser(description=f"{TITLE} with CLI.")
 
-    parser.add_argument("source", type=str, help="RSS URL")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("source", nargs="?", type=str, help="RSS URL")
+    group.add_argument(
+        "--date",
+        type=str,
+        help="Limit news topics by publishing date: YYYYMMDD",
+    )
     parser.add_argument(
         "--limit",
         type=int,
@@ -46,6 +54,13 @@ def create_parser() -> ArgumentParser:
     return parser
 
 
+def print_args(args: Namespace) -> None:
+    """Print `args`."""
+    logger.debug("Next args were passed:")
+    for arg in vars(args):
+        logger.debug(f"{arg}: {getattr(args, arg)}")
+
+
 def main(arguments: Optional[List[str]] = None) -> None:
     """Show message and exit.
 
@@ -65,15 +80,15 @@ def main(arguments: Optional[List[str]] = None) -> None:
     if args.verbose:
         logger.setLevel(logging.DEBUG)
 
-    logger.debug("Next args were passed:")
-    for arg in vars(args):
-        logger.debug(f"{arg}: {getattr(args, arg)}")
+    print_args(args)
 
-    logger.debug(f"\nCreate new rss-channel {args.source}...")
     channel = RssChannel(url=args.source, limit=args.limit)
     logger.debug("\nData was loaded!")
 
-    if args.json:
+    if args.date:
+        publishing_date = datetime.strptime(args.date, "%Y%m%d")
+        channel.print(filter_func=lambda item: item.date >= publishing_date)
+    elif args.json:
         logger.info(channel.as_json())
     else:
         channel.print()
