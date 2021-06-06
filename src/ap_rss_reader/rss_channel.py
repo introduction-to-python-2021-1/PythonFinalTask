@@ -31,7 +31,9 @@ class RssChannel:
     SELECTOR: Final[str] = "rss channel"
     ITEM_SELECTOR: Final[str] = "item"
 
-    def __init__(self, *, url: Optional[str] = "", limit: int = 0):
+    def __init__(
+        self, *, url: Optional[str] = "", limit: int = 0, fetch: bool = True
+    ):
         """Create new rss channel and load all news with the given url.
 
         Args:
@@ -39,13 +41,22 @@ class RssChannel:
                 given, try to load data from file.
             limit (:obj:`int`, optional): Max count of displayed news.
                 0 - if there's no limits.
+            fetch (bool, optional): When `True` data will loaded using
+                `url` argument.  Otherwise data will be read from file.
+                `True` by default.
 
         """
         self._limit = limit
         self._channel_items: List[ChannelItem] = []
         self._title: str = ""
+        self._url: str = ""
 
-        if url:
+        if fetch:
+            if not url:
+                raise ValueError(
+                    "Using 'fetch' argument without 'url' is prohibited!"
+                )
+
             logger.debug(f"\nCreate new rss-channel with url: {url}...")
             self._url = url
             beautiful_soup = self._get_beautiful_soup()

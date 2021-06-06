@@ -23,9 +23,8 @@ def create_parser() -> ArgumentParser:
     """Create argument parser, add arguments and return it."""
     parser = ArgumentParser(description=f"{TITLE} with CLI.")
 
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("source", nargs="?", type=str, help="RSS URL")
-    group.add_argument(
+    parser.add_argument("source", nargs="?", type=str, help="RSS URL")
+    parser.add_argument(
         "--date",
         type=str,
         help="Limit news topics by publishing date: YYYYMMDD",
@@ -82,7 +81,9 @@ def main(arguments: Optional[List[str]] = None) -> None:
 
     print_args(args)
 
-    channel = RssChannel(url=args.source, limit=args.limit)
+    channel = RssChannel(
+        url=args.source, limit=args.limit, fetch=not args.date
+    )
     logger.debug("\nData was loaded!")
 
     if args.date:
