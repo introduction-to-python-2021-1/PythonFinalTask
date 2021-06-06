@@ -95,7 +95,8 @@ class RssChannel:
 
     def print(self) -> None:
         """Print channel title and all channel items from channel."""
-        logger.info(f"\n{self._title}\n")
+        logger.info(f"\n{self._title}")
+        logger.info(f"Url: {self._url}\n")
         for channel_item in self.channel_items:
             logger.info(
                 f"Title: {channel_item.title}\n"
@@ -134,6 +135,7 @@ class RssChannel:
         return json.dumps(
             dict(
                 title=self._title,
+                ulr=self._url,
                 channel_items=[
                     {
                         "title": channel_item.title,
