@@ -1,7 +1,7 @@
 import unittest
-import io
-import os
-import os.path
+from io import StringIO
+from os import remove
+from os.path import isfile
 from rss_reader import reader
 from rss_reader.db_worker import get_path
 from contextlib import redirect_stdout
@@ -19,15 +19,15 @@ class TestRssReaderDB(unittest.TestCase):
         reader.create_db()
 
     def tearDown(self):
-        os.remove(get_path())
+        remove(get_path())
 
     def test_create_db(self):
         """Tests create DB"""
-        self.assertTrue(os.path.isfile(get_path()))
+        self.assertTrue(isfile(get_path()))
 
     def test_version_with_other_arg(self):
         """Tests --version argument with other"""
-        with io.StringIO() as buf, redirect_stdout(buf):
+        with StringIO() as buf, redirect_stdout(buf):
             with self.assertRaises(SystemExit):
                 reader.main(args=['--date20210527', '--version', ])
                 self.assertEqual(buf.getvalue(), 'Version 1.0\n')
@@ -37,7 +37,7 @@ class TestRssReaderDB(unittest.TestCase):
         args = ['--date=20212222', ]
         parsed_arg = self.arg_parser.parse_args(args)
         with self.assertRaises(SystemExit):
-            with io.StringIO() as buf, redirect_stdout(buf):
+            with StringIO() as buf, redirect_stdout(buf):
                 reader.selection_from_db(parsed_arg.date)
                 self.assertEqual('Invalid date. Please correct the date and try again\n', buf.getvalue())
 
@@ -46,7 +46,7 @@ class TestRssReaderDB(unittest.TestCase):
         args = ['--date=30210522', ]
         parsed_arg = self.arg_parser.parse_args(args)
         with self.assertRaises(SystemExit):
-            with io.StringIO() as buf, redirect_stdout(buf):
+            with StringIO() as buf, redirect_stdout(buf):
                 reader.selection_from_db(parsed_arg.date)
                 self.assertEqual('No news for entered date\n', buf.getvalue())
 
