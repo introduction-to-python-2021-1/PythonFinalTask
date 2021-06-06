@@ -1,17 +1,19 @@
 import logging.handlers
+import pathlib
 import sys
 import configparser
+from colored import fg, attr
 
 
 class ColorizeLogger:
     """Creates a logger item with the necessary attributes"""
-    debug_color = '37'
-    info_color = '32'
-    warning_color = '35'
-    error_color = '91'
-    print_color = '33'
+    debug_color = '1'
+    info_color = '2'
+    warning_color = '3'
+    error_color = '4'
+    print_color = '5'
 
-    def __init__(self, disable=50, is_colorize=False, path='logger.ini'):
+    def __init__(self, disable=50, is_colorize=False, file='logger.ini'):
         """Logger init"""
         logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
         logger = logging.getLogger("")
@@ -23,6 +25,7 @@ class ColorizeLogger:
         logging.disable(disable)
         self.is_colorize = is_colorize
         self.logger = logger
+        path = str(pathlib.Path(__file__).parent.absolute()) + '\\' + file
         self.set_properties(path)
 
     def set_properties(self, path):
@@ -61,6 +64,6 @@ class ColorizeLogger:
     def get_message(self, color, value):
         """Initializes the color display of the value"""
         if self.is_colorize:
-            return f'\33[{color}m{value}'
+            return '%s %s %s' % (fg(color), value, attr(0))
         else:
             return value

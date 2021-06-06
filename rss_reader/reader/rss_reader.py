@@ -1,4 +1,5 @@
 import logging.handlers
+import pathlib
 import sqlite3
 import sys
 
@@ -15,7 +16,8 @@ def main(argv=sys.argv):
         logger.is_colorize = True
 
     """Creating connection"""
-    connection = sqlite3.connect('news.db')
+    db = str(pathlib.Path(__file__).parent.absolute()) + '\\news.db'
+    connection = sqlite3.connect(db)
 
     functions.init_database(connection)
 
