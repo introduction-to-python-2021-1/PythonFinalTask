@@ -6,7 +6,7 @@ import sys
 import urllib.error
 import urllib.request
 import xml.etree.ElementTree as Et
-import cache
+from rss_reader.rss_reader.cache import Cache
 
 VERSION = "2.0"
 
@@ -117,7 +117,7 @@ def main(argv=sys.argv):
         logging.info("No data for requested URL")
         sys.exit()
     news_list = parse_response(response)
-    local_storage = cache.Cache(logging)
+    local_storage = Cache(logging)
     local_storage.write_news(parser_args.source, news_list)
     news_list = calculate_news_with_limit(news_list, limit)
     if parser_args.json:
