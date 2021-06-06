@@ -1,9 +1,10 @@
 import logging
 
+# set logger format for file logs and stdout
 _log_file_format = f"%(asctime)s - [%(levelname)s] - %(name)s - (%(filename)s).%(funcName)s(%(lineno)d) \n %(message)s"
 _log_stream_format = f"[%(levelname)s] -- %(message)s"
 
-file_handler = logging.FileHandler("rss_reader.log", "w")
+file_handler = logging.FileHandler("../tmp/rss_reader.log", "w")
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(logging.Formatter(_log_file_format))
 
@@ -24,6 +25,10 @@ stream_handler.setFormatter(logging.Formatter(_log_stream_format))
 #     stream_handler.setFormatter(logging.Formatter(_log_file_format))
 #     return stream_handler
 
+# The function returns a reference to the logger object.
+# Thus, there will be one logger for the entire module.
+# And, since we create only one object for the file and stream handlers
+# they will also be the same for the entire module.
 def get_logger(name):
     global file_handler
     global stream_handler

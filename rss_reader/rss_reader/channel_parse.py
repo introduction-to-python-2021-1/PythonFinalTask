@@ -8,12 +8,20 @@ import rss_reader.app_logger as app_logger
 
 logger = app_logger.get_logger(__name__)
 
+# function returns <class 'xml.etree.ElementTree.Element'> if URL correct.
+# the networking method was intentionally created in a separate file
+
 
 def get_response(url):
     try:
         xml_url = urlopen(url)
         if xml_url.status != 200:
-            raise Exception("Bad response. Check URL address")
+            raise ("Bad response. Check URL address")
+
+    except AttributeError as e:
+        print("govno")
+        logger.exception(e)
+        sys.exit()
 
     except Exception as UrlError:
         logger.exception(UrlError)
@@ -33,8 +41,6 @@ def get_response(url):
     except Exception:
         logger.error(Exception)
         sys.exit()
+
+    print(type(root))
     return root
-
-
-def get_news(channel):
-    pass

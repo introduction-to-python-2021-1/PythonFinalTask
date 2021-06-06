@@ -29,6 +29,7 @@ class args_parser:
     # initialization of all arguments
     def __parameters_init(self):
         self.parser.add_argument("source",
+                                 nargs='?',
                                  type=str,
                                  help="RSS URL")
         self.parser.add_argument("-ve", "--version",
@@ -52,20 +53,21 @@ class args_parser:
     def __parse_Args(self):
         self.args_Space = self.parser.parse_args()
 
+    # arguments validation
     def __args_Validation(self):
+
+        # verbose check
+        if self.args_Space.verbose:
+            logger.handlers[1].setLevel("INFO")
 
         # parameter <limit> validation
         if bool(self.args_Space.limit):
             if self.args_Space.limit < 0:
                 logger.error("Bad parameter: --limit < 0 .")
                 sys.exit()
-            else:
-                pass
         else:
-            if self.args_Space.limit == 0:
-                logger.warning("Bad parameter: --limit = 0, you will not see news")
-            else:
-                logger.info("--limit is void. See all news")
+            logger.warning("Bad parameter: --limit = 0, you will not see news")
+            logger.info("--limit is void. See all news")
 
         # parameter <json> validation
         if type(self.args_Space.json) != bool:
@@ -78,9 +80,6 @@ class args_parser:
             logger.error(
                 "Bad parameter: --verbose. Do not use this parameter with value.")
             sys.exit()
-        # verbose check
-        if self.args_Space.verbose:
-            logger.handlers[1].setLevel("INFO")
 
         # parameter <date> validation
         if bool(self.args_Space.date):
