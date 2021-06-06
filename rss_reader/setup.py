@@ -7,7 +7,8 @@ setup(
     author='Natallia Patsiomkina',
     author_email='patsiomkina@inbox.ru',
     description='Pure Python command-line RSS reader',
-    install_requires=['feedparser==6.0.2', 'dateparser==1.0.0', 'dominate==2.6.0', 'xhtml2pdf==0.2.5'],
+    install_requires=['feedparser==6.0.2', 'dateparser==1.0.0', 'dominate==2.6.0', 'xhtml2pdf==0.2.5',
+                      'colored==1.4.2'],
     package_data={'reader': ['data/data.sql', '*.ini', '*.db']},
     include_package_data=True,
     entry_points={
