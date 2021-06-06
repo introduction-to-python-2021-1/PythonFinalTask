@@ -9,6 +9,7 @@ from pathlib import Path
 import re
 from typing import Final
 from typing import List
+from typing import Optional
 
 from bs4 import BeautifulSoup  # type: ignore
 import requests
@@ -16,6 +17,7 @@ from requests import Response
 
 from ap_rss_reader.ap_collections import ChannelItem
 from ap_rss_reader.ap_constants import DUMP_FILE
+from ap_rss_reader.ap_typing import Filter
 from ap_rss_reader.log import logger
 
 __all__ = ("RssChannel",)
@@ -93,11 +95,15 @@ class RssChannel:
         """str: Title of rss channel."""
         return self._title
 
-    def print(self) -> None:
+    def print(self, *, filter_func: Optional[Filter] = None) -> None:
         """Print channel title and all channel items from channel."""
         logger.info(f"\n{self._title}")
         logger.info(f"Url: {self._url}\n")
-        for channel_item in self.channel_items:
+        for channel_item in (
+            self.filter(filter_func)
+            if filter_func is not None
+            else self.channel_items
+        ):
             logger.info(
                 f"Title: {channel_item.title}\n"
                 f"Date: {channel_item.date}\n"
@@ -161,6 +167,10 @@ class RssChannel:
         full_path = self._get_full_path(file)
         with open(full_path, "w") as df:
             df.write(self.as_json(whole=True))
+
+    def filter(self, function: Filter, /) -> List[ChannelItem]:
+        """Return news for witch `function` return `True`."""
+        return [item for item in self._channel_items if function(item)]
 
     def _get_beautiful_soup(self) -> BeautifulSoup:
         """Download and convert data to beautiful soup.
