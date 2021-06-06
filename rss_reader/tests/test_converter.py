@@ -3,6 +3,8 @@ import os
 import unittest
 from unittest.mock import patch
 
+from bs4 import BeautifulSoup
+
 from rss_reader.rss_reader import rss_reader
 from rss_reader.tests.testing import mock_response
 
@@ -21,7 +23,9 @@ class TestConverter(unittest.TestCase):
         mock_get.return_value = mock_response(200, self.document_content)
         argv = ['https://news.yahoo.com/rss/', '--to-html=test.html']
         rss_reader.main(argv)
-        self.assertTrue(filecmp.cmp('test.html', self.data_folder + 'result_html_5.html'))
+        with open('test.html', 'r') as file:
+            result_data = BeautifulSoup(file, 'lxml-xml')
+        self.assertEqual(len(result_data.find_all('div')), 5)
         os.remove('test.html')
 
     def test_to_html_with_limit(self, mock_get):
@@ -29,7 +33,9 @@ class TestConverter(unittest.TestCase):
         mock_get.return_value = mock_response(200, self.document_content)
         argv = ['https://news.yahoo.com/rss/', '--to-html=test.html', '--limit=2']
         rss_reader.main(argv)
-        self.assertTrue(filecmp.cmp('test.html', self.data_folder + 'result_html_2.html'))
+        with open('test.html', 'r') as file:
+            result_data = BeautifulSoup(file, 'lxml-xml')
+        self.assertEqual(len(result_data.find_all('div')), 2)
         os.remove('test.html')
 
     def test_to_pdf(self, mock_get):
@@ -39,4 +45,3 @@ class TestConverter(unittest.TestCase):
         rss_reader.main(argv)
         self.assertTrue(os.path.exists('test.pdf'))
         os.remove('test.pdf')
-
