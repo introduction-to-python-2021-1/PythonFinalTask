@@ -1,10 +1,12 @@
 import argparse
+from datetime import datetime
 import json
 import logging
 import sys
 import urllib.error
 import urllib.request
 import xml.etree.ElementTree as Et
+import cache
 
 VERSION = "2.0"
 
@@ -18,7 +20,7 @@ def build_args(args):
         version=f"Version {VERSION}",
         help="Print version info",
     )
-    parser.add_argument("source", type=str, help="RSS URL")
+    parser.add_argument("source", nargs="?" if "--date" in args else None, type=str, help="RSS URL")
     parser.add_argument(
         "--verbose", action="store_true", help="Outputs verbose status messages"
     )
@@ -27,6 +29,11 @@ def build_args(args):
     )
     parser.add_argument(
         "--limit", type=int, help="Limit news topics if this parameter provided"
+    )
+    parser.add_argument(
+        "--date",
+        type=lambda d: datetime.strptime(d, "%Y%m%d"),
+        help="Print news from local cache for specified date",
     )
 
     return parser.parse_args(args[1:])
@@ -110,6 +117,8 @@ def main(argv=sys.argv):
         logging.info("No data for requested URL")
         sys.exit()
     news_list = parse_response(response)
+    local_storage = cache.Cache(logging)
+    local_storage.write_news(parser_args.source, news_list)
     news_list = calculate_news_with_limit(news_list, limit)
     if parser_args.json:
         print_json(news_list)
