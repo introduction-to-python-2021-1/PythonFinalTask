@@ -8,19 +8,11 @@ from unittest.mock import patch
 import ddt
 
 from rss_reader.rss_reader import rss_reader
+from rss_reader.tests.testing import mock_response
 
 
 @ddt.ddt
 class TestRssReader(unittest.TestCase):
-    @staticmethod
-    def mock_response(status, content):
-        """Function that simulate the response from requests.get"""
-        mock_response = unittest.mock.Mock()
-        mock_response.raise_for_status = unittest.mock.Mock()
-        mock_response.status_code = status
-        mock_response.content = content
-        return mock_response
-
     def test_wrong_url(self):
         """Tests that if specified invalid URL app should print error"""
         argv = ['https://pagethatdoesnexist.error/']
@@ -61,9 +53,8 @@ class TestRssReader(unittest.TestCase):
         """Tests that if specified URL does not contain RSS app should print error"""
         data_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data')) + os.path.sep
         with open(data_folder + 'example_without_rss.html', 'r') as file:
-            response_content = file.read()
-        mock_response = self.mock_response(200, response_content)
-        mock_get.return_value = mock_response
+            document_content = file.read()
+        mock_get.return_value = mock_response(200, document_content)
         with self.assertLogs('root', level='ERROR') as cm:
             rss_reader.get_data_from_url(logging, 'https://yahoo.com/rss/')
         self.assertIn('ERROR:root:Specified URL does not contain RSS. Please check the specified URL and try again',

@@ -37,3 +37,12 @@ class BaseTest(unittest.TestCase):
     def tearDown(self):
         """This method clears the cache folder after each test."""
         shutil.rmtree(self.cache_folder)
+
+
+def mock_response(status, content):
+    """Function that simulate the response from requests.get"""
+    mock_response = unittest.mock.Mock()
+    mock_response.raise_for_status = unittest.mock.Mock()
+    mock_response.status_code = status
+    mock_response.content = content
+    return mock_response

@@ -1,0 +1,22 @@
+{
+    "0": {
+        "title": "Yahoo News - Latest News  Headlines",
+        "source": "https://www.yahoo.com/news",
+        "items": {
+            "0": {
+                "title": "Yair Lapid receives mandate to form Israeli government, oust Netanyahu",
+                "url": "https://news.yahoo.com/yair-lapid-receives-mandate-form-153810526.html",
+                "description": null,
+                "date": "Wed, 05 May 2021 15:38:10",
+                "links": null
+            },
+            "1": {
+                "title": "St. Louis prosecutor Kim Gardner to face disciplinary hearing, law license in jeopardy over Greitens\n                complaint\n            ",
+                "url": "https://news.yahoo.com/st-louis-prosecutor-kim-gardner-180119536.html",
+                "description": null,
+                "date": "Wed, 05 May 2021 18:01:19",
+                "links": null
+            }
+        }
+    }
+}

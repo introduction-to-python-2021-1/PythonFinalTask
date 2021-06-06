@@ -1,5 +1,4 @@
 import filecmp
-import json
 
 from rss_reader.tests.testing import BaseTest
 
@@ -28,20 +27,16 @@ class TestRssReader(BaseTest):
         """Tests that the --json argument affects the news feed fetched from the cache"""
         for example_news in self.example_news_list:
             self.cache.cache_news(example_news)
-        feeds_list = self.cache.get_news_from_cache('20210505', None, None, True, False)
-        try:
-            json.loads(str(feeds_list[0]))
-        except json.JSONDecodeError:
-            self.fail('JSONDecodeError raised by json.loads')
+        feeds_list = self.cache.get_news_from_cache('20210505', 'https://www.yahoo.com/news', None, True, False)
+        with open(self.data_folder + 'result_json_5.json', 'r') as file:
+            json_data = file.read()
+        self.assertEqual(str(feeds_list[0]), json_data)
 
     def test_get_news_from_cache_with_json_and_limit(self):
         """Tests that the --json and --limit argument affects the news feed fetched from the cache"""
         for example_news in self.example_news_list:
             self.cache.cache_news(example_news)
-        feeds_list = self.cache.get_news_from_cache('20210505', None, 2, True, False)
-        try:
-            result_json = json.loads(str(feeds_list[0]))
-        except json.JSONDecodeError:
-            self.fail('JSONDecodeError raised by json.loads')
-        else:
-            self.assertEqual(len(result_json['0']['items']), 2)
+        feeds_list = self.cache.get_news_from_cache('20210505', 'https://www.yahoo.com/news', 2, True, False)
+        with open(self.data_folder + 'result_json_2.json', 'r') as file:
+            json_data = file.read()
+        self.assertEqual(str(feeds_list[0]), json_data)

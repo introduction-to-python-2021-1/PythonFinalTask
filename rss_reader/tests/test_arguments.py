@@ -1,5 +1,4 @@
 from io import StringIO
-import json
 import re
 import unittest
 from unittest.mock import patch
@@ -54,10 +53,9 @@ class TestRssReader(BaseTest):
         """Tests that if --json option is specified utility should convert the news into JSON format"""
         with patch.object(self.example_feed, 'to_json', True):
             print(str(self.example_feed))
-        try:
-            json.loads(mock_stdout.getvalue())
-        except json.JSONDecodeError:
-            self.fail('JSONDecodeError raised by json.loads')
+        with open(self.data_folder + 'result_json_5.json', 'r') as file:
+            json_data = file.read()
+        self.assertEqual(mock_stdout.getvalue().rstrip('\n'), json_data)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_json_with_limit(self, mock_stdout):
@@ -68,12 +66,9 @@ class TestRssReader(BaseTest):
         with patch.object(self.example_feed, 'to_json', True):
             with patch.object(self.example_feed, 'news_limit', 2):
                 print(str(self.example_feed))
-        try:
-            result_json = json.loads(mock_stdout.getvalue())
-        except json.JSONDecodeError:
-            self.fail('JSONDecodeError raised by json.loads')
-        else:
-            self.assertEqual(len(result_json['0']['items']), 2)
+        with open(self.data_folder + 'result_json_2.json', 'r') as file:
+            json_data = file.read()
+        self.assertEqual(mock_stdout.getvalue().rstrip('\n'), json_data)
 
 
 if __name__ == '__main__':
