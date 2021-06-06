@@ -50,17 +50,17 @@ class TestMainReader(unittest.TestCase):
         logfile.close()
         self.assertEqual(len_after, len_before + 1)
 
-    # def test_verbose(self):
-    #     # Test if verbose=True, logs do not added to chosen log file.
-    #     # WARNING run only separately!
-    #     logfile = open("logs.log", "r")
-    #     len_before = len(logfile.readlines())
-    #     logfile.close()
-    #     rs.open_rss_link("fake_rss_site.xml", verbose=True)
-    #     logfile = open("logs.log", "r")
-    #     len_after = len(logfile.readlines())
-    #     logfile.close()
-    #     self.assertEqual(len_after, len_before)
+    @unittest.skip("Should run only separately!")
+    def test_verbose(self):
+        """ Test if verbose=True, logs do not added to chosen log file. """
+        logfile = open("logs.log", "r")
+        len_before = len(logfile.readlines())
+        logfile.close()
+        rs.open_rss_link("fake_rss_site.xml", verbose=True)
+        logfile = open("logs.log", "r")
+        len_after = len(logfile.readlines())
+        logfile.close()
+        self.assertEqual(len_after, len_before)
 
     # Tests for function "printing_parsing_news"
     @patch("builtins.print", autospec=True, side_effect=print)

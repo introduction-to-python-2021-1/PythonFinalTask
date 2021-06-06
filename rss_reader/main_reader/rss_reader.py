@@ -335,6 +335,7 @@ def main():
         logger.info(f"News will be saved in pdf on path {arguments.to_pdf}")
         try:
             converter.save_pdf(arguments.to_pdf, newsdict, number_of_news_to_show)
+            logger.info(f"Temporary html file was removed from '{arguments.to_pdf}'")
         except TypeError as e:
             logger.error(f"{e} was appearing with the way '{arguments.to_pdf}'")
             sys.exit()

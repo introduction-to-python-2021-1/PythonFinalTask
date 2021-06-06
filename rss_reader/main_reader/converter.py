@@ -63,5 +63,4 @@ def save_pdf(user_path: str, newsdict: dict, number_of_news_to_show: int):
         pisa_status = pisa.CreatePDF(src=file_in, dest=file_out)
         print(f"Your news was successfully save to '{file_out_path}' in pdf")
     os.remove(file_in_path)
-    print(f"Temporary html file '{file_in_path}' was removed")
     return pisa_status.err
