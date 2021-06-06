@@ -154,14 +154,10 @@ class RssChannel:
                 url=self._url,
                 channel_items=[
                     {
-                        "title": channel_item.title,
-                        "link": channel_item.link,
+                        **channel_item._asdict(),
                         "date": channel_item.date.strftime(
                             "%Y-%m-%d %H:%M:%S"
                         ),
-                        "source": channel_item.source,
-                        "source_url": channel_item.source_url,
-                        "media_content_url": channel_item.media_content_url,
                     }
                     for channel_item in (
                         self._channel_items if whole else self.channel_items
@@ -191,14 +187,12 @@ class RssChannel:
             self._channel_items.extend(
                 [
                     ChannelItem(
-                        title=channel_item["title"],
-                        link=channel_item["link"],
-                        date=datetime.strptime(
-                            channel_item["date"], "%Y-%m-%d %H:%M:%S"
-                        ),
-                        source=channel_item["source"],
-                        source_url=channel_item["source_url"],
-                        media_content_url=channel_item["media_content_url"],
+                        **{
+                            **channel_item,  # type: ignore
+                            "date": datetime.strptime(
+                                channel_item["date"], "%Y-%m-%d %H:%M:%S"
+                            ),
+                        }
                     )
                     for channel_item in data["channel_items"]
                 ]
