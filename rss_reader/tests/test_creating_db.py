@@ -2,25 +2,21 @@ import unittest
 import io
 import os
 import os.path
-from rss_reader.rss_reader import create_db, get_storage, get_arg_parser, main
+from rss_reader import reader
 from rss_reader.db_worker import get_path
 from contextlib import redirect_stdout
 from bs4 import BeautifulSoup
-try:
-    from tests.test_arguments import create_test_data
-
-except ModuleNotFoundError:
-    from test_arguments import create_test_data
+from tests.test_arguments import create_test_data
 
 
 class TestRssReaderDB(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.arg_parser = get_arg_parser()
+        cls.arg_parser = reader.get_arg_parser()
         cls.soup = BeautifulSoup(create_test_data(), 'lxml-xml')
 
     def setUp(self):
-        create_db()
+        reader.create_db()
 
     def tearDown(self):
         os.remove(get_path())
@@ -33,8 +29,8 @@ class TestRssReaderDB(unittest.TestCase):
         """Tests --version argument with other"""
         with io.StringIO() as buf, redirect_stdout(buf):
             with self.assertRaises(SystemExit):
-                main(args=['--date20210527', '--version', ])
-                self.assertEqual(buf.getvalue(), 'Version 0.4\n')
+                reader.main(args=['--date20210527', '--version', ])
+                self.assertEqual(buf.getvalue(), 'Version 1.0\n')
 
     def test_invalid_date(self):
         """Tests --date argument with invalid value"""
@@ -42,7 +38,7 @@ class TestRssReaderDB(unittest.TestCase):
         parsed_arg = self.arg_parser.parse_args(args)
         with self.assertRaises(SystemExit):
             with io.StringIO() as buf, redirect_stdout(buf):
-                get_storage(parsed_arg)
+                reader.selection_from_db(parsed_arg.date)
                 self.assertEqual('Invalid date. Please correct the date and try again\n', buf.getvalue())
 
     def test_no_news_date(self):
@@ -51,7 +47,7 @@ class TestRssReaderDB(unittest.TestCase):
         parsed_arg = self.arg_parser.parse_args(args)
         with self.assertRaises(SystemExit):
             with io.StringIO() as buf, redirect_stdout(buf):
-                get_storage(parsed_arg)
+                reader.selection_from_db(parsed_arg.date)
                 self.assertEqual('No news for entered date\n', buf.getvalue())
 
 

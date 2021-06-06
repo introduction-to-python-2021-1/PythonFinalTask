@@ -1,4 +1,4 @@
-from datetime import datetime
+from dateutil.parser import parse
 
 
 class RssParser:
@@ -9,7 +9,7 @@ class RssParser:
 
         self.soup = soup
 
-    def get_news(self):
+    def select_news(self):
         """This method find data in xml file"""
         data = self.soup.findAll('item')
         for item in data:
@@ -17,9 +17,7 @@ class RssParser:
             for tag in ['title', 'link']:
                 news_data[tag] = item.find(tag).get_text()
 
-            news_data['pubDate'] = datetime.strptime(item.
-                                                     find('pubDate').get_text(),
-                                                     '%Y-%m-%dT%H:%M:%SZ')
+            news_data['pubDate'] = parse(item.find('pubDate').get_text())
             media = item.find('media:content')
 
             if media:
@@ -37,7 +35,7 @@ class RssParser:
             'Publication date': data['pubDate'],
             'News link': data['link'],
             'Image link': data['media'],
-            }
+        }
 
     @staticmethod
     def default_format(data):

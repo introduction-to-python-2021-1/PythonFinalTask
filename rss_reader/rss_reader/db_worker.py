@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import Model, SqliteDatabase, CharField, DateField
 from os import sep as os_sep
 import pathlib
 
