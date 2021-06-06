@@ -77,3 +77,7 @@ def main(arguments: Optional[List[str]] = None) -> None:
         logger.info(channel.as_json())
     else:
         channel.print()
+
+
+if __name__ == "__main__":
+    main()
