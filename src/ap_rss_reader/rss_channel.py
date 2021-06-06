@@ -158,12 +158,7 @@ class RssChannel:
 
     def dump(self, file: str = "") -> None:
         """Write the rss channel on the file (as JSON)."""
-        if not file:
-            file = os.environ.get("AP_RSS_READER_DUMP_FILE") or DUMP_FILE
-        base_dir: Path = Path(__file__).parent.resolve(strict=True)
-        full_path: Path = base_dir / file
-        if os.path.isfile(full_path):
-            logger.debug(f"\nDump file will be re-written ({full_path}).")
+        full_path = self._get_full_path(file)
         with open(full_path, "w") as df:
             df.write(self.as_json(whole=True))
 
@@ -185,6 +180,17 @@ class RssChannel:
             RssChannel.SELECTOR
         )
         return beautiful_soup
+
+    @staticmethod
+    def _get_full_path(file: str = "") -> Path:
+        """Build full path with given `file` and return :obj:`Path`."""
+        if not file:
+            file = os.environ.get("AP_RSS_READER_DUMP_FILE") or DUMP_FILE
+        base_dir: Path = Path(__file__).parent.resolve(strict=True)
+        full_path: Path = base_dir / file
+        if os.path.isfile(full_path):
+            logger.debug(f"\nDump file already exists ({full_path})!")
+        return full_path
 
     @staticmethod
     def _fix_pseudo_classes(text: str) -> str:
