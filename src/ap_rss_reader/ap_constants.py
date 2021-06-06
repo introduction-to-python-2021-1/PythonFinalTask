@@ -9,5 +9,6 @@ if TYPE_CHECKING:
 
     from ap_rss_reader.ap_typing import HelloWorld
 
+DUMP_FILE: Final[str] = "ap-rss-reader-dump.json"
 HELLO_WORLD: Final[HelloWorld] = "Hello, World!"
 TITLE: Final[str] = "AP RSS-reader"

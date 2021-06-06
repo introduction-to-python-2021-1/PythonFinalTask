@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from datetime import datetime
 import json
+import os
+from pathlib import Path
 import re
 from typing import Final
 from typing import List
@@ -13,6 +15,7 @@ import requests
 from requests import Response
 
 from ap_rss_reader.ap_collections import ChannelItem
+from ap_rss_reader.ap_constants import DUMP_FILE
 from ap_rss_reader.log import logger
 
 __all__ = ("RssChannel",)
@@ -59,6 +62,7 @@ class RssChannel:
                     for channel_item in channel_items
                 ]
             )
+            self.dump()
 
     @property
     def url(self) -> str:
@@ -115,8 +119,13 @@ class RssChannel:
                     )
                 logger.info("\n")
 
-    def as_json(self) -> str:
+    def as_json(self, *, whole: bool = False) -> str:
         """Convert `Channel` to json.
+
+        Args:
+            whole (bool): If `True`, return the RSS channel and all news
+                as JSON. Otherwise, return only news limited by `limit`
+                property.  `False` by default.
 
         Returns:
             :obj:`str`: channel as json.
@@ -136,12 +145,25 @@ class RssChannel:
                         "source_url": channel_item.source_url,
                         "media_content_url": channel_item.media_content_url,
                     }
-                    for channel_item in self.channel_items
+                    for channel_item in (
+                        self._channel_items if whole else self.channel_items
+                    )
                 ],
             ),
             indent=4,
             sort_keys=True,
         )
+
+    def dump(self, file: str = "") -> None:
+        """Write the rss channel on the file (as JSON)."""
+        if not file:
+            file = os.environ.get("AP_RSS_READER_DUMP_FILE") or DUMP_FILE
+        base_dir: Path = Path(__file__).parent.resolve(strict=True)
+        full_path: Path = base_dir / file
+        if os.path.isfile(full_path):
+            logger.debug(f"\nDump file will be re-written ({full_path}).")
+        with open(full_path, "w") as df:
+            df.write(self.as_json(whole=True))
 
     def _get_beautiful_soup(self) -> BeautifulSoup:
         """Download and convert data to beautiful soup.
