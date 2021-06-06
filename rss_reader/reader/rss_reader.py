@@ -9,13 +9,13 @@ from reader.colorize_logger import ColorizeLogger
 
 def main(argv=sys.argv):
     args = functions.create_arguments(argv)
-    """Creating logger"""
+    # Creating logger
     logger = ColorizeLogger()
 
     if args.get('colorize'):
         logger.is_colorize = True
 
-    """Creating connection"""
+    # Creating connection
     db = str(pathlib.Path(__file__).parent.absolute()) + '\\news.db'
     connection = sqlite3.connect(db)
 
@@ -27,7 +27,7 @@ def main(argv=sys.argv):
         limit = 0
 
     if args.get('verbose'):
-        """Turning on the output of messages about events"""
+        # Turning on the output of messages about events
         logging.disable(0)
         logger.info('Checking for news to parse...')
 
