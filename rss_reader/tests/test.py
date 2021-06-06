@@ -6,6 +6,8 @@ import logging.handlers
 from unittest.mock import patch
 from rss_reader.rss_reader import test_data
 from datetime import datetime
+import os
+import json
 
 
 class TestReader(unittest.TestCase):
@@ -99,13 +101,16 @@ class TestReader(unittest.TestCase):
         """Test for part in dictionary with good link"""
         with open("yahoo_news.xml", "r") as rssfile:
             answer = rssfile.read()
-        self.assertEqual(rss_reader.parses_data(answer, source=None)["news"][1]["title"], "Big cheese no more: UK drug "
-                                                                             "dealer caught out by cheese pic")
-        self.assertEqual(rss_reader.parses_data(answer, source=None)["news"][1]["link"], "https://news.yahoo.com/big-cheese"
-                                                                            "-no-more-uk-112645101.html")
+        self.assertEqual(rss_reader.parses_data(answer, source=None)["news"][1]["title"], "Big cheese no more: UK drug"
+                                                                                          "dealer caught out by cheese"
+                                                                                          "pic")
+        self.assertEqual(rss_reader.parses_data(answer, source=None)["news"][1]["link"], "https://news.yahoo.com/"
+                                                                                         "big-cheese-no-more-uk-"
+                                                                                         "112645101.html")
         self.assertEqual(rss_reader.parses_data(answer, source=None)["news"][1]["pubDate"], "2021-05-27T11:26:45Z")
         self.assertIsInstance(rss_reader.parses_data(answer, source=None), dict)
         self.assertLogs(rss_reader.parses_data(answer, source=None)["news"][1], "Reads amount of news - 1")
+
 
     def test_good_link_in_json(self):
         """Test for data in json"""
@@ -142,10 +147,25 @@ class TestReader(unittest.TestCase):
         user_date = datetime.strptime("20210607", '%Y%m%d')
         self.assertTrue(rss_reader.compare_dates("Sunday, 07 June 2021 00:35:00", user_date))
 
+    def test_date_compare_incorrect(self):
+        """Provide comparison of dates"""
+        user_date = datetime.strptime("20210607", '%Y%m%d')
+        self.assertFalse(rss_reader.compare_dates("Fri, 08 June 2021 11:15:18 -0400", user_date))
+
     def test_incorrect_date(self):
         """Test ValueError with incorrect number instead of a date"""
         with self.assertRaises(ValueError):
             rss_reader.creating_cashing_news_data("567899976")
+
+    def test_news_cashing(self):
+        """Test for cashing news"""
+        rss_reader.news_cashing(test_data.DATA_FOR_TEST)
+        cash_file = os.path.join(os.getcwd(), "cashing_news.txt")
+        with open(cash_file, "r") as cash_file:
+            lines = cash_file.readlines()
+            last_line = lines[-1]
+            data = json.loads(last_line)
+            self.assertEqual(data, test_data.DATA_FOR_TEST)
 
 
 if __name__ == "__main__":

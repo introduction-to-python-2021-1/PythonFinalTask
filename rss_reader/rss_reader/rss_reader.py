@@ -145,7 +145,6 @@ def creating_cashing_news_data(user_date, source: str = None):
     if user_date_in_converted_format < datetime.strptime("20210501", "%Y%m%d"):
         print("Cashing news starts from May 1, 2021")
         sys.exit()
-
     data = find_cashed_news(user_date_in_converted_format, source)
     return data
 
@@ -154,7 +153,6 @@ def main():
     args = command_arguments_parser(sys.argv[1:])
     answer = server_answer(args.source)
     logger = create_logger(args.verbose)
-
 
     if args.limit is not None:
         if args.limit <= 0:
