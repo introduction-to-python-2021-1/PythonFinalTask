@@ -70,13 +70,13 @@ def init_arg_parser():
     parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
     parser.add_argument('--limit', default=None, type=int, help='Limit news topics if this parameter provided')
     parser.add_argument('--date', default=None, type=str, help='Publishing date for restoring news from cache')
-    parser.add_argument('--to-html', type=str, help='''Save news to html file. You should specify path 
-                        (for example dumps/html) or name ( news.html) or both( dumps/html/news.html) for file to 
-                        be written. Empty string is prohibited. In case when specified only path, name of file will be 
+    parser.add_argument('--to-html', type=str, help='''Save news to html file. You should specify path
+                        (for example dumps/html) or name ( news.html) or both( dumps/html/news.html) for file to
+                        be written. Empty string is prohibited. In case when specified only path, name of file will be
                         generated automatically''')
-    parser.add_argument('--to-pdf',  type=str, help='''Save news to pdf file. You should specify path 
-                        (for example dumps/pdf) or name ( news.pdf) or both( dumps/pdf/news.pdf) for file to 
-                        be written. Empty string is prohibited. In case when specified only path, name of file will be 
+    parser.add_argument('--to-pdf', type=str, help='''Save news to pdf file. You should specify path
+                        (for example dumps/pdf) or name ( news.pdf) or both( dumps/pdf/news.pdf) for file to
+                        be written. Empty string is prohibited. In case when specified only path, name of file will be
                         generated automatically''')
     return parser
 
