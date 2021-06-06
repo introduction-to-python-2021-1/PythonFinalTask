@@ -1,3 +1,8 @@
+"""
+This module provides functions for fetching and working with images
+"""
+
+
 import requests
 from bs4 import BeautifulSoup
 

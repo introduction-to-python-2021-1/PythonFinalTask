@@ -2,6 +2,7 @@
 This module provides funcs for converting feed to html format
 """
 
+
 from rss_reader.templates import html_templates
 import time
 

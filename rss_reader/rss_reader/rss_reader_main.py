@@ -14,6 +14,9 @@ from rss_reader.html_converter import convert_to_html
 
 
 def main():
+    """
+    Main function of rss reader
+    """
     arguments = get_args()
     logger = logger_conf.create_root_logger()
     if arguments.verbose:

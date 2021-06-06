@@ -3,9 +3,10 @@ Module for testing RssParser class, json converter
 """
 
 
+import json
 import unittest
 from unittest.mock import patch
-from rss_reader.rss_parser import RssParser, convert_to_json
+from rss_reader import rss_parser
 from collections import namedtuple
 
 
@@ -13,10 +14,11 @@ class TestFeed(unittest.TestCase):
     """
     Provides tests for correct processing of parsed data
     """
+
     def setUp(self) -> None:
         self.url = 'url'
         self.limit = 2
-        self.parser = RssParser(self.url, self.limit)
+        self.parser = rss_parser.RssParser(self.url, self.limit)
 
     def test_url(self):
         """
@@ -36,7 +38,7 @@ class TestFeed(unittest.TestCase):
         """
         self.assertEqual(self.parser.items, [])
 
-    @patch('rss_reader.RssParser.get_img_container')
+    @patch('rss_reader.rss_parser.get_img_container')
     @patch('feedparser.parse')
     def test_feed_parser(self, parse_mock, get_img_mock):
         """
@@ -72,16 +74,15 @@ class TestFeed(unittest.TestCase):
         links = 'test_links'
         fields = 'name, title, link, date, img, content, links'
         item = namedtuple('item', fields)._make((name, title, link, date, img, summary_list, links))
-        json_news = ('{"items": ['
-                     '{"name": "test_name", '
-                     '"title": "test_title", '
-                     '"link": "test_link", '
-                     '"date": "test_date", '
-                     '"img": "test_img", '
-                     '"content": "test_content", '
-                     '"links": "test_links"}]}')
-
-        self.assertEqual(convert_to_json([item]), json_news)
+        json_news = {"items": [{
+            "name": "test_name",
+            "title": "test_title",
+            "link": "test_link",
+            "date": "test_date",
+            "img": "test_img",
+            "content": "test_content",
+            "links": "test_links"}]}
+        self.assertEqual(rss_parser.convert_to_json([item]), json.dumps(json_news, indent=2))
 
 
 if __name__ == '__main__':

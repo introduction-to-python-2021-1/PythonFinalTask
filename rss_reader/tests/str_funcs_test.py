@@ -1,3 +1,8 @@
+"""
+This module provides tests for functions that form readable strings
+"""
+
+
 import unittest
 from rss_reader import string_handlers
 

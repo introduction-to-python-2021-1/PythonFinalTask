@@ -1,9 +1,10 @@
 """
 This module contains class for fetching and showing rss-feed
 """
+
+
 import sys
 import urllib.error
-
 import feedparser
 from collections import namedtuple
 import time
