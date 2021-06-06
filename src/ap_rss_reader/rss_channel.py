@@ -78,9 +78,11 @@ class RssChannel:
     @property
     def channel_items(self) -> List[ChannelItem]:
         """:obj:`list` of :obj:`ChannelItem`: All news."""
-        if self._limit:
-            return self._channel_items[: self._limit]
-        return self._channel_items
+        return (
+            self._channel_items[: self._limit]
+            if self._limit
+            else self._channel_items
+        )
 
     @property
     def title(self) -> str:
@@ -88,7 +90,7 @@ class RssChannel:
         return self._title
 
     def print(self) -> None:
-        """Print channel title and all channel_items from channel."""
+        """Print channel title and all channel items from channel."""
         logger.info(f"\n{self._title}\n")
         for channel_item in self.channel_items:
             logger.info(
@@ -162,6 +164,7 @@ class RssChannel:
 
     @staticmethod
     def _fix_pseudo_classes(text: str) -> str:
+        """Replace ':' in pseudo classes with '_'."""
         return re.sub(
             "<(?P<tag>[a-z]+):(?P<pseudo_class>[a-z]+)",
             r"<\g<tag>_\g<pseudo_class>",
