@@ -3,7 +3,7 @@ This module provides funcs for converting feed to pdf format
 """
 
 
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
+from reportlab import platypus
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -26,17 +26,16 @@ def convert_to_pdf(feed, path):
         for item in feed:
             result_str = item.name + '<br/>'
             result_str += (f'<br/> Title: {item.title} <br/> '
-                           f'Link: {item.link} <br/> '
+                           f'Link: <link href={item.link} color="blue">{item.link}</link> <br/> '
                            f'Date: {time.strftime("%y-%m-%d %H:%M", tuple(item.date))} <br/>')
-            result_str += string_handlers.get_str_content(item.content) + '<br/>'
-            parts.append(Paragraph(result_str, style=custom_style))
+            parts.append(platypus.Paragraph(result_str, style=custom_style))
             if item.img:
                 for img in item.img:
-                    parts.append(Paragraph(convert_img_list_to_pretty_str(img), style=custom_style))
-                    parts.append(Spacer(width=150, height=150))
+                    parts.append(platypus.Paragraph(convert_img_list_to_pretty_str(img), style=custom_style))
+                    parts.append(platypus.Spacer(width=150, height=150))
     except Exception as err:
         print(err)
-    summaryName = SimpleDocTemplate(path)
+    summaryName = platypus.SimpleDocTemplate(path)
     summaryName.build(parts)
 
 
