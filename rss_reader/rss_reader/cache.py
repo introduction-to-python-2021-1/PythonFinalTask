@@ -1,6 +1,6 @@
 import json
-import os
 from pathlib import Path
+
 import dateparser
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -36,10 +36,14 @@ class Cache:
         initial_list = []
         news_for_specified_date = None
         if date_arg and source:
-            news_for_specified_date = self.sort_by_date(initial_list, content[source], date_arg)
+            news_for_specified_date = self.sort_by_date(
+                initial_list, content[source], date_arg
+            )
         else:
             for link, news in content.items():
-                news_for_specified_date = self.sort_by_date(initial_list, news, date_arg)
+                news_for_specified_date = self.sort_by_date(
+                    initial_list, news, date_arg
+                )
         if not news_for_specified_date:
             self.logger.error("No data for specified date")
         return news_for_specified_date
@@ -55,7 +59,9 @@ class Cache:
     @staticmethod
     def eliminate_duplicates(caching_news_list, news_list_from_request):
         local_content = set(tuple(dict_item.items()) for dict_item in caching_news_list)
-        content_from_request = set(tuple(dict_item.items()) for dict_item in news_list_from_request)
+        content_from_request = set(
+            tuple(dict_item.items()) for dict_item in news_list_from_request
+        )
         union_content = local_content | content_from_request
         fresh_news_list = []
         for item in union_content:

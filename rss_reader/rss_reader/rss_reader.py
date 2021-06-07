@@ -1,11 +1,12 @@
 import argparse
-from datetime import datetime
 import json
 import logging
 import sys
 import urllib.error
 import urllib.request
 import xml.etree.ElementTree as Et
+from datetime import datetime
+
 from rss_reader.rss_reader import cache
 
 VERSION = "2.0"
@@ -28,7 +29,9 @@ def build_args(args):
         version=f"Version {VERSION}",
         help="Print version info",
     )
-    parser.add_argument("source", nargs="?" if "--date" in args else None, type=str, help="RSS URL")
+    parser.add_argument(
+        "source", nargs="?" if "--date" in args else None, type=str, help="RSS URL"
+    )
     parser.add_argument(
         "--verbose", action="store_true", help="Outputs verbose status messages"
     )
