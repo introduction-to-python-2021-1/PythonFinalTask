@@ -1,5 +1,8 @@
 """
 Program parses RSS feed https://news.yahoo.com/rss/
+  - nosetests --cover-package=reader_app --cover-branches --with-coverage --cover-min-percentage=50 .
+  changed to
+  - pytest --cov=reader_app --cov-fail-under=50
 """
 import argparse
 import copy

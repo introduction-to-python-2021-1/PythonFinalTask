@@ -5,7 +5,7 @@ import unittest
 
 import bs4
 from bs4 import BeautifulSoup
-from rss_reader.reader_app import rss_reader as rrm
+from reader_app import rss_reader as rrm
 
 
 class TestRssReader(unittest.TestCase):
