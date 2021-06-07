@@ -103,8 +103,9 @@ def printing_news(data, limit):
 
 def printing_json(data, limit):
     """Print json news on console"""
-    data_json = data["news"][:limit]
-    print(json.dumps(data_json, indent=3))
+    limited_data_json = data["news"][:limit]
+    data["news"] = limited_data_json
+    print(json.dumps(limited_data_json, indent=3))
 
 
 def compare_dates(date_of_publication, user_date_in_converted_format):
@@ -125,6 +126,8 @@ def find_cashed_news(user_date_in_converted_format, source=None):
     """Checks the news data file"""
     cash_file = os.path.join(os.getcwd(), "cashing_news.txt")
     with open(cash_file, "r") as cash_file:
+        list_of_news= []
+        data_from_cash = {"source": "from cash file", "main_title": "Cashed news"}
         for json_dict in cash_file:
             data = json.loads(json_dict)
 
@@ -132,11 +135,16 @@ def find_cashed_news(user_date_in_converted_format, source=None):
                 continue
             for num, part in enumerate(data["news"]):
                 if compare_dates(part["pubDate"], user_date_in_converted_format):
-                    print("title:", part["title"])
-                    print("pubDate:", part["pubDate"])
-                    print("link:", part["link"])
-                    print("images:", len(part["images"]))
-                    print('\n'.join(part["images"]), "\n")
+                    list_of_news = [print("title:", part["title"]),
+                                    print("pubDate:", part["pubDate"]),
+                                    print("link:", part["link"]),
+                                    print("images:", len(part["images"])),
+                                    print('\n'.join(part["images"]), "\n")]
+    if data:
+        data_from_cash["news"] = list_of_news
+        return data_from_cash
+    else:
+        raise AttributeError
 
 
 def creating_cashing_news_data(user_date, source: str = None):
@@ -161,7 +169,7 @@ def main():
     if args.date:
         try:
             data = creating_cashing_news_data(args.date, args.source)
-            logger.info(f"News will be reading from cash")
+            logger.info("News will be reading from cash")
         except (ValueError, TypeError) as e:
             logger.error(f"{e} in parsing date '{args.date}'")
             print("Incorrect date, insert date like '20210601', please")

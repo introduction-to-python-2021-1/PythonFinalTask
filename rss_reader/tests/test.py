@@ -101,8 +101,8 @@ class TestReader(unittest.TestCase):
         """Test for part in dictionary with good link"""
         with open("yahoo_news.xml", "r") as rssfile:
             answer = rssfile.read()
-        self.assertEqual(rss_reader.parses_data(answer, source=None)["news"][1]["title"], "Big cheese no more: UK drug"
-                                                                                          "dealer caught out by cheese"
+        self.assertEqual(rss_reader.parses_data(answer, source=None)["news"][1]["title"], "Big cheese no more: UK drug "
+                                                                                          "dealer caught out by cheese "
                                                                                           "pic")
         self.assertEqual(rss_reader.parses_data(answer, source=None)["news"][1]["link"], "https://news.yahoo.com/"
                                                                                          "big-cheese-no-more-uk-"
@@ -110,7 +110,6 @@ class TestReader(unittest.TestCase):
         self.assertEqual(rss_reader.parses_data(answer, source=None)["news"][1]["pubDate"], "2021-05-27T11:26:45Z")
         self.assertIsInstance(rss_reader.parses_data(answer, source=None), dict)
         self.assertLogs(rss_reader.parses_data(answer, source=None)["news"][1], "Reads amount of news - 1")
-
 
     def test_good_link_in_json(self):
         """Test for data in json"""
@@ -166,6 +165,21 @@ class TestReader(unittest.TestCase):
             last_line = lines[-1]
             data = json.loads(last_line)
             self.assertEqual(data, test_data.DATA_FOR_TEST)
+
+    def test_log_date(self):
+        """Test for logger with date"""
+        answer = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "--date 12455")
+        self.assertLogs(answer, "Incorrect date, insert date like '20210601', please")
+
+    def test_log_date2(self):
+        """Test for logger with date"""
+        answer = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "--date 20210809")
+        self.assertLogs(answer, "No news from this date")
+
+    def test_log_date3(self):
+        """Test for logger with date"""
+        answer = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "--date 20210604")
+        self.assertLogs(answer, "News will be reading from cash")
 
 
 if __name__ == "__main__":
