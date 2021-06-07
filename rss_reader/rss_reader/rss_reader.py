@@ -1,5 +1,4 @@
 """Main module. Receive input info from console, parse it and print result to stdout."""
-
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -126,7 +125,7 @@ def find_cashed_news(user_date_in_converted_format, source=None):
     """Checks the news data file"""
     cash_file = os.path.join(os.getcwd(), "cashing_news.txt")
     with open(cash_file, "r") as cash_file:
-        list_of_news= []
+        list_of_news = []
         data_from_cash = {"source": "from cash file", "main_title": "Cashed news"}
         for json_dict in cash_file:
             data = json.loads(json_dict)
@@ -174,13 +173,9 @@ def main():
             logger.error(f"{e} in parsing date '{args.date}'")
             print("Incorrect date, insert date like '20210601', please")
             sys.exit()
-        except AttributeError as e:
+        except (AttributeError, FileNotFoundError) as e:
             logger.error(f"{e} in parsing date '{args.date}'")
-            print("No news from this date")
-            sys.exit()
-        except FileNotFoundError as e:
-            logger.error(f"{e} with parsing date '{args.date}'")
-            print("Cashed news was not found. Read news from external sources, please")
+            print("No news from this date or cashed news was not found. Read news from external sources, please")
             sys.exit()
     else:
         try:

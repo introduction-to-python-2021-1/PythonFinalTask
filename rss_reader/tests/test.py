@@ -168,23 +168,24 @@ class TestReader(unittest.TestCase):
 
     def test_log_date(self):
         """Test for logger with date"""
-        answer = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "--date 12455")
+        answer = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "12455")
         self.assertLogs(answer, "Incorrect date, insert date like '20210601', please")
 
     def test_log_date2(self):
         """Test for logger with date"""
-        answer = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "--date 20210809")
+        answer = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "20210809")
         self.assertLogs(answer, "No news from this date")
 
     def test_log_date3(self):
         """Test for logger with date"""
-        answer = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "--date 20210604")
+        answer = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "20210604")
         self.assertLogs(answer, "News will be reading from cash")
 
     def test_for_data_from_cash(self):
-        """Test for logger with date"""
-        data_from_cash = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "--date 20210604")
+        """Test for function find_cashed_news"""
+        data_from_cash = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "20210604")
         self.assertTrue(data_from_cash, dict)
+
 
 if __name__ == "__main__":
     unittest.main()
