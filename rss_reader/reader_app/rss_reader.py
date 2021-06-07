@@ -193,6 +193,8 @@ def main():
         json.dump(all_news_dict, f_object, indent=4, ensure_ascii=False)
     logging.info('Dumped news items to local cache.')
 
+    # print news for specific date - TBD
+
     # save limited news items to print in stdout: as text or as json
     limited_news = limit_news_items(all_news_dict, user_limit)
 
