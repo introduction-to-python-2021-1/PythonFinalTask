@@ -4,4 +4,4 @@ coverage==4.5.1
 termcolor==1.1.0
 ddt==1.4.2
 validators==0.18.2
-dateparser=1.0.0
+dateparser==1.0.0
