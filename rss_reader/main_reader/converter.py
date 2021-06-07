@@ -1,7 +1,7 @@
 """
 Module contains functions to save news to html and pdf format by determinate html template.
 Output files include number of news, limited by user.
-Each news contains title, published date and link; and summary, description and one image (if they was in a source).
+Each news contains title, published date and link; and summary, description and one image (if they were in a source).
 News takes from parsed news, saved to dictionary with news "newsdict".
 """
 
