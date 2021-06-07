@@ -10,6 +10,7 @@ coverage = "==4.5.1"
 termcolor = "==1.1.0"
 validators = "*"
 ddt = "*"
+dateparser = "*"
 
 [dev-packages]
 black = "==21.5b1"
