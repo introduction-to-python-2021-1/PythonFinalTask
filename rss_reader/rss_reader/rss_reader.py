@@ -139,7 +139,7 @@ class RSSReader:
             pass
         return format_date
 
-    def _load_from_storage(self, filename):
+    def _load_from_storage(self, filename, load_channel=''):
         """Load data from local storage."""
         self.logger.info("Load data from local storage...")
 
@@ -163,11 +163,10 @@ class RSSReader:
                     self.logger.info("No data in local storage.")
                     return
 
-                load_channel = self.source if self.source else ''
                 load_news = 0
                 data = []
 
-                for index, channel in enumerate(storage_data, start=0):
+                for channel in storage_data:
                     if load_channel != '':
                         if channel.get('channel_id', '') != load_channel:
                             continue
@@ -186,12 +185,14 @@ class RSSReader:
                         if news_date != self.date:
                             continue
 
-                        load_news += 1
-                        load_channel['news'].append(news.copy())
-
                         if self.limit:
-                            if load_news > self.limit:
+                            if load_news >= self.limit:
                                 break
+
+                        load_news += 1
+                        news_copy = news.copy()
+                        news_copy['number'] = len(load_channel['news']) + 1
+                        load_channel['news'].append(news_copy)
 
                     if len(load_channel['news']) > 0:
                         data.append(load_channel)
@@ -247,13 +248,13 @@ class RSSReader:
 
         if not self.source or self.source == '':
             self.logger.error("Source is empty.")
-            return
+            sys.exit("RSS URL is incorrect.")
 
         try:
             parser = feedparser.parse(self.source)
         except URLError:
             self.logger.error("RSS URL is incorrect.", exc_info=True)
-            return
+            sys.exit("RSS URL is incorrect.")
 
         if parser.get('encoding') == '':
             self.logger.error("Feed’s character encoding is incorrect.", exc_info=True)
@@ -530,21 +531,26 @@ class RSSReader:
     def run(self):
         """Load data from RSS and print it in text or json format."""
         if self.date:
-            data = self._load_from_storage(_storage_filename)
-        else:
-            data = self._load_data(self._parse_url())
-
-        if data:
-            if self.is_json:
-                self._print_as_json(data)
+            if self.source:
+                parser = self._parse_url()
+                load_channel = parser.feed.get('link', self.source) if parser else self.source
+                print_data = self._load_from_storage(_storage_filename, load_channel)
             else:
-                self._print_as_formatted_text(data)
+                print_data = self._load_from_storage(_storage_filename)
+        else:
+            print_data = self._load_data(self._parse_url())
+
+        if print_data:
+            if self.is_json:
+                self._print_as_json(print_data)
+            else:
+                self._print_as_formatted_text(print_data)
 
             if self.to_fb2:
-                self._save_to_fb2(self.to_fb2, data)
+                self._save_to_fb2(self.to_fb2, print_data)
 
             if self.to_html:
-                self._save_to_html(self.to_html, data)
+                self._save_to_html(self.to_html, print_data)
         else:
             if self.date:
                 print("No find data in local storage")

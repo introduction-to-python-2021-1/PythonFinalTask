@@ -24,11 +24,13 @@ class RSSReaderTests(unittest.TestCase):
 
     def test_parse_url_for_None(self):
         """Test _parse_url() function for None."""
-        self.assertIsNone(RSSReader(source=None)._parse_url())
+        with self.assertRaises(SystemExit):
+            RSSReader(source=None)._parse_url()
 
     def test_parse_url_for_empty_url(self):
         """Test _parse_url() function for empty url."""
-        self.assertIsNone(RSSReader(source='')._parse_url())
+        with self.assertRaises(SystemExit):
+            RSSReader(source='')._parse_url()
 
     def test_parse_url_for_incorrect_url(self):
         """Test _parse_url() function for correct url."""
@@ -84,28 +86,28 @@ class RSSReaderTests(unittest.TestCase):
         self.assertEqual(RSSReader(date='20210524')._load_from_storage(_test_data_json_filename), data)
 
     @staticmethod
-    def _test_delete_file(filename):
+    def _delete_file(filename):
         """Delete specified file."""
         if os.path.isfile(filename):
             os.remove(filename)
 
     def test_save_to_storage_for_None(self):
         """Test _save_to_storage() function for None."""
-        self._test_delete_file(_test_tmp_json_filename)
+        self._delete_file(_test_tmp_json_filename)
         RSSReader()._save_to_storage(_test_tmp_json_filename, None)
         self.assertFalse(os.path.isfile(_test_tmp_json_filename))
-        self._test_delete_file(_test_tmp_json_filename)
+        self._delete_file(_test_tmp_json_filename)
 
     def test_save_to_storage_for_empty_data(self):
         """Test _save_to_storage() function for empty data."""
-        self._test_delete_file(_test_tmp_json_filename)
+        self._delete_file(_test_tmp_json_filename)
         RSSReader()._save_to_storage(_test_tmp_json_filename, {})
         self.assertFalse(os.path.isfile(_test_tmp_json_filename))
-        self._test_delete_file(_test_tmp_json_filename)
+        self._delete_file(_test_tmp_json_filename)
 
     def test_save_to_storage_for_full_data(self):
         """Test _save_to_storage() function for full data."""
-        self._test_delete_file(_test_tmp_json_filename)
+        self._delete_file(_test_tmp_json_filename)
         data = [{'channel_id': 'https://news.ru/',
                  'channel_title': 'News channel',
                  'news': [
@@ -126,7 +128,7 @@ class RSSReaderTests(unittest.TestCase):
                  ]}]
         RSSReader()._save_to_storage(_test_tmp_json_filename, data)
         self.assertTrue(os.path.exists(_test_tmp_json_filename))
-        self._test_delete_file(_test_tmp_json_filename)
+        self._delete_file(_test_tmp_json_filename)
 
     def test_format_date_for_None(self):
         """Test _format_date() function for None."""
@@ -310,21 +312,21 @@ class RSSReaderTests(unittest.TestCase):
 
     def test_save_to_fb2_for_None(self):
         """Test _save_to_fb2() function for None."""
-        self._test_delete_file(_test_tmp_fb2_filename)
+        self._delete_file(_test_tmp_fb2_filename)
         RSSReader()._save_to_fb2(_test_tmp_fb2_filename, None)
         self.assertFalse(os.path.isfile(_test_tmp_fb2_filename))
-        self._test_delete_file(_test_tmp_fb2_filename)
+        self._delete_file(_test_tmp_fb2_filename)
 
     def test_save_to_fb2_for_empty_data(self):
         """Test _save_to_fb2() function for empty data."""
-        self._test_delete_file(_test_tmp_fb2_filename)
+        self._delete_file(_test_tmp_fb2_filename)
         RSSReader()._save_to_fb2(_test_tmp_fb2_filename, {})
         self.assertFalse(os.path.isfile(_test_tmp_fb2_filename))
-        self._test_delete_file(_test_tmp_fb2_filename)
+        self._delete_file(_test_tmp_fb2_filename)
 
     def test_save_to_fb2_for_full_data(self):
         """Test _save_to_fb2() function for full data."""
-        self._test_delete_file(_test_tmp_fb2_filename)
+        self._delete_file(_test_tmp_fb2_filename)
         data = [{'channel_id': 'https://news.ru/',
                  'channel_title': 'News channel',
                  'news': [
@@ -345,25 +347,25 @@ class RSSReaderTests(unittest.TestCase):
                  ]}]
         RSSReader()._save_to_fb2(_test_tmp_fb2_filename, data)
         self.assertTrue(os.path.exists(_test_tmp_fb2_filename))
-        self._test_delete_file(_test_tmp_fb2_filename)
+        self._delete_file(_test_tmp_fb2_filename)
 
     def test_save_to_html_for_None(self):
         """Test _save_to_html() function for None."""
-        self._test_delete_file(_test_tmp_html_filename)
+        self._delete_file(_test_tmp_html_filename)
         RSSReader()._save_to_html(_test_tmp_html_filename, None)
         self.assertFalse(os.path.isfile(_test_tmp_html_filename))
-        self._test_delete_file(_test_tmp_html_filename)
+        self._delete_file(_test_tmp_html_filename)
 
     def test_save_to_html_for_empty_data(self):
         """Test _save_to_html() function for empty data."""
-        self._test_delete_file(_test_tmp_html_filename)
+        self._delete_file(_test_tmp_html_filename)
         RSSReader()._save_to_html(_test_tmp_html_filename, {})
         self.assertFalse(os.path.isfile(_test_tmp_html_filename))
-        self._test_delete_file(_test_tmp_html_filename)
+        self._delete_file(_test_tmp_html_filename)
 
     def test_save_to_html_for_full_data(self):
         """Test _save_to_html() function for full data."""
-        self._test_delete_file(_test_tmp_html_filename)
+        self._delete_file(_test_tmp_html_filename)
         data = [{'channel_id': 'https://news.ru/',
                  'channel_title': 'News channel',
                  'news': [
@@ -384,7 +386,7 @@ class RSSReaderTests(unittest.TestCase):
                  ]}]
         RSSReader()._save_to_html(_test_tmp_html_filename, data)
         self.assertTrue(os.path.exists(_test_tmp_html_filename))
-        self._test_delete_file(_test_tmp_html_filename)
+        self._delete_file(_test_tmp_html_filename)
 
 
 if __name__ == '__main__':

@@ -48,6 +48,17 @@ In case of using `--json` or `--date` argument the utility uses the following JS
         }
     ]
 
+## File name format
+In case of using `--to-fb2` or `--to-html` argument the file name can contain the following components:
+
+- path or directory (optional)
+- name of file
+- extension (optional)
+
+For example, it is correct to use file names like "C:\directory\myfile.html", "C:\directory\myfile", "myfile.html" or "myfile".
+
+If the file name contain extension, and it does not match `--to-fb2` or `--to-html` argument, then the utility's result is not saved to the file. 
+
 ## Package structure
     rss_reader/
       |-- setup.py             # installation package
