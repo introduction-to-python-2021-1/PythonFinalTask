@@ -6,7 +6,7 @@ import sys
 import urllib.error
 import urllib.request
 import xml.etree.ElementTree as Et
-import cache
+from rss_reader.rss_reader import cache
 
 VERSION = "2.0"
 
