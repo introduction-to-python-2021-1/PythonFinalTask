@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='rss_reader',
-    version='1.2',
+    version='1.3',
     packages=find_packages(),
     url='https://github.com/Dmitry-Grapov/PythonFinalTask',
     license='MIT',

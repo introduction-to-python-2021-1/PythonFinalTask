@@ -4,14 +4,20 @@ import os
 import argparse
 import logging
 
-import rss_reader.rss_parser as rp
+from rss_reader.xml_downloader import XmlDownloader
+from rss_reader.xml_to_json import XmlJsonConverter
+from rss_reader.json_to_json import HtmlJsonToTextJson
+from rss_reader.json_io import JsonIO
 
 
 def main():
     """main() method is parsing command line arguments with argparse module and defines program control flow
-    Return: Exit codes:
+    Return:
+    -------
+    Exit codes:
         os.EX_USAGE - misuse of command line arguments
         os.EX_NOHOST - RSS feed url not responding or no internet connection
+        os.EX_DATAERR - RSS feed data could not be parsed
         os.EX_OK - program finished successfully
     """
     # Processing command line arguments using module argparse
@@ -23,8 +29,9 @@ def main():
     parser.add_argument("--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Output verbose status messages")
     parser.add_argument("--limit", type=int, help="Limit news topics if this parameter provided")
+    parser.add_argument("--date", type=str, help="Print news from specified date YYYYMMDD")
     # Positional (mandatory) arguments:
-    parser.add_argument("source", type=str, nargs="?", default=None, help="RSS URL")
+    parser.add_argument("source", type=str,  help="RSS URL")
     # Parsing arguments
     args = parser.parse_args()
 
@@ -38,37 +45,68 @@ def main():
         logging.disable(logging.CRITICAL)
 
     if args.version:  # [--version] argument passed - print version and exit
-        print("Version 1.2", flush=True)
+        print("Version 1.3", flush=True)
         exit(sys.exit(os.EX_OK))
 
     logging.info(f"URL: {args.source}")
-    if 255 < len(args.source) < 3:  # Checking [source] URL validity here
+    if args.source and (255 < len(args.source) < 3):  # Checking [source] URL validity here
         # Waring the user that [source] string is too short or too long
         print("Source is not valid string\nPlease, provide string with length between 3 and 255 symbols", flush=True)
         exit(sys.exit(os.EX_USAGE))
 
     logging.info(f"Limit: {args.limit}")
 
-    if args.limit < 0:   # args.limit parameter limits number of news to print.
+    if args.limit and (args.limit < 0):   # args.limit parameter limits number of news to print.
         print("Error: [limit] must be positive number", flush=True)
         exit(sys.exit(os.EX_USAGE))
-    else:
-        # RssParser downloading xml from url, parsing and reading rss as list of dictionaries
-        # RssParser provides error handling and prints to stdout error messages in case of problems with
-        # URL or connection
-        rss_feed = rp.RssParser(args.source, args.limit)
 
-    if rss_feed.is_empty:  # In case rss_feed == [] something is wrong with URL or internet connection
-        print("RSS source is not responding", flush=True)
-        exit(sys.exit(os.EX_NOHOST))
+    # if args.date exists but includes not only digits or has improper length:
+    if args.date and (not args.date.isdigit() or not len(args.date) == 8):
+        print("DATE must be 8 digits", flush=True)
+        exit(sys.exit(os.EX_USAGE))
 
-    if args.json:  # args.json parameter specified: news are printed to stdout in json format
+    # argparse parameters were checked. Now start processing RSS feed
+
+    storage = JsonIO(args.source)  # instance of JSON storage to load or save JSON data
+
+    if args.date:  # --date specified - loading HTML JSON from the storage:
+        html_json_list = storage.load_raw_rss(date=args.date, limit=args.limit)
+        if not html_json_list:  # data not found in the storage - inform the user and quit
+            print(f"No saved news from {args.date} found", flush=True)
+            exit(sys.exit(os.EX_OK))
+    else:  # Loading RSS feed from Internet
+        rss_feed = XmlDownloader(args.source)
+        if not rss_feed.xml:  # In case rss_feed.xml empty something is wrong with URL or internet connection
+            print("Error: RSS source is not responding", flush=True)
+            exit(sys.exit(os.EX_NOHOST))
+
+        # Converting downloaded XML to HTML JSON format usable for storage
+        xml_to_json = XmlJsonConverter(rss_feed.xml)
+
+        if not xml_to_json.html_json_list:  # Can not convert XML - may be non-XML document was downloaded
+            print(f"Error: XML could not be parsed", flush=True)
+            exit(sys.exit(os.EX_DATAERR))
+
+        html_json_list = xml_to_json.html_json_list
+
+    # Converting HTML JSON format usable for storage to text JSON format usable for printing
+    text_json_list = HtmlJsonToTextJson(html_json_list, limit=args.limit)
+    if not text_json_list.text_json_list:
+        print(f"Error: JSON could not be converted and printed", flush=True)
+        exit(sys.exit(os.EX_DATAERR))
+
+    if args.json:  # args.json parameter specified - news are printed to stdout in text JSON format
         logging.info("Print RSS in json")
-        rss_feed.dump_json()
+        text_json_list.dump_json()
     else:  # by default: news are printed to stdout as formatted text
         logging.info("Print RSS in plain text")
-        rss_feed.dump_raw_json()
-        rss_feed.print_json()
+        text_json_list.print_json()
+
+    # When we are working with Internet downloaded data must be saved to storage. It may take some time, so it's better
+    # to do it in the end, not to disturb the user.
+    if not args.date:
+        storage.save_raw_rss(html_json_list)
+        storage.download_images(html_json_list)
 
     # Program finished successfully: exit(0)
     exit(sys.exit(os.EX_OK))
