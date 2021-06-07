@@ -7,9 +7,9 @@ import urllib.request
 import xml.etree.ElementTree as Et
 from datetime import datetime
 
-from rss_reader.rss_reader import cache
+from rss_reader.cache import Cache
 
-VERSION = "2.0"
+VERSION = "3.0"
 
 
 def valid_date(date_in_str):
@@ -122,7 +122,7 @@ def main(argv=sys.argv):
         if limit == 0 or limit < 0:
             logging.error("Limit is incorrect")
             sys.exit()
-    local_storage = cache.Cache(logging)
+    local_storage = Cache(logging)
     if parser_args.date:
         logging.info("Trying to get data from cache...")
         news_list = local_storage.get_news_by_date(parser_args.date, parser_args.source)
