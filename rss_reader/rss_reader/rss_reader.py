@@ -7,7 +7,7 @@ import urllib.request
 import xml.etree.ElementTree as Et
 from datetime import datetime
 
-from rss_reader.cache import Cache
+from rss_reader.rss_reader.cache import Cache
 
 VERSION = "3.0"
 
