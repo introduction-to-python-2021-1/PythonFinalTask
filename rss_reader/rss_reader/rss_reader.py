@@ -147,7 +147,7 @@ def find_cashed_news(user_date_in_converted_format, source=None):
         raise AttributeError
 
 
-def creating_cashing_news_data(user_date, source: str = None):
+def creating_cashing_news_data(user_date, source: str=None):
     """Receive user date from user, convert it into datetime and find cashed news"""
     user_date_in_converted_format = datetime.strptime(user_date, "%Y%m%d")
     if user_date_in_converted_format < datetime.strptime("20210501", "%Y%m%d"):

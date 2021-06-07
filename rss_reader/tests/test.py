@@ -181,6 +181,10 @@ class TestReader(unittest.TestCase):
         answer = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "--date 20210604")
         self.assertLogs(answer, "News will be reading from cash")
 
+    def test_for_data_from_cash(self):
+        """Test for logger with date"""
+        data_from_cash = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "--date 20210604")
+        self.assertTrue(data_from_cash, dict)
 
 if __name__ == "__main__":
     unittest.main()
