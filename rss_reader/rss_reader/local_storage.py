@@ -4,7 +4,7 @@ from pathlib import Path
 import dateparser
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-CACHE_PATH = ROOT_DIR / "cache" / "cache.json"
+CACHE_PATH = ROOT_DIR / "storage" / "storage.json"
 CACHE_PATH.touch(exist_ok=True)
 
 

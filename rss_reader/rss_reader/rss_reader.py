@@ -7,7 +7,7 @@ import urllib.request
 import xml.etree.ElementTree as Et
 from datetime import datetime
 
-from rss_reader.rss_reader.cache import Cache
+import local_storage as ls
 
 VERSION = "3.0"
 
@@ -44,7 +44,7 @@ def build_args(args):
     parser.add_argument(
         "--date",
         type=valid_date,
-        help="Print news from local cache for specified date",
+        help="Print news from local storage for specified date",
     )
 
     return parser.parse_args(args[1:])
@@ -122,9 +122,9 @@ def main(argv=sys.argv):
         if limit == 0 or limit < 0:
             logging.error("Limit is incorrect")
             sys.exit()
-    local_storage = Cache(logging)
+    local_storage = ls.Cache(logging)
     if parser_args.date:
-        logging.info("Trying to get data from cache...")
+        logging.info("Trying to get data from storage...")
         news_list = local_storage.get_news_by_date(parser_args.date, parser_args.source)
     else:
         logging.info("Trying to get data from source...")
