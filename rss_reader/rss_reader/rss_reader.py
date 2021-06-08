@@ -1,18 +1,18 @@
-"""
-rss_reader.py - receives URL from the command line and read the data from it and output it in STDOUT
-"""
+""" Receive URL from the command line, read the data from it and print it to STDOUT """
 
 import argparse
+import sys
 import requests
 from bs4 import BeautifulSoup
+import logging
 import json
 
-
-# URL = "https://www.theguardian.com/world/rss"
+logging.basicConfig(level="INFO", format='%(levelname)s: %(message)s')
+logger = logging.getLogger("rss_reader")
 
 
 def get_args():
-    """inspects the command line and builds a Namespace object from attributes parsed out of the command line"""
+    """Return attributes parsed out of the command line"""
     try:
         parser = argparse.ArgumentParser(
             description='RSS reader - a command-line utility which receives URL '
@@ -26,36 +26,35 @@ def get_args():
         parser.add_argument('--limit', type=int, help="Limit news topics if this parameter provided", default=0)
 
         args = parser.parse_args()
-        print(args)
+
+        if args.limit < 0:
+            logger.error("--limit argument should take non-negative values. Enter the right value.")
+            raise SystemExit
+
         return args
 
     except argparse.ArgumentError:
-        print("Catching an argumentError")
-
-
-def verbose_args(args):
-    """prints arguments info"""
-
-    print("Verbosity is turned on.")
-    print("Program runs with the given argument's values:")
-    print(f"rss_url = {args.rss_url}, json = {args.json}, verbose = {args.verbose}, limit = {args.limit}")
+        logging.error("Catching an argumentError")
+        sys.exit()
 
 
 def get_response(url):
-    """tries to get the server’s response"""
+    """Get the server’s response from URL"""
     try:
+        logging.info(f"Connecting to {url}...")
         response = requests.get(url)
-        # if args.verbose:
-        #     print(f"Getting xml HTTP response: {response.status_code}")
         if response.status_code == 200:
-            print(type(response))
             return response
+        else:
+            logger.error(f"Failed to establish a new connection. Check the URL you have entered.")
+            raise SystemExit
     except Exception as e:
-        print(f"Failed to establish a new connection. Check the URL you have entered.")
+        logger.error(f"Failed to establish a new connection. Exception message: {e}")
+        raise SystemExit
 
 
-def extract_xml(content, limit):
-    """parses data from xml"""
+def extract_data_from_xml(content, limit):
+    """Parse limit news from xml and return a dictionary with news data"""
     news_list = []
     data = {}
     try:
@@ -66,57 +65,69 @@ def extract_xml(content, limit):
             title = news.find("title").text
             date = news.find("pubDate").text
             link = news.find("link").text
-            # description = news.find("description").text
             images = []
             all_images = news.findAll("media:content")
             for image in all_images:
                 image_link = image.get("url")
                 images.append(image_link)
-            # news_item = {"Title": title, "Date": date, "Link": link, "Description": description, "Images": images}
             news_item = {"Title": title, "Date": date, "Link": link, "Images": images}
             news_list.append(news_item)
-        data["News"] = news_list
+        if news_list == []:
+            logger.error("No content received. Check the RSS URL you have entered.")
+            raise SystemExit
+        else:
+            data["News"] = news_list
+        logger.info(f"Extracting {limit} news...")
     except Exception as e:
-        print(f"Getting xml was failed: {e}")
+        logger.error(f"Parsing xml was failed. Check the RSS URL you have entered. {e}")
+        raise SystemExit
 
     return data
 
 
 def print_news(data):
-    """prints data in special format into STDOUT"""
+    """Print news to STDOUT"""
+    logger.info("Printing news...")
     print("\nFeed:", data["Feed"], "\n")
     for news_item in data["News"]:
         print("Title:", news_item["Title"])
         print("Date:", news_item["Date"])
         print("Link:", news_item["Link"])
-        # print("Description:", news_item["Description"])
         print("Images:", len(news_item["Images"]))
         print('\n'.join(news_item["Images"]), "\n")
-    print("Count of news:", len(data["News"]), "\n")
 
 
 def print_json(data):
-    """prints data in JSON format into STDOUT"""
+    """Print news in JSON format to STDOUT and return JSON"""
+    logger.info("Printing news in json format...")
     json_data = json.dumps(data, indent=3)
     print(json_data)
     return json_data
-    # with open("json_format", "w") as file: #??? ../
-    #     json.dump(data, file, indent=3)
 
 
 def main():
+    """
+    Get attributes parsed out of the command line.
+    Turn off logging info if "--verbose" is not used.
+    Get the server’s response from the received URL.
+    Parse limit news from xml and return a dictionary with news data.
+    Print news to STDOUT (in JSON format if "--json" is used).
+    """
     try:
         args = get_args()
-        if args.verbose:
-            verbose_args(args)
+
+        if not args.verbose:
+            logging.root.setLevel(40)
+
+        logger.info("Got attributes from the command line.")
 
         content = get_response(args.rss_url)
-        if not content:
-            if args.verbose:
-                print("No content received from URL", args.rss_url)
-            return False
 
-        data = extract_xml(content.text, args.limit)
+        if content is not None:
+            data = extract_data_from_xml(content.text, args.limit)
+        else:
+            logger.error(f"Parsing xml was failed. Check the RSS URL you have entered.")
+            raise SystemExit
 
         if len(data):
             if args.json:
@@ -124,10 +135,13 @@ def main():
             else:
                 print_news(data)
         else:
-            if args.verbose:
-                print("No data parsed from URL", args.rss_url)
+            logger.info(f"No data parsed from URL {args.rss_url}")
+            raise SystemExit
+
+        logger.info(f"Count of news: {len(data['News'])} \n")
+
     except Exception as e:
-        print(f"Exception message: {e}")
+        logger.error(f"Exception message: {e}")
 
 
 if __name__ == "__main__":

@@ -1,15 +1,15 @@
 import os
 import sys
 import unittest
-from unittest.mock import patch, Mock
-from argparse import Namespace
+from unittest.mock import patch
 from contextlib import contextmanager
 from io import StringIO
-from rss_reader.rss_reader import *
+from rss_reader.rss_reader import get_response, extract_data_from_xml, print_news, print_json
 
 
 @contextmanager
 def captured_output():
+    """Capture and return STDOUT"""
     new_out = StringIO()
     old_out = sys.stdout
     try:
@@ -20,17 +20,53 @@ def captured_output():
 
 
 class TestRssReader(unittest.TestCase):
+    """Test functions from the module 'rss_reader.py'"""
 
-    def test_verbose_args(self):
-        args = Namespace(rss_url='https://www.theguardian.com/world/rss', json=False, verbose=True, limit=1)
+    @patch("rss_reader.rss_reader.requests.get")
+    def test_get_response(self, mock_make_request):
+        """Test the function 'get_response' with correct URL"""
+        mock_make_request.return_value.status_code = 200
+        response = get_response('https://www.theguardian.com/world/rss')
+        self.assertEqual(response.status_code, 200)
 
-        with captured_output() as (out):
-            verbose_args(args)
+    @patch("rss_reader.rss_reader.requests.get")
+    def test_get_no_response(self, mock_make_request):
+        """Test the function 'get_response' with bad URL, SystemExit is rising"""
+        mock_make_request.return_value.status_code = 404
+        with self.assertRaises(SystemExit):
+            get_response('1111')
 
-        output = out.getvalue().strip()
-        self.assertIn('Verbosity is turned on.', output)
+    def test_extract_data_from_xml(self):
+        """Test the function 'extract_data_from_xml', the correct structure of returned dictionary"""
+        file_dir = os.path.dirname(os.path.realpath('__file__'))
+        filename = os.path.join(file_dir, 'rss-test-theguardian.xml')
+        with open(filename, "r") as file:
+            content = file.read()
+        self.assertIsInstance(extract_data_from_xml(content, 0), dict)
+        self.assertEqual(len(extract_data_from_xml(content, 0)["News"]), 41)
+        self.assertIsInstance(extract_data_from_xml(content, 0)["News"][0], dict)
+
+    def test_extract_data_from_bad_xml(self):
+        """Test the function 'extract_data_from_xml' with bad xml, SystemExit is rising"""
+        file_dir = os.path.dirname(os.path.realpath('__file__'))
+        filename = os.path.join(file_dir, 'rss-test-bad.xml')
+        with open(filename, "r") as file:
+            content = file.read()
+        with self.assertRaises(SystemExit):
+            extract_data_from_xml(content, 0)
+
+    def test_print_json(self):
+        """Test the function 'print_json', the correct output of dictionary"""
+        data = {}
+        result_print_json = print_json(data)
+        self.assertIn("{}", result_print_json)
+
+        data = {"a": "b"}
+        result_print_json = print_json(data)
+        self.assertIn('{\n   "a": "b"\n}', result_print_json)
 
     def test_print_news(self):
+        """Test the function 'print_news', the correct output of all data items of the dictionary"""
         data = {
             "Feed": "Feed",
             "News": [
@@ -42,36 +78,11 @@ class TestRssReader(unittest.TestCase):
                 }
             ],
         }
-
-        with captured_output() as (out):
+        with captured_output() as out:
             print_news(data)
-
         output = out.getvalue().strip()
-        self.assertIn('Count of news:', output)
-
-    @patch("rss_reader.rss_reader.requests.get")
-    def test_get_response(self, mock_make_request):
-        mock_make_request.return_value.status_code = 200
-        response = get_response('https://www.theguardian.com/world/rss')
-        self.assertEqual(response.status_code, 200)
-
-    def test_extract_xml(self):
-        file_dir = os.path.dirname(os.path.realpath('__file__'))
-        filename = os.path.join(file_dir, 'rss-test-theguardian.xml')
-        with open(filename, "r") as file:
-            content = file.read()
-        self.assertIsInstance(extract_xml(content, 0), dict)
-        self.assertEqual(len(extract_xml(content, 0)["News"]), 41)
-        self.assertIsInstance(extract_xml(content, 0)["News"][0], dict)
-
-    def test_print_json(self):
-        data = {}
-        result_print_json = print_json(data)
-        self.assertEqual(result_print_json, "{}")
-
-        data = {"a": "b"}
-        result_print_json = print_json(data)
-        self.assertEqual(result_print_json, '{\n   "a": "b"\n}')
+        expected_print_news = "Feed: Feed \n\nTitle: Title\nDate: Date\nLink: Link\nImages: 0"
+        self.assertIn(expected_print_news, output)
 
 
 if __name__ == "__main__":
