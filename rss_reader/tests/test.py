@@ -198,7 +198,7 @@ class TestReader(unittest.TestCase):
         """Test the function 'server_answer' with incorrect URL"""
         mock_make_request.return_value.status_code = 404
         with self.assertRaises(SystemExit):
-            rss_reader.server_answer('45565471122')
+            rss_reader.server_answer('4556547112')
 
 
 if __name__ == "__main__":
