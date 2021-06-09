@@ -2,8 +2,9 @@ import io
 import logging
 import sys
 from pathlib import Path
-from xhtml2pdf import pisa
+
 from jinja2 import Template
+from xhtml2pdf import pisa
 
 
 class Converter:
@@ -18,7 +19,9 @@ class Converter:
             self.dir.mkdir(exist_ok=True)
             self.full_path_to_file.touch(exist_ok=True)
         except PermissionError:
-            logging.error("Conversion cannot be performed. Permission denied for this directory")
+            logging.error(
+                "Conversion cannot be performed. Permission denied for this directory"
+            )
             sys.exit()
 
     def convert_to_html(self, news_list):
@@ -26,7 +29,7 @@ class Converter:
         content = self.generate_html_template(news_list)
         self.write_to_file(content.encode("UTF-8"))
 
-    def convert_to_pdf(self,news_list):
+    def convert_to_pdf(self, news_list):
         self.prepare_storage()
         content = self.generate_html_template(news_list)
         pdf = io.BytesIO()
@@ -43,5 +46,7 @@ class Converter:
             with open(self.full_path_to_file, "wb") as fp:
                 fp.write(content)
         except PermissionError:
-            logging.error("Conversion cannot be performed. Permission denied for this directory")
+            logging.error(
+                "Conversion cannot be performed. Permission denied for this directory"
+            )
             sys.exit()
