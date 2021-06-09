@@ -6,10 +6,11 @@ import urllib.error
 import urllib.request
 import xml.etree.ElementTree as Et
 from datetime import datetime
+from pathvalidate.argparse import validate_filepath_arg
+from rss_reader.rss_reader.local_storage import Cache
+from rss_reader.rss_reader.converter import Converter
 
-import local_storage as ls
-
-VERSION = "3.0"
+VERSION = "4.0"
 
 
 def valid_date(date_in_str):
@@ -46,7 +47,8 @@ def build_args(args):
         type=valid_date,
         help="Print news from local storage for specified date",
     )
-
+    parser.add_argument("--to-html", type=validate_filepath_arg, help="Converts news to HTML format")
+    parser.add_argument("--to-pdf", type=validate_filepath_arg, help="Converts news to PDF format")
     return parser.parse_args(args[1:])
 
 
@@ -122,7 +124,7 @@ def main(argv=sys.argv):
         if limit == 0 or limit < 0:
             logging.error("Limit is incorrect")
             sys.exit()
-    local_storage = ls.Cache(logging)
+    local_storage = Cache(logging)
     if parser_args.date:
         logging.info("Trying to get data from storage...")
         news_list = local_storage.get_news_by_date(parser_args.date, parser_args.source)
@@ -142,6 +144,12 @@ def main(argv=sys.argv):
 
     logging.info("Data is received")
 
+    if parser_args.to_html:
+        converter = Converter(parser_args.to_html, f"news({datetime.now()}).html", logging)
+        converter.convert_to_html(news_list)
+    if parser_args.to_pdf:
+        converter = Converter(parser_args.to_pdf, f"news({datetime.now()}).pdf", logging)
+        converter.convert_to_pdf(news_list)
 
 if __name__ == "__main__":
     main()

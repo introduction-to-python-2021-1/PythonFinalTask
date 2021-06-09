@@ -13,7 +13,7 @@ import validators
 
 from rss_reader.rss_reader import rss_reader
 
-VERSION = "3.0"
+VERSION = "4.0"
 
 TESTS_DIR = Path(__file__).resolve().parent
 XML = TESTS_DIR / "text.xml"

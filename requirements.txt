@@ -5,3 +5,6 @@ termcolor==1.1.0
 ddt==1.4.2
 validators==0.18.2
 dateparser==1.0.0
+pathvalidate==2.4.1
+xhtml2pdf==0.2.5
+Jinja2==3.0.1

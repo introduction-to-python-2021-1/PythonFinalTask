@@ -16,22 +16,24 @@ class Cache:
 
     def write_news(self, source, news_list):
         content = self.read_news()
-
+        self.logger.info("Eliminating news duplicates...")
         if content.get(source):
             fresh_news_list = self.eliminate_duplicates(content[source], news_list)
             content[source] = fresh_news_list
         else:
             content[source] = news_list
-
+        self.logger.info("Writing news to cache")
         with open(self.storage, "w") as fp:
             fp.write(json.dumps(content, indent=2, ensure_ascii=False))
 
     def read_news(self):
+        self.logger.info("Reading local storage...")
         with open(self.storage, "r") as fp:
             content = json.loads(fp.read() or "{}")
         return content
 
     def get_news_by_date(self, date_arg, source):
+        self.logger.info("Getting news from local storage...")
         content = self.read_news()
         initial_list = []
         news_for_specified_date = None

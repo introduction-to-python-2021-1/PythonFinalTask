@@ -11,6 +11,9 @@ termcolor = "==1.1.0"
 validators = "*"
 ddt = "*"
 dateparser = "*"
+pathvalidate = "*"
+xhtml2pdf = "*"
+jinja2 = "*"
 
 [dev-packages]
 black = "==21.5b1"
