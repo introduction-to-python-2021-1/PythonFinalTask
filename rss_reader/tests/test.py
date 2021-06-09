@@ -8,21 +8,6 @@ from rss_reader.rss_reader import test_data
 from datetime import datetime
 import os
 import json
-import sys
-from io import StringIO
-from contextlib import contextmanager
-
-
-@contextmanager
-def captured_output():
-    """Capture and return STDOUT"""
-    new_out = StringIO()
-    old_out = sys.stdout
-    try:
-        sys.stdout = new_out
-        yield sys.stdout
-    finally:
-        sys.stdout = old_out
 
 
 class TestReader(unittest.TestCase):
