@@ -4,7 +4,6 @@ import logging
 import sys
 import unittest
 import urllib.error
-import xml.etree.ElementTree
 from pathlib import Path
 from unittest import mock
 
@@ -33,6 +32,8 @@ news_mock.iter.return_value.__iter__.return_value = iter(
             "Title": "Body of missing man found inside dinosaur statue",
             "Date": "2021-05-24T15:35:42Z",
             "Link": "https://news.yahoo.com/body-missing-man-found-inside-153542409.html",
+            "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/599080625878337ea39fc911f9b92c0e",
+
         }
     ]
 )
@@ -161,12 +162,6 @@ class TestParsing(unittest.TestCase):
         news_list = rss_reader.parse_response(XML)
         self.assertEqual(news_list, news_mock)
 
-    def test_parse_bad_response(self):
-        """This method tests parsing bad xml: raising ParseError"""
-        with self.assertRaises(SystemExit):
-            with self.assertRaises(xml.etree.ElementTree.ParseError):
-                rss_reader.parse_response(BAD_XML)
-
 
 class TestPrintingNews(unittest.TestCase):
     """Class tests printing functionality: custom and json"""
@@ -185,6 +180,7 @@ class TestPrintingNews(unittest.TestCase):
                 "Title: Body of missing man found inside dinosaur statue\n",
                 "Date: 2021-05-24T15:35:42Z\n",
                 "Link: https://news.yahoo.com/body-missing-man-found-inside-153542409.html\n",
+                "Image: https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/599080625878337ea39fc911f9b92c0e\n",
                 "....................\n",
             ]
         )
@@ -198,7 +194,8 @@ class TestPrintingNews(unittest.TestCase):
                 '[\n  {\n    "Feed": "Yahoo News - Latest News & Headlines",\n',
                 '    "Title": "Body of missing man found inside dinosaur statue",\n',
                 '    "Date": "2021-05-24T15:35:42Z",\n',
-                '    "Link": "https://news.yahoo.com/body-missing-man-found-inside-153542409.html"\n',
+                '    "Link": "https://news.yahoo.com/body-missing-man-found-inside-153542409.html",\n',
+                '    "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/599080625878337ea39fc911f9b92c0e"\n',
                 "  }\n]\n",
             ]
         )

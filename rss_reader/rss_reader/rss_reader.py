@@ -5,6 +5,7 @@ import sys
 import urllib.error
 import urllib.request
 from datetime import datetime
+
 import feedparser
 from pathvalidate.argparse import validate_filepath_arg
 
@@ -82,7 +83,9 @@ def parse_response(xml):
                 "Title": item.get("title"),
                 "Date": item.get("published"),
                 "Link": item.get("link"),
-                "Image": item.get("media_content")[0].get("url") if item.get("media_content") is not None else None
+                "Image": item.get("media_content")[0].get("url")
+                if item.get("media_content") is not None
+                else None,
             }
         )
     return news_list

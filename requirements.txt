@@ -8,3 +8,5 @@ dateparser==1.0.0
 pathvalidate==2.4.1
 xhtml2pdf==0.2.5
 Jinja2==3.0.1
+feedparser==6.0.2
+

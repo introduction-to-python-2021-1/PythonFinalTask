@@ -2,7 +2,7 @@ from pathlib import Path
 
 from setuptools import setup
 
-VERSION = 2.0
+VERSION = 4.0
 AUTHOR = "Evzhenko Ilya"
 EMAIL = "evzhenko1106@gmail.com"
 DESCRIPTION = "Pure Python command-line RSS reader."
