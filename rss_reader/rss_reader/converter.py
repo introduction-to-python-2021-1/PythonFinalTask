@@ -15,6 +15,7 @@ class Converter:
         self.template = Path(__file__).resolve().parent / "templates" / "news.html"
 
     def prepare_storage(self):
+        self.logger.info("Preparing storage for your data...")
         try:
             self.dir.mkdir(exist_ok=True)
             self.full_path_to_file.touch(exist_ok=True)
@@ -25,11 +26,13 @@ class Converter:
             sys.exit()
 
     def convert_to_html(self, news_list):
+        self.logger.info("Converting news to HTML...")
         self.prepare_storage()
         content = self.generate_html_template(news_list)
         self.write_to_file(content.encode("UTF-8"))
 
     def convert_to_pdf(self, news_list):
+        self.logger.info("Converting news to PDF...")
         self.prepare_storage()
         content = self.generate_html_template(news_list)
         pdf = io.BytesIO()
@@ -50,3 +53,4 @@ class Converter:
                 "Conversion cannot be performed. Permission denied for this directory"
             )
             sys.exit()
+        self.logger.info("News has been successfully converted")

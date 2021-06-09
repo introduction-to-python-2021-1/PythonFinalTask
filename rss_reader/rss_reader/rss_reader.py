@@ -4,9 +4,8 @@ import logging
 import sys
 import urllib.error
 import urllib.request
-import xml.etree.ElementTree as Et
 from datetime import datetime
-
+import feedparser
 from pathvalidate.argparse import validate_filepath_arg
 
 from rss_reader.rss_reader.converter import Converter
@@ -73,22 +72,17 @@ def get_response(link):
 def parse_response(xml):
     """This function provides parse of xml with help of xml.etree.ElementTree: receive xml parameter
     and returns list of news"""
-    tree = None
-    try:
-        tree = Et.parse(xml)
-    except Et.ParseError:
-        logging.error("Error occurred during parsing the document")
-        sys.exit()
-    root = tree.getroot()
+    content = feedparser.parse(xml)
     news_list = []
-    channel = root.findtext("channel/title")
-    for item in root.iter("item"):
+    channel = content.get("channel").get("title")
+    for item in content.entries:
         news_list.append(
             {
                 "Feed": channel,
-                "Title": item.findtext("title"),
-                "Date": item.findtext("pubDate"),
-                "Link": item.findtext("link"),
+                "Title": item.get("title"),
+                "Date": item.get("published"),
+                "Link": item.get("link"),
+                "Image": item.get("media_content")[0].get("url") if item.get("media_content") is not None else None
             }
         )
     return news_list
@@ -108,6 +102,7 @@ def print_news(news_list):
             f'Title: {item.get("Title")}',
             f'Date: {item.get("Date")}',
             f'Link: {item.get("Link")}',
+            f'Image: {item.get("Image")}',
             "....................",
             sep="\n",
         )
