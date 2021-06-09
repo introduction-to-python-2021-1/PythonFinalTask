@@ -8,6 +8,21 @@ from rss_reader.rss_reader import test_data
 from datetime import datetime
 import os
 import json
+import sys
+from io import StringIO
+from contextlib import contextmanager
+
+
+@contextmanager
+def captured_output():
+    """Capture and return STDOUT"""
+    new_out = StringIO()
+    old_out = sys.stdout
+    try:
+        sys.stdout = new_out
+        yield sys.stdout
+    finally:
+        sys.stdout = old_out
 
 
 class TestReader(unittest.TestCase):
@@ -185,6 +200,20 @@ class TestReader(unittest.TestCase):
         """Test for function find_cashed_news"""
         data_from_cash = rss_reader.find_cashed_news("https://news.yahoo.com/rss/", "20210604")
         self.assertTrue(data_from_cash, dict)
+
+    @patch("rss_reader.rss_reader")
+    def test_server_answer(self, mock_make_request):
+        """Test for function 'server_answer' with correct URL"""
+        mock_make_request.return_value.status_code = 200
+        answer = rss_reader.server_answer("https://news.yahoo.com/rss/")
+        self.assertEqual(answer.status_code, 200)
+
+    @patch("rss_reader.rss_reader")
+    def test_server_answer_error(self, mock_make_request):
+        """Test the function 'server_answer' with incorrect URL"""
+        mock_make_request.return_value.status_code = 404
+        with self.assertRaises(SystemExit):
+            rss_reader.server_answer('45565471122')
 
 
 if __name__ == "__main__":
