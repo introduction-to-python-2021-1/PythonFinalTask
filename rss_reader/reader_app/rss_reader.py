@@ -1,11 +1,8 @@
 """
 Program parses RSS feed https://news.yahoo.com/rss/
-  - nosetests --cover-package=reader_app --cover-branches --with-coverage --cover-min-percentage=50 .
-  changed to
-  - pytest --cov=reader_app --cov-fail-under=50
 """
 import argparse
-import copy
+import datetime
 import json
 import logging
 import os
@@ -14,6 +11,9 @@ import sys
 
 from bs4 import BeautifulSoup
 import requests
+import validators
+import urllib.request
+from urllib.error import URLError
 
 
 def logging_settings(verbose_mode):
@@ -106,20 +106,43 @@ def get_user_limit(news_items, requested_limit):
     return result
 
 
-def limit_news_items(news_complete, limit):
+def limit_news_items(news_complete, user_limit, filter_by_date=False, user_date=0):
     """
-    Function takes complete news items dictionary and deletes any items above the user limit.
+    Function takes complete news items dictionary and returns a copy containing news limited by date and --limit.
     :param news_complete: (dict)
-    :param limit: (int)
-    :return: limited_dict or news_complete (dict)
+    :param user_limit: (int)
+    :param filter_by_date: (bool)
+    :param user_date: (int)
+    :return: (dict)
     """
-    if news_complete['Items count'] > limit > 0:
-        limited_dict = copy.deepcopy(news_complete)
-        del limited_dict['Items'][limit:]
-        limited_dict['Items count'] = limit
-        return limited_dict
+    if filter_by_date:
+        try:
+            user_date = get_date_obj(user_date)
+        except ValueError:
+            logging.error("Couldn't get date object from user input.")
+            force_close('Unable to parse date from the specified value. Please, check your date input.')
+            return None
+
+        result_news_items = list()
+        # Loop through news items and include only by date and up to the limit.
+        for news_item in news_complete['Items']:
+            item_date_obj = datetime.datetime.strptime(news_item['Date'], "%Y-%m-%d").date()
+            if item_date_obj == user_date:
+                result_news_items.append(news_item)
+                user_limit -= 1
+                if user_limit == 0:
+                    break
+        result_dict = {'Feed': news_complete['Feed'], 'Items count': len(result_news_items), 'Items': result_news_items}
+        return result_dict
     else:
-        return news_complete
+        if news_complete['Items count'] > user_limit > 0:
+            result_news_items = news_complete['Items'][:]
+            del result_news_items[user_limit:]
+            result_dict = {'Feed': news_complete['Feed'], 'Items count': len(result_news_items),
+                           'Items': result_news_items}
+            return result_dict
+        else:
+            return news_complete
 
 
 def print_news_in_terminal(dict_to_print, json_mode):
@@ -159,54 +182,155 @@ def get_cache_path(current_work_dir):
     return path
 
 
+def get_date_obj(user_date):
+    """
+    Gets date object from user --date input.
+    :param user_date: (int)
+    :return: (datetime.date)
+    """
+    try:
+        date_obj = datetime.datetime.strptime(str(user_date), '%Y%m%d').date()
+        logging.info(f'Successfully parsed date.')
+        return date_obj
+    except ValueError:
+        raise
+
+
+def source_is_valid(user_url):
+    """
+    Checks if a URL is a valid source.
+    :param user_url: (str)
+    :return: (bool)
+    """
+    if validators.url(user_url):
+        logging.info('Source is valid.')
+        return True
+    else:
+        logging.error('Source is invalid.')
+        return False
+
+
+def connection_ok(host):
+    """
+    Function checks if internet connection is on.
+    :param host: (str)
+    :return: (bool)
+    """
+    try:
+        urllib.request.urlopen(host)
+        return True
+    except URLError as e:
+        logging.error(f'No internet connection. Details: {e}')
+        return False
+
+
 def main():
     """
     Runs the program.
     :return: None
     """
     path_cache = get_cache_path(os.getcwd())
-
     # initialize logging
     logging.basicConfig(**logging_settings('--verbose' in sys.argv))
     logging.info('Starting program.')
 
-    # no source, has date, read from cache
+    # Quick stop & exit. Check 1/2. Quick exit args or no arguments at all.
+    if len(sys.argv) > 1 and any(item in sys.argv for item in ['-h', '--help', '--version']):
+        run_parser(sys.argv)
+    elif len(sys.argv) == 1:
+        logging.error('No arguments provided.')
+        force_close('Please, provide your arguments.')
 
-    # has source, dump to cache
-    args = run_parser(sys.argv[1:])
+    # Quick stop & exit. Check 2/2. No date, no valid source.
+    src_ok = source_is_valid(sys.argv[1])
+    if '--date' not in sys.argv and not src_ok:
+        logging.error('No working arguments provided.')
+        force_close('Please, provide arguments to work with: at least source or date. Type "-h / --help" for help.')
 
-    # ensure the limit is positive
-    if args.limit < 0:
-        force_close('Please, enter a positive limit.')
+    # Decide between 2 cycles: small or full.
+    # FETCH FROM LOCAL IF:
+    # - has date
+    # - source valid
+    # - no connection
+    # OR IF:
+    # - has date
+    # - no valid source
+    if (
+            ('--date' in sys.argv and src_ok and not connection_ok(sys.argv[1]))
+            or
+            ('--date' in sys.argv and not src_ok)
+    ):
+        logging.info('Doing SMALL cycle: Fetching news from local cache.')
+        input_date = int(sys.argv[sys.argv.index("--date") + 1])
+        with open(path_cache, 'r') as f_obj:
+            news_from_local = json.load(f_obj)
+        if news_from_local['Items count'] == 0:
+            logging.error('Local storage empty')
+            force_close('Sorry, no news items in local storage.')
 
-    # source is valid - TBD
+        # determine user limit
+        if '--limit' in sys.argv:
+            user_limit = int(sys.argv[sys.argv.index("--limit") + 1])
+            if user_limit < 0:
+                logging.error('User enters negative or zero limit.')
+                force_close('Please, enter a positive limit.')
+        else:
+            user_limit = 0
 
-    # get soup object
-    request_content = requests.get(args.source).content
-    bs4_obj = get_soup_object(request_content)
+        # limit news by date and number
+        limited_news_to_print = limit_news_items(news_from_local, user_limit, filter_by_date=True, user_date=input_date)
+    else:
+        # Do full cycle.
+        logging.info('Doing FULL cycle: download news to cache, limit with "--limit" and "--date" and print out.')
 
-    # collect news items
-    all_news_dict = collect_news_items(bs4_obj)
+        # check internet connection
+        if connection_ok(sys.argv[1]):
+            logging.info('Connection is OK.')
+        else:
+            force_close('Unable to connect to URL. Please, check your internet connection or URL.')
 
-    # determine user_limit
-    user_limit = get_user_limit(all_news_dict, args.limit)
+        # PARSE ARGUMENTS WITH argparse
+        args = run_parser(sys.argv[1:])
 
-    # dump all news to local cache
-    with open(path_cache, 'w') as f_object:
-        json.dump(all_news_dict, f_object, indent=4, ensure_ascii=False)
-    logging.info('Dumped news items to local cache.')
+        # ensure the limit is positive
+        if args.limit < 0:
+            logging.error('User enters negative or zero limit.')
+            force_close('Please, enter a positive limit.')
 
-    # print news for specific date - TBD
+        # get soup object
+        request_content = requests.get(args.source).content
+        bs4_obj = get_soup_object(request_content)
 
-    # save limited news items to print in stdout: as text or as json
-    limited_news = limit_news_items(all_news_dict, user_limit)
+        # collect news items
+        all_news_dict = collect_news_items(bs4_obj)
+
+        # determine user_limit
+        user_limit = get_user_limit(all_news_dict, args.limit)
+
+        # dump all news to local cache
+        with open(path_cache, 'w') as f_object:
+            json.dump(all_news_dict, f_object, indent=4, ensure_ascii=False)
+        logging.info('Dumped news items to local cache.')
+
+        args_to_limit_news = {'news_complete': all_news_dict, 'user_limit': user_limit}
+
+        # print news for specific date
+        if args.date:  # expand kwargs for 'limit_news_items' function
+            args_to_limit_news['filter_by_date'] = True
+            args_to_limit_news['user_date'] = args.date
+
+        # save limited news items to print in stdout: as text or as json
+        limited_news_to_print = limit_news_items(**args_to_limit_news)
 
     # print limited news items to stdout: as json or as test
-    print_news_in_terminal(limited_news, args.json)
-
+    if limited_news_to_print['Items count'] == 0:
+        logging.error('No news items for specified quantity and date.')
+        force_close('Sorry, unable to find news items for specified date and limit.')
+    else:
+        print_news_in_terminal(limited_news_to_print, '--json' in sys.argv)
     logging.info('Closing program.')
 
 
-VERSION = '1.6'
+VERSION = '1.61'
 if __name__ == '__main__':
     main()

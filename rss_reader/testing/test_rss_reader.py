@@ -1,11 +1,13 @@
 import argparse
+import datetime
 import json
 import os
 import unittest
 
 import bs4
 from bs4 import BeautifulSoup
-from reader_app import rss_reader as rrm
+
+from rss_reader.reader_app import rss_reader as rrm
 
 
 class TestRssReader(unittest.TestCase):
@@ -29,6 +31,48 @@ class TestRssReader(unittest.TestCase):
 
         with open(self.cache_path, 'r') as f_obj:
             self.all_news_dict = json.load(f_obj)
+
+        self.limit_news_items_args_01 = {
+            'news_complete': self.all_news_dict,
+            'user_limit': 2,
+            'filter_by_date': False,
+            'user_date': 0,
+        }
+
+        self.limit_news_items_args_02 = {
+            'news_complete': self.all_news_dict,
+            'user_limit': 0,
+            'filter_by_date': False,
+            'user_date': 0,
+        }
+
+        self.limit_news_items_args_03 = {
+            'news_complete': self.all_news_dict,
+            'user_limit': 99,
+            'filter_by_date': False,
+            'user_date': 0,
+        }
+
+        self.limit_news_items_args_04 = {
+            'news_complete': self.all_news_dict,
+            'user_limit': 99,
+            'filter_by_date': True,
+            'user_date': 20210607,
+        }
+
+        self.limit_news_items_args_05 = {
+            'news_complete': self.all_news_dict,
+            'user_limit': 2,
+            'filter_by_date': True,
+            'user_date': 20210607,
+        }
+
+        self.limit_news_items_args_06 = {
+            'news_complete': self.all_news_dict,
+            'user_limit': 2,
+            'filter_by_date': True,
+            'user_date': 999,
+        }
 
     def tearDown(self):
         print('.', end='')
@@ -62,9 +106,20 @@ class TestRssReader(unittest.TestCase):
         self.assertEqual(rrm.get_user_limit(self.all_news_dict, 99), 50)
 
     def test_limit_news_items(self):
-        self.assertEqual(len(rrm.limit_news_items(self.all_news_dict, 2)['Items']), 2)
-        self.assertEqual(len(rrm.limit_news_items(self.all_news_dict, 0)['Items']), 50)
-        self.assertEqual(len(rrm.limit_news_items(self.all_news_dict, 99)['Items']), 50)
+        self.assertEqual(len(rrm.limit_news_items(**self.limit_news_items_args_01)['Items']), 2)
+        self.assertEqual(len(rrm.limit_news_items(**self.limit_news_items_args_02)['Items']), 50)
+        self.assertEqual(len(rrm.limit_news_items(**self.limit_news_items_args_03)['Items']), 50)
+
+        self.assertEqual(len(rrm.limit_news_items(**self.limit_news_items_args_04)['Items']), 21)
+        self.assertEqual(len(rrm.limit_news_items(**self.limit_news_items_args_05)['Items']), 2)
+
+    def test_get_date_obj(self):
+        self.assertEqual(rrm.get_date_obj(20210608), datetime.date(2021, 6, 8))
+        self.assertRaises(ValueError, rrm.get_date_obj, 202106098)
+
+    def test_source_is_valid(self):
+        self.assertTrue(rrm.source_is_valid('https://news.yahoo.com/rss/'))
+        self.assertFalse(rrm.source_is_valid('abrakadabra'))
 
 
 if __name__ == "__main__":
