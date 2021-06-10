@@ -6,7 +6,7 @@ This module is a command-line utility which receives [RSS] URL and prints result
 
 Utility provides the following interface:
 
-    rss_reader.py [-h] [--version] [--json] [--verbose] [--limit LIMIT] [--date DATE] [--to-fb2 FILE] [--to-html FILE] source
+    rss_reader.py [-h] [--version] [--json] [--verbose] [--limit LIMIT] [--date DATE] [--to-fb2 FILE] [--to-html FILE] [--colorize] source
 
 _Positional arguments:_
 
@@ -22,6 +22,7 @@ _Optional arguments:_
     --date DATE     Print news from local storage for specified day
     --to-fb2 FILE   Save result to file in fb2 format
     --to-html FILE  Save result to file in html format
+    --colorize      Print result in colorized mode
 
 ## Local storage
 The RSS news are stored to local storage while reading. The format of this storage is JSON file named

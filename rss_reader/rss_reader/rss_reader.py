@@ -5,7 +5,8 @@
 This module is a command-line utility which receives [RSS] URL and prints results in human-readable format.
 
 Utility provides the following interface:
-rss_reader.py [-h] [--version] [--json] [--verbose] [--limit LIMIT] source
+rss_reader.py [-h] [--version] [--json] [--verbose] [--limit LIMIT] [--date DATE]
+                                                    [--to-fb2 FILE] [--to-html FILE] [--colorize] source
 
 Positional arguments:
   source         RSS URL
@@ -19,11 +20,13 @@ Optional arguments:
   --date DATE    Print news from local storage for specified day
   --to-fb2       Save result to file in fb2 format
   --to-html      Save result to file in html format
+  --colorize     Print result in colorized mode
 """
 
-__version__ = '4.0'
+__version__ = '5.0'
 
 import argparse
+import colorama
 import feedparser
 import jinja2
 import json
@@ -34,6 +37,7 @@ import xml.etree.ElementTree as et
 
 from contextlib import suppress
 from datetime import datetime
+from termcolor import colored
 from time import strftime, strptime
 from urllib.error import URLError
 
@@ -91,6 +95,7 @@ class RSSReader:
         - date -- Print news from local storage for specified day
         - to_fb2 -- Save result to file in fb2 format
         - to-html -- Save result to file in html format
+        - is_colorize -- Print result in colorized mode
     """
 
     @staticmethod
@@ -119,7 +124,8 @@ class RSSReader:
                  limit=None,
                  date=None,
                  to_fb2=None,
-                 to_html=None):
+                 to_html=None,
+                 is_colorize=None):
         """Initialization RSSReader object with arguments from command-line."""
         self.logger = self._init_logger(__name__, is_verbose)
         self.source = source
@@ -128,6 +134,7 @@ class RSSReader:
         self.date = date
         self.to_fb2 = to_fb2
         self.to_html = to_html
+        self.is_colorize = is_colorize
 
     @staticmethod
     def _convert_date_format(date, from_format, to_format):
@@ -336,6 +343,13 @@ class RSSReader:
 
         return data
 
+    def _colorize_text(self, text, *args, **kwargs):
+        """Colorize text if needed."""
+        if self.is_colorize:
+            return colored(text, *args, **kwargs)
+        else:
+            return text
+
     def _print_as_formatted_text(self, data):
         """Print data as formatted text."""
         self.logger.info("Printing data as formatted text...")
@@ -350,28 +364,29 @@ class RSSReader:
 
         for channel in data:
             print("-" * 100)
-            print(f"Channel: {channel.get('channel_title', '')}")
+            print(self._colorize_text(f"Channel: {channel.get('channel_title', '')}",
+                                      'white', 'on_blue', attrs=['bold']))
 
             if channel.get('news') is None:
                 continue
 
             for item in channel['news']:
                 print("-" * 100)
-                print(f"News № {item.get('number', '')}")
-                print(f"Title: {item.get('title', '')}")
-                print(f"Link: {item.get('link', '')}")
+                print(self._colorize_text(f"News № {item.get('number', '')}", 'cyan', attrs=['bold']))
+                print(self._colorize_text("Title:", 'red') + f" {item.get('title', '')}")
+                print(self._colorize_text("Link:", 'yellow') + f" {item.get('link', '')}")
 
                 if item.get('author', '') != '':
-                    print(f"Author: {item['author']}")
+                    print(self._colorize_text("Author:", 'cyan') + f" {item['author']}")
 
                 if item.get('date', '') != '':
-                    print(f"Date: {item['date']}")
+                    print(self._colorize_text("Date:", 'green') + f" {item['date']}")
 
                 if item.get('image', '') != '':
-                    print(f"Image: {item['image']}")
+                    print(self._colorize_text("Image:", 'magenta') + f" {item['image']}")
 
                 if item.get('description', '') != '':
-                    print(f"{item['description']}")
+                    print(self._colorize_text(f"{item['description']}", 'green'))
 
     def _print_as_json(self, data):
         """Print data as JSON."""
@@ -386,6 +401,31 @@ class RSSReader:
             return
 
         json_data = json.dumps(data, indent=4)
+
+        if self.is_colorize:
+            print_lines = []
+            colorize_words = {'"channel_id":': ['white', 'on_cyan'],
+                              '"channel_title":': ['white', 'on_blue'],
+                              '"news":': ['white', 'on_magenta'],
+                              '"number":': ['cyan'],
+                              '"title":': ['red'],
+                              '"link":': ['yellow'],
+                              '"author":': ['cyan'],
+                              '"date":': ['green'],
+                              '"image":': ['magenta'],
+                              '"description":': ['green'],
+                              }
+
+            for line in json_data.splitlines():
+                for word, color_attr in colorize_words.items():
+                    if line.find(word) >= 0:
+                        print_lines.append(line.replace(word, self._colorize_text(word, *color_attr)))
+                        break
+                else:
+                    print_lines.append(line)
+
+            json_data = "\n".join(print_lines)
+
         print(json_data)
 
     @staticmethod
@@ -576,6 +616,7 @@ def _get_utility_args(argv):
     parser.add_argument('--date', help='Print news from local storage for specified day')
     parser.add_argument('--to-fb2', metavar='FILE', dest='to_fb2', help='Save result to file in fb2 format')
     parser.add_argument('--to-html', metavar='FILE', dest='to_html', help='Save result to file in html format')
+    parser.add_argument('--colorize', action='store_true', default=False, help='Print result in colorized mode')
     return parser.parse_args(argv[1:])
 
 
@@ -583,8 +624,16 @@ def main():
     """Command-line parsing and run RSS reader utility."""
     # Parse command-line
     args = _get_utility_args(sys.argv)
+
+    if args.colorize:
+        colorama.init()
+
     # Run utility
-    RSSReader(args.source, args.json, args.verbose, args.limit, args.date, args.to_fb2, args.to_html).run()
+    RSSReader(args.source, args.json, args.verbose, args.limit, args.date, args.to_fb2, args.to_html,
+              args.colorize).run()
+
+    if args.colorize:
+        colorama.deinit()
 
 
 if __name__ == "__main__":
