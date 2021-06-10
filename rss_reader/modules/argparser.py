@@ -1,4 +1,4 @@
-from argparse import ArgumentParser, ArgumentError, ArgumentTypeError
+from argparse import ArgumentParser
 from datetime import datetime
 from os.path import exists
 
@@ -54,4 +54,3 @@ class Argparser:
         if args.get('to_pdf'):
             if not exists(args.get('to_pdf')):
                 raise self.__parser.error('directory "{}" does not exist'.format(args.get('to_pdf')))
-
