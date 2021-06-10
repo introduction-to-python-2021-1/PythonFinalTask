@@ -89,7 +89,7 @@ class TestVerbose(unittest.TestCase):
             self.data = Data()
         with self.assertRaises(AssertionError):
             with self.assertRaises(AssertionError):
-                self.assertLogs(self.data.append_cache(), "ERROR:root:Empty file")
+                self.assertLogs(self.data.update_cache(), "ERROR:root:Empty file")
 
     def tearDown(self):
         os.remove("data.csv")

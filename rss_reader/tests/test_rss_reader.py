@@ -1,4 +1,5 @@
 import io
+import os
 import sys
 import logging
 import unittest
@@ -13,6 +14,7 @@ class TestArg(unittest.TestCase):
     def setUp(self):
         self.out = io.StringIO()
         sys.stdout = self.out
+
 
     def test_version_none_argyment(self):
         """Test version without url"""
@@ -109,8 +111,9 @@ class TestDate(unittest.TestCase):
         """Test bad data"""
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-d 20"])
         with self.assertRaises(SystemExit):
-            rss_reader.date_checker(parser)
-            self.assertEqual(self.out.getvalue(), "Bad date format")
+            with open("data.csv", "w"):
+                rss_reader.date_checker(parser)
+                self.assertEqual(self.out.getvalue(), "Bad date format")
 
     def test_word_date(self):
         """Test date word format"""
