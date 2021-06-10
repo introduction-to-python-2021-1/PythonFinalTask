@@ -1,5 +1,9 @@
+from os.path import dirname, join
+
 from setuptools import setup, find_packages
 
+with open(join(dirname(dirname(__file__)), 'requirements.txt'), 'r') as file:
+    requirements = file.read().splitlines()
 
 setup(
     name='rss_reader',
@@ -14,5 +18,5 @@ setup(
             'rss_reader = rss_reader.rss_reader:main',
         ]
     },
-    install_requires=['requests==2.25.1', 'feedparser==6.0.2'],
+    install_requires=requirements,
 )
