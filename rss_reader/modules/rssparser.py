@@ -16,12 +16,11 @@ class RSSparser:
         'video/mp4': 'video',
     }
 
-    def __init__(self, source, url, logger, limit=False):
+    def __init__(self, source, url, logger):
         self.__logger = logger
         self.__cache = Cache(logger=self.__logger)
         self.__rss = parse(source)
         self.url = url
-        self.limit = self.__validate_limit(limit)
 
     @property
     def heading(self):
@@ -61,12 +60,13 @@ class RSSparser:
         cleaned = cleaned.replace('&nbsp;', ' ')
         return cleaned
 
-    def parse_news(self):
+    def parse_news(self, limit=False):
         """
         Parsing RSS feed
         :return: list of news
         """
         self.__logger.debug('Parsing of the RSS feed started...')
+        limit = self.__validate_limit(limit)
         parsed_news = []
 
         with self.__cache as cache:
@@ -76,16 +76,18 @@ class RSSparser:
                 feed_data['feed'] = self.heading
                 feed_data['title'] = onews.get('title')
                 feed_data['link'] = onews.get('link')
-                feed_data['date'] = onews.get('published')
+                # feed_data['date'] = onews.get('published')
+
+                if onews.get('published'):
+                    feed_data['date'] = self.clean_text(onews.get('published'))
 
                 if onews.get('description'):
                     feed_data['description'] = self.clean_text(onews.get('description'))
 
                 feed_links = onews.get('links')
                 if feed_links:
-                    list_of_links = [{'link': link.get('href'), 'type': self.LINK_TYPES.get(link.get('type'))} for link
-                                     in
-                                     feed_links]
+                    list_of_links = [{'link': link.get('href'), 'type': self.LINK_TYPES.get(link.get('type'))}
+                                     for link in feed_links]
                     feed_data['links'] = list_of_links
 
                 parsed_news.append(feed_data)
@@ -93,4 +95,4 @@ class RSSparser:
 
         self.__logger.debug('Parsing of the RSS feed finished.')
 
-        return parsed_news[:self.limit]
+        return parsed_news[:limit]

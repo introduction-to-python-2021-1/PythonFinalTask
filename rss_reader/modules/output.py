@@ -37,7 +37,8 @@ class ConsoleOutput:
         for onews in news:
             print('\nFeed: {}'.format(onews['feed']))
             print('\nTitle: {}'.format(onews['title']))
-            print('Date: {}'.format(onews['date']))
+            if onews.get('date'):
+                print('Date: {}'.format(onews['date']))
             print('Link: {}\n'.format(onews['link']))
 
             if onews.get('description'):

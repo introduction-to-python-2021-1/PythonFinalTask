@@ -22,7 +22,6 @@ class Connector:
             resp = requests.get(self.url)
             resp.raise_for_status()
             self.__logger.debug('Connection detected.')
-
             if len(parse(resp.text)['entries']) == 0:
                 self.__logger.error('Invalid URL. RSS feed not found.')
                 return False
@@ -31,5 +30,5 @@ class Connector:
                 return True
 
         except RequestException:
-            self.__logger.error(f'Connection not detected.')
+            self.__logger.error('Connection not detected.')
             return False

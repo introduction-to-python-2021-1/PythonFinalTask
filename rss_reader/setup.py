@@ -1,9 +1,7 @@
-from os.path import dirname, join
-
 from setuptools import setup, find_packages
 
-with open(join(dirname(dirname(__file__)), 'requirements.txt'), 'r') as file:
-    requirements = file.read().splitlines()
+# with open(join(dirname(dirname(__file__)), 'requirements.txt'), 'r') as file:
+#     requirements = file.read().splitlines()
 
 setup(
     name='rss_reader',
@@ -18,5 +16,11 @@ setup(
             'rss_reader = rss_reader.rss_reader:main',
         ]
     },
-    install_requires=requirements,
+    install_requires=['requests==2.25.1',
+                      'feedparser==6.0.2',
+                      'python-dateutil~=2.8.1',
+                      'rootpath~=0.1.1',
+                      'Jinja2~=3.0.1',
+                      'WeasyPrint~=52.5'
+                      ],
 )
