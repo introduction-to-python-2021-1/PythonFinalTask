@@ -33,7 +33,7 @@ class Data:
         """
         self.df = self.df.append(item, ignore_index=True)
 
-    def append_cache(self):
+    def update_cache(self):
         """Delete duplicate from DataFrame and write to csv"""
         with open("data.csv", "a") as f:
             self.df = self.df.drop_duplicates(subset=["Link"])
@@ -65,14 +65,9 @@ class Data:
         else:
             print(f"doesnt have news on this day ({date})")
             sys.exit()
-        if not limit:
-            limit = len(all_data)
-        elif limit < 0:
-            logger.error("Negative limit")
-            sys.exit()
         print(f"News for {date}")
         news_df = pd.DataFrame()
-        for data, title, link in zip(self.data['Date'], self.data['Title'], self.data['Link']):
+        for data, title, link, img in zip(self.data['Date'], self.data['Title'], self.data['Link'], self.data["img"]):
             if int(date) == int(data[:10].replace('-', '')):
                 logger.info(f"{count + 1}")
                 count += 1
@@ -80,6 +75,7 @@ class Data:
                 patch_data["Title"] = title
                 patch_data["Date"] = data
                 patch_data["Link"] = link
+                patch_data["img"] = img
                 news_df = news_df.append(patch_data, ignore_index=True)
 
-        return news_df[:limit]
+        return dict(news_df[:limit])

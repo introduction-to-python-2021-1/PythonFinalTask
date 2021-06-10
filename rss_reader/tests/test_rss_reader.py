@@ -1,10 +1,12 @@
 import io
+import sys
 import logging
 import unittest
 from urllib.error import URLError
+
+import pandas as pd
 from rss_reader import rss_reader
 from rss_reader.dataset import Data
-import sys
 
 
 class TestArg(unittest.TestCase):
@@ -39,31 +41,9 @@ class TestArg(unittest.TestCase):
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--verbose"])
         self.assertTrue(parser.verbose)
 
-    def test_date(self):
-        """Test date"""
-        parser = rss_reader.create_parser(["--date 20210521"])
-        self.assertTrue(parser)
-
     def test_verbose_(self):
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--verbose"])
         self.assertLogs(parser, f"open {parser.url} and start parse")
-
-
-class TestMain(unittest.TestCase):
-    def test_lvl_log(self):
-        """Test lvl log without verbose"""
-        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/"])
-        self.assertLogs(parser, logging.ERROR)
-
-    def test_bad_date(self):
-        """Test bad data"""
-        parser = rss_reader.create_parser(["--date 20"])
-        self.assertLogs(parser, "Bad date format")
-
-    def test_word_date(self):
-        """Test date word format"""
-        parser = rss_reader.create_parser(["--date word"])
-        self.assertLogs(parser, "Bad date format")
 
 
 class TestException(unittest.TestCase):
@@ -89,23 +69,62 @@ class TestException(unittest.TestCase):
 
 
 class TestLimit(unittest.TestCase):
-    def test_zero_limit(self):
-        """Test 0 limit"""
-        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l0"])
-        self.assertFalse(parser.limit)
+    def setUp(self):
+        self.out = io.StringIO()
+        sys.stdout = self.out
 
     def test_negative_limit(self):
         """Test negative limit"""
-        with self.assertWarns(ResourceWarning):
-            data = Data()
-        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l-1"])
+        parser = rss_reader.create_parser(["https://newsyahoo.com/rss/", "-l-1"])
         with self.assertRaises(SystemExit):
-            self.assertLogs(rss_reader.parse_news(parser, data), logging.ERROR)
+            rss_reader.limit_checker(parser)
+            self.assertEqual(self.out.getvalue(),
+                             f"The limit was entered incorrectly (You enter limit = {parser.limit}) ")
+
+    def test_zero_limit(self):
+        """Test zero limit"""
+        parser = rss_reader.create_parser(["https://newsyahoo.com/rss/", "-l0"])
+        with self.assertRaises(SystemExit):
+            rss_reader.limit_checker(parser)
+            self.assertEqual(self.out.getvalue(),
+                             f"The limit was entered incorrectly (You enter limit = {parser.limit}) ")
 
     def test_normal_limit(self):
         """Test limit"""
-        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-l 1"])
-        self.assertTrue(parser.limit)
+        parser = rss_reader.create_parser(["https://newsyahoo.com/rss/", "-l1"])
+        self.assertEqual(parser.limit, 1)
+
+    def test_none_limit(self):
+        """Test None limit"""
+        parser = rss_reader.create_parser(["https://newsyahoo.com/rss/"])
+        self.assertIsNone(parser.limit)
+
+
+class TestDate(unittest.TestCase):
+    def setUp(self):
+        self.out = io.StringIO()
+        sys.stdout = self.out
+
+    def test_bad_date(self):
+        """Test bad data"""
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-d 20"])
+        with self.assertRaises(SystemExit):
+            rss_reader.date_checker(parser)
+            self.assertEqual(self.out.getvalue(), "Bad date format")
+
+    def test_word_date(self):
+        """Test date word format"""
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-d word"])
+        with self.assertRaises(SystemExit):
+            rss_reader.date_checker(parser)
+            self.assertEqual(self.out.getvalue(), "Bad date format")
+
+    def test_none_date(self):
+        """Test empty date"""
+        parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "-d "])
+        with self.assertRaises(SystemExit):
+            rss_reader.date_checker(parser)
+            self.assertEqual(self.out.getvalue(), "Bad date format")
 
 
 class TestPrint(unittest.TestCase):
@@ -115,13 +134,14 @@ class TestPrint(unittest.TestCase):
 
     def test_print(self):
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/"])
-        text = {"Title": "Man charged with threatening to kill President Biden",
-                "Date": "2021-05-28T11:06:25Z",
-                "Link": "https://news.yahoo.com/man-charged-threatening-kill-president-110625146.html",
-                }
-        ans = """Title: Man charged with threatening to kill President Biden
-Date: 2021-05-28T11:06:25Z
-Link: https://news.yahoo.com/man-charged-threatening-kill-president-110625146.html\n"""
+        text = dict()
+        text["Title"] = "Man charged with threatening to kill President Biden",
+        text["Date"] = "2021-05-28T11:06:25Z",
+        text["Link"] = "https://news.yahoo.com/man-charged-threatening-kill-president-110625146.html",
+        text = pd.DataFrame(text)
+        ans = """Title : Man charged with threatening to kill President Biden
+Date : 2021-05-28T11:06:25Z
+Link : https://news.yahoo.com/man-charged-threatening-kill-president-110625146.html\n\n"""
         rss_reader.print_news(parser, text)
         self.assertEqual(self.out.getvalue(), ans)
 
@@ -132,10 +152,11 @@ Link: https://news.yahoo.com/man-charged-threatening-kill-president-110625146.ht
    "Link": "https://news.yahoo.com/gilbert-poole-jr-man-cleared-085555782.html"
 }
 """
-        text = {"Title": "Gilbert Poole Jr: Man cleared of murder and set free after 32 years in prison",
-                "Date": "2021-05-27T08:55:55Z",
-                "Link": "https://news.yahoo.com/gilbert-poole-jr-man-cleared-085555782.html"}
-
+        text = dict()
+        text["Title"] = "Gilbert Poole Jr: Man cleared of murder and set free after 32 years in prison",
+        text["Date"] = "2021-05-27T08:55:55Z",
+        text["Link"] = "https://news.yahoo.com/gilbert-poole-jr-man-cleared-085555782.html"
+        text = pd.DataFrame(text)
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--json"])
         rss_reader.print_news(parser, text)
         self.assertEqual(self.out.getvalue(), ans)

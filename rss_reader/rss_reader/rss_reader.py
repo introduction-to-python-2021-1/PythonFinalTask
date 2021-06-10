@@ -4,6 +4,10 @@ import sys
 import logging
 import json
 from urllib.error import URLError
+
+import pandas as pd
+
+from rss_reader.convert import Epub, HTML
 from rss_reader.dataset import Data
 
 import feedparser
@@ -20,7 +24,9 @@ def create_parser(args):
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
     parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
-    parser.add_argument("--date", type=str)
+    parser.add_argument("-d", "--date", type=str, help="Sort news for date")
+    parser.add_argument("--to-epub", type=str, help="Converts news to Epub format", dest="to_epub")
+    parser.add_argument("--to-html", type=str, help="Converts news to HTML format", dest="to_html")
     return parser.parse_args(args)
 
 
@@ -65,23 +71,21 @@ def parse_news(args, data):
         print(json.dumps(feed["channel"]["title"], indent=3))
 
     count = 0
-
-    if args.limit is None:
-        args.limit = len(feed["items"])
-    elif args.limit <= 0:
-        logger.error(f"limit is entered (You enter limit = {args.limit}) ")
-        sys.exit()
-
-    for item in feed["items"][:args.limit]:
-        logger.info(f"Process item № {count + 1}")
+    list_news = pd.DataFrame()
+    for item in feed["items"]:
         count += 1
+        logger.info(f"Process item № {count}")
         feed_news = dict()
         feed_news["Title"] = item['title']
         feed_news["Date"] = item['published']
         feed_news["Link"] = item["link"]
+        if 'media_content' in item:
+            feed_news["img"] = item.media_content[0]["url"]
+        else:
+            feed_news["img"] = None
         data.append_dataframe(feed_news)
-        if not args.date:
-            print_news(args, feed_news)
+        list_news = list_news.append(feed_news, ignore_index=True)
+    return list_news[:args.limit]
 
 
 def print_news(args, feed_news):
@@ -92,47 +96,83 @@ def print_news(args, feed_news):
             args from the user(url, verbose, limit, json)
             feed_news = news
     """
-    if args.date:
-        for date, title, link in zip(feed_news['Date'], feed_news['Title'], feed_news['Link']):
-            if args.json:
-                patch_data = dict()
-                patch_data["Title"] = title
-                patch_data["Date"] = date
-                patch_data["Link"] = link
-                print(json.dumps(patch_data, indent=3))
-            else:
-                print(f"Title :{title}")
-                print(f"Date : {date}")
-                print(f"Link : {link}\n")
 
-    elif args.json:
+    for date, title, link in zip(feed_news['Date'], feed_news['Title'], feed_news['Link']):
+        if args.json:
+            patch_data = dict()
+            patch_data["Title"] = title
+            patch_data["Date"] = date
+            patch_data["Link"] = link
+            print(json.dumps(patch_data, indent=3))
+        else:
+            print(f"Title : {title}")
+            print(f"Date : {date}")
+            print(f"Link : {link}\n")
 
-        print(json.dumps(feed_news, indent=3))
 
+def convert(args):
+    """Convert on epub or html format"""
+    if not args.date:
+        feed = pd.read_csv("data.csv")[:args.limit]
     else:
-        for name_of_line, news in feed_news.items():
-            print(f"{name_of_line}: {news}")
+        data = Data()
+        data.update_cache()
+        feed = data.sort_data(args.date, args.limit, args.verbose)
+    if args.to_html:
+        file = HTML(feed)
+        try:
+            file.make_file(args.to_html)
+        except FileNotFoundError as e:
+            logger.error(f"{e} with way {args.to_html}")
+    if args.to_epub:
+        file = Epub()
+        try:
+            file.make_file(feed, args.to_epub)
+        except FileNotFoundError as e:
+            logger.error(f"{e} with way {args.to_epub}")
+
+
+def limit_checker(args):
+    """Check limit"""
+    if args.limit is None:
+        args.limit = None
+    elif args.limit <= 0:
+        logger.error(f"The limit was entered incorrectly (You enter limit = {args.limit}) ")
+        sys.exit()
+    return args.limit
+
+
+def date_checker(args):
+    """Check date format"""
+    if len(args.date) == 8 and int(args.date) and int(args.date) > 20210500:
+        return args.date
+    else:
+        logger.error("Bad date format")
+        if os.path.getsize("data.csv") == 1:
+            os.remove("data.csv")
+        sys.exit()
 
 
 def main():
     args = create_parser(sys.argv[1:])
+    limit_checker(args)
     data = Data()
-
     if args.verbose:
         logger.setLevel(logging.INFO)
 
     if args.url:
-        parse_news(args, data)
-    data.append_cache()
+        feed = parse_news(args, data)
+        if not args.date:
+            print_news(args, feed)
+    data.update_cache()
 
     if args.date:
-        if len(args.date) == 8 and int(args.date) and int(args.date) > 20210500:
-            news = data.sort_data(args.date, args.limit, args.verbose)
-            print_news(args, news)
+        date_checker(args)
+        news = data.sort_data(args.date, args.limit, args.verbose)
+        print_news(args, news)
 
-        else:
-            logger.error(f"Bad date format")
-            sys.exit()
+    if args.to_html or args.to_epub:
+        convert(args)
 
 
 if __name__ == "__main__":
