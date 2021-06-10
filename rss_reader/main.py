@@ -15,10 +15,8 @@ def main():
     Return:
     -------
     Exit codes:
-        os.EX_USAGE - misuse of command line arguments
-        os.EX_NOHOST - RSS feed url not responding or no internet connection
-        os.EX_DATAERR - RSS feed data could not be parsed
-        os.EX_OK - program finished successfully
+        0 - Success
+        1 - Error
     """
     # Processing command line arguments using module argparse
     parser = argparse.ArgumentParser(description="Pure Python command-line RSS reader.")
@@ -31,7 +29,7 @@ def main():
     parser.add_argument("--limit", type=int, help="Limit news topics if this parameter provided")
     parser.add_argument("--date", type=str, help="Print news from specified date YYYYMMDD")
     # Positional (mandatory) arguments:
-    parser.add_argument("source", type=str,  help="RSS URL")
+    parser.add_argument("source", type=str, nargs="?",  help="RSS URL")
     # Parsing arguments
     args = parser.parse_args()
 
@@ -46,46 +44,50 @@ def main():
 
     if args.version:  # [--version] argument passed - print version and exit
         print("Version 1.3", flush=True)
-        exit(sys.exit(os.EX_OK))
+        exit(0)
 
     logging.info(f"URL: {args.source}")
     if args.source and (255 < len(args.source) < 3):  # Checking [source] URL validity here
         # Waring the user that [source] string is too short or too long
         print("Source is not valid string\nPlease, provide string with length between 3 and 255 symbols", flush=True)
-        exit(sys.exit(os.EX_USAGE))
+        exit(1)
+
+    if not args.source and not args.date:  # No URL and no date. User must provide URL.
+        print("source argument not provided.\n For more information type: rss_reader -h", flush=True)
+        exit(1)
 
     logging.info(f"Limit: {args.limit}")
 
     if args.limit and (args.limit < 0):   # args.limit parameter limits number of news to print.
         print("Error: [limit] must be positive number", flush=True)
-        exit(sys.exit(os.EX_USAGE))
+        exit(1)
 
     # if args.date exists but includes not only digits or has improper length:
     if args.date and (not args.date.isdigit() or not len(args.date) == 8):
         print("DATE must be 8 digits", flush=True)
-        exit(sys.exit(os.EX_USAGE))
+        exit(1)
 
     # argparse parameters were checked. Now start processing RSS feed
 
-    storage = JsonIO(args.source)  # instance of JSON storage to load or save JSON data
+    storage = JsonIO()  # instance of JSON storage to load or save JSON data
 
     if args.date:  # --date specified - loading HTML JSON from the storage:
-        html_json_list = storage.load_raw_rss(date=args.date, limit=args.limit)
+        html_json_list = storage.find_raw_rss(date=args.date, url=args.source, limit=args.limit)
         if not html_json_list:  # data not found in the storage - inform the user and quit
             print(f"No saved news from {args.date} found", flush=True)
-            exit(sys.exit(os.EX_OK))
+            exit(0)
     else:  # Loading RSS feed from Internet
         rss_feed = XmlDownloader(args.source)
         if not rss_feed.xml:  # In case rss_feed.xml empty something is wrong with URL or internet connection
             print("Error: RSS source is not responding", flush=True)
-            exit(sys.exit(os.EX_NOHOST))
+            exit(1)
 
         # Converting downloaded XML to HTML JSON format usable for storage
-        xml_to_json = XmlJsonConverter(rss_feed.xml)
+        xml_to_json = XmlJsonConverter(rss_feed.xml, args.source)
 
         if not xml_to_json.html_json_list:  # Can not convert XML - may be non-XML document was downloaded
             print(f"Error: XML could not be parsed", flush=True)
-            exit(sys.exit(os.EX_DATAERR))
+            exit(1)
 
         html_json_list = xml_to_json.html_json_list
 
@@ -93,7 +95,7 @@ def main():
     text_json_list = HtmlJsonToTextJson(html_json_list, limit=args.limit)
     if not text_json_list.text_json_list:
         print(f"Error: JSON could not be converted and printed", flush=True)
-        exit(sys.exit(os.EX_DATAERR))
+        exit(1)
 
     if args.json:  # args.json parameter specified - news are printed to stdout in text JSON format
         logging.info("Print RSS in json")
@@ -106,10 +108,10 @@ def main():
     # to do it in the end, not to disturb the user.
     if not args.date:
         storage.save_raw_rss(html_json_list)
-        storage.download_images(html_json_list)
+        storage.download_images(html_json_list, args.source)
 
     # Program finished successfully: exit(0)
-    exit(sys.exit(os.EX_OK))
+    exit(0)
 
 
 if __name__ == "__main__":

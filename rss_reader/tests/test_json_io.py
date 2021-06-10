@@ -23,7 +23,8 @@ class TestJsonIO(unittest.TestCase):
     "Links": {
         "https://www.buzzfeednews.com/article/karlazabludovsky/mexico-vaccine-inequality-developing-world (link)": 1,
         "https://img.buzzfeed.com/20f9b6998076/tmp-name-2-10554-1608662537-20_dblbig.jpg (image)": 2
-        }
+        },
+    "URL": "https://www.buzzfeed.com/world.xml"
     }
 
         self.json_1 = {
@@ -40,7 +41,8 @@ class TestJsonIO(unittest.TestCase):
         "https://www.buzzfeednews.com/article/janelytvynenko/myanmar-coup-dance (link)": 1,
         "https://img.buzzfeed.com/a-pe-teacher-danced-through-the-coup-in-myanmar_dblbig.jpg (image)"
         "": 2
-        }
+        },
+    "URL": "https://www.buzzfeed.com/world.xml"
     }
 
         self.json_2 = {
@@ -55,7 +57,8 @@ class TestJsonIO(unittest.TestCase):
     "Links": {
         "https://www.buzzfeednews.com/article/pranavdixit/twitter-blocking-tweets-india (link)": 1,
         "https://img.buzzfeed.com/twitter-is-blocking-tweets-that-criticize-how-the_dblbig.jpg (image)": 2
-        }
+        },
+    "URL" : "https://www.buzzfeed.com/world.xml"
     }
 
         self.url = "https://www.buzzfeed.com/world.xml"
@@ -64,7 +67,7 @@ class TestJsonIO(unittest.TestCase):
 
         self.json_list = [self.json_0, self.json_1, self.json_2]
 
-        self.jio = JsonIO(self.url, dirname=self.dir_name)
+        self.jio = JsonIO(dirname=self.dir_name)
 
     def tearDown(self) -> None:
         home_path = os.path.expanduser("~")
@@ -75,9 +78,8 @@ class TestJsonIO(unittest.TestCase):
             pass
 
     def test_get_base_directory_path(self):
-        url = "".join([char for char in self.url.lower() if (97 <= ord(char) <= 122)])
         home_path = os.path.expanduser("~")
-        expected_path = os.path.join(home_path, self.dir_name, url)
+        expected_path = os.path.join(home_path, self.dir_name)
         self.assertEqual(self.jio.get_base_directory_path(), expected_path)
 
     def test_save_and_load_raw_rss(self):
@@ -85,13 +87,30 @@ class TestJsonIO(unittest.TestCase):
         self.jio.save_raw_rss(self.json_list)
         # loading dictionaries from the storage
         # checking saved entry 0
-        loaded_list = self.jio.load_raw_rss("20201230")
+        loaded_list = self.jio.load_raw_rss("20201230", "https://www.buzzfeed.com/world.xml")
         self.assertEqual(loaded_list[0], self.json_list[0], "saved and loaded data not match")
         # checking saved entry 1
-        loaded_list = self.jio.load_raw_rss("20210204")
+        loaded_list = self.jio.load_raw_rss("20210204", "https://www.buzzfeed.com/world.xml")
         self.assertEqual(loaded_list[0], self.json_list[1], "saved and loaded data not match")
         # checking saved entry 2
-        loaded_list = self.jio.load_raw_rss("20210426")
+        loaded_list = self.jio.load_raw_rss("20210426", "https://www.buzzfeed.com/world.xml")
+        self.assertEqual(loaded_list[0], self.json_list[2], "saved and loaded data not match")
+
+    def test_save_and_find_raw_rss(self):
+        # saving prepared list of dictionaries
+        self.jio.save_raw_rss(self.json_list)
+        # loading dictionaries from the storage
+        # checking saved entry 0
+        loaded_list = self.jio.find_raw_rss("20201230", "")
+
+        self.assertEqual(loaded_list[0], self.json_list[0], "saved and loaded data not match")
+        # checking saved entry 1
+        loaded_list = self.jio.find_raw_rss("20210204", "")
+
+        self.assertEqual(loaded_list[0], self.json_list[1], "saved and loaded data not match")
+        # checking saved entry 2
+        loaded_list = self.jio.find_raw_rss("20210426", "")
+
         self.assertEqual(loaded_list[0], self.json_list[2], "saved and loaded data not match")
 
     @requests_mock.mock()
@@ -104,15 +123,19 @@ class TestJsonIO(unittest.TestCase):
         m.get(url_1, text=picture_data_stub)
         m.get(url_2, text=picture_data_stub)
         m.get(url_3, text=picture_data_stub)
-        self.jio.download_images(self.json_list)
+        self.jio.download_images(self.json_list, "https://www.buzzfeed.com/world.xml")
 
         base_path = self.jio.get_base_directory_path()
 
-        path_1 = os.path.join(base_path, "20201230", "tmp-name-2-10554-1608662537-20_dblbig.jpg")
+        path_1 = os.path.join(base_path, "httpswwwbuzzfeedcomworldxml", "20201230",
+                              "tmp-name-2-10554-1608662537-20_dblbig.jpg")
         self.assertEqual(os.path.isfile(path_1), True, "Picture file not created")
 
-        path_1 = os.path.join(base_path, "20210204", "a-pe-teacher-danced-through-the-coup-in-myanmar_dblbig.jpg")
-        self.assertEqual(os.path.isfile(path_1), True, "Picture file not created")
+        path_2 = os.path.join(base_path, "httpswwwbuzzfeedcomworldxml", "20210204",
+                              "a-pe-teacher-danced-through-the-coup-in-myanmar_dblbig.jpg")
+        self.assertEqual(os.path.isfile(path_2), True, "Picture file not created")
 
-        path_1 = os.path.join(base_path, "20210426", "twitter-is-blocking-tweets-that-criticize-how-the_dblbig.jpg")
-        self.assertEqual(os.path.isfile(path_1), True, "Picture file not created")
+        path_3 = os.path.join(base_path, "httpswwwbuzzfeedcomworldxml", "20210426",
+                              "twitter-is-blocking-tweets-that-criticize-how-the_dblbig.jpg")
+        self.assertEqual(os.path.isfile(path_3), True, "Picture file not created")
+

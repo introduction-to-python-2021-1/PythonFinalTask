@@ -48,11 +48,12 @@ class TestXmlToJsonConverter(unittest.TestCase):
                      'Links': {'https://www.buzzfeednews.com/article/venessawong/debt-collector-pandemic (link)': 1,
                                'https://img.buzzfeed.com/buzzfeed-static/static/2021-05/29/21/campaign_images/'
                                '976d68fe3db8/debt-didnt-disappear-during-the-pandemic-meet-a-m-2-2233-1622322661-2_'
-                               'dblbig.jpg (image)': 2}}]
+                               'dblbig.jpg (image)': 2},
+                     'URL': 'https://www.buzzfeed.com/world.xml'}]
 
-        xj_conv = XmlJsonConverter("")
+        xj_conv = XmlJsonConverter(text_xml, "https://www.buzzfeed.com/world.xml")
 
-        self.assertEqual(xj_conv._xml2html_json(text_xml), ref_dict)
+        self.assertEqual(xj_conv._html_json_list, ref_dict)
 
         # class test_constructor(unittest.TestCase):
 
@@ -85,10 +86,11 @@ class TestJsonPrintMethods(unittest.TestCase):
   "Summary": " An American debt collection agency paid agents in Tijuana $150 a week ",
   "Links": {
     "https://www.buzzfeednews.com/article/venessawong/debt-collector-pandemic (link)": 1
-  }
+  },
+  "URL": "https://www.buzzfeed.com/world.xml"
 }"""
 
-        xjc = XmlJsonConverter(xml)
+        xjc = XmlJsonConverter(xml, "https://www.buzzfeed.com/world.xml")
         xjc.dump_json()
         actual = stdout.getvalue()
 
@@ -104,9 +106,10 @@ class TestJsonPrintMethods(unittest.TestCase):
         </channel>
         </rss>
         """
-        xjc = XmlJsonConverter(xml)
+        xjc = XmlJsonConverter(xml, "")
         xjc.dump_json()
 
         actual = stdout.getvalue()
-        expected = '{\n  "Feed": "",\n  "Title": "",\n  "Date": "",\n  "Link": "",\n  "Summary": "",\n  "Links": {}\n}'
+        expected = '{\n  "Feed": "",\n  "Title": "",\n  "Date": "",\n  "Link": "",\n  "Summary": "",\n  "Links": {},' \
+                   '\n  "URL": ""\n}'
         self.assertEqual(actual, expected, "dump_json wrong output")

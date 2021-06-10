@@ -50,13 +50,15 @@ class XmlJsonConverter:
         dump_json(self) -> None
             Prints list of dictionaries contained in self._html_json_list attribute.
     """
-    def __init__(self, xml: str, limit: int = None):
+    def __init__(self, xml: str, url: str, limit: int = None):
         """Constructor for XmlDownloader class instance.
 
         Parameters:
         ----------
         arg1: str
             xml - XML obtained from RSS feed.
+        arg2: str
+            url - URL of the RSS feed.
         arg2: int
             limit - Number of JSON entries to print. Default=None - no limit.
 
@@ -66,10 +68,10 @@ class XmlJsonConverter:
         self._html_json_list - List of JSON entries converted from XML
         """
         self._limit = limit
-        self._html_json_list = self._xml2html_json(xml)
+        self._html_json_list = self._xml2html_json(xml, url)
         logging.info(f"xml2html_json:Length of html_json_list = {len(self.html_json_list)}")
 
-    def _xml2html_json(self, xml: str) -> list:
+    def _xml2html_json(self, xml: str, url: str) -> list:
         """rss2raw_json() - Converts RSS data from XML to JSON format.
 
         XML 'pubDate' converted to local timezone and saved to JSON in ISO format:
@@ -117,7 +119,7 @@ class XmlJsonConverter:
         for item in xml_root[0].findall("item"):
             logging.info("xml2html_json:Parsing next item")
 
-            html_json_entry = {"Feed": "", "Title": "", "Date": "", "Link": "", "Summary": "", "Links": {}}
+            html_json_entry = {"Feed": "", "Title": "", "Date": "", "Link": "", "Summary": "", "Links": {}, "URL": ""}
 
             found_links = []  # list of links found in <a href= /> and <img src= /> will be stored here
 
@@ -134,7 +136,15 @@ class XmlJsonConverter:
                 logging.info(f"xml2html_json:Date found:{date}")
                 if date.endswith("EST"):  # eastern standard time in USA - not matches %z
                     date = date.replace("EST", "-0400")
-                published_date = datetime.datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %z")
+                if date.endswith("GMT"):  # eastern standard time in USA - not matches %z
+                    date = date.replace("GMT", "+0000")
+
+                try:
+                    published_date = datetime.datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %z")
+                except ValueError as e:
+                    logging.info(f"_xml2html_json: Date conversion error - {e}")
+                    continue
+
                 published_date_utc = published_date.replace(tzinfo=datetime.timezone.utc)
                 published_date_local = published_date_utc.astimezone()
                 html_json_entry["Date"] = str(published_date_local)
@@ -156,6 +166,8 @@ class XmlJsonConverter:
                 logging.info("xml2html_json:Warning:Summary not available")
 
             html_json_entry["Links"] = self._links_list2links_dict(found_links)
+
+            html_json_entry["URL"] = url
 
             html_json_list.append(html_json_entry)  # html_json_entry dictionary filled and appended to the list
 
