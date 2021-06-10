@@ -48,10 +48,10 @@ class Epub:
         :param feed: feed of news to save in file
         :param path: path to the file on pc
         """
-        a = self.create_book(feed)
+        data = self.create_book(feed)
         file = "".join(str("book of news"))
         file_path = os.path.join(path, f"{file}.epub")
-        epub.write_epub(f"{file_path}", a, {})
+        epub.write_epub(f"{file_path}", data, {})
 
 
 class HTML:

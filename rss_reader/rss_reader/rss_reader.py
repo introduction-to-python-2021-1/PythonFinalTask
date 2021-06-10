@@ -25,8 +25,8 @@ def create_parser(args):
     parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-d", "--date", type=str, help="Sort news for date")
-    parser.add_argument("--to-epub", type=str, help="Converts news to Epub format", dest="to_epub")
-    parser.add_argument("--to-html", type=str, help="Converts news to HTML format", dest="to_html")
+    parser.add_argument("-e", "--to-epub", type=str, help="Converts news to Epub format", dest="to_epub")
+    parser.add_argument("-s", "--to-html", type=str, help="Converts news to HTML format", dest="to_html")
     return parser.parse_args(args)
 
 
@@ -119,17 +119,21 @@ def convert(args):
         data.update_cache()
         feed = data.sort_data(args.date, args.limit, args.verbose)
     if args.to_html:
-        file = HTML(feed)
         try:
+            file = HTML(feed)
             file.make_file(args.to_html)
         except FileNotFoundError as e:
             logger.error(f"{e} with way {args.to_html}")
+            sys.exit()
     if args.to_epub:
-        file = Epub()
         try:
+            file = Epub()
+            open(f"{args.to_epub}.txt")
+            os.remove(f"{args.to_epub}.txt")
             file.make_file(feed, args.to_epub)
         except FileNotFoundError as e:
             logger.error(f"{e} with way {args.to_epub}")
+            sys.exit()
 
 
 def limit_checker(args):

@@ -8,13 +8,13 @@ from urllib.error import URLError
 import pandas as pd
 from rss_reader import rss_reader
 from rss_reader.dataset import Data
+from rss_reader.convert import Epub, HTML
 
 
 class TestArg(unittest.TestCase):
     def setUp(self):
         self.out = io.StringIO()
         sys.stdout = self.out
-
 
     def test_version_none_argyment(self):
         """Test version without url"""
@@ -163,6 +163,33 @@ Link : https://news.yahoo.com/man-charged-threatening-kill-president-110625146.h
         parser = rss_reader.create_parser(["https://news.yahoo.com/rss/", "--json"])
         rss_reader.print_news(parser, text)
         self.assertEqual(self.out.getvalue(), ans)
+
+
+class TestConvert(unittest.TestCase):
+    def setUp(self):
+        self.out = io.StringIO()
+        sys.stdout = self.out
+        self.text = dict()
+        self.text["Title"] = "Gilbert Poole Jr: Man cleared of murder and set free after 32 years in prison",
+        self.text["Date"] = "2021-05-27T08:55:55Z",
+        self.text["Link"] = "https://news.yahoo.com/gilbert-poole-jr-man-cleared-085555782.html"
+        self.text["img"] = None
+        self.text = pd.DataFrame(self.text)
+        self.text.to_csv("data.csv")
+
+    def test_bad_path(self):
+        parser = rss_reader.create_parser(["-e data"])
+        with self.assertRaises(SystemExit):
+            with self.assertRaises(FileNotFoundError) as e:
+                rss_reader.convert(parser)
+                self.assertEqual(self.out.getvalue(), f"{e} with way {parser.to_epub}")
+
+    def test_bad_path_html(self):
+        parser = rss_reader.create_parser(["-s data"])
+        with self.assertRaises(SystemExit):
+            with self.assertRaises(FileNotFoundError) as e:
+                rss_reader.convert(parser)
+                self.assertEqual(self.out.getvalue(), f"{e} with way {parser.to_html}")
 
 
 if __name__ == "__main__":
