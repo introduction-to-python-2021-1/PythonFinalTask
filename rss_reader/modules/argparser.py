@@ -1,5 +1,6 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, ArgumentError, ArgumentTypeError
 from datetime import datetime
+from os.path import exists
 
 
 class Argparser:
@@ -19,6 +20,10 @@ class Argparser:
         self.__parser.add_argument('--limit', type=int, help='Limit news topics if this parameter provided',
                                    default=False)
         self.__parser.add_argument('--date', type=str, metavar='YYYYMMDD', help='Print news for the specified date',
+                                   default=False)
+        self.__parser.add_argument('--to-html', type=str, metavar='PATH', help='Converts news to .html format',
+                                   default=False)
+        self.__parser.add_argument('--to-pdf', type=str, metavar='PATH', help='Converts news to .pdf format',
                                    default=False)
 
     def parse_arguments(self, argv):
@@ -43,3 +48,10 @@ class Argparser:
                     raise self.__parser.error('date cannot be more than today')
             except ValueError as err:
                 raise self.__parser.error(err)
+        if args.get('to_html'):
+            if not exists(args.get('to_html')):
+                raise self.__parser.error('directory "{}" does not exist'.format(args.get('to_html')))
+        if args.get('to_pdf'):
+            if not exists(args.get('to_pdf')):
+                raise self.__parser.error('directory "{}" does not exist'.format(args.get('to_pdf')))
+
