@@ -7,37 +7,37 @@ from rootpath import detect
 from modules.connector import Connector
 from rss_reader.rss_reader.rss_reader import create_logger
 
+example_dir = join(detect(), 'rss_reader', 'data', 'example')
+bad_example_path = join(example_dir, 'page_without_rss.html')
+good_example_path = join(example_dir, 'news.xml')
+with open(bad_example_path, 'r') as file:
+    bad_data = file.read()
 
-def mock_response(status, content):
-    """Function that simulate the response from requests.get"""
-
-    class MockResponse:
-        def __init__(self):
-            self.raise_for_status = Mock()
-            self.status_code = status
-            self.content = content
-            self.text = content
-
-    return MockResponse()
+with open(good_example_path, 'r') as file:
+    good_data = file.read()
 
 
-file_path = join(detect(), 'rss_reader', 'data', 'example', 'page_without_rss.html')
-with open(file_path, 'r') as file:
-    data = file.read()
-
-
-@patch('requests.get')
 class TestConnector(TestCase):
     def setUp(self) -> None:
         self.logger = create_logger()
 
-    def test_bad_url(self, mock_get):
-        # mock_get.return_value(mock_response(200, data))
-        mock_get.return_value = Mock()
-        # mock_get.return_value.raise_for_status = Mock()
-        mock_get.return_value.status = 500
-        # mock_get.return_value.content = 'dada'
-        mock_get.return_value.text = 'dada'
+    def test_bad_url(self):
         with self.assertLogs(logger='root', level='ERROR') as logs:
-            Connector(url='https://lenntta.ru/', logger=self.logger)
+            Connector(url='https://www.lenntta.ru/', logger=self.logger)
+        self.assertIn('ERROR:root:Connection not detected.', logs.output)
+
+    @patch('requests.get')
+    def test_url_without_rss(self, mock_get):
+        mock_get.return_value = Mock()
+        mock_get.return_value.status = 200
+        mock_get.return_value.text = bad_data
+        with self.assertLogs(logger='root', level='ERROR') as logs:
+            Connector(url='https://www.google.com/', logger=self.logger)
         self.assertIn('ERROR:root:Invalid URL. RSS feed not found.', logs.output)
+
+    @patch('requests.get')
+    def test_url_with_rss(self, mock_get):
+        mock_get.return_value = Mock()
+        mock_get.return_value.status = 200
+        mock_get.return_value.text = good_data
+        self.assertEqual(Connector(url='https://lenta.ru/rss/news', logger=self.logger).response_text, good_data)
