@@ -8,7 +8,9 @@ Test functions for save the utility's result to file.
 import os
 import unittest
 
+from io import StringIO
 from rss_reader.rss_reader.save_to_file import check_filename, save_to_fb2, save_to_html
+from unittest.mock import patch
 
 _test_tmp_fb2_filename = r'tests/test_temp_fb2.fb2'
 _test_tmp_html_filename = r'tests/test_temp_html.html'
@@ -61,6 +63,16 @@ class SaveToFileTests(unittest.TestCase):
         self.assertFalse(os.path.isfile(_test_tmp_fb2_filename))
         self._delete_file(_test_tmp_fb2_filename)
 
+    def test_save_to_fb2_for_only_channel(self):
+        """Test save_to_fb2() function for only channel."""
+        self._delete_file(_test_tmp_fb2_filename)
+        data = [{'channel_id': 'https://news.ru/',
+                 'channel_title': 'News channel'}]
+        with patch('sys.stdout', new=StringIO()) as test_out:
+            save_to_fb2(_test_tmp_fb2_filename, data)
+            self.assertTrue(test_out.getvalue().find("Loaded news save to file:") != -1)
+        self._delete_file(_test_tmp_fb2_filename)
+
     def test_save_to_fb2_for_full_data(self):
         """Test save_to_fb2() function for full data."""
         self._delete_file(_test_tmp_fb2_filename)
@@ -99,6 +111,16 @@ class SaveToFileTests(unittest.TestCase):
         save_to_html(_test_tmp_html_filename, {})
         self.assertFalse(os.path.isfile(_test_tmp_html_filename))
         self._delete_file(_test_tmp_html_filename)
+
+    def test_save_to_html_for_only_channel(self):
+        """Test save_to_html() function for only channel."""
+        self._delete_file(_test_tmp_html_filename)
+        data = [{'channel_id': 'https://news.ru/',
+                 'channel_title': 'News channel'}]
+        with patch('sys.stdout', new=StringIO()) as test_out:
+            save_to_html(_test_tmp_html_filename, data)
+            self.assertTrue(test_out.getvalue().find("Loaded news save to file:") != -1)
+        self._delete_file(_test_tmp_fb2_filename)
 
     def test_save_to_html_for_full_data(self):
         """Test save_to_html() function for full data."""
