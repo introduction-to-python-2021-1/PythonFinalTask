@@ -28,572 +28,240 @@ __version__ = '5.0'
 import argparse
 import colorama
 import feedparser
-import jinja2
 import json
 import logging
-import os
 import sys
-import xml.etree.ElementTree as et
 
-from contextlib import suppress
-from datetime import datetime
+from .local_storage import _date_news_format, load_from_storage, save_to_storage
+from .save_to_file import save_to_fb2, save_to_html
 from termcolor import colored
-from time import strftime, strptime
+from time import strftime
 from urllib.error import URLError
 
-_log_format = "%(asctime)s - [%(levelname)s] - %(name)s - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
+_log_format = "%(asctime)s - [%(levelname)s] - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
 _log_filename = "log_rss_reader.log"
 _storage_filename = "rss_reader_storage.json"
-_date_channel_format = '%Y%m%d'
-_date_news_format = '%a, %d %b, %Y %I:%M %p'
-_html_template = """<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-  </head>
-  <body>
-    <h1 align="center">{{ title }}</h1>
-    {% for channel in data %}
-    <div id={{ channel.channel_id }}>
-      <h2 align="center">{{ channel.channel_title }}</h2>
-      {% if channel.news %}
-      {%- for item in channel.news %}
-      <div>
-        <h3>News № {{ item.number }}</h3>
-        <p><b>Title:</b> {{ item.title }}</p>
-        <p><b>Link:</b> <a href={{ item.link }}>{{ item.link }}</a></p>
-        {% if item.author %}
-        <p><b>Author:</b> {{ item.author }}</p>
-        {%- endif %}
-        {% if item.date %}
-        <p><b>Date:</b> {{ item.date }}</p>
-        {%- endif %}
-        {% if item.image %}
-        <img src={{ item.image }} width="600" height="400">
-        {%- endif %}
-        {% if item.description %}
-        <p>{{ item.description }}</p>
-        {%- endif %}
-      </div>
-      {% endfor %}
-      {% endif %}
-    </div>
-    {% endfor %}
-  </body>
-</html>"""
 
 
-class RSSReader:
-    """Object for parsing command line strings into Python objects.
+def _init_logger(name, is_verbose):
+    """Initialization logger object."""
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
 
-    Keyword Arguments:
-        - source -- RSS URL
-        - is_json -- Determines news output in JSON format
-        - is_verbose - Determines print logs in stdout
-        - limit -- A number of available news
-        - date -- Print news from local storage for specified day
-        - to_fb2 -- Save result to file in fb2 format
-        - to-html -- Save result to file in html format
-        - is_colorize -- Print result in colorized mode
-    """
+    handler = logging.FileHandler(_log_filename)
+    handler.setLevel(logging.INFO)
+    handler.setFormatter(logging.Formatter(_log_format))
+    logger.addHandler(handler)
 
-    @staticmethod
-    def _init_logger(name, is_verbose):
-        """Initialization logger object."""
-        logger = logging.getLogger(name)
-        logger.setLevel(logging.INFO)
-
-        handler = logging.FileHandler(_log_filename)
+    if is_verbose:
+        handler = logging.StreamHandler()
         handler.setLevel(logging.INFO)
         handler.setFormatter(logging.Formatter(_log_format))
         logger.addHandler(handler)
 
-        if is_verbose:
-            handler = logging.StreamHandler()
-            handler.setLevel(logging.INFO)
-            handler.setFormatter(logging.Formatter(_log_format))
-            logger.addHandler(handler)
+    return logger
 
-        return logger
 
-    def __init__(self,
-                 source=None,
-                 is_json=False,
-                 is_verbose=False,
-                 limit=None,
-                 date=None,
-                 to_fb2=None,
-                 to_html=None,
-                 is_colorize=None):
-        """Initialization RSSReader object with arguments from command-line."""
-        self.logger = self._init_logger(__name__, is_verbose)
-        self.source = source
-        self.is_json = is_json
-        self.limit = limit
-        self.date = date
-        self.to_fb2 = to_fb2
-        self.to_html = to_html
-        self.is_colorize = is_colorize
+def parse_url(source, logger=None):
+    """Parse RSS URL and return parser object."""
+    if logger:
+        logger.info("Parsing RSS URL...")
 
-    @staticmethod
-    def _convert_date_format(date, from_format, to_format):
-        """Convert date format (for example: from Sun, 23 May, 2021 05:30 PM to 20210523)."""
-        format_date = ''
-        try:
-            format_date = strftime(to_format, strptime(date, from_format))
-        except (TypeError, ValueError):
-            pass
-        return format_date
+    if not source or source == '':
+        if logger:
+            logger.error("Source is empty.")
+        sys.exit("RSS URL is incorrect.")
 
-    def _load_from_storage(self, filename, load_channel=''):
-        """Load data from local storage."""
-        self.logger.info("Load data from local storage...")
+    try:
+        parser = feedparser.parse(source)
+    except URLError:
+        if logger:
+            logger.error("RSS URL is incorrect.", exc_info=True)
+        sys.exit("RSS URL is incorrect.")
 
-        if self.date is None:
-            self.logger.warning("Argument 'date' is empty.")
-            return
+    if parser.get('encoding') == '':
+        if logger:
+            logger.error("Feed’s character encoding is incorrect.")
+        sys.exit("RSS URL is incorrect.")
 
-        if not os.path.isfile(filename):
-            self.logger.info("Local storage does not exist.")
-            return
+    if parser.feed.get('title', '') == '':
+        if logger:
+            logger.error("Feed’s title is empty.")
+        sys.exit("RSS URL is incorrect.")
 
-        with suppress(OSError):
-            with open(filename, 'r') as f:
-                try:
-                    storage_data = json.load(f)
-                except (TypeError, ValueError):
-                    self.logger.error("Failed to load data from local storage.")
-                    return
+    return parser
 
-                if len(storage_data) == 0:
-                    self.logger.info("No data in local storage.")
-                    return
 
-                load_news = 0
-                data = []
+def format_date(date, to_format):
+    """Date formatting (for example: Sun, 23 May, 2021 05:30 PM)."""
+    formatted_date = ''
+    try:
+        formatted_date = strftime(to_format, date)
+    except TypeError:
+        pass
+    return formatted_date
 
-                for channel in storage_data:
-                    if load_channel != '':
-                        if channel.get('channel_id', '') != load_channel:
-                            continue
 
-                    if channel.get('news') is None:
-                        continue
+def get_image_link(entry):
+    """Get image link from parser object."""
+    image_link = ''
+    # image in <enclosure> tag
+    if entry.get('links'):
+        for link in entry.get('links'):
+            link_type = link.get('type', 'image/jpeg')
+            link_href = link.get('href', '')
 
-                    load_channel = {'channel_id': channel.get('channel_id', ''),
-                                    'channel_title': channel.get('channel_title', ''),
-                                    'news': [],
-                                    }
+            if link_type == 'image/jpeg' and link_href != '':
+                return link_href
 
-                    for news in channel['news']:
-                        news_date = self._convert_date_format(news.get('date'), _date_news_format, _date_channel_format)
+    # image in <figure> tag
+    if entry.get('img'):
+        content_source = entry.get('img').get('src', '')
 
-                        if news_date != self.date:
-                            continue
+        if content_source != '':
+            return content_source
 
-                        if self.limit:
-                            if load_news >= self.limit:
-                                break
+    # image in <media:content> tag
+    if entry.get('media_content'):
+        for link in entry.get('media_content'):
+            link_type = link.get('type', 'image/jpeg')
+            link_href = link.get('url', '')
 
-                        load_news += 1
-                        news_copy = news.copy()
-                        news_copy['number'] = len(load_channel['news']) + 1
-                        load_channel['news'].append(news_copy)
+            if link_type == 'image/jpeg' and link_href != '':
+                return link_href
 
-                    if len(load_channel['news']) > 0:
-                        data.append(load_channel)
+    return image_link
 
-                if len(data) == 0:
-                    self.logger.info("No find data in local storage.")
-                    return
 
-                return data
+def load_data(parser, load_source, limit=None, logger=None):
+    """Load data to dict from parser object."""
+    if logger:
+        logger.info("Loading data from RSS...")
 
-    def _save_to_storage(self, filename, data):
-        """Save data to local storage."""
-        self.logger.info("Save data to local storage...")
+    if parser is None:
+        if logger:
+            logger.warning("Parser is None.")
+        return
 
-        if data is None:
-            self.logger.warning("Data is None.")
-            return
+    if parser.feed.get('title', '') == '':
+        if logger:
+            logger.warning("Data is empty.")
+        return
 
-        if len(data) == 0:
-            self.logger.warning("Data is empty.")
-            return
+    data = [{'channel_id': load_source,
+             'channel_title': parser.feed.get('title', ''),
+             'news': [{'number': number,
+                       'title': entry.get('title', ''),
+                       'link': entry.get('link', ''),
+                       'author': entry.get('author', ''),
+                       'date': format_date(entry.get('published_parsed'), _date_news_format),
+                       'image': get_image_link(entry),
+                       'description': entry.get('summary', ''),
+                       }
+                      for number, entry in enumerate(parser.entries, start=1)
+                      ]
+             }]
+    save_to_storage(_storage_filename, data, logger)
 
-        storage_data = []
+    if limit:
+        if len(data[0]['news']) > limit:
+            data[0]['news'] = data[0]['news'][: limit]
 
-        with suppress(OSError):
-            with open(filename, 'w') as f:
-                try:
-                    storage_data = json.load(f)
-                except (TypeError, ValueError):
-                    self.logger.error("Failed to load data from local storage.")
+    return data
 
-                storage_channel = {'channel_id': data[0]['channel_id'],
-                                   'channel_title': data[0]['channel_title'],
-                                   'news': [news.copy() for news in data[0]['news']]
-                                   }
 
-                if len(storage_data) == 0:
-                    storage_data.append(storage_channel)
-                else:
-                    for index, channel in enumerate(storage_data, start=0):
-                        if channel.get('channel_id') == self.source:
-                            storage_data[index] = storage_channel
-                            break
+def _colorize_text(is_colorize, text, *args, **kwargs):
+    """Colorize text if needed."""
+    if is_colorize:
+        return colored(text, *args, **kwargs)
+    else:
+        return text
 
-                try:
-                    json.dump(storage_data, f)
-                except (TypeError, ValueError):
-                    self.logger.error("Failed to save data to local storage.")
 
-    def _parse_url(self):
-        """Parse RSS URL and return parser object."""
-        self.logger.info("Parsing RSS URL...")
+def print_as_formatted_text(data, is_colorize=False, logger=None):
+    """Print data as formatted text."""
+    if logger:
+        logger.info("Printing data as formatted text...")
 
-        if not self.source or self.source == '':
-            self.logger.error("Source is empty.")
-            sys.exit("RSS URL is incorrect.")
+    if data is None:
+        if logger:
+            logger.warning("Data is None.")
+        return
 
-        try:
-            parser = feedparser.parse(self.source)
-        except URLError:
-            self.logger.error("RSS URL is incorrect.", exc_info=True)
-            sys.exit("RSS URL is incorrect.")
+    if len(data) == 0:
+        if logger:
+            logger.warning("Data is empty.")
+        return
 
-        if parser.get('encoding') == '':
-            self.logger.error("Feed’s character encoding is incorrect.", exc_info=True)
-            return
+    for channel in data:
+        print("-" * 100)
+        print(_colorize_text(is_colorize, f"Channel: {channel.get('channel_title', '')}",
+                             'white', 'on_blue', attrs=['bold']))
 
-        return parser
+        if channel.get('news') is None:
+            continue
 
-    @staticmethod
-    def _format_date(date, to_format):
-        """Date formatting (for example: Sun, 23 May, 2021 05:30 PM)."""
-        format_date = ''
-        try:
-            format_date = strftime(to_format, date)
-        except TypeError:
-            pass
-        return format_date
-
-    @staticmethod
-    def _get_image_link(entry):
-        """Get image link from parser object."""
-        image_link = ''
-        # image in <enclosure> tag
-        if entry.get('links'):
-            for link in entry.get('links'):
-                link_type = link.get('type', 'image/jpeg')
-                link_href = link.get('href', '')
-
-                if link_type == 'image/jpeg' and link_href != '':
-                    return link_href
-
-        # image in <figure> tag
-        if entry.get('img'):
-            content_source = entry.get('img').get('src', '')
-
-            if content_source != '':
-                return content_source
-
-        # image in <media:content> tag
-        if entry.get('media_content'):
-            for link in entry.get('media_content'):
-                link_type = link.get('type', 'image/jpeg')
-                link_href = link.get('url', '')
-
-                if link_type == 'image/jpeg' and link_href != '':
-                    return link_href
-
-        return image_link
-
-    def _load_data(self, parser):
-        """Load data to dict from parser object."""
-        self.logger.info("Loading data from RSS...")
-
-        if parser is None:
-            self.logger.warning("Parser is None.")
-            return
-
-        if parser.feed.get('title', '') == '':
-            self.logger.warning("Data is empty.")
-            return
-
-        data = [{'channel_id': parser.feed.get('link', self.source),
-                 'channel_title': parser.feed.get('title', ''),
-                 'news': [{'number': number,
-                           'title': entry.get('title', ''),
-                           'link': entry.get('link', ''),
-                           'author': entry.get('author', ''),
-                           'date': self._format_date(entry.get('published_parsed'), _date_news_format),
-                           'image': self._get_image_link(entry),
-                           'description': entry.get('summary', ''),
-                           }
-                          for number, entry in enumerate(parser.entries, start=1)
-                          ]
-                 }]
-        self._save_to_storage(_storage_filename, data)
-
-        if self.limit:
-            if len(data[0]['news']) > self.limit:
-                data[0]['news'] = data[0]['news'][: self.limit]
-
-        return data
-
-    def _colorize_text(self, text, *args, **kwargs):
-        """Colorize text if needed."""
-        if self.is_colorize:
-            return colored(text, *args, **kwargs)
-        else:
-            return text
-
-    def _print_as_formatted_text(self, data):
-        """Print data as formatted text."""
-        self.logger.info("Printing data as formatted text...")
-
-        if data is None:
-            self.logger.warning("Data is None.")
-            return
-
-        if len(data) == 0:
-            self.logger.warning("Data is empty.")
-            return
-
-        for channel in data:
+        for item in channel['news']:
             print("-" * 100)
-            print(self._colorize_text(f"Channel: {channel.get('channel_title', '')}",
-                                      'white', 'on_blue', attrs=['bold']))
+            print(_colorize_text(is_colorize, f"News № {item.get('number', '')}", 'cyan', attrs=['bold']))
+            print(_colorize_text(is_colorize, "Title:", 'red') + f" {item.get('title', '')}")
+            print(_colorize_text(is_colorize, "Link:", 'yellow') + f" {item.get('link', '')}")
 
-            if channel.get('news') is None:
-                continue
+            if item.get('author', '') != '':
+                print(_colorize_text(is_colorize, "Author:", 'cyan') + f" {item['author']}")
 
-            for item in channel['news']:
-                print("-" * 100)
-                print(self._colorize_text(f"News № {item.get('number', '')}", 'cyan', attrs=['bold']))
-                print(self._colorize_text("Title:", 'red') + f" {item.get('title', '')}")
-                print(self._colorize_text("Link:", 'yellow') + f" {item.get('link', '')}")
+            if item.get('date', '') != '':
+                print(_colorize_text(is_colorize, "Date:", 'green') + f" {item['date']}")
 
-                if item.get('author', '') != '':
-                    print(self._colorize_text("Author:", 'cyan') + f" {item['author']}")
+            if item.get('image', '') != '':
+                print(_colorize_text(is_colorize, "Image:", 'magenta') + f" {item['image']}")
 
-                if item.get('date', '') != '':
-                    print(self._colorize_text("Date:", 'green') + f" {item['date']}")
+            if item.get('description', '') != '':
+                print(_colorize_text(is_colorize, f"{item['description']}", 'green'))
 
-                if item.get('image', '') != '':
-                    print(self._colorize_text("Image:", 'magenta') + f" {item['image']}")
 
-                if item.get('description', '') != '':
-                    print(self._colorize_text(f"{item['description']}", 'green'))
+def print_as_json(data, is_colorize=False, logger=None):
+    """Print data as JSON."""
+    if logger:
+        logger.info("Printing data as JSON...")
 
-    def _print_as_json(self, data):
-        """Print data as JSON."""
-        self.logger.info("Printing data as JSON...")
+    if data is None:
+        if logger:
+            logger.warning("Data is None.")
+        return
 
-        if data is None:
-            self.logger.warning("Data is None.")
-            return
+    if len(data) == 0:
+        if logger:
+            logger.warning("Data is empty.")
+        return
 
-        if len(data) == 0:
-            self.logger.warning("Data is empty.")
-            return
+    json_data = json.dumps(data, indent=4)
 
-        json_data = json.dumps(data, indent=4)
+    if is_colorize:
+        print_lines = []
+        colorize_words = {'"channel_id":': ['white', 'on_cyan'],
+                          '"channel_title":': ['white', 'on_blue'],
+                          '"news":': ['white', 'on_magenta'],
+                          '"number":': ['cyan'],
+                          '"title":': ['red'],
+                          '"link":': ['yellow'],
+                          '"author":': ['cyan'],
+                          '"date":': ['green'],
+                          '"image":': ['magenta'],
+                          '"description":': ['green'],
+                          }
 
-        if self.is_colorize:
-            print_lines = []
-            colorize_words = {'"channel_id":': ['white', 'on_cyan'],
-                              '"channel_title":': ['white', 'on_blue'],
-                              '"news":': ['white', 'on_magenta'],
-                              '"number":': ['cyan'],
-                              '"title":': ['red'],
-                              '"link":': ['yellow'],
-                              '"author":': ['cyan'],
-                              '"date":': ['green'],
-                              '"image":': ['magenta'],
-                              '"description":': ['green'],
-                              }
-
-            for line in json_data.splitlines():
-                for word, color_attr in colorize_words.items():
-                    if line.find(word) >= 0:
-                        print_lines.append(line.replace(word, self._colorize_text(word, *color_attr)))
-                        break
-                else:
-                    print_lines.append(line)
-
-            json_data = "\n".join(print_lines)
-
-        print(json_data)
-
-    @staticmethod
-    def _check_filename(filename, extent):
-        """Check if the filename is correct."""
-        if filename is None:
-            return
-
-        if filename == '':
-            return
-
-        root, ext = os.path.splitext(filename)
-
-        if ext == '':
-            if os.path.basename(filename) == '':
-                return
-
-            return filename + extent
-        else:
-            if ext != extent:
-                return
-
-            return filename
-
-    def _save_to_fb2(self, filename, data):
-        """Save data to file in fb2 format."""
-        self.logger.info("Save data to file in fb2 format...")
-
-        filename = self._check_filename(filename, '.fb2')
-
-        if filename is None:
-            self.logger.warning("Filename is incorrect.")
-            return
-
-        if data is None:
-            self.logger.warning("Data is None.")
-            return
-
-        if len(data) == 0:
-            self.logger.warning("Data is empty.")
-            return
-
-        xml_root = et.Element('FictionBook', {'xmlns': "http://www.gribuser.ru/xml/fictionbook/2.0",
-                                              'xmlns:l': "http://www.w3.org/1999/xlink"})
-        # description
-        xml_description = et.SubElement(xml_root, 'description')
-        # description - title info
-        xml_title_info = et.SubElement(xml_description, 'title-info')
-        et.SubElement(xml_title_info, 'genre').text = 'comp_soft'
-        xml_author = et.SubElement(xml_title_info, 'author')
-        et.SubElement(xml_author, 'nickname').text = 'RSSReader'
-        et.SubElement(xml_author, 'email').text = 'RSSReader@gmail.com'
-        et.SubElement(xml_title_info, 'book-title').text = 'RSS Reader utility results'
-        xml_annotation = et.SubElement(xml_title_info, 'annotation')
-        xml_p = et.SubElement(xml_annotation, 'p')
-        xml_p.text = 'News found by RSS Reader utility.'
-        day_create = datetime.today()
-        xml_date = et.SubElement(xml_title_info, 'date', {'value': day_create.strftime("%Y-%m-%d")})
-        xml_date.text = day_create.strftime("%d %B, %Y")
-        et.SubElement(xml_title_info, 'lang').text = 'en'
-        # description - document info
-        xml_document_info = et.SubElement(xml_description, 'document-info')
-        xml_author = et.SubElement(xml_document_info, 'author')
-        et.SubElement(xml_author, 'first-name').text = 'Larina'
-        et.SubElement(xml_author, 'last-name').text = 'Fox'
-        et.SubElement(xml_author, 'email').text = 'LarinaFox@gmail.com'
-        et.SubElement(xml_document_info, 'program-used').text = 'RSSReader 4.0'
-        et.SubElement(xml_document_info, 'date', {'value': '2021-05-29'}).text = '29 May, 2021'
-        et.SubElement(xml_document_info, 'id').text = '2021_05_29_18_00_00'
-        et.SubElement(xml_document_info, 'version').text = '1.0'
-        xml_history = et.SubElement(xml_document_info, 'history')
-        et.SubElement(xml_history, 'p').text = '1.0 - preparation fb2'
-        # body
-        xml_body = et.SubElement(xml_root, 'body')
-        xml_title = et.SubElement(xml_body, 'title')
-        et.SubElement(xml_title, 'p').text = 'RSS Reader utility results'
-        xml_main_section = et.SubElement(xml_body, 'section')
-
-        for channel in data:
-            xml_channel = et.SubElement(xml_main_section, 'section', {'id': channel.get('channel_id', '')})
-            et.SubElement(xml_channel, 'title').text = channel.get('channel_title', '')
-
-            if channel.get('news') is None:
-                continue
-
-            for item in channel['news']:
-                xml_news = et.SubElement(xml_channel, 'section')
-                et.SubElement(xml_news, 'p').text = f"News № {item.get('number', '')}"
-                et.SubElement(xml_news, 'p').text = f"Title: {item.get('title', '')}"
-                xml_news_link = et.SubElement(xml_news, 'p')
-                xml_news_link.text = 'Link: '
-                xml_news_link_a = et.SubElement(xml_news_link, 'a', {'l:href': item.get('link', '')})
-                xml_news_link_a.text = item.get('link', '')
-
-                if item.get('author', '') != '':
-                    et.SubElement(xml_news, 'p').text = f"Author: {item['author']}"
-
-                if item.get('date', '') != '':
-                    et.SubElement(xml_news, 'p').text = f"Date: {item['date']}"
-
-                if item.get('image', '') != '':
-                    et.SubElement(xml_news, 'image', {'l:href': item.get('image', '')})
-
-                if item.get('description', '') != '':
-                    et.SubElement(xml_news, 'p').text = f"\n{item['description']}"
-
-        try:
-            with open(filename, 'w', encoding='utf-8') as f:
-                xml_tree = et.ElementTree(xml_root)
-                et.indent(xml_tree)
-                xml_tree.write(f, encoding="unicode", xml_declaration=True)
-        except OSError:
-            self.logger.error('Failed to save data to fb2 file.')
-
-    def _save_to_html(self, filename, data):
-        """Save data to file in html format."""
-        self.logger.info("Save data to file in html format...")
-
-        filename = self._check_filename(filename, '.html')
-
-        if filename is None:
-            self.logger.warning("Filename is incorrect.")
-            return
-
-        if data is None:
-            self.logger.warning("Data is None.")
-            return
-
-        if len(data) == 0:
-            self.logger.warning("Data is empty.")
-            return
-
-        environment = jinja2.Environment(trim_blocks=True, lstrip_blocks=True)
-        template = environment.from_string(_html_template)
-        html_text = template.render(title="RSS Reader utility results", data=data)
-
-        try:
-            with open(filename, 'w', encoding='utf-8') as f:
-                f.write(html_text)
-        except OSError:
-            self.logger.error('Failed to save data to html file.')
-
-    def run(self):
-        """Load data from RSS and print it in text or json format."""
-        if self.date:
-            if self.source:
-                parser = self._parse_url()
-                load_channel = parser.feed.get('link', self.source) if parser else self.source
-                print_data = self._load_from_storage(_storage_filename, load_channel)
+        for line in json_data.splitlines():
+            for word, color_attr in colorize_words.items():
+                if line.find(word) >= 0:
+                    print_lines.append(line.replace(word, _colorize_text(is_colorize, word, *color_attr)))
+                    break
             else:
-                print_data = self._load_from_storage(_storage_filename)
-        else:
-            print_data = self._load_data(self._parse_url())
+                print_lines.append(line)
 
-        if print_data:
-            if self.is_json:
-                self._print_as_json(print_data)
-            else:
-                self._print_as_formatted_text(print_data)
+        json_data = "\n".join(print_lines)
 
-            if self.to_fb2:
-                self._save_to_fb2(self.to_fb2, print_data)
-
-            if self.to_html:
-                self._save_to_html(self.to_html, print_data)
-        else:
-            if self.date:
-                print("No find data in local storage")
+    print(json_data)
 
 
 class SourceAction(argparse.Action):
@@ -625,15 +293,43 @@ def main():
     # Parse command-line
     args = _get_utility_args(sys.argv)
 
+    # Initialization logger object
+    logger = _init_logger('rss_reader.__main__', args.verbose)
+
+    # Load data from RSS URL or local storage
+    if args.date and not args.source:
+        print_data = load_from_storage(_storage_filename, args.date, '', args.limit, logger)
+    else:
+        parser = parse_url(args.source, logger)
+        load_source = parser.feed.get('link', args.source) if parser else args.source
+
+        if args.date:
+            print_data = load_from_storage(_storage_filename, args.date, load_source, args.limit, logger)
+        else:
+            print_data = load_data(parser, load_source, args.limit, logger)
+
+    if not print_data:
+        sys.exit("No find data in local storage." if args.date else "")
+
     if args.colorize:
         colorama.init()
 
-    # Run utility
-    RSSReader(args.source, args.json, args.verbose, args.limit, args.date, args.to_fb2, args.to_html,
-              args.colorize).run()
+    # Print result in stdout
+    if args.json:
+        print_as_json(print_data, args.colorize, logger)
+    else:
+        print_as_formatted_text(print_data, args.colorize, logger)
 
     if args.colorize:
         colorama.deinit()
+
+    # Save result to fb2 file
+    if args.to_fb2:
+        save_to_fb2(args.to_fb2, print_data, logger)
+
+    # Save result to html file
+    if args.to_html:
+        save_to_html(args.to_html, print_data, logger)
 
 
 if __name__ == "__main__":
