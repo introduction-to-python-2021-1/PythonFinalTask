@@ -18,6 +18,22 @@ News № 2
 Title: Next news
 Link: https://super_news.ru/next_news.html
 
+Result of test_print_as_formatted_text(), full data, colorize mode:
+----------------------------------------------------------------------------------------------------
+[1m[44m[37mChannel: News channel[0m
+----------------------------------------------------------------------------------------------------
+[1m[36mNews № 1[0m
+[31mTitle:[0m Last news
+[33mLink:[0m https://news.ru/last_news.html
+[36mAuthor:[0m Alexey Morozov
+[32mDate:[0m Sun, 23 May, 2021 05:30 PM
+[35mImage:[0m http://test.com/image.jpg
+[32mLast news[0m
+----------------------------------------------------------------------------------------------------
+[1m[36mNews № 2[0m
+[31mTitle:[0m Next news
+[33mLink:[0m https://super_news.ru/next_news.html
+
 Result of test_print_as_json(), data contains only channel:
 [
     {
@@ -49,6 +65,34 @@ Result of test_print_as_json(), full data:
                 "date": "",
                 "image": "",
                 "description": ""
+            }
+        ]
+    }
+]
+
+Result of test_print_as_json(), full data, colorize mode:
+[
+    {
+        [46m[37m"channel_id":[0m "https://news.ru/",
+        [44m[37m"channel_title":[0m "News channel",
+        [45m[37m"news":[0m [
+            {
+                [36m"number":[0m 1,
+                [31m"title":[0m "Last news",
+                [33m"link":[0m "https://news.ru/last_news.html",
+                [36m"author":[0m "Alexey Morozov",
+                [32m"date":[0m "Sun, 23 May, 2021 05:30 PM",
+                [35m"image":[0m "http://test.com/image.jpg",
+                [32m"description":[0m "Last news"
+            },
+            {
+                [36m"number":[0m 2,
+                [31m"title":[0m "Next news",
+                [33m"link":[0m "https://super_news.ru/next_news.html",
+                [36m"author":[0m "",
+                [32m"date":[0m "",
+                [35m"image":[0m "",
+                [32m"description":[0m ""
             }
         ]
     }

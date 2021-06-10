@@ -7,7 +7,7 @@ import unittest
 
 from io import StringIO
 from rss_reader.rss_reader.rss_reader import parse_url, format_date, get_image_link, load_data
-from rss_reader.rss_reader.rss_reader import print_as_formatted_text, print_as_json
+from rss_reader.rss_reader.rss_reader import colorize_text, print_as_formatted_text, print_as_json
 from time import strptime
 from unittest.mock import patch
 
@@ -101,6 +101,38 @@ class RSSReaderTests(unittest.TestCase):
                  ]}]
         self.assertEqual(load_data(parser, 'https://news.ru/'), data)
 
+    def test_colorize_text_for_off_colorize_mode(self):
+        """Test colorize_text() function for off colorize mode."""
+        self.assertEqual(colorize_text(False, 'test_word', 'blue'), 'test_word')
+
+    def test_colorize_text_for_incorrect_text_color(self):
+        """Test colorize_text() function for incorrect text color."""
+        self.assertEqual(colorize_text(True, 'test_word', 'black'), 'test_word')
+
+    def test_colorize_text_for_correct_text_color(self):
+        """Test colorize_text() function for correct text color."""
+        self.assertEqual(colorize_text(True, 'test_word', 'blue'), '\033[34mtest_word\033[0m')
+
+    def test_colorize_text_for_incorrect_background_color(self):
+        """Test colorize_text() function for incorrect background color."""
+        self.assertEqual(colorize_text(True, 'test_word', 'blue', 'on_black'), 'test_word')
+
+    def test_colorize_text_for_correct_background_color(self):
+        """Test colorize_text() function for correct background color."""
+        self.assertEqual(colorize_text(True, 'test_word', 'blue', 'on_white'), '\033[47m\033[34mtest_word\033[0m')
+
+    def test_colorize_text_for_incorrect_keyword_for_attributes(self):
+        """Test colorize_text() function for incorrect keyword for attributes."""
+        self.assertEqual(colorize_text(True, 'test_word', 'blue', attributes=['bold']), 'test_word')
+
+    def test_colorize_text_for_incorrect_attributes(self):
+        """Test colorize_text() function for incorrect attributes."""
+        self.assertEqual(colorize_text(True, 'test_word', 'blue', attrs=['b-o-l-d']), 'test_word')
+
+    def test_colorize_text_for_correct_attributes(self):
+        """Test colorize_text() function for correct attributes."""
+        self.assertEqual(colorize_text(True, 'test_word', 'blue', attrs=['bold']), '\x1b[1m\x1b[34mtest_word\x1b[0m')
+
     @staticmethod
     def _test_result(filename, beg_line=0, end_line=None):
         """Read data from file."""
@@ -111,26 +143,26 @@ class RSSReaderTests(unittest.TestCase):
         else:
             return "".join(result[beg_line:])
 
-    def _test_print(self, func, data, expected):
+    def _test_print(self, expected, func, data, is_colorize=False):
         """Write data to fake output."""
         with patch('sys.stdout', new=StringIO()) as test_out:
-            func(data)
+            func(data, is_colorize)
             self.assertEqual(test_out.getvalue(), expected)
 
     def test_print_as_formatted_text_for_None(self):
         """Test print_as_formatted_text() function for None."""
-        self._test_print(print_as_formatted_text, None, '')
+        self._test_print('', print_as_formatted_text, None)
 
     def test_print_as_formatted_text_for_empty_data(self):
         """Test print_as_formatted_text() function for empty data."""
-        self._test_print(print_as_formatted_text, {}, '')
+        self._test_print('', print_as_formatted_text, {})
 
     def test_print_as_formatted_text_for_only_channel(self):
         """Test print_as_formatted_text() function for only channel."""
         data = [{'channel_id': 'https://news.ru/',
                  'channel_title': 'News channel'}]
         expected = self._test_result(_test_results_txt_filename, 1, 2)
-        self._test_print(print_as_formatted_text, data, expected)
+        self._test_print(expected, print_as_formatted_text, data)
 
     def test_print_as_formatted_text_for_full_data(self):
         """Test print_as_formatted_text() function for full data."""
@@ -153,22 +185,45 @@ class RSSReaderTests(unittest.TestCase):
                       'description': ''},
                  ]}]
         expected = self._test_result(_test_results_txt_filename, 5, 18)
-        self._test_print(print_as_formatted_text, data, expected)
+        self._test_print(expected, print_as_formatted_text, data)
+
+    def test_print_as_formatted_text_for_full_data_for_colorize_mode(self):
+        """Test print_as_formatted_text() function for full data for colorize mode."""
+        data = [{'channel_id': 'https://news.ru/',
+                 'channel_title': 'News channel',
+                 'news': [
+                     {'number': 1,
+                      'title': 'Last news',
+                      'link': 'https://news.ru/last_news.html',
+                      'author': 'Alexey Morozov',
+                      'date': 'Sun, 23 May, 2021 05:30 PM',
+                      'image': 'http://test.com/image.jpg',
+                      'description': 'Last news'},
+                     {'number': 2,
+                      'title': 'Next news',
+                      'link': 'https://super_news.ru/next_news.html',
+                      'author': '',
+                      'date': '',
+                      'image': '',
+                      'description': ''},
+                 ]}]
+        expected = self._test_result(_test_results_txt_filename, 21, 34)
+        self._test_print(expected, print_as_formatted_text, data, True)
 
     def test_print_as_json_for_None(self):
         """Test print_as_json() function for None."""
-        self._test_print(print_as_json, None, '')
+        self._test_print('', print_as_json, None)
 
     def test_print_as_json_for_empty_data(self):
         """Test print_as_json() function for empty data."""
-        self._test_print(print_as_json, {}, '')
+        self._test_print('', print_as_json, {})
 
     def test_print_as_json_for_only_channel(self):
         """Test print_as_json() function for only channel."""
         data = [{'channel_id': 'https://news.ru/',
                  'channel_title': 'News channel'}]
-        expected = self._test_result(_test_results_txt_filename, 21, 26)
-        self._test_print(print_as_json, data, expected)
+        expected = self._test_result(_test_results_txt_filename, 37, 42)
+        self._test_print(expected, print_as_json, data)
 
     def test_print_as_json_for_full_data(self):
         """Test print_as_json() function for full data."""
@@ -190,8 +245,31 @@ class RSSReaderTests(unittest.TestCase):
                       'image': '',
                       'description': ''},
                  ]}]
-        expected = self._test_result(_test_results_txt_filename, 29, 54)
-        self._test_print(print_as_json, data, expected)
+        expected = self._test_result(_test_results_txt_filename, 45, 70)
+        self._test_print(expected, print_as_json, data)
+
+    def test_print_as_json_for_full_data_in_colorize_mode(self):
+        """Test print_as_json() function for full data in colorize mode."""
+        data = [{'channel_id': 'https://news.ru/',
+                 'channel_title': 'News channel',
+                 'news': [
+                     {'number': 1,
+                      'title': 'Last news',
+                      'link': 'https://news.ru/last_news.html',
+                      'author': 'Alexey Morozov',
+                      'date': 'Sun, 23 May, 2021 05:30 PM',
+                      'image': 'http://test.com/image.jpg',
+                      'description': 'Last news'},
+                     {'number': 2,
+                      'title': 'Next news',
+                      'link': 'https://super_news.ru/next_news.html',
+                      'author': '',
+                      'date': '',
+                      'image': '',
+                      'description': ''},
+                 ]}]
+        expected = self._test_result(_test_results_txt_filename, 73, 98)
+        self._test_print(expected, print_as_json, data, True)
 
 
 if __name__ == '__main__':

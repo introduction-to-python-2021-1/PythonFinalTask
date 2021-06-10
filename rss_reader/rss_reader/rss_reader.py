@@ -170,12 +170,15 @@ def load_data(parser, load_source, limit=None, logger=None):
     return data
 
 
-def _colorize_text(is_colorize, text, *args, **kwargs):
+def colorize_text(is_colorize, text, *args, **kwargs):
     """Colorize text if needed."""
+    color_text = text
     if is_colorize:
-        return colored(text, *args, **kwargs)
-    else:
-        return text
+        try:
+            color_text = colored(text, *args, **kwargs)
+        except (TypeError, KeyError):
+            pass
+    return color_text
 
 
 def print_as_formatted_text(data, is_colorize=False, logger=None):
@@ -195,29 +198,29 @@ def print_as_formatted_text(data, is_colorize=False, logger=None):
 
     for channel in data:
         print("-" * 100)
-        print(_colorize_text(is_colorize, f"Channel: {channel.get('channel_title', '')}",
-                             'white', 'on_blue', attrs=['bold']))
+        print(colorize_text(is_colorize, f"Channel: {channel.get('channel_title', '')}",
+                            'white', 'on_blue', attrs=['bold']))
 
         if channel.get('news') is None:
             continue
 
         for item in channel['news']:
             print("-" * 100)
-            print(_colorize_text(is_colorize, f"News № {item.get('number', '')}", 'cyan', attrs=['bold']))
-            print(_colorize_text(is_colorize, "Title:", 'red') + f" {item.get('title', '')}")
-            print(_colorize_text(is_colorize, "Link:", 'yellow') + f" {item.get('link', '')}")
+            print(colorize_text(is_colorize, f"News № {item.get('number', '')}", 'cyan', attrs=['bold']))
+            print(colorize_text(is_colorize, "Title:", 'red') + f" {item.get('title', '')}")
+            print(colorize_text(is_colorize, "Link:", 'yellow') + f" {item.get('link', '')}")
 
             if item.get('author', '') != '':
-                print(_colorize_text(is_colorize, "Author:", 'cyan') + f" {item['author']}")
+                print(colorize_text(is_colorize, "Author:", 'cyan') + f" {item['author']}")
 
             if item.get('date', '') != '':
-                print(_colorize_text(is_colorize, "Date:", 'green') + f" {item['date']}")
+                print(colorize_text(is_colorize, "Date:", 'green') + f" {item['date']}")
 
             if item.get('image', '') != '':
-                print(_colorize_text(is_colorize, "Image:", 'magenta') + f" {item['image']}")
+                print(colorize_text(is_colorize, "Image:", 'magenta') + f" {item['image']}")
 
             if item.get('description', '') != '':
-                print(_colorize_text(is_colorize, f"{item['description']}", 'green'))
+                print(colorize_text(is_colorize, f"{item['description']}", 'green'))
 
 
 def print_as_json(data, is_colorize=False, logger=None):
@@ -254,7 +257,7 @@ def print_as_json(data, is_colorize=False, logger=None):
         for line in json_data.splitlines():
             for word, color_attr in colorize_words.items():
                 if line.find(word) >= 0:
-                    print_lines.append(line.replace(word, _colorize_text(is_colorize, word, *color_attr)))
+                    print_lines.append(line.replace(word, colorize_text(is_colorize, word, *color_attr)))
                     break
             else:
                 print_lines.append(line)
