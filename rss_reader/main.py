@@ -110,7 +110,7 @@ def main():
         storage.save_raw_rss(html_json_list)
         storage.download_images(html_json_list, args.source)
 
-    # Program finished successfully: exit(0)
+    # Program finished successfully
     exit(0)
 
 
