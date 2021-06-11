@@ -8,6 +8,11 @@ logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger()
 
 
+def file_open():
+    """Open file for caching"""
+    return open("data.csv", "a")
+
+
 class Data:
     def __init__(self):
         """
@@ -16,7 +21,7 @@ class Data:
         clear file
         """
         self.df = pd.DataFrame()
-        file = open("data.csv", "a")
+        file_open()
         if os.path.getsize("data.csv") == 0:
             pass
         else:
@@ -35,13 +40,13 @@ class Data:
 
     def update_cache(self):
         """Update cache and drop duplicate"""
-        with open("data.csv", "a") as f:
-            self.df = self.df.drop_duplicates(subset=["Link"])
-            self.df.to_csv("data.csv", index=False)
-            if os.path.getsize("data.csv") == 0:
-                os.remove("data.csv")
-                logger.error("Empty file")
-                sys.exit()
+        file_open()
+        self.df = self.df.drop_duplicates(subset=["Link"])
+        self.df.to_csv("data.csv", index=False)
+        if os.path.getsize("data.csv") == 0:
+            os.remove("data.csv")
+            logger.error("Empty file")
+            sys.exit()
 
     def sort_data(self, date, limit, verbose):
         """
