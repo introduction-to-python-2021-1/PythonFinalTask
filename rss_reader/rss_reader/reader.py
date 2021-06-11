@@ -8,36 +8,28 @@ import rss_reader.local_storage as local_storage
 logger = app_logger.get_logger(__name__)
 
 
-def main():
+def main(argv=sys.argv[1:]):
     # command line arguments parse
-    parser = cl_parser.args_parser()
+    parser = cl_parser.args_parser(argv)
 
-    # Various combinations of parameters command line.
+    # if command line arguments have a link
     if parser.args_Space.source:
+
+        # create feed container
         feed = feed_container.FeedContainer(url=parser.args_Space.source)
+
+        # save local storage, format 'a" append
         feed.save_as_json()
 
+        # print feed info
         feed.print_feed_Info()
 
-        if parser.args_Space.json and parser.args_Space.date:
-            feed.print_news_by_date_json_format(parser.args_Space.date, parser.args_Space.limit)
-        elif parser.args_Space.date:
-            feed.print_news_by_date(parser.args_Space.date, parser.args_Space.limit)
-        else:
-            if parser.args_Space.json:
-                feed.print_news_json_format(parser.args_Space.limit)
-            else:
-                feed.print_news(parser.args_Space.limit)
-    elif parser.args_Space.date:
-        local_feed = local_storage.local_storage()
-        if parser.args_Space.json:
-            local_feed.print_news_from_storage_by_date_json_format(parser.args_Space.date)
-        else:
-            local_feed.print_news_from_storage_by_date(parser.args_Space.date)
-
+        # print news
+        feed.print_news_by_args(date=parser.args_Space.date,
+                                limit=parser.args_Space.limit,
+                                json=parser.args_Space.json)
     else:
-        logger.error("No attributes <source> or <date>. Check --help")
-        sys.exit
+        pass
 
 
 if __name__ == '__main__':

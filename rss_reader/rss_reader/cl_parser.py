@@ -10,8 +10,9 @@ logger = app_logger.get_logger(__name__)
 
 # This class handles command line arguments.
 # Stores arguments, checks for correctness
-class args_parser:
-    def __init__(self):
+class args_parser():
+    def __init__(self, argv):
+        self.command_line_argv = argv
         self.parser = argparse.ArgumentParser(prog="RSS_reader",
                                               formatter_class=argparse.RawDescriptionHelpFormatter,
                                               description="---------------------------------------------------------\n"
@@ -35,12 +36,12 @@ class args_parser:
         self.parser.add_argument("-ve", "--version",
                                  help="Info about version",
                                  action="version",
-                                 version="%(prog)s version 0.1")
+                                 version="%(prog)s version 2")
         self.parser.add_argument("-js", "--json",
                                  help="JSON",
                                  action="store_true")
         self.parser.add_argument("-vbs", "--verbose",
-                                 help="logs",
+                                 help="logs in stdout",
                                  action="store_true")
         self.parser.add_argument("-li", "--limit",
                                  type=int,
@@ -48,17 +49,26 @@ class args_parser:
         self.parser.add_argument("-d", "--date",
                                  type=str,
                                  help="Selection by dates in format: YearMonthDay, as an example: --date 20201201")
+        self.parser.add_argument("-2html", "--to_html",
+                                 help="convert news into html file",
+                                 action="store_true")
+        self.parser.add_argument("-2pdf", "--to_pdf",
+                                 help="convert news into pdf file",
+                                 action="store_true")
 
     # parses all command line parameters and stores them in class storage
     def __parse_Args(self):
-        self.args_Space = self.parser.parse_args()
+        self.args_Space = self.parser.parse_args(self.command_line_argv)
 
     # arguments validation
     def __args_Validation(self):
 
         # verbose check
         if self.args_Space.verbose:
+            print("govno")
+            print(logger.handlers[1])
             logger.handlers[1].setLevel("INFO")
+            print(logger.handlers[1])
 
         # parameter <limit> validation
         if bool(self.args_Space.limit):
@@ -68,18 +78,6 @@ class args_parser:
         else:
             logger.warning("Bad parameter: --limit = 0, you will not see news")
             logger.info("--limit is void. See all news")
-
-        # parameter <json> validation
-        if type(self.args_Space.json) != bool:
-            logger.error(
-                "Bad parameter: --json. Do not use this parameter with value.")
-            sys.exit()
-
-        # parameter <verbose> validation
-        if type(self.args_Space.verbose) != bool:
-            logger.error(
-                "Bad parameter: --verbose. Do not use this parameter with value.")
-            sys.exit()
 
         # parameter <date> validation
         if bool(self.args_Space.date):
