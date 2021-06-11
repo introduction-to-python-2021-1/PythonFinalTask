@@ -15,8 +15,8 @@ class RssUrlValidator:
     def get_status_code(self) -> int:
         """ FUNCTION RETURNS REQUEST STATUS CODE"""
         try:
-            request = requests.get(self.__url).status_code
-            return request
+            status_code = requests.get(self.__url).status_code
+            return status_code
         except ConnectionError:
             self.__logger.debug('Connection was not provided')
         except MissingSchema:

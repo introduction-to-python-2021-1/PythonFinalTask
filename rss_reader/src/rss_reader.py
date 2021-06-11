@@ -1,4 +1,6 @@
 import logging
+import sys
+
 from src.modules.argparser import arg_parser
 from src.modules.output import DefaultOutput, JSONOutput
 from src.modules.rss_parser import RSSParser
@@ -14,11 +16,12 @@ def create_logger() -> logging.getLogger:
     return logger
 
 
-def main() -> None:
+def main(argv=None) -> None:
+    if argv is None:
+        argv = sys.argv[1:]
     logger = create_logger()
 
-    parser = arg_parser().parse_args()
-
+    parser = arg_parser().parse_args(args=argv)
     if parser.verbose:
         logger.setLevel(logging.DEBUG)
     logger.info('Started main')
