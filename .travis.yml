@@ -6,7 +6,8 @@ install:
   - pip install pycodestyle
   - pip install termcolor
 script:
+  - pip install .
   - cd rss_reader
   - nosetests --cover-branches --with-coverage --cover-min-percentage=50 --cover-package=rss_reader
-  - pycodestyle --max-line-length=120 .
-  - cd -
+  - pycodestyle --max-line-length=120
+  - cd ..
