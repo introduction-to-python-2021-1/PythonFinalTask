@@ -34,7 +34,7 @@ class Data:
         self.df = self.df.append(item, ignore_index=True)
 
     def update_cache(self):
-        """Delete duplicate from DataFrame and write to csv"""
+        """Update cache and drop duplicate"""
         with open("data.csv", "a") as f:
             self.df = self.df.drop_duplicates(subset=["Link"])
             self.df.to_csv("data.csv", index=False)
@@ -69,8 +69,8 @@ class Data:
         news_df = pd.DataFrame()
         for data, title, link, img in zip(self.data['Date'], self.data['Title'], self.data['Link'], self.data["img"]):
             if int(date) == int(data[:10].replace('-', '')):
-                logger.info(f"{count + 1}")
                 count += 1
+                logger.info(f"{count}")
                 patch_data = dict()
                 patch_data["Title"] = title
                 patch_data["Date"] = data
