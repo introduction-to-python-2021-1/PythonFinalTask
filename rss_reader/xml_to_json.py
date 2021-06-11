@@ -28,6 +28,7 @@ from bs4 import BeautifulSoup
 import pytz
 from tzlocal import get_localzone
 
+
 class XmlJsonConverter:
     """Class XmlJsonConverter converts JSON containing html markup to JSON containing plain text.
 

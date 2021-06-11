@@ -11,55 +11,59 @@ class TestJsonIO(unittest.TestCase):
 
     def setUp(self) -> None:
         self.json_0 = {
-    "Feed": "BuzzFeed News",
-    "Title": "There Is Anger And Resignation In The Developing World As Rich Countries Buy Up All The COVID Vaccines",
-    "Date": "2020-12-30 17:25:39+03:00",
-    "Link": "https://www.buzzfeednews.com/article/karlazabludovsky/mexico-vaccine-inequality-developing-world",
-    "Summary": "<h1>Mexico says it's wrong for wealthy countries to buy up more vaccines than they need, while others "
-               "still don\u2019t have access to a single dose.</h1><p><img src=\"https://img.buzzfeed.com/buzzfeed-"
-               "static/static/2020-12/22/18/tmp/20f9b6998076/tmp-name-2-10554-1608662537-20_dblbig.jpg\" /></p><hr />"
-               "<p><a href=\"https://www.buzzfeednews.com/article/karlazabludovsky/mexico-vaccine-inequality-developing"
-               "-world\">View Entire Post &rsaquo;</a></p>",
-    "Links": {
-        "https://www.buzzfeednews.com/article/karlazabludovsky/mexico-vaccine-inequality-developing-world (link)": 1,
-        "https://img.buzzfeed.com/20f9b6998076/tmp-name-2-10554-1608662537-20_dblbig.jpg (image)": 2
-        },
-    "URL": "https://www.buzzfeed.com/world.xml"
-    }
+            "Feed": "BuzzFeed News",
+            "Title": "There Is Anger And Resignation In The Developing World As Rich Countries Buy Up All "
+                     "The COVID Vaccines",
+            "Date": "2020-12-30 17:25:39+03:00",
+            "Link": "https://www.buzzfeednews.com/article/karlazabludovsky/mexico-vaccine-inequality-developing-world",
+            "Summary": "<h1>Mexico says it's wrong for wealthy countries to buy up more vaccines than they need, "
+                       "while others still don\u2019t have access to a single dose.</h1><p><img src=\"https://"
+                       "img.buzzfeed.com/buzzfeed-static/static/2020-12/22/18/tmp/20f9b6998076/"
+                       "tmp-name-2-10554-1608662537-20_dblbig.jpg\" /></p><hr /><p><a href=\"https://"
+                       "www.buzzfeednews.com/article/karlazabludovsky/mexico-vaccine-inequality-developing"
+                       "-world\">View Entire Post &rsaquo;</a></p>",
+            "Links": {
+                "https://www.buzzfeednews.com/article/karlazabludovsky/"
+                "mexico-vaccine-inequality-developing-world (link)": 1,
+                "https://img.buzzfeed.com/20f9b6998076/tmp-name-2-10554-1608662537-20_dblbig.jpg (image)": 2
+            },
+            "URL": "https://www.buzzfeed.com/world.xml"
+        }
 
         self.json_1 = {
-    "Feed": "BuzzFeed News",
-    "Title": "Yes, This PE Teacher Really Danced Through The Coup In Myanmar",
-    "Date": "2021-02-04 10:25:34+03:00",
-    "Link": "https://www.buzzfeednews.com/article/janelytvynenko/myanmar-coup-dance",
-    "Summary": "<h1>The viral video looked too absurd to be real, but online sleuths were able to quickly verify its"
-               " location.</h1><p><img src=\"https://img.buzzfeed.com/buzzfeed-static/static/2021-02/1/21/campaign"
-               "_images/f55df834b2b0/a-pe-teacher-danced-through-the-coup-in-myanmar-2-8021-1612215221-9_dblbig.jpg\""
-               " /></p><hr /><p><a href=\"https://www.buzzfeednews.com/article/janelytvynenko/myanmar-coup-dance\">"
-               "View Entire Post &rsaquo;</a></p>",
-    "Links": {
-        "https://www.buzzfeednews.com/article/janelytvynenko/myanmar-coup-dance (link)": 1,
-        "https://img.buzzfeed.com/a-pe-teacher-danced-through-the-coup-in-myanmar_dblbig.jpg (image)"
-        "": 2
-        },
-    "URL": "https://www.buzzfeed.com/world.xml"
-    }
+            "Feed": "BuzzFeed News",
+            "Title": "Yes, This PE Teacher Really Danced Through The Coup In Myanmar",
+            "Date": "2021-02-04 10:25:34+03:00",
+            "Link": "https://www.buzzfeednews.com/article/janelytvynenko/myanmar-coup-dance",
+            "Summary": "<h1>The viral video looked too absurd to be real, but online sleuths were able to quickly "
+                       "verify its location.</h1><p><img src=\"https://img.buzzfeed.com/buzzfeed-static/static/"
+                       "2021-02/1/21/campaign_images/f55df834b2b0/a-pe-teacher-danced-through-the-coup-in-myanmar"
+                       "-2-8021-1612215221-9_dblbig.jpg\" /></p><hr /><p><a href=\"https://www.buzzfeednews.com/"
+                       "article/janelytvynenko/myanmar-coup-dance\">View Entire Post &rsaquo;</a></p>",
+            "Links": {
+                "https://www.buzzfeednews.com/article/janelytvynenko/myanmar-coup-dance (link)": 1,
+                "https://img.buzzfeed.com/a-pe-teacher-danced-through-the-coup-in-myanmar_dblbig.jpg (image)"
+                "": 2
+            },
+            "URL": "https://www.buzzfeed.com/world.xml"
+        }
 
         self.json_2 = {
-    "Feed": "BuzzFeed News",
-    "Title": "Twitter Is Blocking Tweets That Criticize How The Indian Government Has Handled The Pandemic",
-    "Date": "2021-04-26 09:25:38+03:00",
-    "Link": "https://www.buzzfeednews.com/article/pranavdixit/twitter-blocking-tweets-india",
-    "Summary": "<h1>More than 50 tweets are now blocked in India.</h1><p><img src=\"https://img.buzzfeed.com/"
-               "buzzfeed-static/static/2021-04/25/23/campaign_images/03f6839c6b5d/twitter-is-blocking-tweets-that-"
-               "criticize-how-the-2-2255-1619394031-12_dblbig.jpg\" /></p><hr /><p><a href=\"https://www.buzzfeednews."
-               "com/article/pranavdixit/twitter-blocking-tweets-india\">View Entire Post &rsaquo;</a></p>",
-    "Links": {
-        "https://www.buzzfeednews.com/article/pranavdixit/twitter-blocking-tweets-india (link)": 1,
-        "https://img.buzzfeed.com/twitter-is-blocking-tweets-that-criticize-how-the_dblbig.jpg (image)": 2
-        },
-    "URL" : "https://www.buzzfeed.com/world.xml"
-    }
+            "Feed": "BuzzFeed News",
+            "Title": "Twitter Is Blocking Tweets That Criticize How The Indian Government Has Handled The Pandemic",
+            "Date": "2021-04-26 09:25:38+03:00",
+            "Link": "https://www.buzzfeednews.com/article/pranavdixit/twitter-blocking-tweets-india",
+            "Summary": "<h1>More than 50 tweets are now blocked in India.</h1><p><img src=\"https://img.buzzfeed.com/"
+                       "buzzfeed-static/static/2021-04/25/23/campaign_images/03f6839c6b5d/twitter-is-blocking-tweets"
+                       "-that-criticize-how-the-2-2255-1619394031-12_dblbig.jpg\" /></p><hr /><p><a href=\"https://"
+                       "www.buzzfeednews.com/article/pranavdixit/twitter-blocking-tweets-india\">"
+                       "View Entire Post &rsaquo;</a></p>",
+            "Links": {
+                "https://www.buzzfeednews.com/article/pranavdixit/twitter-blocking-tweets-india (link)": 1,
+                "https://img.buzzfeed.com/twitter-is-blocking-tweets-that-criticize-how-the_dblbig.jpg (image)": 2
+            },
+            "URL": "https://www.buzzfeed.com/world.xml"
+        }
 
         self.url = "https://www.buzzfeed.com/world.xml"
 
@@ -138,4 +142,3 @@ class TestJsonIO(unittest.TestCase):
         path_3 = os.path.join(base_path, "httpswwwbuzzfeedcomworldxml", "20210426",
                               "twitter-is-blocking-tweets-that-criticize-how-the_dblbig.jpg")
         self.assertEqual(os.path.isfile(path_3), True, "Picture file not created")
-
