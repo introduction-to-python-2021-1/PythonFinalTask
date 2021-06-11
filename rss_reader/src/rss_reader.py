@@ -1,5 +1,4 @@
 import logging
-
 from src.modules.argparser import arg_parser
 from src.modules.output import DefaultOutput, JSONOutput
 from src.modules.rss_parser import RSSParser
@@ -29,19 +28,21 @@ def main() -> None:
     else:
         limit = 0
 
-    url = RssUrlValidator(parser.source, logger).get_validated_url()
     if parser.version:
         print(f'Version is {__version__}')
-    elif url:
-        if parser.json:
-            handler = JSONOutput()
-            handler.output(RSSParser(url, logger, limit).parse())
-        else:
-            handler = DefaultOutput()
-            handler.output(RSSParser(url, logger, limit).parse())
         logger.info('Main ended successfully')
     else:
-        logger.info('Main ended unsuccessfully')
+        url = RssUrlValidator(parser.source, logger).get_validated_url()
+        if url:
+            if parser.json:
+                handler = JSONOutput()
+                handler.output(RSSParser(url, logger, limit).parse())
+            else:
+                handler = DefaultOutput()
+                handler.output(RSSParser(url, logger, limit).parse())
+            logger.info('Main ended successfully')
+        else:
+            logger.info('Main ended unsuccessfully')
 
 
 if __name__ == '__main__':
