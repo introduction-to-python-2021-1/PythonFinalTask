@@ -1,4 +1,5 @@
 import logging
+import os
 
 # set logger format for file logs and stdout
 _log_file_format = f"%(asctime)s - [%(levelname)s] - %(name)s - (%(filename)s).%(funcName)s(%(lineno)d) \n %(message)s"
@@ -6,7 +7,13 @@ _log_stream_format = f"[%(levelname)s] -- %(message)s"
 
 # creating a file handler
 # assigning a level and formatter to it
-file_handler = logging.FileHandler("../tmp/rss_reader.log", "w")
+
+tmp_folder_path = "tmp" + os.path.sep
+if not os.path.exists(tmp_folder_path):
+    os.makedirs(tmp_folder_path)
+logs_path = tmp_folder_path + "rss_reader.log"
+
+file_handler = logging.FileHandler(logs_path, "w")
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(logging.Formatter(_log_file_format))
 

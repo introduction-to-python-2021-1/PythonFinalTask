@@ -1,6 +1,8 @@
 from itertools import islice
 import json
 from datetime import datetime
+import os
+
 from json2html import json2html
 from xhtml2pdf import pisa
 
@@ -141,8 +143,12 @@ class FeedContainer:
         return news_by_date[:limit]
 
     # this method saves news in json format
-    def save_as_json(self, limit=50):
-        with open("../tmp/news.json", 'a', encoding="utf-8") as file:
+    def save_as_json(self, tmp_folder_path="tmp"+os.path.sep, limit=50):
+        if not os.path.exists(tmp_folder_path):
+            os.makedirs(tmp_folder_path)
+        json_path = tmp_folder_path + "news.json"
+
+        with open(json_path, 'a', encoding="utf-8") as file:
             file.write(json.dumps(self.get_news_to_save(limit), indent=4, ensure_ascii=False))
 
     # unused
