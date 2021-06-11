@@ -10,21 +10,16 @@ logger = app_logger.get_logger(__name__)
 
 # function returns <class 'xml.etree.ElementTree.Element'> if URL correct.
 # the networking method was intentionally created in a separate file
-
-
 def get_xml_tree(url):
     try:
         xml_url = urlopen(url)
         if xml_url.status != 200:
-            raise ("Bad response. Check URL address")
+            raise AttributeError("Bad response.")
 
     except AttributeError as e:
         logger.exception(e)
         sys.exit()
 
-    except Exception as UrlError:
-        logger.exception(UrlError)
-        sys.exit()
     except urllib.error.HTTPError as e:
         logger.exception(e)
         sys.exit()
@@ -36,10 +31,10 @@ def get_xml_tree(url):
         root = xml_doc.getroot()
 
         if root.tag != "rss":
-            raise Exception("This is not RSS feed")
+            raise ValueError("This is not RSS feed")
 
-    except Exception:
-        logger.error(Exception)
+    except ValueError as error:
+        logger.error(error)
         sys.exit()
 
     logger.info("Parse done.")

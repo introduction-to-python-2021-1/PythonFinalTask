@@ -28,7 +28,7 @@ def main(argv=sys.argv[1:]):
         feed.print_news_by_args(date=parser.args_Space.date,
                                 limit=parser.args_Space.limit,
                                 json=parser.args_Space.json)
-    else:
+    elif parser.args_Space.date:
         pass
 
 
