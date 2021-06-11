@@ -1,0 +1,12 @@
+from argparse import ArgumentParser
+
+
+def arg_parser() -> ArgumentParser:
+    """CREATING ARGUMENT PARSER FUNCTION"""
+    parser = ArgumentParser(description='Simple RSS Reader')
+    parser.add_argument('source', type=str, help='RSS URL', nargs='?')
+    parser.add_argument('--version', action='store_true', help='Print version info')
+    parser.add_argument('--json', action='store_true', help='Print result as JSON in stdout')
+    parser.add_argument('--verbose', action='store_true', help='Outputs verbose status messages')
+    parser.add_argument('--limit', type=int, default=False, help='Limit news topics if this parameter provided')
+    return parser
