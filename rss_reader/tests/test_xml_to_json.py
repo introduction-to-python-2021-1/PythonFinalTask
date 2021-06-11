@@ -1,6 +1,10 @@
 import io
+import datetime
 import unittest
 import unittest.mock
+
+import pytz
+from tzlocal import get_localzone
 
 from rss_reader.xml_to_json import XmlJsonConverter
 
@@ -36,7 +40,7 @@ class TestXmlToJsonConverter(unittest.TestCase):
 
         ref_dict = [{'Feed': 'BuzzFeed News',
                      'Title': 'Debt Didn’t Disappear During The Pandemic. Meet A Man Whose Job Was To Collect It.',
-                     'Date': '2021-05-30 00:11:05+03:00',
+                     'Date': '2021-05-30 04:11:05+03:00',
                      'Link': 'https://www.buzzfeednews.com/article/venessawong/debt-collector-pandemic',
                      'Summary': '<h1>An American debt collection agency paid agents in Tijuana $150 a week to '
                                 'collect from delinquent borrowers in the US. We spoke to a person who did that '
@@ -51,11 +55,15 @@ class TestXmlToJsonConverter(unittest.TestCase):
                                'dblbig.jpg (image)': 2},
                      'URL': 'https://www.buzzfeed.com/world.xml'}]
 
+        published_date = datetime.datetime.fromisoformat(ref_dict[0]["Date"])
+        local_tzinfo = pytz.timezone(str(get_localzone()))
+
+        published_date_local = published_date.astimezone(local_tzinfo)
+        ref_dict[0]["Date"] = str(published_date_local)
+
         xj_conv = XmlJsonConverter(text_xml, "https://www.buzzfeed.com/world.xml")
 
         self.assertEqual(xj_conv._html_json_list, ref_dict)
-
-        # class test_constructor(unittest.TestCase):
 
 
 mock_stdout = unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
@@ -81,7 +89,7 @@ class TestJsonPrintMethods(unittest.TestCase):
         expected = """{
   "Feed": "BuzzFeed News",
   "Title": "Debt Didn’t Disappear During The Pandemic.",
-  "Date": "2021-05-30 00:11:05+03:00",
+  "Date": "2021-05-30 04:11:05+03:00",
   "Link": "https://www.buzzfeednews.com/article/venessawong/debt-collector-pandemic",
   "Summary": " An American debt collection agency paid agents in Tijuana $150 a week ",
   "Links": {
@@ -89,6 +97,11 @@ class TestJsonPrintMethods(unittest.TestCase):
   },
   "URL": "https://www.buzzfeed.com/world.xml"
 }"""
+        published_date = datetime.datetime.fromisoformat("2021-05-30 04:11:05+03:00")
+        local_tzinfo = pytz.timezone(str(get_localzone()))
+
+        published_date_local = str(published_date.astimezone(local_tzinfo))
+        expected = expected.replace("2021-05-30 04:11:05+03:00", published_date_local)
 
         xjc = XmlJsonConverter(xml, "https://www.buzzfeed.com/world.xml")
         xjc.dump_json()
@@ -113,3 +126,4 @@ class TestJsonPrintMethods(unittest.TestCase):
         expected = '{\n  "Feed": "",\n  "Title": "",\n  "Date": "",\n  "Link": "",\n  "Summary": "",\n  "Links": {},' \
                    '\n  "URL": ""\n}'
         self.assertEqual(actual, expected, "dump_json wrong output")
+

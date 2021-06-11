@@ -25,7 +25,8 @@ import json
 
 import xml.etree.ElementTree as xmlTree
 from bs4 import BeautifulSoup
-
+import pytz
+from tzlocal import get_localzone
 
 class XmlJsonConverter:
     """Class XmlJsonConverter converts JSON containing html markup to JSON containing plain text.
@@ -141,12 +142,14 @@ class XmlJsonConverter:
 
                 try:
                     published_date = datetime.datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %z")
+                    logging.info(f"_xml2html_json: published date - {published_date}")
                 except ValueError as e:
                     logging.info(f"_xml2html_json: Date conversion error - {e}")
                     continue
 
-                published_date_utc = published_date.replace(tzinfo=datetime.timezone.utc)
-                published_date_local = published_date_utc.astimezone()
+                local_tzinfo = pytz.timezone(str(get_localzone()))
+                published_date_local = str(published_date.astimezone(local_tzinfo))
+
                 html_json_entry["Date"] = str(published_date_local)
             except AttributeError:
                 logging.info("xml2html_json:Warning:Date not available")
