@@ -29,6 +29,7 @@ class ConsoleOutput:
     def output(self, data, limit):
         """
         Output of news to the console
+        :param limit: given limit
         :param data: list of news
         """
         limit = self.__validate_limit(data, limit)

@@ -2,8 +2,8 @@ from io import StringIO
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
-from rss_reader.rss_reader.rss_reader import create_logger
 from modules.output import ConsoleOutput
+from rss_reader.rss_reader.rss_reader import create_logger
 from tests.data.news_list import news, output, output_json, output_first
 
 
@@ -38,4 +38,3 @@ class TestConsoleOutput(TestCase):
                 pass
         self.assertIn('DEBUG:root:News printing has started.', logs.output)
         self.assertIn('DEBUG:root:News printing has finished.', logs.output)
-
