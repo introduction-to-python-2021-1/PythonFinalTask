@@ -5,6 +5,7 @@ import logging
 import json
 from urllib.error import URLError
 
+from termcolor import cprint
 import pandas as pd
 
 from rss_reader.convert import Epub, HTML
@@ -27,6 +28,7 @@ def create_parser(args):
     parser.add_argument("-d", "--date", type=str, help="Sort news for date")
     parser.add_argument("-e", "--to-epub", type=str, help="Converts news to Epub format", dest="to_epub")
     parser.add_argument("-s", "--to-html", type=str, help="Converts news to HTML format", dest="to_html")
+    parser.add_argument("--colorize", action="store_true", help="color print")
     return parser.parse_args(args)
 
 
@@ -96,18 +98,30 @@ def print_news(args, feed_news):
             args from the user(url, verbose, limit, json)
             feed_news = news
     """
-
-    for date, title, link in zip(feed_news['Date'], feed_news['Title'], feed_news['Link']):
-        if args.json:
-            patch_data = dict()
-            patch_data["Title"] = title
-            patch_data["Date"] = date
-            patch_data["Link"] = link
-            print(json.dumps(patch_data, indent=3))
-        else:
-            print(f"Title : {title}")
-            print(f"Date : {date}")
-            print(f"Link : {link}\n")
+    if args.colorize:
+        for date, title, link in zip(feed_news['Date'], feed_news['Title'], feed_news['Link']):
+            if args.json:
+                patch_data = dict()
+                patch_data["Title"] = title
+                patch_data["Date"] = date
+                patch_data["Link"] = link
+                cprint(json.dumps(patch_data, indent=3), "green", "on_magenta")
+            else:
+                cprint(f"Title : {title}", "yellow")
+                cprint(f"Date : {date}", "grey", attrs=["blink"])
+                cprint(f"Link : {link}\n", "cyan")
+    else:
+        for date, title, link in zip(feed_news['Date'], feed_news['Title'], feed_news['Link']):
+            if args.json:
+                patch_data = dict()
+                patch_data["Title"] = title
+                patch_data["Date"] = date
+                patch_data["Link"] = link
+                print(json.dumps(patch_data, indent=3))
+            else:
+                print(f"Title : {title}")
+                print(f"Date : {date}")
+                print(f"Link : {link}\n")
 
 
 def convert(args):
