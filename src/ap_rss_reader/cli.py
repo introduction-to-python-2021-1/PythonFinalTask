@@ -87,6 +87,11 @@ def main(arguments: Optional[List[str]] = None) -> None:
 
     print_args(args)
 
+    if not (args.source or args.date):
+        logger.info(const.DATE_OR_SOURCE_IS_REQUIRED)
+        logger.info(parser.format_help())
+        sys.exit(1)
+
     channel = RssChannel(
         url=args.source, limit=args.limit, fetch=not args.date
     )
