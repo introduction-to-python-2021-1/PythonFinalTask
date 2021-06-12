@@ -7,20 +7,20 @@ import hashlib
 import imghdr
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-CACHE_PATH = ROOT_DIR / "storage" / "storage.json"
-IMAGE_STORAGE = ROOT_DIR / "storage" / "images"
-CACHE_PATH.touch(exist_ok=True)
 
 
 class Cache:
     """This class is used for implementing local storage"""
 
-    def __init__(self, logger):
-        """This method initialize local storage (includes image directory), receives logger object."""
-        CACHE_PATH.touch(exist_ok=True)
-        IMAGE_STORAGE.mkdir(exist_ok=True)
-        self.storage = CACHE_PATH
-        self.image_storage = IMAGE_STORAGE
+    def __init__(self, cache_dir, file_name, logger):
+        """This method initialize local storage (includes image directory), receives logger object, cache folder and
+        filename. """
+        cache_path = ROOT_DIR / cache_dir / file_name
+        cache_path.touch(exist_ok=True)
+        image_storage = ROOT_DIR / cache_dir / "images"
+        image_storage.mkdir(exist_ok=True)
+        self.storage = cache_path
+        self.image_storage = image_storage
         self.logger = logger
 
     def write_news(self, source, news_list):

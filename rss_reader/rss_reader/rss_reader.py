@@ -130,7 +130,7 @@ def main(argv=sys.argv):
         if limit == 0 or limit < 0:
             logging.error("Limit is incorrect")
             sys.exit()
-    local_storage = Cache(logging)
+    local_storage = Cache("storage", "storage.json", logging)
     if parser_args.date:
         logging.info("Trying to get data from storage...")
         news_list = local_storage.get_news_by_date(parser_args.date, parser_args.source)

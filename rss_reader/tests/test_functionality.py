@@ -1,7 +1,9 @@
 import argparse
+import datetime
 import io
 import json
 import logging
+import os
 import sys
 import unittest
 import urllib.error
@@ -12,6 +14,7 @@ import ddt
 import validators
 
 from rss_reader.rss_reader import rss_reader
+from rss_reader.rss_reader import local_storage
 
 VERSION = "4.0"
 
@@ -33,9 +36,7 @@ news_mock.iter.return_value.__iter__.return_value = iter(
             "Title": "Body of missing man found inside dinosaur statue",
             "Date": "2021-05-24T15:35:42Z",
             "Link": "https://news.yahoo.com/body-missing-man-found-inside-153542409.html",
-            "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B"
-                     "/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975"
-                     "/599080625878337ea39fc911f9b92c0e",
+            "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9",
 
         }
     ]
@@ -211,8 +212,7 @@ class TestPrintingNews(unittest.TestCase):
                 "Date: 2021-05-24T15:35:42Z\n",
                 "Link: https://news.yahoo.com/body-missing-man-found-inside-153542409.html\n",
                 "Image: https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B"
-                "/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975"
-                "/599080625878337ea39fc911f9b92c0e\n",
+                "/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9\n",
                 "....................\n",
             ]
         )
@@ -228,8 +228,7 @@ class TestPrintingNews(unittest.TestCase):
                 '    "Date": "2021-05-24T15:35:42Z",\n',
                 '    "Link": "https://news.yahoo.com/body-missing-man-found-inside-153542409.html",\n',
                 '    "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B'
-                '/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975'
-                '/599080625878337ea39fc911f9b92c0e"\n',
+                '/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9"\n',
                 "  }\n]\n",
             ]
         )
@@ -242,6 +241,28 @@ class TestPrintingNews(unittest.TestCase):
             json.loads(self.output.getvalue())
         except json.JSONDecodeError:
             self.fail("JSONDecodeError")
+
+
+class TestLocalStorage(unittest.TestCase):
+
+    def setUp(self):
+        self.cache = local_storage.Cache("tests", "test_storage.json", logging)
+
+    def test_read_from_cache(self):
+        cache_news = self.cache.read_news()
+        self.assertEqual(news_mock[0], cache_news.get("https://news.yahoo.com/rss/")[0])
+
+    def test_duplicates_elimination(self):
+        cache_news = self.cache.read_news()
+        news_without_duplicates = self.cache.eliminate_duplicates(cache_news.get("https://news.yahoo.com/rss/"),
+                                                                  news_mock)
+        self.assertEqual(len(news_without_duplicates), 2)
+
+    def test_getting_news_for_specified_date(self):
+        date = rss_reader.valid_date("20210524")
+        news_for_specified_date = self.cache.get_news_by_date(date, "https://news.yahoo.com/rss/")
+        self.assertEqual(news_for_specified_date, news_mock)
+
 
 
 if __name__ == "__main__":

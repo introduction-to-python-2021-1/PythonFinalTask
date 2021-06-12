@@ -1,0 +1,18 @@
+{
+  "https://news.yahoo.com/rss/": [
+    {
+        "Feed": "Yahoo News - Latest News & Headlines",
+        "Title": "Body of missing man found inside dinosaur statue",
+        "Date": "2021-05-24T15:35:42Z",
+        "Link": "https://news.yahoo.com/body-missing-man-found-inside-153542409.html",
+        "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9"
+    },
+    {
+        "Feed": "Yahoo News - Latest News & Headlines",
+        "Title": "Programs allow Tarrant County residents to get assistance for funeral, burial costs",
+        "Date": "2021-06-12T10:30:00Z",
+        "Link": "https://news.yahoo.com/programs-allow-tarrant-county-residents-103000006.html",
+        "Image": "https://s.yimg.com/uu/api/res/1.2/RzU8MIwwmHy9nE2oy9ObCQ--~B/46a6320972381a9edcd4b3602383dc36"
+    }
+  ]
+}
