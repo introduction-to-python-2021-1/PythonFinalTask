@@ -9,7 +9,6 @@ from jinja2 import Template
 from xhtml2pdf import pisa
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-IMAGE_STORAGE = ROOT_DIR / "storage" / "images"
 
 
 class Converter:
@@ -18,6 +17,9 @@ class Converter:
     def __init__(self, directory, file_name, logger):
         """This initialization method receives directory from user, which will be used for saving file,
         also receives file_name and logger"""
+        image_storage = ROOT_DIR / "storage" / "images"
+        image_storage.mkdir(exist_ok=True)
+        self.img_storage = image_storage
         self.dir = Path(directory).absolute()
         self.full_path_to_file = self.dir / file_name
         self.logger = logger
@@ -71,8 +73,7 @@ class Converter:
             sys.exit()
         self.logger.info("News has been successfully converted")
 
-    @staticmethod
-    def process_news_list_with_images(news_list):
+    def process_news_list_with_images(self, news_list):
         """This method process list of news, replacing image links by local paths to images if they exist in local
         storage"""
         for item in news_list:
@@ -80,7 +81,7 @@ class Converter:
                 filename = hashlib.md5(item.get("Image").encode()).hexdigest()
             except AttributeError:
                 continue
-            for existing_img in os.listdir(IMAGE_STORAGE):
+            for existing_img in os.listdir(self.img_storage):
                 if existing_img.split(".")[0] == filename:
-                    item["Image"] = (IMAGE_STORAGE / existing_img).resolve()
+                    item["Image"] = (self.img_storage / existing_img).resolve()
                     break
