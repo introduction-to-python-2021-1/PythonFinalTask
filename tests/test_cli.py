@@ -24,7 +24,10 @@ def test_main(caplog: Any) -> None:
     assert GREETING == [record.message for record in caplog.records][0]
 
 
-def test_arg_version_exist() -> None:
-    args = create_parser().parse_args(["https://a.b", "--verbose"])
+def test_parser_supported_arguments() -> None:
+    args = create_parser().parse_args()
+    assert hasattr(args, "date")
+    assert hasattr(args, "json")
+    assert hasattr(args, "limit")
     assert hasattr(args, "source")
     assert hasattr(args, "verbose")
