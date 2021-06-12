@@ -31,7 +31,7 @@ class RssChannel:
     """RssChannel class specifies the public methods of rss."""
 
     SELECTOR: Final[str] = "rss channel"
-    ITEM_SELECTOR: Final[str] = "item"
+    ARTICLE_SELECTOR: Final[str] = "item"
 
     def __init__(
         self, *, url: Optional[str] = None, limit: int = 0, fetch: bool = True
@@ -66,7 +66,7 @@ class RssChannel:
             beautiful_soup = self._get_beautiful_soup()
             if beautiful_soup:
                 self._title = beautiful_soup.select_one("title").string
-                channel_items = beautiful_soup.select(self.ITEM_SELECTOR)
+                channel_items = beautiful_soup.select(self.ARTICLE_SELECTOR)
                 self._channel_items.extend(
                     [
                         Article(
