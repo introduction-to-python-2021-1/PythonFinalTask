@@ -55,21 +55,23 @@ Links:
 
 
 class TestMain(unittest.TestCase):
-    # @classmethod
-    # def setUpClass(cls) -> None:
-    #     remove(join(detect(), 'rss_reader', 'data', 'cache', 'cache.json'))
+    @classmethod
+    def tearDownClass(cls):
+        remove(join(detect(), 'rss_reader', 'data', 'cache', 'cache.json'))
 
     def setUp(self) -> None:
         self.argparser = Argparser(logger=Mock())
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_version(self, mock_stdout):
+        """ Test program with the given version argument """
         argv = ['None', '--version']
         main(argv)
         self.assertEqual(mock_stdout.getvalue(), '\nVersion {}\n'.format(__version__))
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_version_with_source(self, mock_stdout):
+        """ Test program with the given version and source arguments """
         argv = ['None', 'https://news.yahoo.com/rss/', '--version']
         main(argv)
         self.assertEqual(mock_stdout.getvalue(), '\nVersion {}\n'.format(__version__))
@@ -77,6 +79,7 @@ class TestMain(unittest.TestCase):
     @patch('requests.get')
     @patch('sys.stdout', new_callable=StringIO)
     def test_source(self, mock_stdout, mock_get):
+
         mock_get.return_value.text = news
         argv = ['None', 'https://www.test.com/rss/news']
         main(argv)
@@ -85,6 +88,7 @@ class TestMain(unittest.TestCase):
     @patch('requests.get')
     @patch('sys.stdout', new_callable=StringIO)
     def test_source_with_limit(self, mock_stdout, mock_get):
+        """ Test program with the given source argument """
         mock_get.return_value.text = news
         argv = ['None', 'https://www.test.com/rss/news', '--limit=1']
         main(argv)
@@ -92,15 +96,8 @@ class TestMain(unittest.TestCase):
 
     @patch('requests.get')
     @patch('sys.stdout', new_callable=StringIO)
-    def test_date(self, mock_stdout, mock_get):
-        # mock_get.return_value.text = news
-        argv = ['None', '--date=20200612']
-        main(argv)
-        self.assertEqual(mock_stdout.getvalue(), third_news + second_news + first_news)
-
-    @patch('requests.get')
-    @patch('sys.stdout', new_callable=StringIO)
     def test_source_with_date(self, mock_stdout, mock_get):
+        """ Test program with the given source and date arguments """
         mock_get.return_value.text = news
         argv = ['None', 'https://www.test.com/rss/news', '--date=20200612']
         main(argv)
