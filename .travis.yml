@@ -11,9 +11,5 @@ script:
   - nosetests --cover-branches --with-coverage --cover-min-percentage=50 --cover-package=rss_reader
   - pycodestyle --max-line-length=120 .
   - python ./../rss_reader_checker.py
-<<<<<<< HEAD
-  - cd -
-=======
   - cd -
 
->>>>>>> 643f03232677a04e50332d838b1744c6efa37982
