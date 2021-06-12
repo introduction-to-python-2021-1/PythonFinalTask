@@ -51,8 +51,7 @@ class RssChannel:
                 `True` by default.
 
         """
-        if not url:
-            url = ""
+        url = url or ""
 
         self._limit = limit
         self._channel_items: List[Article] = []
