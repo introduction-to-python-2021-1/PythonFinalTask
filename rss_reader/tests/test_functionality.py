@@ -228,8 +228,8 @@ class TestPrintingNews(unittest.TestCase):
                 '    "Date": "2021-05-24T15:35:42Z",\n',
                 '    "Link": "https://news.yahoo.com/body-missing-man-found-inside-153542409.html",\n',
                 '    "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B'
-                    '/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975'
-                    '/599080625878337ea39fc911f9b92c0e"\n',
+                '/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975'
+                '/599080625878337ea39fc911f9b92c0e"\n',
                 "  }\n]\n",
             ]
         )
