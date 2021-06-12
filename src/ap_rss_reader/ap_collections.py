@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import NamedTuple
 
 
-class ChannelItem(NamedTuple):
+class Article(NamedTuple):
     """The smallest chunk (news) of rss channel."""
 
     title: str

@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup  # type: ignore
 import requests
 from requests import Response
 
-from ap_rss_reader.ap_collections import ChannelItem
+from ap_rss_reader.ap_collections import Article
 from ap_rss_reader.ap_constants import DUMP_FILE
 from ap_rss_reader.ap_typing import Filter
 from ap_rss_reader.log import logger
@@ -52,7 +52,7 @@ class RssChannel:
             url = ""
 
         self._limit = limit
-        self._channel_items: List[ChannelItem] = []
+        self._channel_items: List[Article] = []
         self._title: str = ""
         self._url: str = url
 
@@ -69,7 +69,7 @@ class RssChannel:
                 channel_items = beautiful_soup.select(self.ITEM_SELECTOR)
                 self._channel_items.extend(
                     [
-                        ChannelItem(
+                        Article(
                             title=channel_item.title.string,
                             link=channel_item.link.next,
                             date=datetime.strptime(
@@ -105,8 +105,8 @@ class RssChannel:
             self._limit = limit
 
     @property
-    def channel_items(self) -> List[ChannelItem]:
-        """:obj:`list` of :obj:`ChannelItem`: All news."""
+    def channel_items(self) -> List[Article]:
+        """:obj:`list` of :obj:`Article`: All news."""
         return (
             self._channel_items[: self._limit]
             if self._limit
@@ -122,7 +122,7 @@ class RssChannel:
         """Print channel title and all channel items from channel."""
         self._print_feed_title()
 
-        channel_items: List[ChannelItem] = (
+        channel_items: List[Article] = (
             self.filter(filter_func) if filter_func else self.channel_items
         )
         if not channel_items:
@@ -229,7 +229,7 @@ class RssChannel:
                     sort_keys=True,
                 )
 
-    def load(self, file: str = "") -> List[ChannelItem]:
+    def load(self, file: str = "") -> List[Article]:
         """Read the rss channel from the JSON file."""
         logger.debug("\nLoad rss-channel from file...")
         _, data = self._read_file(file)
@@ -252,7 +252,7 @@ class RssChannel:
                 )
             )
         return [
-            ChannelItem(
+            Article(
                 **{
                     **current_news,  # type: ignore
                     "date": datetime.strptime(
@@ -263,7 +263,7 @@ class RssChannel:
             for current_news in all_news
         ]
 
-    def filter(self, function: Filter, /) -> List[ChannelItem]:
+    def filter(self, function: Filter, /) -> List[Article]:
         """Return news for witch `function` return `True`."""
         return list(filter(function, self._channel_items))
 
@@ -323,7 +323,7 @@ class RssChannel:
         )
 
     @staticmethod
-    def _print_channel_items(channel_items: List[ChannelItem]) -> None:
+    def _print_channel_items(channel_items: List[Article]) -> None:
         for channel_item in channel_items:
             logger.info(
                 f"Title: {channel_item.title}\n"
