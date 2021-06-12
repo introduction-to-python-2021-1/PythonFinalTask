@@ -133,68 +133,69 @@ class RssChannel:
 
     def dump(self, file: str = "") -> None:
         """Write the rss channel on the file (as JSON)."""
-        full_path, data = self._read_file(file)
+        if not self._url:
+            return
 
-        if self._url:
-            with open(full_path, "w") as df:
-                current_channel: Dict[str, Any] = next(
-                    filter(lambda channel: channel["url"] == self._url, data),
-                    None,  # type: ignore
+        full_path, data = self._read_file(file)
+        with open(full_path, "w") as df:
+            current_channel: Dict[str, Any] = next(
+                filter(lambda channel: channel["url"] == self._url, data),
+                None,  # type: ignore
+            )
+            if current_channel:
+                # Convert news from file and from instance to dict
+                # with "link" as unique key.  Replace old news (from
+                # file) with news from instance
+                all_news: List[Dict[str, Any]] = list(
+                    {
+                        **{
+                            article["link"]: article
+                            for article in current_channel["articles"]
+                        },
+                        **{
+                            article.link: {
+                                **article._asdict(),
+                                "date": article.date.strftime(
+                                    "%Y-%m-%d %H:%M:%S"
+                                ),
+                            }
+                            for article in self._articles
+                        },
+                    }.values()
                 )
-                if current_channel is not None:
-                    # Convert news from file and from instance to dict
-                    # with "link" as unique key.  Replace old news (from
-                    # file) with news from instance
-                    all_news: List[Dict[str, Any]] = list(
-                        {
-                            **{
-                                article["link"]: article
-                                for article in current_channel["articles"]
-                            },
-                            **{
-                                article.link: {
-                                    **article._asdict(),
-                                    "date": article.date.strftime(
-                                        "%Y-%m-%d %H:%M:%S"
-                                    ),
-                                }
-                                for article in self._articles
-                            },
-                        }.values()
+                # replace current rss channel
+                data = [
+                    dict(
+                        title=self._title,
+                        url=self._url,
+                        articles=all_news,
                     )
-                    # replace current rss channel
-                    data = [
-                        dict(
-                            title=self._title,
-                            url=self._url,
-                            articles=all_news,
-                        )
-                        if channel["url"] == self._url
-                        else channel
-                        for channel in data
-                    ]
-                else:
-                    data.append(
-                        dict(
-                            title=self._title,
-                            url=self._url,
-                            articles=[
-                                {
-                                    **article._asdict(),
-                                    "date": article.date.strftime(
-                                        "%Y-%m-%d %H:%M:%S"
-                                    ),
-                                }
-                                for article in self._articles
-                            ],
-                        )
+                    if channel["url"] == self._url
+                    else channel
+                    for channel in data
+                ]
+            else:
+                data.append(
+                    dict(
+                        title=self._title,
+                        url=self._url,
+                        articles=[
+                            {
+                                **article._asdict(),
+                                "date": article.date.strftime(
+                                    "%Y-%m-%d %H:%M:%S"
+                                ),
+                            }
+                            for article in self._articles
+                        ],
                     )
-                json.dump(
-                    data,
-                    df,
-                    indent=4,
-                    sort_keys=True,
                 )
+            json.dump(
+                data,
+                df,
+                indent=4,
+                sort_keys=True,
+            )
 
     def fetch(self) -> List[Article]:
         """Fetch and parse data using url."""
