@@ -15,7 +15,7 @@ def command_arguments_parser(args):
     """Adds positional and optional arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", action="version", help="Print version info", version="Version 1.2")
-    parser.add_argument("source", type=str, help="RSS URL")
+    parser.add_argument("source", type=str, nargs = "?", default = None,  help="RSS URL")
     parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
@@ -158,7 +158,6 @@ def creating_cashing_news_data(user_date, source: str = None):
 
 def main():
     args = command_arguments_parser(sys.argv[1:])
-    answer = server_answer(args.source)
     logger = create_logger(args.verbose)
 
     if args.limit is not None:
@@ -180,6 +179,7 @@ def main():
     else:
         try:
             logger.info("Getting access to the RSS")
+            answer = server_answer(args.source)
             data = parses_data(answer.text, args.source)
             if args.limit:
                 logger.info(f"Reads amount of news - {args.limit}")
