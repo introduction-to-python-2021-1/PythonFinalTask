@@ -1,7 +1,9 @@
 import sys
 import os
 import logging
+import datetime
 
+import dateparser
 import pandas as pd
 
 logging.basicConfig(level=logging.ERROR)
@@ -64,8 +66,9 @@ class Data:
             sys.exit()
         self.data = pd.read_csv("data.csv")
         all_data = self.data['Date']
+        date = datetime.datetime.strptime(date, "%Y%m%d")
         for days in all_data:
-            if date == days[:10].replace('-', ''):
+            if date.date() == dateparser.parse(days).date():
                 break
         else:
             print(f"doesnt have news on this day ({date})")
@@ -73,7 +76,7 @@ class Data:
         print(f"News for {date}")
         news_df = pd.DataFrame()
         for data, title, link, img in zip(self.data['Date'], self.data['Title'], self.data['Link'], self.data["img"]):
-            if int(date) == int(data[:10].replace('-', '')):
+            if date.date() == dateparser.parse(data).date():
                 count += 1
                 logger.info(f"{count}")
                 patch_data = dict()

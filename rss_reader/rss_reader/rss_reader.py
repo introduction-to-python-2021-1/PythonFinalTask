@@ -26,8 +26,10 @@ def create_parser(args):
     parser.add_argument("-j", "--json", action="store_true", help="Print result as JSON in stdout")
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-d", "--date", type=str, help="Sort news for date")
-    parser.add_argument("-e", "--to-epub", type=str, help="Converts news to Epub format", dest="to_epub")
-    parser.add_argument("-s", "--to-html", type=str, help="Converts news to HTML format", dest="to_html")
+    parser.add_argument(
+        "-e", "--to-epub", type=str, help=r"Converts to Epub with path 'D:\data' or '/home/user/'", dest="to_epub")
+    parser.add_argument(
+        "-s", "--to-html", type=str, help=r"Converts to html with path 'D:\data' or '/home/user/'", dest="to_html")
     parser.add_argument("--colorize", action="store_true", help="color print")
     return parser.parse_args(args)
 
@@ -140,14 +142,8 @@ def convert(args):
             logger.error(f"{e} with way {args.to_html}")
             sys.exit()
     if args.to_epub:
-        try:
-            file = Epub()
-            open(f"{args.to_epub}.txt")
-            os.remove(f"{args.to_epub}.txt")
-            file.make_file(feed, args.to_epub)
-        except FileNotFoundError as e:
-            logger.error(f"{e} with way {args.to_epub}")
-            sys.exit()
+        file = Epub()
+        file.make_file(feed, args.to_epub)
 
 
 def limit_checker(args):

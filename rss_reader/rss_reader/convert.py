@@ -52,6 +52,8 @@ class Epub:
         file = "".join(str("book of news"))
         file_path = os.path.join(path, f"{file}.epub")
         epub.write_epub(f"{file_path}", data, {})
+        if not os.path.exists(file_path):
+            logger.error(f"Bad path")
 
 
 class HTML:
