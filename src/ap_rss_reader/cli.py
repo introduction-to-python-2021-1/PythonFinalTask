@@ -67,13 +67,16 @@ def main(arguments: Optional[List[str]] = None) -> None:
         arguments: list of command line arguments.
 
     """
+    parser = create_parser()
+
     if arguments is None:
         if len(sys.argv) <= 1:
             logger.info(GREETING)
+            logger.info(parser.format_help())
             return
         arguments = sys.argv[1:]
 
-    args = create_parser().parse_args(arguments)
+    args = parser.parse_args(arguments)
 
     if args.verbose:
         logger.setLevel(logging.DEBUG)

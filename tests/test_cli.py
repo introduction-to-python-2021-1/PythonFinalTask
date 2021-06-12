@@ -13,15 +13,15 @@ if TYPE_CHECKING:
     from typing import Any
 
 
-def test_main(caplog: Any) -> None:
-    caplog.clear()
-    main()
-    assert [GREETING] == [record.message for record in caplog.records]
-
-
 def test_create_parser() -> None:
     parser: ArgumentParser = create_parser()
     assert isinstance(parser, ArgumentParser)
+
+
+def test_main(caplog: Any) -> None:
+    caplog.clear()
+    main()
+    assert GREETING == [record.message for record in caplog.records][0]
 
 
 def test_arg_version_exist() -> None:
