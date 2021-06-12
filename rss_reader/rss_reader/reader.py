@@ -12,6 +12,8 @@ def main(argv=sys.argv[1:]):
     # command line arguments parse
     parser = cl_parser.args_parser(argv)
 
+    print(logger.handlers)
+
     # if command line arguments have a link
     if parser.args_Space.source:
 

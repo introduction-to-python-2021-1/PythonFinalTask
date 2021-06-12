@@ -10,6 +10,8 @@ logger = app_logger.get_logger(__name__)
 
 # function returns <class 'xml.etree.ElementTree.Element'> if URL correct.
 # the networking method was intentionally created in a separate file
+
+
 def get_xml_tree(url):
     try:
         xml_url = urlopen(url)
