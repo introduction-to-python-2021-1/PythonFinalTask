@@ -1,3 +1,4 @@
+import argparse
 import io
 import json
 import logging
@@ -32,7 +33,9 @@ news_mock.iter.return_value.__iter__.return_value = iter(
             "Title": "Body of missing man found inside dinosaur statue",
             "Date": "2021-05-24T15:35:42Z",
             "Link": "https://news.yahoo.com/body-missing-man-found-inside-153542409.html",
-            "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/599080625878337ea39fc911f9b92c0e",
+            "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B"
+                     "/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975"
+                     "/599080625878337ea39fc911f9b92c0e",
 
         }
     ]
@@ -100,6 +103,27 @@ class TestParserArguments(unittest.TestCase):
         )
         self.assertTrue(rss_parser.json)
 
+    def test_date_arg(self):
+        """Tests if --date argument is True"""
+        rss_parser = rss_reader.build_args(
+            [None, "https://news.yahoo.com/rss/", "--date=20210607"]
+        )
+        self.assertTrue(rss_parser.date)
+
+    def test_pdf_arg(self):
+        """Tests if --to-pdf argument is True"""
+        rss_parser = rss_reader.build_args(
+            [None, "https://news.yahoo.com/rss/", "--to-pdf=pdf_folder"]
+        )
+        self.assertTrue(rss_parser.to_pdf)
+
+    def test_html_arg(self):
+        """Tests if --to-html argument is True"""
+        rss_parser = rss_reader.build_args(
+            [None, "https://news.yahoo.com/rss/", "--to-html=html_folder"]
+        )
+        self.assertTrue(rss_parser.to_html)
+
     @ddt.data("", "https://newssdasd2213.yahoo.com/rss/")
     def test_incorrect_url(self, source):
         """Tests logging if url is incorrect"""
@@ -153,6 +177,12 @@ class TestParserArguments(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.payload, json.dumps({"key": "payload"}))
 
+    @ddt.data("28182899", "ajdlasjdlakjs", "0", "20211818")
+    def test_incorrect_date(self, date):
+        """Tests work of parser if date is incorrect"""
+        with self.assertRaises(argparse.ArgumentTypeError):
+            rss_reader.valid_date(date)
+
 
 class TestParsing(unittest.TestCase):
     """This class tests parsing functionality"""
@@ -180,7 +210,9 @@ class TestPrintingNews(unittest.TestCase):
                 "Title: Body of missing man found inside dinosaur statue\n",
                 "Date: 2021-05-24T15:35:42Z\n",
                 "Link: https://news.yahoo.com/body-missing-man-found-inside-153542409.html\n",
-                "Image: https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/599080625878337ea39fc911f9b92c0e\n",
+                "Image: https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B"
+                "/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975"
+                "/599080625878337ea39fc911f9b92c0e\n",
                 "....................\n",
             ]
         )
@@ -195,7 +227,9 @@ class TestPrintingNews(unittest.TestCase):
                 '    "Title": "Body of missing man found inside dinosaur statue",\n',
                 '    "Date": "2021-05-24T15:35:42Z",\n',
                 '    "Link": "https://news.yahoo.com/body-missing-man-found-inside-153542409.html",\n',
-                '    "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/599080625878337ea39fc911f9b92c0e"\n',
+                '    "Image": "https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B'
+                    '/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975'
+                    '/599080625878337ea39fc911f9b92c0e"\n',
                 "  }\n]\n",
             ]
         )

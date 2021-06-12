@@ -6,6 +6,7 @@ __pycache__/
 rss_reader/rss_reader.egg-info
 rss_reader/.coverage
 rss_reader/storage/storage.json
+rss_reader/storage/images
 # C extensions
 *.so
 

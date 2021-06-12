@@ -1,20 +1,30 @@
 import json
+import os
 from pathlib import Path
-
+import urllib.request
 import dateparser
+import hashlib
+import imghdr
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 CACHE_PATH = ROOT_DIR / "storage" / "storage.json"
+IMAGE_STORAGE = ROOT_DIR / "storage" / "images"
 CACHE_PATH.touch(exist_ok=True)
 
 
 class Cache:
+    """This class is used for implementing local storage"""
+
     def __init__(self, logger):
+        """This method initialize local storage (includes image directory), receives logger object."""
         CACHE_PATH.touch(exist_ok=True)
+        IMAGE_STORAGE.mkdir(exist_ok=True)
         self.storage = CACHE_PATH
+        self.image_storage = IMAGE_STORAGE
         self.logger = logger
 
     def write_news(self, source, news_list):
+        """This method eliminate duplicates, then write news in JSON format and save it in cache"""
         content = self.read_news()
         self.logger.info("Eliminating news duplicates...")
         if content.get(source):
@@ -25,33 +35,33 @@ class Cache:
         self.logger.info("Writing news to cache")
         with open(self.storage, "w") as fp:
             fp.write(json.dumps(content, indent=2, ensure_ascii=False))
+        self.save_images(news_list)
 
     def read_news(self):
+        """This method reads news from cache"""
         self.logger.info("Reading local storage...")
         with open(self.storage, "r") as fp:
             content = json.loads(fp.read() or "{}")
         return content
 
     def get_news_by_date(self, date_arg, source):
+        """This method receives date and source, after sorting operation returns lst of news for specified date"""
         self.logger.info("Getting news from local storage...")
         content = self.read_news()
-        initial_list = []
         news_for_specified_date = None
         if date_arg and source:
-            news_for_specified_date = self.sort_by_date(
-                initial_list, content[source], date_arg
-            )
+            news_for_specified_date = self.sort_by_date(content[source], date_arg)
         else:
             for link, news in content.items():
-                news_for_specified_date = self.sort_by_date(
-                    initial_list, news, date_arg
-                )
+                news_for_specified_date = self.sort_by_date(news, date_arg)
         if not news_for_specified_date:
             self.logger.error("No data for specified date")
         return news_for_specified_date
 
     @staticmethod
-    def sort_by_date(news_for_specified_date, news_list, date_arg):
+    def sort_by_date(news_list, date_arg):
+        """This method finds news for specified date"""
+        news_for_specified_date = []
         for item in news_list:
             if dateparser.parse(item["Date"]).date() == date_arg.date():
                 news_for_specified_date.append(item)
@@ -60,6 +70,8 @@ class Cache:
 
     @staticmethod
     def eliminate_duplicates(caching_news_list, news_list_from_request):
+        """This method eliminate duplicates: receives news from cache and news from request. Duplicates are
+        eliminated with the use of sets"""
         local_content = set(tuple(dict_item.items()) for dict_item in caching_news_list)
         content_from_request = set(
             tuple(dict_item.items()) for dict_item in news_list_from_request
@@ -73,3 +85,16 @@ class Cache:
             fresh_news_list.append(item_info)
 
         return fresh_news_list
+
+    def save_images(self, news_list):
+        """This method saves images to local cache
+        Filename is hash value of link to the img"""
+        for item in news_list:
+            if item.get("Image") is not None:
+                img_path = (
+                    self.image_storage
+                    / f"{hashlib.md5(item.get('Image').encode()).hexdigest()}"
+                )
+                urllib.request.urlretrieve(item.get("Image"), img_path)
+                img_format = imghdr.what(img_path)
+                os.rename(img_path, f"{img_path}.{img_format}")

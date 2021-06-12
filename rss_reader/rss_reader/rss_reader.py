@@ -16,6 +16,7 @@ VERSION = "4.0"
 
 
 def valid_date(date_in_str):
+    """This function validate date: receives date in str and return datetime object or raise error"""
     try:
         return datetime.strptime(date_in_str, "%Y%m%d")
     except ValueError:
@@ -92,6 +93,7 @@ def parse_response(xml):
 
 
 def calculate_news_with_limit(news_list, limit):
+    """This function receives list of news and limit from user and returns slice"""
     if not limit:
         limit = len(news_list)
     return news_list[:limit]
