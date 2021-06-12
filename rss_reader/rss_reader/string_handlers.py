@@ -69,7 +69,7 @@ def check_if_content_with_html_tags(content_item):
     :return: Empty string if string doesn't consist of html tags or string with content in readable format
     """
     pretty_str = ''
-    soup = BeautifulSoup(content_item, 'lxml')
+    soup = BeautifulSoup(content_item, 'html.parser')
     some_extra_links = soup.find_all('a')
     if some_extra_links:
         for link in some_extra_links:

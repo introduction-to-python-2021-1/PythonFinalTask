@@ -14,13 +14,15 @@ def get_img_container(link):
     :return: list with dicts representing image as link('src') and description('alt')
     """
     img_list = []
-    request = requests.get(link)
-    soup = BeautifulSoup(request.text, 'lxml')
-    img_container = soup.find_all('div', class_='caas-img-container')
-    for container in img_container:
-        if container:
-            img_dict = get_img_from_container(container)
-            img_list.append(img_dict)
+    # Works correctly only with yahoo
+    if link.startswith('https://news.yahoo.com/'):
+        request = requests.get(link)
+        soup = BeautifulSoup(request.text, 'lxml')
+        img_container = soup.find_all('div', class_='caas-img-container')
+        for container in img_container:
+            if container:
+                img_dict = get_img_from_container(container)
+                img_list.append(img_dict)
     return img_list
 
 
