@@ -42,13 +42,12 @@ class RssChannel:
         """Create new rss channel and load all news with the given url.
 
         Args:
-            url (str, optional): Url of rss channel. When `url` is not
-                given, try to load data from file.
-            limit (:obj:`int`, optional): Max count of displayed news.
-                0 - if there's no limits.
-            fetch (bool, optional): When `True` data will loaded using
-                `url` argument.  Otherwise data will be read from file.
-                `True` by default.
+            url:  Url of rss channel.  When `url` is not given, try to
+                load data from file.
+            limit:  Max count of displayed news.  0 - when there's no
+                limits.
+            fetch: When `True` data will loaded using `url` argument.
+                Otherwise data will be read from file.
 
         """
         if fetch and not url:
@@ -69,12 +68,12 @@ class RssChannel:
 
     @property
     def url(self) -> str:
-        """str: url of rss channel."""
+        """Url of rss channel."""
         return self._url
 
     @property
     def limit(self) -> int:
-        """int: The max count of displayed news."""
+        """The max count of displayed news."""
         return self._limit
 
     @limit.setter
@@ -84,12 +83,12 @@ class RssChannel:
 
     @property
     def articles(self) -> List[Article]:
-        """:obj:`list` of :obj:`Article`: All news."""
+        """All news."""
         return self._articles[: self._limit] if self._limit else self._articles
 
     @property
     def title(self) -> str:
-        """str: Title of rss channel."""
+        """Title of rss channel."""
         return self._title
 
     def print(self, *, filter_func: Optional[Filter] = None) -> None:
@@ -108,12 +107,12 @@ class RssChannel:
         """Convert `Channel` to json.
 
         Args:
-            whole (bool): If `True`, return the RSS channel and all news
-                as JSON. Otherwise, return only news limited by `limit`
+            whole: If `True`, return the RSS channel and all news as
+                JSON. Otherwise, return only news limited by `limit`
                 property.  `False` by default.
 
         Returns:
-            :obj:`str`: channel as json.
+            Rss channel as json.
 
         """
         return json.dumps(
@@ -260,7 +259,7 @@ class RssChannel:
         """Download and convert data to beautiful soup.
 
         Returns:
-            BeautifulSoup: content of rss channel.
+            Content of rss channel.
 
         """
         response: Response = requests.request(

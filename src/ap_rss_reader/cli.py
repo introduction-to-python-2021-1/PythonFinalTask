@@ -64,8 +64,7 @@ def main(arguments: Optional[List[str]] = None) -> None:
     """Show message and exit.
 
     Args:
-        arguments (:obj:`list` of :obj:`str`, optional): list of command
-            line arguments.
+        arguments: list of command line arguments.
 
     """
     if arguments is None:
