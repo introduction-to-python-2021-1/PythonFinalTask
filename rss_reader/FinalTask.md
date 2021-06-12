@@ -23,7 +23,7 @@ RSS reader should be a command-line utility which receives [RSS](wikipedia.org/w
 You are free to choose format of the news console output. The textbox below provides an example of how it can be implemented:
 
 ```shell
-$ rss_reader_main.py "https://news.yahoo.com/rss/" --limit 1
+$ Rss_reader.py "https://news.yahoo.com/rss/" --limit 1
 
 Feed: Yahoo News - Latest News & Headlines
 
@@ -45,7 +45,7 @@ Links:
 
 Utility should provide the following interface:
 ```shell
-usage: rss_reader_main.py [-h] [--version] [--json] [--verbose] [--limit LIMIT]
+usage: Rss_reader.py [-h] [--version] [--json] [--verbose] [--limit LIMIT]
                      source
 
 Pure Python command-line RSS rss_reader.
