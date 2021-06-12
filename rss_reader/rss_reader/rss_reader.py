@@ -149,8 +149,8 @@ def find_cashed_news(user_date_in_converted_format, source=None):
 def creating_cashing_news_data(user_date, source: str = None):
     """Receive user date from user, convert it into datetime and find cashed news"""
     user_date_in_converted_format = datetime.strptime(user_date, "%Y%m%d")
-    if user_date_in_converted_format < datetime.strptime("20210501", "%Y%m%d"):
-        print("Cashing news starts from May 1, 2021")
+    if user_date_in_converted_format < datetime.strptime("20210601", "%Y%m%d"):
+        print("Cashing news starts from June 1, 2021")
         sys.exit()
     data = find_cashed_news(user_date_in_converted_format, source)
     return data
