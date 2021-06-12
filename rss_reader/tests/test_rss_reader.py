@@ -3,6 +3,7 @@
 """Test command-line RSS reader."""
 
 import feedparser
+import logging
 import unittest
 
 from io import StringIO
@@ -30,8 +31,16 @@ class RSSReaderTests(unittest.TestCase):
             parse_url('')
 
     def test_parse_url_for_incorrect_url(self):
-        """Test parse_url() function for correct url."""
-        self.assertIsNotNone(parse_url('https://www.wikipedia.org/'))
+        """Test parse_url() function for incorrect url."""
+        with self.assertRaises(SystemExit):
+            self.assertIsNotNone(parse_url('https://www.wikipedia.org/'))
+
+    def test_parse_url_for_incorrect_url_with_logger(self):
+        """Test parse_url() function for incorrect url with logger."""
+        with self.assertRaises(SystemExit):
+            with patch('sys.stderr', new=StringIO()) as test_out:
+                parse_url('https://www.wikipedia.org/', logger=logging.getLogger('test_rss_reader'))
+                self.assertTrue(test_out.getvalue().find("Feed’s title is empty.") != -1)
 
     def test_parse_url_for_correct_url(self):
         """Test parse_url() function for correct url."""
@@ -77,6 +86,13 @@ class RSSReaderTests(unittest.TestCase):
         """Test load_date() function for empty channel."""
         parser = feedparser.parse('')
         self.assertIsNone(load_data(parser, ''))
+
+    def test_load_data_for_empty_channel_with_logger(self):
+        """Test load_date() function for empty channel with logger."""
+        parser = feedparser.parse('')
+        with patch('sys.stderr', new=StringIO()) as test_out:
+            load_data(parser, '', logger=logging.getLogger('test_rss_reader'))
+            self.assertTrue(test_out.getvalue().find("Data is empty.") != -1)
 
     def test_load_data_for_full_data(self):
         """Test load_date() function for full data."""

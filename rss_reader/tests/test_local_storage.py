@@ -5,10 +5,13 @@
 Test functions functions for work with local storage of loaded news.
 """
 
+import logging
 import os
 import unittest
 
+from io import StringIO
 from rss_reader.rss_reader.local_storage import convert_date_format, load_from_storage, save_to_storage
+from unittest.mock import patch
 
 _test_data_json_filename = r'tests/test_storage.json'
 _test_tmp_json_filename = r'tests/test_temp_storage.json'
@@ -53,6 +56,12 @@ class LocalStorageTests(unittest.TestCase):
         """Test load_from_storage() function for empty storage."""
         self.assertIsNone(load_from_storage('', '20210524'))
 
+    def test_load_from_storage_for_empty_storage_with_logger(self):
+        """Test load_from_storage() function for empty storage with logger."""
+        with patch('sys.stderr', new=StringIO()) as test_out:
+            load_from_storage('', '20210524', logger=logging.getLogger('test_local_storage'))
+            self.assertTrue(test_out.getvalue().find("Local storage does not exist.") != -1)
+
     def test_load_from_storage_for_full_storage(self):
         """Test load_from_storage() function for full storage."""
         data = [{'channel_id': 'https://news.ru/',
@@ -80,6 +89,14 @@ class LocalStorageTests(unittest.TestCase):
         self._delete_file(_test_tmp_json_filename)
         save_to_storage(_test_tmp_json_filename, {})
         self.assertFalse(os.path.isfile(_test_tmp_json_filename))
+        self._delete_file(_test_tmp_json_filename)
+
+    def test_save_to_storage_for_empty_data_with_logger(self):
+        """Test save_to_storage() function for empty data with logger."""
+        self._delete_file(_test_tmp_json_filename)
+        with patch('sys.stderr', new=StringIO()) as test_out:
+            save_to_storage(_test_tmp_json_filename, {}, logger=logging.getLogger('test_local_storage'))
+            self.assertTrue(test_out.getvalue().find("Data is empty.") != -1)
         self._delete_file(_test_tmp_json_filename)
 
     def test_save_to_storage_for_full_data(self):

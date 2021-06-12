@@ -37,7 +37,7 @@ def load_from_storage(filename, load_date, load_source='', limit=None, logger=No
 
     if not os.path.isfile(filename):
         if logger:
-            logger.info("Local storage does not exist. "+filename)
+            logger.warning("Local storage does not exist.")
         return
 
     with suppress(OSError):
