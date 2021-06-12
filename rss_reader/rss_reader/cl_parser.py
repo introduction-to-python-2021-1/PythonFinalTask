@@ -65,9 +65,7 @@ class args_parser():
 
         # verbose check
         if self.args_Space.verbose:
-            print(logger.handlers[1])
             logger.handlers[1].setLevel("INFO")
-            print(logger.handlers[1])
 
         # parameter <limit> validation
         if bool(self.args_Space.limit):

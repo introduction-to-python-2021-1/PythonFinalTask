@@ -1,7 +1,6 @@
 from unittest import TestCase
 from rss_reader import app_logger
 
-
 class TestAppLogger(TestCase):
 
     def test_logger_link_test(self):
