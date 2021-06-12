@@ -50,15 +50,6 @@ class TestDataFrame(unittest.TestCase):
         """Test input on dataframe"""
         self.assertIsNone(self.data.append_dataframe(self.feed))
 
-    def test_print(self):
-        """Testing no date print """
-        with self.assertWarns(ResourceWarning):
-            self.ans = Data()
-        self.test.to_csv("data.csv", index=False)
-        with self.assertRaises(SystemExit):
-            self.ans.sort_data(20210526, 1, None)
-            self.assertEqual(self.out.getvalue(), "doesnt have news on this day (20210526)")
-
     def tearDown(self):
         os.remove("data.csv")
 
