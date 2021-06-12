@@ -5,6 +5,7 @@ import unittest.mock
 
 import pytz
 from tzlocal import get_localzone
+import dateparser
 
 from rss_reader.xml_to_json import XmlJsonConverter
 
@@ -96,7 +97,7 @@ class TestJsonPrintMethods(unittest.TestCase):
         expected = """{
   "Feed": "BuzzFeed News",
   "Title": "Debt Didn’t Disappear During The Pandemic.",
-  "Date": "2021-05-30 04:11:05+03:00",
+  "Date": "2021-05-30 05:11:05+03:00",
   "Link": "https://www.buzzfeednews.com/article/venessawong/debt-collector-pandemic",
   "Summary": " An American debt collection agency paid agents in Tijuana $150 a week ",
   "Links": {
@@ -104,11 +105,11 @@ class TestJsonPrintMethods(unittest.TestCase):
   },
   "URL": "https://www.buzzfeed.com/world.xml"
 }"""
-        published_date = datetime.datetime.fromisoformat("2021-05-30 04:11:05+03:00")
+        published_date = datetime.datetime.fromisoformat("2021-05-30 05:11:05+03:00")
         local_tzinfo = pytz.timezone(str(get_localzone()))
 
         published_date_local = str(published_date.astimezone(local_tzinfo))
-        expected = expected.replace("2021-05-30 04:11:05+03:00", published_date_local)
+        expected = expected.replace("2021-05-30 05:11:05+03:00", published_date_local)
 
         xjc = XmlJsonConverter(xml, "https://www.buzzfeed.com/world.xml")
         xjc.dump_json()
