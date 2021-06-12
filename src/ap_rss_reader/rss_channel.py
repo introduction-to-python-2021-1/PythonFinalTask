@@ -54,7 +54,7 @@ class RssChannel:
         url = url or ""
 
         self._limit = limit
-        self._channel_items: List[Article] = []
+        self._articles: List[Article] = []
         self._title: str = ""
         self._url: str = url
 
@@ -68,28 +68,28 @@ class RssChannel:
             beautiful_soup = self._get_beautiful_soup()
             if beautiful_soup:
                 self._title = beautiful_soup.select_one("title").string
-                channel_items = beautiful_soup.select(self.ARTICLE_SELECTOR)
-                self._channel_items.extend(
+                articles = beautiful_soup.select(self.ARTICLE_SELECTOR)
+                self._articles.extend(
                     [
                         Article(
-                            title=channel_item.title.string,
-                            link=channel_item.link.next,
+                            title=article.title.string,
+                            link=article.link.next,
                             date=datetime.strptime(
-                                channel_item.pubdate.string,
+                                article.pubdate.string,
                                 "%Y-%m-%dT%H:%M:%SZ",
                             ),
-                            source=channel_item.source.string,
-                            source_url=channel_item.source
-                            and channel_item.source["url"],
-                            media_content_url=channel_item.media_content
-                            and channel_item.media_content["url"],
+                            source=article.source.string,
+                            source_url=article.source
+                            and article.source["url"],
+                            media_content_url=article.media_content
+                            and article.media_content["url"],
                         )
-                        for channel_item in channel_items
+                        for article in articles
                     ]
                 )
                 self.dump()
         else:
-            self._channel_items = self.load()
+            self._articles = self.load()
 
     @property
     def url(self) -> str:
@@ -107,13 +107,9 @@ class RssChannel:
             self._limit = limit
 
     @property
-    def channel_items(self) -> List[Article]:
+    def articles(self) -> List[Article]:
         """:obj:`list` of :obj:`Article`: All news."""
-        return (
-            self._channel_items[: self._limit]
-            if self._limit
-            else self._channel_items
-        )
+        return self._articles[: self._limit] if self._limit else self._articles
 
     @property
     def title(self) -> str:
@@ -124,13 +120,13 @@ class RssChannel:
         """Print channel title and all channel items from channel."""
         self._print_feed_title()
 
-        channel_items: List[Article] = (
-            self.filter(filter_func) if filter_func else self.channel_items
+        articles: List[Article] = (
+            self.filter(filter_func) if filter_func else self.articles
         )
-        if not channel_items:
+        if not articles:
             logger.info("There's no data!")
 
-        self._print_channel_items(channel_items)
+        self._print_articles(articles)
 
     def as_json(self, *, whole: bool = False) -> str:
         """Convert `Channel` to json.
@@ -148,16 +144,12 @@ class RssChannel:
             dict(
                 title=self._title,
                 url=self._url,
-                channel_items=[
+                articles=[
                     {
-                        **channel_item._asdict(),
-                        "date": channel_item.date.strftime(
-                            "%Y-%m-%d %H:%M:%S"
-                        ),
+                        **article._asdict(),
+                        "date": article.date.strftime("%Y-%m-%d %H:%M:%S"),
                     }
-                    for channel_item in (
-                        self._channel_items if whole else self.channel_items
-                    )
+                    for article in (self._articles if whole else self.articles)
                 ],
             ),
             indent=4,
@@ -181,19 +173,17 @@ class RssChannel:
                     all_news: List[Dict[str, Any]] = list(
                         {
                             **{
-                                channel_item["link"]: channel_item
-                                for channel_item in current_channel[
-                                    "channel_items"
-                                ]
+                                article["link"]: article
+                                for article in current_channel["articles"]
                             },
                             **{
-                                channel_item.link: {
-                                    **channel_item._asdict(),
-                                    "date": channel_item.date.strftime(
+                                article.link: {
+                                    **article._asdict(),
+                                    "date": article.date.strftime(
                                         "%Y-%m-%d %H:%M:%S"
                                     ),
                                 }
-                                for channel_item in self._channel_items
+                                for article in self._articles
                             },
                         }.values()
                     )
@@ -202,7 +192,7 @@ class RssChannel:
                         dict(
                             title=self._title,
                             url=self._url,
-                            channel_items=all_news,
+                            articles=all_news,
                         )
                         if channel["url"] == self._url
                         else channel
@@ -213,14 +203,14 @@ class RssChannel:
                         dict(
                             title=self._title,
                             url=self._url,
-                            channel_items=[
+                            articles=[
                                 {
-                                    **channel_item._asdict(),
-                                    "date": channel_item.date.strftime(
+                                    **article._asdict(),
+                                    "date": article.date.strftime(
                                         "%Y-%m-%d %H:%M:%S"
                                     ),
                                 }
-                                for channel_item in self._channel_items
+                                for article in self._articles
                             ],
                         )
                     )
@@ -244,14 +234,12 @@ class RssChannel:
             )
             if current_channel is not None:
                 self._title = current_channel["title"]
-                all_news = current_channel["channel_items"]
+                all_news = current_channel["articles"]
             else:
                 all_news = []
         else:
             all_news = list(
-                chain.from_iterable(
-                    [channel["channel_items"] for channel in data]
-                )
+                chain.from_iterable([channel["articles"] for channel in data])
             )
         return [
             Article(
@@ -267,7 +255,7 @@ class RssChannel:
 
     def filter(self, function: Filter, /) -> List[Article]:
         """Return news for witch `function` return `True`."""
-        return list(filter(function, self._channel_items))
+        return list(filter(function, self._articles))
 
     def _get_beautiful_soup(self) -> BeautifulSoup:
         """Download and convert data to beautiful soup.
@@ -325,26 +313,25 @@ class RssChannel:
         )
 
     @staticmethod
-    def _print_channel_items(channel_items: List[Article]) -> None:
-        for channel_item in channel_items:
+    def _print_articles(articles: List[Article]) -> None:
+        for article in articles:
             logger.info(
-                f"Title: {channel_item.title}\n"
-                f"Date: {channel_item.date}\n"
-                f"Link: {channel_item.link}\n"
+                f"Title: {article.title}\n"
+                f"Date: {article.date}\n"
+                f"Link: {article.link}\n"
             )
-            if channel_item.media_content_url or channel_item.source_url:
+            if article.media_content_url or article.source_url:
                 logger.info("Links:")
                 counter = 0
-                if channel_item.source_url:
+                if article.source_url:
                     counter += 1
                     logger.info(
-                        f"[{counter}]: {channel_item.source_url} "
-                        f'"{channel_item.source}" (link)'
+                        f"[{counter}]: {article.source_url} "
+                        f'"{article.source}" (link)'
                     )
-                if channel_item.media_content_url:
+                if article.media_content_url:
                     counter += 1
                     logger.info(
-                        f"[{counter}]: {channel_item.media_content_url} "
-                        f"(image)"
+                        f"[{counter}]: {article.media_content_url} " f"(image)"
                     )
                 logger.info("\n")
