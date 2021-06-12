@@ -8,12 +8,7 @@ import json
 import os
 from pathlib import Path
 import re
-from typing import Any
-from typing import Dict
-from typing import Final
-from typing import List
-from typing import Optional
-from typing import Tuple
+from typing import TYPE_CHECKING
 
 from bs4 import BeautifulSoup  # type: ignore
 import requests
@@ -23,6 +18,14 @@ from ap_rss_reader.ap_collections import Article
 from ap_rss_reader.ap_constants import DUMP_FILE
 from ap_rss_reader.ap_typing import Filter
 from ap_rss_reader.log import logger
+
+if TYPE_CHECKING:
+    from typing import Any
+    from typing import Dict
+    from typing import Final
+    from typing import List
+    from typing import Optional
+    from typing import Tuple
 
 __all__ = ("RssChannel",)
 
