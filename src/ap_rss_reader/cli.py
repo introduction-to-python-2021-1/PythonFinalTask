@@ -73,7 +73,7 @@ def get_sys_argv(parser: ArgumentParser) -> List[str]:
 
 
 def main(arguments: Optional[List[str]] = None) -> None:
-    """Show message and exit.
+    """The main public interface of application.
 
     Args:
         arguments: list of command line arguments.
@@ -84,7 +84,6 @@ def main(arguments: Optional[List[str]] = None) -> None:
 
     if args.verbose:
         logger.setLevel(logging.DEBUG)
-
     print_args(args)
 
     if not (args.source or args.date):
@@ -95,7 +94,7 @@ def main(arguments: Optional[List[str]] = None) -> None:
     channel = RssChannel(
         url=args.source, limit=args.limit, fetch=not args.date
     )
-    logger.debug("\nData was loaded!")
+    logger.debug("\nRss channel was created!")
 
     if args.date:
         publishing_date = datetime.strptime(args.date, "%Y%m%d")

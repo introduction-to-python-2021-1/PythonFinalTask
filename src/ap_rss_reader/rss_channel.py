@@ -50,6 +50,8 @@ class RssChannel:
                 Otherwise data will be read from file.
 
         """
+        logger.debug("\nCreate rss-channel instance.")
+
         if fetch and not url:
             raise ValueError(
                 "Using 'fetch' argument without 'url' is prohibited!"
@@ -133,7 +135,12 @@ class RssChannel:
 
     def dump(self, file: str = "") -> None:
         """Write the rss channel on the file (as JSON)."""
+        logger.debug("\nDump data to file.")
+
         if not self._url:
+            logger.info(
+                "Data cannot be saved to file, due to missing rss-channel url."
+            )
             return
 
         full_path, data = self._read_file(file)
@@ -199,10 +206,13 @@ class RssChannel:
 
     def fetch(self) -> List[Article]:
         """Fetch and parse data using url."""
-        logger.debug(f"\nCreate new rss-channel with url: {self._url}...")
+        logger.debug(f"\nFetch data with {self._url}...")
+
         beautiful_soup = self._get_beautiful_soup()
         if beautiful_soup:
             self._title = beautiful_soup.select_one("title").string
+            articles = beautiful_soup.select(self.ARTICLE_SELECTOR)
+            logger.debug(f"\n{len(articles)} was(were) downloaded.")
             return [
                 Article(
                     title=article.title.string,
@@ -216,7 +226,7 @@ class RssChannel:
                     media_content_url=article.media_content
                     and article.media_content["url"],
                 )
-                for article in beautiful_soup.select(self.ARTICLE_SELECTOR)
+                for article in articles
             ]
         return []
 
@@ -288,6 +298,7 @@ class RssChannel:
         data: List[Dict[str, Any]] = []
         if os.path.isfile(full_path):
             with open(full_path) as fr:
+                logger.debug(f"\nLoad json data from file: {full_path}.")
                 data = json.load(fr)
         return full_path, data
 
