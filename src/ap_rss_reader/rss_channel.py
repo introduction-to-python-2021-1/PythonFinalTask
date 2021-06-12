@@ -44,7 +44,7 @@ class RssChannel:
 
         Args:
             url:  Url of rss channel.  When `url` is not given, try to
-                load data from file.
+                read data from file.
             limit:  Max count of displayed news.  0 - when there's no
                 limits.
             fetch: When `True` data will loaded using `url` argument.
@@ -67,7 +67,7 @@ class RssChannel:
             self._articles = self.fetch()
             self.dump()
         else:
-            self._articles = self.load()
+            self._articles = self.read()
 
     @property
     def url(self) -> str:
@@ -228,10 +228,10 @@ class RssChannel:
             ]
         return []
 
-    def load(self, file: str = "") -> List[Article]:
+    def read(self, filename: str = "") -> List[Article]:
         """Read the rss channel from the JSON file."""
         logger.debug("\nLoad rss-channel from file...")
-        _, data = self._read_file(file)
+        _, data = self._read_file(filename)
 
         all_news: List[Dict[str, Any]]
         if self._url:
@@ -291,22 +291,22 @@ class RssChannel:
             logger.info(f"Url: {self._url}\n")
 
     @classmethod
-    def _read_file(cls, file: str) -> Tuple[Path, List[Dict[str, Any]]]:
-        full_path: Path = cls._get_full_path(file)
+    def _read_file(cls, filename: str) -> Tuple[Path, List[Dict[str, Any]]]:
+        full_path: Path = cls._get_full_path(filename)
         data: List[Dict[str, Any]] = []
         if os.path.isfile(full_path):
             with open(full_path) as fr:
-                logger.debug(f"\nLoad json data from file: {full_path}.")
+                logger.debug(f"\nRead data from file as json ({full_path}).")
                 data = json.load(fr)
         return full_path, data
 
     @staticmethod
-    def _get_full_path(file: str = "") -> Path:
+    def _get_full_path(filename: str = "") -> Path:
         """Build full path with given `file` and return :obj:`Path`."""
-        if not file:
-            file = os.environ.get("AP_RSS_READER_DUMP_FILE") or DUMP_FILE
+        if not filename:
+            filename = os.environ.get("AP_RSS_READER_DUMP_FILE") or DUMP_FILE
         base_dir: Path = Path(__file__).parent.resolve(strict=True)
-        full_path: Path = base_dir / file
+        full_path: Path = base_dir / filename
         if os.path.isfile(full_path):
             logger.debug(f"\nDump file already exists ({full_path})!")
         return full_path
