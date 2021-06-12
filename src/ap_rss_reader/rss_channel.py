@@ -11,6 +11,7 @@ import re
 from typing import TYPE_CHECKING
 
 from bs4 import BeautifulSoup  # type: ignore
+from dateutil import parser
 import requests
 from requests import Response
 
@@ -217,10 +218,7 @@ class RssChannel:
                 Article(
                     title=article.title.string,
                     link=article.link.next,
-                    date=datetime.strptime(
-                        article.pubdate.string,
-                        "%Y-%m-%dT%H:%M:%SZ",
-                    ),
+                    date=parser.parse(article.pubdate.string),
                     source=article.source.string,
                     source_url=article.source and article.source["url"],
                     media_content_url=article.media_content
