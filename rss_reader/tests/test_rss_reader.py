@@ -177,6 +177,11 @@ class TestConvert(unittest.TestCase):
         self.text = pd.DataFrame(self.text)
         self.text.to_csv("data.csv")
 
+    def test_bad_path(self):
+        parser = rss_reader.create_parser(["-e data"])
+        rss_reader.convert(parser)
+        self.assertLogs(self.out.getvalue(), "Bad path")
+
     def test_bad_path_html(self):
         parser = rss_reader.create_parser(["-s data"])
         with self.assertRaises(SystemExit):
