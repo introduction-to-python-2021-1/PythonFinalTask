@@ -27,6 +27,7 @@ import xml.etree.ElementTree as xmlTree
 from bs4 import BeautifulSoup
 import pytz
 from tzlocal import get_localzone
+import dateparser
 
 
 class XmlJsonConverter:
@@ -103,6 +104,7 @@ class XmlJsonConverter:
             self.links_list2links_dict(all_links: list) - Returns dictionary of unique links (keys) with sequential
                                                           numbers (values).
         """
+
         try:
             xml_root = xmlTree.fromstring(xml)
         except Exception as e:
@@ -133,27 +135,23 @@ class XmlJsonConverter:
             except AttributeError:
                 logging.info("xml2html_json:Warning:Title not available")
 
-            try:
+            try:  # seeking for date
                 date = item.find("pubDate").text
                 logging.info(f"xml2html_json:Date found:{date}")
-                if date.endswith("EST"):  # eastern standard time in USA - not matches %z
-                    date = date.replace("EST", "-0400")
-                if date.endswith("GMT"):  # eastern standard time in USA - not matches %z
-                    date = date.replace("GMT", "+0000")
-
-                try:
-                    published_date = datetime.datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %z")
-                    logging.info(f"_xml2html_json: published date - {published_date}")
-                except ValueError as e:
-                    logging.info(f"_xml2html_json: Date conversion error - {e}")
-                    continue
-
-                local_tzinfo = pytz.timezone(str(get_localzone()))
-                published_date_local = str(published_date.astimezone(local_tzinfo))
-
-                html_json_entry["Date"] = str(published_date_local)
             except AttributeError:
                 logging.info("xml2html_json:Warning:Date not available")
+                date = ""
+
+            try:  # trying to convert whatever date we have
+                published_date = dateparser.parse(date)
+            except AttributeError:
+                logging.info(f"_xml2html_json: Date conversion error. The date could not be converted - {date}")
+
+            if published_date:  # if date exists after conversion - adjusting time zone and saving to dictionary
+                local_tzinfo = pytz.timezone(str(get_localzone()))
+                published_date_local = str(published_date.astimezone(local_tzinfo))
+                html_json_entry["Date"] = str(published_date_local)
+                logging.info(f"_xml2html_json: Published date - {str(published_date_local)}")
 
             try:
                 html_json_entry["Link"] = item.find("link").text

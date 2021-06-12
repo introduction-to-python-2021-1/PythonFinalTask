@@ -96,7 +96,7 @@ class TestJsonPrintMethods(unittest.TestCase):
         expected = """{
   "Feed": "BuzzFeed News",
   "Title": "Debt Didn’t Disappear During The Pandemic.",
-  "Date": "2021-05-30 04:11:05+03:00",
+  "Date": "2021-05-30 05:11:05+03:00",
   "Link": "https://www.buzzfeednews.com/article/venessawong/debt-collector-pandemic",
   "Summary": " An American debt collection agency paid agents in Tijuana $150 a week ",
   "Links": {
