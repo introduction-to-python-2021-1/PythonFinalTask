@@ -27,6 +27,7 @@ class TestFile(unittest.TestCase):
                     20210519, 1, None), "Empty file")
 
     def tearDown(self):
+        """delete data.csv"""
         os.remove("data.csv")
 
 
@@ -51,6 +52,7 @@ class TestDataFrame(unittest.TestCase):
         self.assertIsNone(self.data.append_dataframe(self.feed))
 
     def tearDown(self):
+        """delete data.csv"""
         os.remove("data.csv")
 
 
@@ -70,6 +72,7 @@ class TestArg(unittest.TestCase):
             self.assertIsNone(self.data.sort_data(20210523, -2, None))
 
     def tearDown(self):
+        """delete data.csv"""
         os.remove("data.csv")
 
 
