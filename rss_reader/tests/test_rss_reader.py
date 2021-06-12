@@ -177,13 +177,6 @@ class TestConvert(unittest.TestCase):
         self.text = pd.DataFrame(self.text)
         self.text.to_csv("data.csv")
 
-    def test_bad_path(self):
-        parser = rss_reader.create_parser(["-e data"])
-        with self.assertRaises(SystemExit):
-            with self.assertRaises(FileNotFoundError) as e:
-                rss_reader.convert(parser)
-                self.assertEqual(self.out.getvalue(), f"{e} with way {parser.to_epub}")
-
     def test_bad_path_html(self):
         parser = rss_reader.create_parser(["-s data"])
         with self.assertRaises(SystemExit):
