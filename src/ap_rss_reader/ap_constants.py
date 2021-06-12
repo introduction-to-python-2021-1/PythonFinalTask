@@ -7,8 +7,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Final
 
-    from ap_rss_reader.ap_typing import HelloWorld
-
 DUMP_FILE: Final[str] = "ap-rss-reader-dump.json"
-HELLO_WORLD: Final[HelloWorld] = "Hello, World!"
+GREETING: Final[str] = (
+    "The software is provided 'as is', without warranty of any kind,"
+    " express or implied."
+)
 TITLE: Final[str] = "AP RSS-reader"

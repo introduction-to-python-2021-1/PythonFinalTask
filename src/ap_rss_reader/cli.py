@@ -8,7 +8,7 @@ from typing import List
 from typing import Optional
 
 import ap_rss_reader
-from ap_rss_reader.ap_constants import HELLO_WORLD
+from ap_rss_reader.ap_constants import GREETING
 from ap_rss_reader.ap_constants import TITLE
 from ap_rss_reader.log import logger
 from ap_rss_reader.rss_channel import RssChannel
@@ -69,7 +69,7 @@ def main(arguments: Optional[List[str]] = None) -> None:
     """
     if arguments is None:
         if len(sys.argv) <= 1:
-            logger.info(HELLO_WORLD)
+            logger.info(GREETING)
             return
         arguments = sys.argv[1:]
 

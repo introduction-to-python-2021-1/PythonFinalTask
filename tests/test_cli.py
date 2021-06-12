@@ -5,7 +5,7 @@ from __future__ import annotations
 from argparse import ArgumentParser
 from typing import TYPE_CHECKING
 
-from ap_rss_reader.ap_constants import HELLO_WORLD
+from ap_rss_reader.ap_constants import GREETING
 from ap_rss_reader.cli import create_parser
 from ap_rss_reader.cli import main
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 def test_main(caplog: Any) -> None:
     caplog.clear()
     main()
-    assert [HELLO_WORLD] == [record.message for record in caplog.records]
+    assert [GREETING] == [record.message for record in caplog.records]
 
 
 def test_create_parser() -> None:
