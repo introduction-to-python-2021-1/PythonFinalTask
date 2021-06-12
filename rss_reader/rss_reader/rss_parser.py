@@ -30,11 +30,8 @@ class RssParser:
         :return: list with namedtuples representing feed items
         """
         possible_endings = ('rss', 'rss/')
-        if not self.url.endswith(possible_endings):
+        if not self.url or not self.url.endswith(possible_endings):
             print('Please check URL(is RSS?) and Internet connection')
-            sys.exit()
-        if not self.url:
-            print('URL is empty, please input URL')
             sys.exit()
         try:
             data = feedparser.parse(self.url)
