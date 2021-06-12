@@ -7,11 +7,10 @@ import os
 from dominate import tags
 from pathlib import Path
 from xhtml2pdf import pisa
-import pathlib
 
 from reader.article import Article
 
-__version__ = '1.6'
+__version__ = '1.8'
 
 
 def parse_news(news):
@@ -64,11 +63,10 @@ def check_limit(limit_value):
 def init_database(connection):
     """Creating required table"""
     cursor = connection.cursor()
-    file = str(pathlib.Path(__file__).parent.absolute()) + '\\data\\data.sql'
-    with open(file) as sql_file:
-        sql_as_string = sql_file.read()
-        cursor.executescript(sql_as_string)
-        connection.commit()
+    sql = 'CREATE TABLE IF NOT EXISTS news (title text, link text UNIQUE, full_date text, date text, source text, ' \
+          'description text, image text, url text)'
+    cursor.execute(sql)
+    connection.commit()
 
 
 def store_news(list_of_news, connection, url):

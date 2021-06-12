@@ -1,19 +1,11 @@
 import logging.handlers
-import pathlib
 import sys
-import configparser
 from colored import fg, attr
 
 
 class ColorizeLogger:
     """Creates a logger item with the necessary attributes"""
-    debug_color = '1'
-    info_color = '2'
-    warning_color = '3'
-    error_color = '4'
-    print_color = '5'
-
-    def __init__(self, disable=50, is_colorize=False, file='logger.ini'):
+    def __init__(self, disable=50, is_colorize=False):
         """Logger init"""
         logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
         logger = logging.getLogger("")
@@ -25,21 +17,11 @@ class ColorizeLogger:
         logging.disable(disable)
         self.is_colorize = is_colorize
         self.logger = logger
-        path = str(pathlib.Path(__file__).parent.absolute()) + '\\' + file
-        self.set_properties(path)
-
-    def set_properties(self, path):
-        """Sets colors from file"""
-        config = configparser.ConfigParser()
-        try:
-            config.read(path)
-            self.debug_color = config['levels']['debug']
-            self.info_color = config['levels']['info']
-            self.warning_color = config['levels']['warning']
-            self.error_color = config['levels']['error']
-            self.print_color = config['methods']['print']
-        except Exception:
-            pass
+        self.debug_color = '1'
+        self.info_color = '2'
+        self.warning_color = '3'
+        self.error_color = '4'
+        self.print_color = '5'
 
     def debug(self, value):
         """Debug log"""
