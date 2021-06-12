@@ -51,43 +51,19 @@ class RssChannel:
                 `True` by default.
 
         """
-        url = url or ""
+        if fetch and not url:
+            raise ValueError(
+                "Using 'fetch' argument without 'url' is prohibited!"
+            )
 
         self._limit = limit
         self._articles: List[Article] = []
         self._title: str = ""
-        self._url: str = url
+        self._url: str = url or ""
 
         if fetch:
-            if not url:
-                raise ValueError(
-                    "Using 'fetch' argument without 'url' is prohibited!"
-                )
-
-            logger.debug(f"\nCreate new rss-channel with url: {url}...")
-            beautiful_soup = self._get_beautiful_soup()
-            if beautiful_soup:
-                self._title = beautiful_soup.select_one("title").string
-                articles = beautiful_soup.select(self.ARTICLE_SELECTOR)
-                self._articles.extend(
-                    [
-                        Article(
-                            title=article.title.string,
-                            link=article.link.next,
-                            date=datetime.strptime(
-                                article.pubdate.string,
-                                "%Y-%m-%dT%H:%M:%SZ",
-                            ),
-                            source=article.source.string,
-                            source_url=article.source
-                            and article.source["url"],
-                            media_content_url=article.media_content
-                            and article.media_content["url"],
-                        )
-                        for article in articles
-                    ]
-                )
-                self.dump()
+            self._articles = self.fetch()
+            self.dump()
         else:
             self._articles = self.load()
 
@@ -220,6 +196,29 @@ class RssChannel:
                     indent=4,
                     sort_keys=True,
                 )
+
+    def fetch(self) -> List[Article]:
+        """Fetch and parse data using url."""
+        logger.debug(f"\nCreate new rss-channel with url: {self._url}...")
+        beautiful_soup = self._get_beautiful_soup()
+        if beautiful_soup:
+            self._title = beautiful_soup.select_one("title").string
+            return [
+                Article(
+                    title=article.title.string,
+                    link=article.link.next,
+                    date=datetime.strptime(
+                        article.pubdate.string,
+                        "%Y-%m-%dT%H:%M:%SZ",
+                    ),
+                    source=article.source.string,
+                    source_url=article.source and article.source["url"],
+                    media_content_url=article.media_content
+                    and article.media_content["url"],
+                )
+                for article in beautiful_soup.select(self.ARTICLE_SELECTOR)
+            ]
+        return []
 
     def load(self, file: str = "") -> List[Article]:
         """Read the rss channel from the JSON file."""
