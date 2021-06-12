@@ -8,8 +8,7 @@ from typing import List
 from typing import Optional
 
 import ap_rss_reader
-from ap_rss_reader.ap_constants import GREETING
-from ap_rss_reader.ap_constants import TITLE
+from ap_rss_reader import ap_constants as const
 from ap_rss_reader.log import logger
 from ap_rss_reader.rss_channel import RssChannel
 
@@ -21,7 +20,7 @@ if sys.version_info < (3, 8):
 
 def create_parser() -> ArgumentParser:
     """Create argument parser, add arguments and return it."""
-    parser = ArgumentParser(description=f"{TITLE} with CLI.")
+    parser = ArgumentParser(description=f"{const.TITLE} with CLI.")
 
     parser.add_argument("source", nargs="?", type=str, help="RSS URL")
     parser.add_argument(
@@ -43,7 +42,7 @@ def create_parser() -> ArgumentParser:
         "--version",
         action="version",
         help="Shows the version of the program and exits",
-        version=f"{TITLE} {ap_rss_reader.__version__}",
+        version=f"{const.TITLE} {ap_rss_reader.__version__}",
     )
     parser.add_argument(
         "--json",
@@ -71,7 +70,7 @@ def main(arguments: Optional[List[str]] = None) -> None:
 
     if arguments is None:
         if len(sys.argv) <= 1:
-            logger.info(GREETING)
+            logger.info(const.GREETING)
             logger.info(parser.format_help())
             return
         arguments = sys.argv[1:]
