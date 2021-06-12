@@ -59,6 +59,19 @@ def print_args(args: Namespace) -> None:
         logger.debug(f"{arg}: {getattr(args, arg)}")
 
 
+def get_sys_argv(parser: ArgumentParser) -> List[str]:
+    """Returns command-line arguments if they exist.
+
+    Print help and exit if there are no arguments.
+
+    """
+    if len(sys.argv) <= 1:
+        logger.info(const.GREETING)
+        logger.info(parser.format_help())
+        sys.exit(0)
+    return sys.argv[1:]
+
+
 def main(arguments: Optional[List[str]] = None) -> None:
     """Show message and exit.
 
@@ -67,15 +80,7 @@ def main(arguments: Optional[List[str]] = None) -> None:
 
     """
     parser = create_parser()
-
-    if arguments is None:
-        if len(sys.argv) <= 1:
-            logger.info(const.GREETING)
-            logger.info(parser.format_help())
-            return
-        arguments = sys.argv[1:]
-
-    args = parser.parse_args(arguments)
+    args = parser.parse_args(arguments or get_sys_argv(parser))
 
     if args.verbose:
         logger.setLevel(logging.DEBUG)
