@@ -37,7 +37,6 @@ class Cache:
         self.logger.info("Writing news to cache")
         with open(self.storage, "w") as fp:
             fp.write(json.dumps(content, indent=2, ensure_ascii=False))
-        self.save_images(news_list)
 
     def read_news(self):
         """This method reads news from cache"""

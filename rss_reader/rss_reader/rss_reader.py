@@ -142,6 +142,7 @@ def main(argv=sys.argv):
             sys.exit()
         news_list = parse_response(response)
         local_storage.write_news(parser_args.source, news_list)
+        local_storage.save_images(news_list)
     news_list = calculate_news_with_limit(news_list, limit)
     if parser_args.json:
         print_json(news_list)

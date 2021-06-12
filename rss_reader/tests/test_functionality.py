@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import io
 import json
 import logging
@@ -14,6 +15,7 @@ import validators
 
 from rss_reader.rss_reader import rss_reader
 from rss_reader.rss_reader import local_storage
+from rss_reader.rss_reader import converter
 
 VERSION = "4.0"
 
@@ -148,6 +150,7 @@ class TestParserArguments(unittest.TestCase):
 
     @ddt.data(1, 23)
     def test_limit_performance(self, limit):
+        """ Tests news slice if limit is specified"""
         news_list = rss_reader.parse_response(XML)
         limit_news_list = rss_reader.calculate_news_with_limit(news_list, limit)
         self.assertEqual(len(limit_news_list), 1)
@@ -243,29 +246,56 @@ class TestPrintingNews(unittest.TestCase):
 
 
 class TestLocalStorage(unittest.TestCase):
+    """ This class tests local storage"""
 
     def setUp(self):
+        """ This method initialize local storage"""
         self.cache = local_storage.Cache("tests", "test_storage.json", logging)
 
     def test_read_from_cache(self):
+        """ Tests reading news from file"""
         cache_news = self.cache.read_news()
         self.assertEqual(news_mock[0], cache_news.get("https://news.yahoo.com/rss/")[0])
 
     def test_write_news(self):
+        """ Tests writing news to file"""
         self.cache.write_news("https://news.yahoo.com/rss/", news_mock)
         cache_news = self.cache.read_news()
         self.assertEqual(news_mock[0], cache_news.get("https://news.yahoo.com/rss/")[0])
 
     def test_duplicates_elimination(self):
+        """ Tests duplicates elimination if they exists in cache and news from request"""
         cache_news = self.cache.read_news()
         news_without_duplicates = self.cache.eliminate_duplicates(cache_news.get("https://news.yahoo.com/rss/"),
                                                                   news_mock)
         self.assertEqual(len(news_without_duplicates), 1)
 
     def test_getting_news_for_specified_date(self):
+        """ Tests getting news for specified date"""
         date = rss_reader.valid_date("20210524")
         news_for_specified_date = self.cache.get_news_by_date(date, "https://news.yahoo.com/rss/")
         self.assertEqual(news_for_specified_date, news_mock)
+
+
+class TestConverter(unittest.TestCase):
+    """ This class tests conversion functionality"""
+
+    def setUp(self):
+        """This method initialize Converter"""
+        self.filename = f"news({datetime.datetime.now()}.html)"
+        self.converter = converter.Converter("storage_for_conversion", self.filename, logging)
+
+    def test_conversion_to_html(self):
+        """ Tests conversion to html, checks if file exists and not empty"""
+        self.converter.convert_to_html(news_mock)
+        self.assertTrue(os.path.exists(self.converter.full_path_to_file))
+        self.assertTrue(os.stat(self.converter.full_path_to_file) != 0)
+
+    def test_conversion_to_pdf(self):
+        """ Tests conversion to pdf, checks if file exists and not empty"""
+        self.converter.convert_to_pdf(news_mock)
+        self.assertTrue(os.path.exists(self.converter.full_path_to_file))
+        self.assertTrue(os.stat(self.converter.full_path_to_file) != 0)
 
 
 if __name__ == "__main__":
