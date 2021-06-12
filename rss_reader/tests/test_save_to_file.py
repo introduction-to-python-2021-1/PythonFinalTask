@@ -26,6 +26,15 @@ class SaveToFileTests(unittest.TestCase):
         if os.path.isfile(filename):
             os.remove(filename)
 
+    @staticmethod
+    def _init_test_logger(name, stream):
+        """Initialization logger object."""
+        logger = logging.getLogger(name)
+        handler = logging.StreamHandler(stream)
+        handler.setLevel(logging.INFO)
+        logger.addHandler(handler)
+        return logger
+
     def test_check_filename_for_None(self):
         """Test check_filename() function for None."""
         self.assertIsNone(check_filename(None, '.fb2'))
@@ -67,8 +76,8 @@ class SaveToFileTests(unittest.TestCase):
     def test_save_to_fb2_for_empty_data_with_logger(self):
         """Test save_to_fb2() function for empty data with logger."""
         self._delete_file(_test_tmp_fb2_filename)
-        with patch('sys.stderr', new=StringIO()) as test_out:
-            save_to_fb2(_test_tmp_fb2_filename, {}, logger=logging.getLogger('test_save_to_file'))
+        with patch('sys.stdout', new=StringIO()) as test_out:
+            save_to_fb2(_test_tmp_fb2_filename, {}, logger=self._init_test_logger('test_save_to_file', test_out))
             self.assertTrue(test_out.getvalue().find("Data is empty.") != -1)
         self._delete_file(_test_tmp_fb2_filename)
 
@@ -87,8 +96,8 @@ class SaveToFileTests(unittest.TestCase):
         self._delete_file(_test_tmp_html_filename)
         data = [{'channel_id': 'https://news.ru/',
                  'channel_title': 'News channel'}]
-        with patch('sys.stderr', new=StringIO()) as test_out:
-            save_to_fb2(_test_tmp_html_filename, data, logger=logging.getLogger('test_save_to_file'))
+        with patch('sys.stdout', new=StringIO()) as test_out:
+            save_to_fb2(_test_tmp_html_filename, data, logger=self._init_test_logger('test_save_to_file', test_out))
             self.assertTrue(test_out.getvalue().find("Filename is incorrect.") != -1)
         self._delete_file(_test_tmp_html_filename)
 
@@ -145,8 +154,8 @@ class SaveToFileTests(unittest.TestCase):
     def test_save_to_html_for_empty_data_with_logger(self):
         """Test save_to_html() function for empty data with logger."""
         self._delete_file(_test_tmp_html_filename)
-        with patch('sys.stderr', new=StringIO()) as test_out:
-            save_to_html(_test_tmp_html_filename, {}, logger=logging.getLogger('test_save_to_file'))
+        with patch('sys.stdout', new=StringIO()) as test_out:
+            save_to_html(_test_tmp_html_filename, {}, logger=self._init_test_logger('test_save_to_file', test_out))
             self.assertTrue(test_out.getvalue().find("Data is empty.") != -1)
         self._delete_file(_test_tmp_html_filename)
 
@@ -165,8 +174,8 @@ class SaveToFileTests(unittest.TestCase):
         self._delete_file(_test_tmp_fb2_filename)
         data = [{'channel_id': 'https://news.ru/',
                  'channel_title': 'News channel'}]
-        with patch('sys.stderr', new=StringIO()) as test_out:
-            save_to_html(_test_tmp_fb2_filename, data, logger=logging.getLogger('test_save_to_file'))
+        with patch('sys.stdout', new=StringIO()) as test_out:
+            save_to_html(_test_tmp_fb2_filename, data, logger=self._init_test_logger('test_save_to_file', test_out))
             self.assertTrue(test_out.getvalue().find("Filename is incorrect.") != -1)
         self._delete_file(_test_tmp_fb2_filename)
 

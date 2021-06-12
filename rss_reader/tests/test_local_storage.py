@@ -26,6 +26,15 @@ class LocalStorageTests(unittest.TestCase):
         if os.path.isfile(filename):
             os.remove(filename)
 
+    @staticmethod
+    def _init_test_logger(name, stream):
+        """Initialization logger object."""
+        logger = logging.getLogger(name)
+        handler = logging.StreamHandler(stream)
+        handler.setLevel(logging.INFO)
+        logger.addHandler(handler)
+        return logger
+
     def test_convert_date_format_for_None(self):
         """Test convert_date_format() function for None."""
         self.assertEqual(convert_date_format(None, None, None), '')
@@ -58,8 +67,8 @@ class LocalStorageTests(unittest.TestCase):
 
     def test_load_from_storage_for_empty_storage_with_logger(self):
         """Test load_from_storage() function for empty storage with logger."""
-        with patch('sys.stderr', new=StringIO()) as test_out:
-            load_from_storage('', '20210524', logger=logging.getLogger('test_local_storage'))
+        with patch('sys.stdout', new=StringIO()) as test_out:
+            load_from_storage('', '20210524', logger=self._init_test_logger('test_local_storage', test_out))
             self.assertTrue(test_out.getvalue().find("Local storage does not exist.") != -1)
 
     def test_load_from_storage_for_full_storage(self):
@@ -94,8 +103,8 @@ class LocalStorageTests(unittest.TestCase):
     def test_save_to_storage_for_empty_data_with_logger(self):
         """Test save_to_storage() function for empty data with logger."""
         self._delete_file(_test_tmp_json_filename)
-        with patch('sys.stderr', new=StringIO()) as test_out:
-            save_to_storage(_test_tmp_json_filename, {}, logger=logging.getLogger('test_local_storage'))
+        with patch('sys.stdout', new=StringIO()) as test_out:
+            save_to_storage(_test_tmp_json_filename, {}, logger=self._init_test_logger('test_local_storage', test_out))
             self.assertTrue(test_out.getvalue().find("Data is empty.") != -1)
         self._delete_file(_test_tmp_json_filename)
 
@@ -123,3 +132,7 @@ class LocalStorageTests(unittest.TestCase):
         save_to_storage(_test_tmp_json_filename, data)
         self.assertTrue(os.path.exists(_test_tmp_json_filename))
         self._delete_file(_test_tmp_json_filename)
+
+
+if __name__ == '__main__':
+    unittest.main()

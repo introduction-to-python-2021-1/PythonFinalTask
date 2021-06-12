@@ -20,6 +20,15 @@ _test_results_txt_filename = r'tests/test_results.txt'
 class RSSReaderTests(unittest.TestCase):
     """Test functions of RSSReader class."""
 
+    @staticmethod
+    def _init_test_logger(name, stream):
+        """Initialization logger object."""
+        logger = logging.getLogger(name)
+        handler = logging.StreamHandler(stream)
+        handler.setLevel(logging.INFO)
+        logger.addHandler(handler)
+        return logger
+
     def test_parse_url_for_None(self):
         """Test parse_url() function for None."""
         with self.assertRaises(SystemExit):
@@ -38,8 +47,8 @@ class RSSReaderTests(unittest.TestCase):
     def test_parse_url_for_incorrect_url_with_logger(self):
         """Test parse_url() function for incorrect url with logger."""
         with self.assertRaises(SystemExit):
-            with patch('sys.stderr', new=StringIO()) as test_out:
-                parse_url('https://www.wikipedia.org/', logger=logging.getLogger('test_rss_reader'))
+            with patch('sys.stdout', new=StringIO()) as test_out:
+                parse_url('https://www.wikipedia.org/', logger=self._init_test_logger('test_rss_reader', test_out))
                 self.assertTrue(test_out.getvalue().find("Feed’s title is empty.") != -1)
 
     def test_parse_url_for_correct_url(self):
@@ -90,8 +99,8 @@ class RSSReaderTests(unittest.TestCase):
     def test_load_data_for_empty_channel_with_logger(self):
         """Test load_date() function for empty channel with logger."""
         parser = feedparser.parse('')
-        with patch('sys.stderr', new=StringIO()) as test_out:
-            load_data(parser, '', logger=logging.getLogger('test_rss_reader'))
+        with patch('sys.stdout', new=StringIO()) as test_out:
+            load_data(parser, '', logger=self._init_test_logger('test_rss_reader', test_out))
             self.assertTrue(test_out.getvalue().find("Data is empty.") != -1)
 
     def test_load_data_for_full_data(self):
