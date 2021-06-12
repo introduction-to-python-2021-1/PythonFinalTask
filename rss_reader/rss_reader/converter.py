@@ -75,12 +75,12 @@ class Converter:
     def process_news_list_with_images(news_list):
         """This method process list of news, replacing image links by local paths to images if they exist in local
         storage"""
-        try:
-            for item in news_list:
+        for item in news_list:
+            try:
                 filename = hashlib.md5(item.get("Image").encode()).hexdigest()
-                for existing_img in os.listdir(IMAGE_STORAGE):
-                    if existing_img.split(".")[0] == filename:
-                        item["Image"] = (IMAGE_STORAGE / existing_img).resolve()
-                        break
-        except AttributeError:
-            pass
+            except AttributeError:
+                continue
+            for existing_img in os.listdir(IMAGE_STORAGE):
+                if existing_img.split(".")[0] == filename:
+                    item["Image"] = (IMAGE_STORAGE / existing_img).resolve()
+                    break

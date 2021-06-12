@@ -1,9 +1,7 @@
 import argparse
-import datetime
 import io
 import json
 import logging
-import os
 import sys
 import unittest
 import urllib.error
@@ -248,6 +246,11 @@ class TestLocalStorage(unittest.TestCase):
     def setUp(self):
         self.cache = local_storage.Cache("tests", "test_storage.json", logging)
 
+    def test_write_news(self):
+        self.cache.write_news("https://news.yahoo.com/rss/", news_mock)
+        cache_news = self.cache.read_news()
+        self.assertEqual(news_mock[0], cache_news.get("https://news.yahoo.com/rss/")[0])
+
     def test_read_from_cache(self):
         cache_news = self.cache.read_news()
         self.assertEqual(news_mock[0], cache_news.get("https://news.yahoo.com/rss/")[0])
@@ -262,7 +265,6 @@ class TestLocalStorage(unittest.TestCase):
         date = rss_reader.valid_date("20210524")
         news_for_specified_date = self.cache.get_news_by_date(date, "https://news.yahoo.com/rss/")
         self.assertEqual(news_for_specified_date, news_mock)
-
 
 
 if __name__ == "__main__":

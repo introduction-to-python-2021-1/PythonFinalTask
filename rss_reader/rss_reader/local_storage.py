@@ -1,7 +1,9 @@
 import json
+import logging
 import os
 from pathlib import Path
 import urllib.request
+import urllib.error
 import dateparser
 import hashlib
 import imghdr
@@ -95,6 +97,9 @@ class Cache:
                     self.image_storage
                     / f"{hashlib.md5(item.get('Image').encode()).hexdigest()}"
                 )
-                urllib.request.urlretrieve(item.get("Image"), img_path)
+                try:
+                    urllib.request.urlretrieve(item.get("Image"), img_path)
+                except urllib.error.HTTPError:
+                    continue
                 img_format = imghdr.what(img_path)
                 os.rename(img_path, f"{img_path}.{img_format}")
