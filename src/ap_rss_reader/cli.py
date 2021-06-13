@@ -98,7 +98,7 @@ def main(arguments: Optional[List[str]] = None) -> None:
 
     if args.date:
         publishing_date = datetime.strptime(args.date, "%Y%m%d")
-        channel.print(filter_func=lambda item: item.date >= publishing_date)
+        channel.print_after_date(publishing_date)
     elif args.json:
         logger.info(channel.as_json())
     else:

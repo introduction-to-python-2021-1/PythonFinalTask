@@ -97,17 +97,18 @@ class RssChannel:
         """Title of rss channel."""
         return self._title
 
-    def print(self, *, filter_func: Optional[Filter] = None) -> None:
-        """Print channel title and all channel items from channel."""
-        self._print_feed_title()
+    def print(self) -> None:
+        """Print current feed and limited list of articles."""
+        self._print()
 
-        articles: List[Article] = (
-            self.filter(filter_func) if filter_func else self.articles
-        )
-        if not articles:
-            logger.info("There's no data!")
-        else:
-            self._print_articles(self.articles)
+    def print_after_date(self, pubdate: datetime) -> None:
+        """Print articles for specific date.
+
+        Args:
+            pubdate: date of publication.
+
+        """
+        self._print(filter_func=lambda article: article.date >= pubdate)
 
     def as_json(self, *, whole: bool = False) -> str:
         """Convert `Channel` to json.
@@ -292,6 +293,24 @@ class RssChannel:
             logger.info(f"\n\nFeed: {self._title}")
         if self._url:
             logger.info(f"Url: {self._url}\n")
+
+    def _print(self, *, filter_func: Optional[Filter] = None) -> None:
+        """Print channel title and all channel articles.
+
+        Args:
+            filter_func: function by which it is determined which articles
+                should be printed.
+
+        """
+        articles: List[Article] = (
+            self.filter(filter_func) if filter_func else self.articles
+        )
+
+        self._print_feed_title()
+        if not articles:
+            logger.info("There's no data!")
+        else:
+            self._print_articles(articles)
 
     @classmethod
     def _read_file(cls, filename: str) -> Tuple[Path, List[Dict[str, Any]]]:
