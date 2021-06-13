@@ -7,6 +7,7 @@ from typing import cast
 from typing import List
 from typing import TYPE_CHECKING
 from typing import Union
+from urllib.parse import urlparse
 
 from bs4 import Tag  # type: ignore
 from dateutil import parser
@@ -26,7 +27,16 @@ if TYPE_CHECKING:
     from ap_rss_reader.ap_typing import FieldPrinter
     from ap_rss_reader.ap_typing import FieldValue
 
-__all__ = ("parse_article", "print_article", "retrieve_title")
+__all__ = ("parse_article", "print_article", "retrieve_title", "validate_url")
+
+
+def validate_url(url: str) -> bool:
+    """Check if 'url' string valid URL."""
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc, result.path])
+    except (AttributeError, ValueError):
+        return False
 
 
 def _url_parse(
