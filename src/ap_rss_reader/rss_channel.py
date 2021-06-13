@@ -307,10 +307,10 @@ class RssChannel:
             )
         except requests.ConnectionError as e:
             host: str = f": {e.args[0].pool.host}" if "pool" in e.args else ""
-            logger.info(const.ERROR_NO_ADDRESS, host)
+            logger.info(const.ERROR_NO_ADDRESS, {"host": host})
         except requests.ReadTimeout as e:
             host = f": {e.args[0].pool.host}" if "pool" in e.args else ""
-            logger.info(const.ERROR_TIME_OUT, host)
+            logger.info(const.ERROR_TIME_OUT, {"host": host})
         except requests.TooManyRedirects:
             logger.info(const.ERROR_TOO_MANY_REDIRECTS)
         except requests.exceptions.ContentDecodingError:
