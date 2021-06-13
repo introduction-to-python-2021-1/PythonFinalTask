@@ -39,12 +39,12 @@ class TestFeedContainer(unittest.TestCase):
 
     def test_get_news_large(self, mock_get_xml_tree):
         feed = feed_container.FeedContainer("fake_rss.xml")
-        self.assertTrue(len(feed.get_news())==50)
+        self.assertTrue(len(feed.get_news()) == 50)
 
     def test_get_news_large(self, mock_get_xml_tree):
         feed = feed_container.FeedContainer("fake_rss.xml")
-        self.assertTrue(len(feed.get_news_to_save())==50)
+        self.assertTrue(len(feed.get_news_to_save()) == 50)
 
     def test_get_news_by_date(self, mock_get_xml_tree):
         feed = feed_container.FeedContainer("fake_rss.xml")
-        self.assertTrue(len(feed.get_news_by_date("20210503"))==0)
+        self.assertTrue(len(feed.get_news_by_date("20210503")) == 0)

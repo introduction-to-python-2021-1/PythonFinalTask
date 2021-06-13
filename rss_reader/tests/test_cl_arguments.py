@@ -4,6 +4,7 @@ import unittest
 
 from rss_reader import reader
 
+
 class TestMain(unittest.TestCase):
     def setUp(self):
         self.output = io.StringIO()
