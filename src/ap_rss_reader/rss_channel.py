@@ -303,9 +303,7 @@ class RssChannel:
                 try:
                     data = json.load(fr)
                 except ValueError:
-                    logger.info(
-                        "ERROR: File cannot be read: decoding JSON has failed."
-                    )
+                    logger.info(const.ERROR_JSON_LOAD)
         return full_path, data
 
     @staticmethod
