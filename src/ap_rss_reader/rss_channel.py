@@ -75,6 +75,10 @@ class RssChannel:
     def __len__(self) -> int:
         return len(self._articles)
 
+    def __getitem__(self, index: int) -> Optional[Article]:
+        """Return Article by index."""
+        return self._articles[index]
+
     @property
     def url(self) -> str:
         """Url of rss channel."""
