@@ -9,8 +9,8 @@ from datetime import datetime
 import feedparser
 from pathvalidate.argparse import validate_filepath_arg
 
-from rss_reader.rss_reader.converter import Converter
-from rss_reader.rss_reader.local_storage import Cache
+from rss_reader.converter import Converter
+from rss_reader.local_storage import Cache
 
 VERSION = "4.0"
 

@@ -12,10 +12,9 @@ from unittest import mock
 
 import ddt
 import validators
-
-from rss_reader.rss_reader import rss_reader
-from rss_reader.rss_reader import local_storage
-from rss_reader.rss_reader import converter
+from rss_reader import rss_reader
+from rss_reader import local_storage
+from rss_reader import converter
 
 VERSION = "4.0"
 
