@@ -1,4 +1,4 @@
-"""Python AP RSS-reader (dummy version).
+"""AP RSS-reader.
 
 Example:
     Run module from source::
