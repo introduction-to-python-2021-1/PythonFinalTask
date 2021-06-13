@@ -14,10 +14,10 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 class Converter:
     """This class is implementation of converter to PDF and HTML format"""
 
-    def __init__(self, directory, file_name, logger):
+    def __init__(self, directory, file_name, logger, cache_path):
         """This initialization method receives directory from user, which will be used for saving file,
         also receives file_name and logger"""
-        image_storage = ROOT_DIR / directory / "images"
+        image_storage = ROOT_DIR / cache_path / "images"
         image_storage.mkdir(exist_ok=True)
         self.img_storage = image_storage
         self.dir = Path(directory).absolute()

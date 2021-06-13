@@ -9,8 +9,8 @@ from datetime import datetime
 import feedparser
 from pathvalidate.argparse import validate_filepath_arg
 
-from rss_reader.converter import Converter
-from rss_reader.local_storage import Cache
+from rss_reader.rss_reader.converter import Converter
+from rss_reader.rss_reader.local_storage import Cache
 
 VERSION = "4.0"
 
@@ -153,12 +153,12 @@ def main(argv=sys.argv):
 
     if parser_args.to_html:
         converter = Converter(
-            parser_args.to_html, f"news({datetime.now()}).html", logging
+            parser_args.to_html, f"news({datetime.now()}).html", logging, "storage"
         )
         converter.convert_to_html(news_list)
     if parser_args.to_pdf:
         converter = Converter(
-            parser_args.to_pdf, f"news({datetime.now()}).pdf", logging
+            parser_args.to_pdf, f"news({datetime.now()}).pdf", logging, "storage"
         )
         converter.convert_to_pdf(news_list)
 

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+      <title>News</title>
+   </head>
+   <body>
+      
+      <div>
+          
+            <img style="width:30%;height:30%;" src="https://s.yimg.com/uu/api/res/1.2/.m4qkAwdGopoAOs7hk37Ig--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9"><br>
+          
+            Feed : Yahoo News - Latest News & Headlines<br>
+            Title : Body of missing man found inside dinosaur statue<br>
+            Date : 2021-05-24T15:35:42Z<br>
+            Link :    <a href="https://news.yahoo.com/body-missing-man-found-inside-153542409.html">https://news.yahoo.com/body-missing-man-found-inside-153542409.html</a><br>
+          <hr>
+        
+      </div>
+   </body>
+</html>

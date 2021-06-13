@@ -1,6 +1,6 @@
 import json
-import logging
 import os
+import sys
 from pathlib import Path
 import urllib.request
 import urllib.error
@@ -17,13 +17,20 @@ class Cache:
     def __init__(self, cache_dir, file_name, logger):
         """This method initialize local storage (includes image directory), receives logger object, cache folder and
         filename. """
-        cache_path = ROOT_DIR / cache_dir / file_name
-        cache_path.touch(exist_ok=True)
-        image_storage = ROOT_DIR / cache_dir / "images"
-        image_storage.mkdir(exist_ok=True)
+        self.logger = logger
+        try:
+            cache_path = ROOT_DIR / cache_dir / file_name
+            (ROOT_DIR / cache_dir).mkdir(exist_ok=True)
+            cache_path.touch(exist_ok=True)
+            image_storage = ROOT_DIR / cache_dir / "images"
+            image_storage.mkdir(exist_ok=True)
+        except PermissionError:
+            self.logger.error(
+                "Conversion cannot be performed. Permission denied for this directory"
+            )
+            sys.exit()
         self.storage = cache_path
         self.image_storage = image_storage
-        self.logger = logger
 
     def write_news(self, source, news_list):
         """This method eliminate duplicates, then write news in JSON format and save it in cache"""
@@ -93,8 +100,8 @@ class Cache:
         for item in news_list:
             if item.get("Image") is not None:
                 img_path = (
-                    self.image_storage
-                    / f"{hashlib.md5(item.get('Image').encode()).hexdigest()}"
+                        self.image_storage
+                        / f"{hashlib.md5(item.get('Image').encode()).hexdigest()}"
                 )
                 try:
                     urllib.request.urlretrieve(item.get("Image"), img_path)

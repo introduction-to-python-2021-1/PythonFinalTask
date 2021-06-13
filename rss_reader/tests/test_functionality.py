@@ -12,9 +12,7 @@ from unittest import mock
 
 import ddt
 import validators
-from rss_reader import rss_reader
-from rss_reader import local_storage
-from rss_reader import converter
+from rss_reader.rss_reader import rss_reader, converter, local_storage
 
 VERSION = "4.0"
 
@@ -249,7 +247,7 @@ class TestLocalStorage(unittest.TestCase):
 
     def setUp(self):
         """ This method initialize local storage"""
-        self.cache = local_storage.Cache("tests", "test_storage.json", logging)
+        self.cache = local_storage.Cache("tests/storage", "test_storage.json", logging)
 
     def test_read_from_cache(self):
         """ Tests reading news from file"""
@@ -282,7 +280,7 @@ class TestConverter(unittest.TestCase):
     def setUp(self):
         """This method initialize Converter"""
         self.filename = f"news({datetime.datetime.now()}.html)"
-        self.converter = converter.Converter("storage_for_conversion", self.filename, logging)
+        self.converter = converter.Converter("tests", self.filename, logging, "tests/storage")
 
     def test_conversion_to_html(self):
         """ Tests conversion to html, checks if file exists and not empty"""
