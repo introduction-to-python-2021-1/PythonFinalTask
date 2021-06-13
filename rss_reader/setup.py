@@ -23,8 +23,8 @@ setuptools.setup(
     ],
     packages=["rss_reader"],
     python_requires=">=3.6",
-    install_requires=["xhtml2pdf==0.2.5","json2html==1.3.0","argparse==1.4.0", "beautifulsoup4==4.9.3",
-                      "pycodestyle>=2.7.0", "nose==1.3.7", "termcolor==1.1.0", "coverage==4.5.1"],
+    install_requires=["xhtml2pdf>=0.2.5","json2html>=1.3.0","argparse>=1.4.0", "beautifulsoup4>=4.9.3",
+                      "pycodestyle>=2.7.0", "nose>=1.3.7", "termcolor>=1.1.0", "coverage>=4.5.1"],
     entry_points={
         "console_scripts": [
             'rss_reader=rss_reader.reader:main'

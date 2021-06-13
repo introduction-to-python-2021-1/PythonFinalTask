@@ -1,5 +1,5 @@
 import json
-import sys
+import os
 from itertools import islice
 from datetime import datetime
 
@@ -13,13 +13,8 @@ logger = app_logger.get_logger(__name__)
 class local_storage:
     # in __init__ we load news from storage in list
     def __init__(self, path="../tmp/news.json"):
-        try:
-            with open(path) as file:
-                self.news_from_storage = json.load(file)
-        except FileNotFoundError:
-            logger.warning("Sorry, but we don't have local storage. "
-                           "Run the program at least once with an Internet connection and the entered URL ")
-            sys.exit()
+        with open(path) as file:
+            self.news_from_storage = json.load(file)
 
     # return news by date in list
     def get_news_by_date_from_locale_storage(self, date, limit=50):

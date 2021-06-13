@@ -1,5 +1,7 @@
 import unittest
 from unittest import mock
+import sys
+from io import StringIO
 
 import xml.etree.ElementTree as ET
 
@@ -35,9 +37,14 @@ class TestFeedContainer(unittest.TestCase):
         feed = feed_container.FeedContainer("fake_rss.xml")
         self.assertIsInstance(feed.get_news(), list)
 
-    # def test_get_feed_print_news(self, mock_get_xml_tree):
-    # 	feed = feed_container.FeedContainer("fake_rss.xml")
-    # 	self.assertEqual(feed.print_news(1), "1\n"
-    # 										 "Title: Manchin Comes Out against H.R. 1., Says Partisan Voting Legislation\n"
-    # 										 "Date: 2021-06-06T13:36:37Z\n"
-    # 										 "Link: https://news.yahoo.com/manchin-comes-against-h-r-133637370.html")
+    def test_get_news_large(self, mock_get_xml_tree):
+        feed = feed_container.FeedContainer("fake_rss.xml")
+        self.assertTrue(len(feed.get_news())==50)
+
+    def test_get_news_large(self, mock_get_xml_tree):
+        feed = feed_container.FeedContainer("fake_rss.xml")
+        self.assertTrue(len(feed.get_news_to_save())==50)
+
+    def test_get_news_by_date(self, mock_get_xml_tree):
+        feed = feed_container.FeedContainer("fake_rss.xml")
+        self.assertTrue(len(feed.get_news_by_date("20210503"))==0)
