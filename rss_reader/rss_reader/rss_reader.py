@@ -180,7 +180,7 @@ def to_html(data, save_path, date):
                 <p>Date of publication: {}</p>
                 <img src="{}" height="344" width="520" alt="Image can not be displaed">
                 <hr>
-                '''.format(part['title'], part['link'], part['pubDate'],part["images"]))
+                '''.format(part['title'], part['link'], part['pubDate'], part["images"]))
         path_file.write('''
             </Body>
         </Html>
