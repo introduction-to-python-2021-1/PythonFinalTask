@@ -62,6 +62,8 @@ REQUEST_ERROR_MESSAGES = {
     503: "ERROR: Service unavailable for url: {url}.",
 }
 
+INFO_CHANNEL_WAS_CREATED = "Rss channel was created with %(count)i article(s)!"
+
 GREETING: Final[str] = (
     "The software is provided 'as is', without warranty of any kind,"
     " express or implied."

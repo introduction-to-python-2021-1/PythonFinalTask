@@ -59,7 +59,7 @@ def print_args(args: Namespace) -> None:
         logger.debug(f"{arg}: {getattr(args, arg)}")
 
 
-def get_sys_argv(parser: ArgumentParser) -> List[str]:
+def get_sys_argv() -> List[str]:
     """Returns command-line arguments if they exist.
 
     Print help and exit if there are no arguments.
@@ -67,8 +67,6 @@ def get_sys_argv(parser: ArgumentParser) -> List[str]:
     """
     if len(sys.argv) <= 1:
         logger.info(const.GREETING)
-        logger.info(parser.format_help())
-        sys.exit(0)
     return sys.argv[1:]
 
 
@@ -80,29 +78,27 @@ def main(arguments: Optional[List[str]] = None) -> None:
 
     """
     parser = create_parser()
-    args = parser.parse_args(arguments or get_sys_argv(parser))
+    args = parser.parse_args(arguments or get_sys_argv())
 
     if args.verbose:
         logger.setLevel(logging.DEBUG)
     print_args(args)
 
-    if not (args.source or args.date):
+    if args.source or args.date:
+        channel = RssChannel(
+            url=args.source, limit=args.limit, fetch=not args.date
+        )
+        logger.debug(const.INFO_CHANNEL_WAS_CREATED, {"count": len(channel)})
+
+        if args.date:
+            channel.print_after_date(datetime.strptime(args.date, "%Y%m%d"))
+        elif args.json:
+            logger.info(channel.json())
+        else:
+            channel.print()
+    else:
         logger.info(const.DATE_OR_SOURCE_IS_REQUIRED)
         logger.info(parser.format_help())
-        sys.exit(1)
-
-    channel = RssChannel(
-        url=args.source, limit=args.limit, fetch=not args.date
-    )
-    logger.debug(f"\nRss channel was created with {len(channel)} article(s)!")
-
-    if args.date:
-        publishing_date = datetime.strptime(args.date, "%Y%m%d")
-        channel.print_after_date(publishing_date)
-    elif args.json:
-        logger.info(channel.json())
-    else:
-        channel.print()
 
 
 if __name__ == "__main__":
