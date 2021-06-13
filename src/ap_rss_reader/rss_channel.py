@@ -230,6 +230,7 @@ class RssChannel:
                 )
                 for article in articles
             ]
+        logger.info(const.ERROR_NO_DATA)
         return []
 
     def read(self, filename: str = "") -> List[Article]:

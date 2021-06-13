@@ -12,6 +12,7 @@ DATE_OR_SOURCE_IS_REQUIRED: Final[
 ] = "At least one of the 'date' or 'source' arguments must be specified!\n"
 DUMP_FILE: Final[str] = "ap-rss-reader-dump.json"
 ERROR_JSON_LOAD = "ERROR: File cannot be read: decoding JSON has failed."
+ERROR_NO_DATA = "Sorry! There's no data that can be parsed."
 GREETING: Final[str] = (
     "The software is provided 'as is', without warranty of any kind,"
     " express or implied."
