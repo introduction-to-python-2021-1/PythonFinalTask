@@ -21,8 +21,7 @@ def command_arguments_parser(args):
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
     parser.add_argument("--date", type=str, help="Return news from date yyyymmdd from cash")
-    parser.add_argument('--to_html', type=str, help='Convert news to html file. Path example "d:/folder')
-    parser.add_argument('--to_pdf', type=str, help='Convert news to html file. Path example "d:/folder')
+    parser.add_argument("--to_html", type=str, help="Convert news to html file. Path example 'd:/rss_news")
     args = parser.parse_args(args)
     return args
 
@@ -231,3 +230,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
