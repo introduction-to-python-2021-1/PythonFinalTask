@@ -69,6 +69,9 @@ class RssChannel:
         else:
             self._articles = self.read()
 
+    def __len__(self) -> int:
+        return len(self._articles)
+
     @property
     def url(self) -> str:
         """Url of rss channel."""

@@ -94,7 +94,7 @@ def main(arguments: Optional[List[str]] = None) -> None:
     channel = RssChannel(
         url=args.source, limit=args.limit, fetch=not args.date
     )
-    logger.debug("\nRss channel was created!")
+    logger.debug(f"\nRss channel was created with {len(channel)} article(s)!")
 
     if args.date:
         publishing_date = datetime.strptime(args.date, "%Y%m%d")
