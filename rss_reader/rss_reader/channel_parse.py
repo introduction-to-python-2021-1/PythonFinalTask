@@ -30,6 +30,7 @@ def get_response(url):
 
     return xml_url
 
+
 def get_xml_tree(url):
     xml_url = get_response(url)
 

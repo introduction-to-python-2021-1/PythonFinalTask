@@ -12,7 +12,7 @@ logger = app_logger.get_logger(__name__)
 # class storage news and deal output in console
 class LocalStorage:
     # in __init__ we load news from storage in list
-    def __init__(self, tmp_folder_path = "tmp" + os.path.sep):
+    def __init__(self, tmp_folder_path="tmp" + os.path.sep):
         if not os.path.exists(tmp_folder_path):
             os.makedirs(tmp_folder_path)
         with open(tmp_folder_path + "news.json", 'r', encoding="utf-8") as file:
@@ -32,13 +32,14 @@ class LocalStorage:
                     "Date": item["Date"],
                     "Link": item["Link"],
                 })
+
         return news_by_date[:limit]
 
     # method print news by date
     def print_news_from_storage_by_date(self, date, limit=50):
         count = 1
         for item in islice(self.get_news_by_date_from_locale_storage(date, limit), 0, limit):
-            print(f"\n {count}")
+            print(f"\n{count}")
             count += 1
             for key, value in item.items():
                 print(f"{key}: {value}")

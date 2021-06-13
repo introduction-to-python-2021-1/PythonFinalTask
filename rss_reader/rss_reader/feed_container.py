@@ -147,7 +147,7 @@ class FeedContainer:
         if not os.path.exists(tmp_folder_path):
             os.makedirs(tmp_folder_path)
 
-        with open(tmp_folder_path + "news.json", 'a', encoding="utf-8") as file:
+        with open(tmp_folder_path + "news.json", 'w', encoding="utf-8") as file:
             file.write(json.dumps(self.get_news_to_save(limit), indent=4, ensure_ascii=False))
 
     # unused

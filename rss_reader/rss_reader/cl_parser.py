@@ -76,8 +76,10 @@ class ArgsParser:
         if bool(self.args_Space.date):
             try:
                 date = datetime.strptime(self.args_Space.date, "%Y%m%d")
-                if date.year <=2020:
+                if date.year <= 2020:
                     raise ValueError
             except ValueError:
                 logger.error("Bad parameter : --date. Check --help")
                 sys.exit()
+
+        logger.info("Arguments validation done.")
