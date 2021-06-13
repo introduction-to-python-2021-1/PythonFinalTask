@@ -174,7 +174,7 @@ class RssChannel:
                         },
                     }.values()
                 )
-                # replace current rss channel
+                # update current rss channel using "url" as key
                 data = [
                     dict(
                         title=self._title,
