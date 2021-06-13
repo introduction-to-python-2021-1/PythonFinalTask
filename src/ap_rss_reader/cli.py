@@ -20,7 +20,7 @@ if sys.version_info < (3, 8):
 
 def create_parser() -> ArgumentParser:
     """Create argument parser, add arguments and return it."""
-    parser = ArgumentParser(description=f"{const.TITLE} with CLI.")
+    parser = ArgumentParser(description=f"{const.APP_TITLE} with CLI.")
 
     parser.add_argument("source", nargs="?", type=str, help="RSS URL")
     parser.add_argument(
@@ -42,7 +42,7 @@ def create_parser() -> ArgumentParser:
         "--version",
         action="version",
         help="Shows the version of the program and exits",
-        version=f"{const.TITLE} {ap_rss_reader.__version__}",
+        version=f"{const.APP_TITLE} {ap_rss_reader.__version__}",
     )
     parser.add_argument(
         "--json",

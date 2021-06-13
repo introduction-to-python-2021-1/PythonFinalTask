@@ -15,4 +15,4 @@ GREETING: Final[str] = (
     "The software is provided 'as is', without warranty of any kind,"
     " express or implied."
 )
-TITLE: Final[str] = "AP RSS-reader"
+APP_TITLE: Final[str] = "AP RSS-reader"
