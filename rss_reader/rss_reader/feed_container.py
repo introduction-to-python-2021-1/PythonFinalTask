@@ -4,7 +4,7 @@ from datetime import datetime
 import os
 
 from json2html import json2html
-from xhtml2pdf import pisa
+from fpdf import FPDF
 
 import rss_reader.channel_parse as channel_parser
 import rss_reader.app_logger as app_logger
@@ -65,7 +65,7 @@ class FeedContainer:
 
     # print feed info in stdout
     # not support --json
-    def print_feed_Info(self):
+    def print_feed_info(self):
         print(f"\nChannel title: {self.feed_title}",
               f"\nChannel link: {self.feed_link}"
               f"\nChannel description: {self.feed_description}"
@@ -76,7 +76,7 @@ class FeedContainer:
     # this method just print news within a certain limit
     def print_news(self, limit=50):
         count = 1
-        for item in islice(self.__channel_items, 0, limit):
+        for item in islice(self.get_news(limit), 0, limit):
             print(f"\n{count}")
             count += 1
             for key, value in item.items():
@@ -156,18 +156,30 @@ class FeedContainer:
         with open("../tmp/news.json", 'w', encoding="utf-8") as file:
             file.write(json.dumps(self.get_news_by_date(date, limit), indent=4, ensure_ascii=False))
 
+    # create html file with news
     def news_2_html(self, limit=50):
         json_news = json.dumps(self.get_news(limit))
         with open("../tmp/news.html", 'w', encoding="utf-8") as file:
             file.write(json2html.convert(json=json_news))
 
+    # create pdf file with news
     def news_2_pdf(self, limit=50):
-        json_news = json.dumps(self.get_news(limit))
-        html_news = json2html.convert(json=json_news)
-        with open("../tmp/news.pdf", 'w+b', encoding="utf-8") as file:
-            pisa.CreatePDF(html_news, file)
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=10)
+        with open("../tmp/buffer.txt", "w", encoding="utf-8") as file:
+            for item in islice(self.get_news(limit), 0, limit):
+                for key, value in item.items():
+                    file.write(f"{key} : {value}\n")
+                file.write("\n")
 
-    def print_news_by_args(self, date, limit=50,  json=False):
+        with open("../tmp/buffer.txt", "r", encoding="utf-8") as file:
+            for g in file:
+                pdf.cell(10, 10, txt=g, ln=2, align='L')
+        pdf.output("../tmp/news.pdf")
+
+    # arguments handler logic
+    def print_news_by_args(self, date, limit=50,  json=False, to_html=False, to_pdf=False):
         if json and date:
             self.print_news_by_date_json_format(date, limit)
         elif json:
@@ -177,3 +189,9 @@ class FeedContainer:
                 self.print_news_by_date(date, limit)
             else:
                 self.print_news(limit)
+
+        if to_html:
+            self.news_2_html(limit)
+
+        if to_pdf:
+            self.news_2_pdf(limit)

@@ -10,7 +10,7 @@ logger = app_logger.get_logger(__name__)
 
 # This class handles command line arguments.
 # Stores arguments, checks for correctness
-class args_parser():
+class ArgsParser:
     def __init__(self, argv):
         self.command_line_argv = argv
         self.parser = argparse.ArgumentParser(prog="RSS_reader",
@@ -20,8 +20,8 @@ class args_parser():
                                               "---------------------------------------------------------\n",
                                               add_help=True)
         self.__parameters_init()
-        self.__parse_Args()
-        self.__args_Validation()
+        self.__parse_args()
+        self.__args_validation()
         logger.info(f"\nRSS Channel positional parameter: {self.args_Space.source}\n"
                     f"--json optional parameter: {self.args_Space.json}\n"
                     f"--verbose optional parameter: {self.args_Space.verbose}\n"
@@ -36,7 +36,7 @@ class args_parser():
         self.parser.add_argument("-ve", "--version",
                                  help="Info about version",
                                  action="version",
-                                 version="%(prog)s version 2")
+                                 version="%(prog)s version 4.0")
         self.parser.add_argument("-js", "--json",
                                  help="JSON",
                                  action="store_true")
@@ -57,24 +57,19 @@ class args_parser():
                                  action="store_true")
 
     # parses all command line parameters and stores them in class storage
-    def __parse_Args(self):
+    def __parse_args(self):
         self.args_Space = self.parser.parse_args(self.command_line_argv)
 
     # arguments validation
-    def __args_Validation(self):
+    def __args_validation(self):
 
         # verbose check
         if self.args_Space.verbose:
             logger.handlers[1].setLevel("INFO")
 
         # parameter <limit> validation
-        if bool(self.args_Space.limit):
-            if self.args_Space.limit < 0:
-                logger.error("Bad parameter: --limit < 0 .")
-                sys.exit()
-        else:
-            logger.warning("Bad parameter: --limit = 0, you will not see news")
-            logger.info("--limit is void. See all news")
+        if self.args_Space.limit <= 0:
+            logger.error("Command Line parameter  <limit>  <=  0")
 
         # parameter <date> validation
         if bool(self.args_Space.date):

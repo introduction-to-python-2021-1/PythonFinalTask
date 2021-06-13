@@ -9,13 +9,11 @@ logger = app_logger.get_logger(__name__)
 
 # this class open local storage file news.json in rss_reader/tmp/
 # class storage news and deal output in console
-class local_storage:
+class LocalStorage:
     # in __init__ we load news from storage in list
     def __init__(self, path="../tmp/news.json"):
         with open(path) as file:
             self.news_from_storage = json.load(file)
-            with open(path) as file:
-                self.news_from_storage = json.load(file)
 
     # return news by date in list
     def get_news_by_date_from_locale_storage(self, date, limit=50):
