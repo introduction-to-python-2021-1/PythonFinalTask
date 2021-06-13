@@ -10,6 +10,7 @@ import dateparser
 import os
 from datetime import datetime
 from os import sep as os_sep
+from xhtml2pdf import pisa
 
 
 def command_arguments_parser(args):
@@ -22,6 +23,7 @@ def command_arguments_parser(args):
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
     parser.add_argument("--date", type=str, help="Return news from date yyyymmdd from cash")
     parser.add_argument("--to_html", type=str, help="Convert news to html file. Path example 'd:/rss_news")
+    parser.add_argument("--to_pdf", type=str, help="Convert news to html file. Path example 'd:/rss_news")
     args = parser.parse_args(args)
     return args
 
@@ -160,11 +162,11 @@ def creating_cashing_news_data(user_date, source: str = None):
 
 def to_html(data, save_path, date):
     """Saving news in html format"""
-    path = r'{0}rss_feed_time {1}.html'.format(save_path + os_sep, date)
+    path = r"{0}rss_feed_time {1}.html".format(save_path + os_sep, date)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
-    with open(path, 'w', encoding='utf-8') as path_file:
+    with open(path, "w", encoding="utf-8") as path_file:
         path_file.write('''
         <Html>
             <Head>
@@ -179,12 +181,53 @@ def to_html(data, save_path, date):
                 <p>Date of publication: {}</p>
                 <img src="{}" height="344" width="520" alt="Image can not be displaed">
                 <hr>
-                '''.format(part['title'], part['link'], part['pubDate'], part["images"]))
+                '''.format(part["title"], part["link"], part["pubDate"], part["images"]))
         path_file.write('''
             </Body>
         </Html>
         ''')
-    print(f'The news file was created in path {path}')
+    print(f"The news file was created in path {path}")
+
+
+def to_pdf(data, save_path, date):
+    """Saving news in pdf format"""
+    path = r"{0}rss_feed_time {1}.pdf".format(save_path + os_sep, date)
+    img = False
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    try:
+        answer = requests.get(data["source"])
+        img = True
+    except requests.exceptions.ConnectionError:
+        pass
+
+    pdf_string = '''<Html>
+                        <Head>
+                            <title>RSS reader feed</title>
+                        </Head>
+                    <Body>
+                '''
+
+    with open(path, "w+b") as path_file:
+        for num, part in enumerate(data["news"]):
+            pdf_string += '''
+                <h3>{}</h1>
+                <a href = {}>Feed URL</a>
+                <p>Publication date: {}</p>
+                {}
+                <hr>
+                '''.format(part["title"],
+                           part["link"],
+                           part["pubDate"],
+                           f'<img src="{part["images"]}" height="344" width="520">' if img else "Image can not be "
+                                                                                                "displaed")
+        pdf_string += '''
+            </Body>
+        </Html>
+        '''
+        pisa.CreatePDF(pdf_string, dest=path_file)
+    print(f"The news file was created in path {path}")
 
 
 def main():
@@ -226,6 +269,8 @@ def main():
             return print()
     if args.to_html:
         to_html(data, args.to_html, datetime.now().strftime("%m.%d %H.%M.%S"))
+    if args.to_pdf:
+        to_pdf(data, args.to_pdf, datetime.now().strftime("%m.%d %H.%M.%S"))
 
 
 if __name__ == "__main__":
