@@ -289,7 +289,7 @@ class RssChannel:
     def _print_feed_title(self) -> None:
         """Print title and url current rss feed if data exists."""
         if self._title:
-            logger.info(f"\nFeed: {self._title}")
+            logger.info(f"\n\nFeed: {self._title}")
         if self._url:
             logger.info(f"Url: {self._url}\n")
 
