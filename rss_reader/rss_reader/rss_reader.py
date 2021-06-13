@@ -162,7 +162,6 @@ def to_html(data, save_path, date):
     path = r"{0}rss_feed_time {1}.html".format(save_path + os_sep, date)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-
     with open(path, "w", encoding="utf-8") as path_file:
         path_file.write('''
         <Html>
@@ -198,17 +197,15 @@ def to_pdf(data, save_path, date):
         img = True
     except requests.exceptions.ConnectionError:
         pass
-
-    pdf_string = '''<Html>
+    pdf_news = '''<Html>
                         <Head>
                             <title>RSS reader feed</title>
                         </Head>
                     <Body>
                 '''
-
     with open(path, "w+b") as path_file:
         for num, part in enumerate(data["news"]):
-            pdf_string += '''
+            pdf_news += '''
                 <h3>{}</h1>
                 <a href = {}>Feed URL</a>
                 <p>Publication date: {}</p>
@@ -219,11 +216,11 @@ def to_pdf(data, save_path, date):
                            part["pubDate"],
                            f'<img src="{part["images"]}" height="344" width="520">' if img else "Image can not be "
                                                                                                 "displaed")
-        pdf_string += '''
+        pdf_news += '''
             </Body>
         </Html>
         '''
-        pisa.CreatePDF(pdf_string, dest=path_file)
+        pisa.CreatePDF(pdf_news, dest=path_file)
     print(f"The news file was created in path {path}")
 
 
@@ -253,7 +250,6 @@ def main():
             if args.limit:
                 logger.info(f"Reads amount of news - {args.limit}")
             if args.json:
-                logger.info("In json")
                 printing_json(data, args.limit)
                 news_cashing(data)
             else:
