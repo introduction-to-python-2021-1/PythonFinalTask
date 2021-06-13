@@ -9,6 +9,9 @@ import sys
 import dateparser
 import os
 from datetime import datetime
+from os import sep as os_sep
+from xhtml2pdf import pisa
+import time
 
 
 def command_arguments_parser(args):
@@ -20,6 +23,8 @@ def command_arguments_parser(args):
     parser.add_argument("--verbose", action="store_true", help="Outputs verbose status messages")
     parser.add_argument("-l", "--limit", type=int, help="Limit news topics if this parameter provided")
     parser.add_argument("--date", type=str, help="Return news from date yyyymmdd from cash")
+    parser.add_argument('--to_html', type=str, help='Convert news to html file. Path example "d:/folder')
+    parser.add_argument('--to_pdf', type=str, help='Convert news to html file. Path example "d:/folder')
     args = parser.parse_args(args)
     return args
 
@@ -156,6 +161,35 @@ def creating_cashing_news_data(user_date, source: str = None):
     return data
 
 
+def to_html(data, save_path, date):
+    """Saving news in html format"""
+    path = r'{0}rss_feed_time {1}.html'.format(save_path + os_sep, date)
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    with open(path, 'w', encoding='utf-8') as path_file:
+        path_file.write('''
+        <Html>
+            <Head>
+                <title>RSS reader feed</title>
+            </Head>
+            <Body>
+        ''')
+        for num, part in enumerate(data["news"]):
+            path_file.write('''
+                <h3>{}</h1>
+                <a href = {}>Feed URL</a>
+                <p>Date of publication: {}</p>
+                <img src="{}" height="344" width="520" alt="Image can not be displaed">
+                <hr>
+                '''.format(part['title'], part['link'], part['pubDate'],part["images"]))
+        path_file.write('''
+            </Body>
+        </Html>
+        ''')
+    print(f'The news file was created in path {path}')
+
+
 def main():
     args = command_arguments_parser(sys.argv[1:])
     logger = create_logger(args.verbose)
@@ -193,6 +227,8 @@ def main():
                 news_cashing(data)
         except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL, requests.exceptions.MissingSchema):
             return print()
+    if args.to_html:
+        to_html(data, args.to_html, datetime.now().strftime("%m.%d %H.%M.%S"))
 
 
 if __name__ == "__main__":
