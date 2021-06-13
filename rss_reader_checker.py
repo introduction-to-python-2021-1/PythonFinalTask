@@ -1,6 +1,6 @@
 import subprocess
-from termcolor import colored
 
+from termcolor import colored
 
 UTIL_NAME = "rss_reader"
 

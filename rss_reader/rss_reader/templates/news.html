@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+      <title>News</title>
+   </head>
+   <body>
+      {% for item in news_list %}
+      <div>
+          {% if item.get('Image') %}
+            <img style="width:30%;height:30%;" src="{{ item.get('Image') }}"><br>
+          {% endif %}
+            Feed : {{ item.get("Feed") }}<br>
+            Title : {{ item.get("Title") }}<br>
+            Date : {{ item.get("Date") }}<br>
+            Link :    <a href="{{ item.get('Link') }}">{{ item.get('Link') }}</a><br>
+          <hr>
+        {% endfor %}
+      </div>
+   </body>
+</html>

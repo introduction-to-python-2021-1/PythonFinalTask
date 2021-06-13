@@ -2,7 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+.idea
+rss_reader/rss_reader.egg-info
+rss_reader/.coverage
+rss_reader/storage/storage.json
+rss_reader/storage/images
 # C extensions
 *.so
 
