@@ -242,14 +242,12 @@ def main():
         try:
             data = creating_cashing_news_data(args.date, args.source)
             logger.info("News will be reading from cash")
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AttributeError, FileNotFoundError) as e:
             logger.error(f"{e} in parsing date '{args.date}'")
-            print("Incorrect date, insert date like '20210601', please")
+            print("Incorrect date (insert date like '20210601', please) or no news from this date or cashed news"
+                  "was not found.")
             sys.exit()
-        except (AttributeError, FileNotFoundError) as e:
-            logger.error(f"{e} in parsing date '{args.date}'")
-            print("No news from this date or cashed news was not found. Read news from external sources, please")
-            sys.exit()
+
     else:
         try:
             logger.info("Getting access to the RSS")
@@ -257,7 +255,6 @@ def main():
             data = parses_data(answer.text, args.source)
             if args.limit:
                 logger.info(f"Reads amount of news - {args.limit}")
-                print("Reads amount of news:", args.limit)
             if args.json:
                 logger.info("In json")
                 printing_json(data, args.limit)
