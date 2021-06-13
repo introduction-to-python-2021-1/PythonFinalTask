@@ -17,7 +17,7 @@ class Converter:
     def __init__(self, directory, file_name, logger):
         """This initialization method receives directory from user, which will be used for saving file,
         also receives file_name and logger"""
-        image_storage = ROOT_DIR / "storage" / "images"
+        image_storage = ROOT_DIR / directory / "images"
         image_storage.mkdir(exist_ok=True)
         self.img_storage = image_storage
         self.dir = Path(directory).absolute()
