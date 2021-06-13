@@ -15,8 +15,8 @@ from dateutil import parser
 import requests
 from requests import Response
 
+from ap_rss_reader import ap_constants as const
 from ap_rss_reader.ap_collections import Article
-from ap_rss_reader.ap_constants import DUMP_FILE
 from ap_rss_reader.ap_typing import Filter
 from ap_rss_reader.log import logger
 
@@ -312,7 +312,9 @@ class RssChannel:
     def _get_full_path(filename: str = "") -> Path:
         """Build full path with given `file` and return :obj:`Path`."""
         if not filename:
-            filename = os.environ.get("AP_RSS_READER_DUMP_FILE") or DUMP_FILE
+            filename = (
+                os.environ.get("AP_RSS_READER_DUMP_FILE") or const.DUMP_FILE
+            )
         base_dir: Path = Path(__file__).parent.resolve(strict=True)
         full_path: Path = base_dir / filename
         if os.path.isfile(full_path):
