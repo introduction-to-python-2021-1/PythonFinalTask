@@ -68,8 +68,9 @@ class ArgsParser:
             logger.handlers[1].setLevel("INFO")
 
         # parameter <limit> validation
-        if self.args_Space.limit <= 0:
+        if bool(self.args_Space.limit) and self.args_Space.limit <= 0:
             logger.error("Command Line parameter  <limit>  <=  0")
+            sys.exit()
 
         # parameter <date> validation
         if bool(self.args_Space.date):
