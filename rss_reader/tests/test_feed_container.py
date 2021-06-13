@@ -1,7 +1,5 @@
 import unittest
 from unittest import mock
-import sys
-from io import StringIO
 
 import xml.etree.ElementTree as ET
 
@@ -23,7 +21,8 @@ class TestFeedContainer(unittest.TestCase):
     def test_get_feed_description(self, mock_get_xml_tree):
         feed = feed_container.FeedContainer("fake_rss.xml")
         self.assertEqual(feed.feed_description,
-                         "The latest news and headlines from Yahoo! News. Get breaking news stories and in-depth coverage with videos and photos.")
+                         "The latest news and headlines from Yahoo! News. "
+                         "Get breaking news stories and in-depth coverage with videos and photos.")
 
     def test_get_feed_date(self, mock_get_xml_tree):
         feed = feed_container.FeedContainer("fake_rss.xml")
@@ -41,7 +40,7 @@ class TestFeedContainer(unittest.TestCase):
         feed = feed_container.FeedContainer("fake_rss.xml")
         self.assertTrue(len(feed.get_news()) == 50)
 
-    def test_get_news_large(self, mock_get_xml_tree):
+    def test_get_news_to_save_large(self, mock_get_xml_tree):
         feed = feed_container.FeedContainer("fake_rss.xml")
         self.assertTrue(len(feed.get_news_to_save()) == 50)
 
