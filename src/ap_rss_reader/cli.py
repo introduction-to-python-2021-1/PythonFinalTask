@@ -100,7 +100,7 @@ def main(arguments: Optional[List[str]] = None) -> None:
         publishing_date = datetime.strptime(args.date, "%Y%m%d")
         channel.print_after_date(publishing_date)
     elif args.json:
-        logger.info(channel.as_json())
+        logger.info(channel.json())
     else:
         channel.print()
 

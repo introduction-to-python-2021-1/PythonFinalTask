@@ -118,7 +118,7 @@ class RssChannel:
             >= pubdate
         )
 
-    def as_json(self, *, whole: bool = False) -> str:
+    def json(self, *, whole: bool = False) -> str:
         """Convert `Channel` to json.
 
         Args:
