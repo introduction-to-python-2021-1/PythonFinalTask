@@ -146,37 +146,47 @@ class FeedContainer:
     def save_as_json(self, tmp_folder_path="tmp"+os.path.sep, limit=50):
         if not os.path.exists(tmp_folder_path):
             os.makedirs(tmp_folder_path)
-        json_path = tmp_folder_path + "news.json"
 
-        with open(json_path, 'a', encoding="utf-8") as file:
+        with open(tmp_folder_path + "news.json", 'a', encoding="utf-8") as file:
             file.write(json.dumps(self.get_news_to_save(limit), indent=4, ensure_ascii=False))
 
     # unused
-    def save_as_json_by_date(self, date, limit=50):
-        with open("../tmp/news.json", 'w', encoding="utf-8") as file:
+    def save_as_json_by_date(self, date, limit=50, tmp_folder_path="tmp"+os.path.sep):
+        if not os.path.exists(tmp_folder_path):
+            os.makedirs(tmp_folder_path)
+
+        with open(tmp_folder_path + "news_by_date.json", 'w', encoding="utf-8") as file:
             file.write(json.dumps(self.get_news_by_date(date, limit), indent=4, ensure_ascii=False))
 
     # create html file with news
-    def news_2_html(self, limit=50):
+    def news_2_html(self, limit=50, tmp_folder_path="tmp"+os.path.sep):
+        if not os.path.exists(tmp_folder_path):
+            os.makedirs(tmp_folder_path)
+
         json_news = json.dumps(self.get_news(limit))
-        with open("../tmp/news.html", 'w', encoding="utf-8") as file:
+        with open(tmp_folder_path + "news.html", 'w', encoding="utf-8") as file:
             file.write(json2html.convert(json=json_news))
 
     # create pdf file with news
-    def news_2_pdf(self, limit=50):
+    def news_2_pdf(self, limit=50, tmp_folder_path="tmp"+os.path.sep):
+        if not os.path.exists(tmp_folder_path):
+            os.makedirs(tmp_folder_path)
+
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=10)
-        with open("../tmp/buffer.txt", "w", encoding="utf-8") as file:
+
+        with open(tmp_folder_path + "buffer.txt", "w", encoding="utf-8") as file:
             for item in islice(self.get_news(limit), 0, limit):
                 for key, value in item.items():
                     file.write(f"{key} : {value}\n")
                 file.write("\n")
 
-        with open("../tmp/buffer.txt", "r", encoding="utf-8") as file:
+        with open(tmp_folder_path + "buffer.txt", "r", encoding="utf-8") as file:
             for g in file:
                 pdf.cell(10, 10, txt=g, ln=2, align='L')
-        pdf.output("../tmp/news.pdf")
+
+        pdf.output(tmp_folder_path + "news.pdf")
 
     # arguments handler logic
     def print_news_by_args(self, date, limit=50,  json=False, to_html=False, to_pdf=False):

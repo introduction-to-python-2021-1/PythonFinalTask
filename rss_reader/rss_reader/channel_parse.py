@@ -12,7 +12,7 @@ logger = app_logger.get_logger(__name__)
 # the networking method was intentionally created in a separate file
 
 
-def get_xml_tree(url):
+def get_response(url):
     try:
         xml_url = urlopen(url)
         if xml_url.status != 200:
@@ -28,6 +28,11 @@ def get_xml_tree(url):
 
     logger.info("Good response. Start parse.")
 
+    return xml_url
+
+def get_xml_tree(url):
+    xml_url = get_response(url)
+
     try:
         xml_doc = ET.parse(xml_url)
         root = xml_doc.getroot()
@@ -40,4 +45,5 @@ def get_xml_tree(url):
         sys.exit()
 
     logger.info("Parse done.")
+
     return root

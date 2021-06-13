@@ -1,6 +1,7 @@
 import json
 from itertools import islice
 from datetime import datetime
+import os
 
 import rss_reader.app_logger as app_logger
 
@@ -11,8 +12,10 @@ logger = app_logger.get_logger(__name__)
 # class storage news and deal output in console
 class LocalStorage:
     # in __init__ we load news from storage in list
-    def __init__(self, path="../tmp/news.json"):
-        with open(path) as file:
+    def __init__(self, tmp_folder_path = "tmp" + os.path.sep):
+        if not os.path.exists(tmp_folder_path):
+            os.makedirs(tmp_folder_path)
+        with open(tmp_folder_path + "news.json", 'r', encoding="utf-8") as file:
             self.news_from_storage = json.load(file)
 
     # return news by date in list
