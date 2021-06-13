@@ -42,13 +42,13 @@ class RssChannel:
     def __init__(
         self, *, url: Optional[str] = None, limit: int = 0, fetch: bool = True
     ):
-        """Create new rss channel and load all news with the given url.
+        """Create new rss channel and load all articles with given url.
 
         Args:
             url:  Url of rss channel.  When `url` is not given, try to
                 read data from file.
-            limit:  Max count of displayed news.  0 - when there's no
-                limits.
+            limit:  Max count of displayed articles.  0 - when there's
+                no limits.
             fetch: When `True` data will loaded using `url` argument.
                 Otherwise data will be read from file.
 
@@ -82,7 +82,7 @@ class RssChannel:
 
     @property
     def limit(self) -> int:
-        """The max count of displayed news."""
+        """The max count of displayed articles."""
         return self._limit
 
     @limit.setter
@@ -92,7 +92,7 @@ class RssChannel:
 
     @property
     def articles(self) -> List[Article]:
-        """All news."""
+        """All articles."""
         return self._articles[: self._limit] if self._limit else self._articles
 
     @property
@@ -122,9 +122,9 @@ class RssChannel:
         """Convert `Channel` to json.
 
         Args:
-            whole: If `True`, return the RSS channel and all news as
-                JSON. Otherwise, return only news limited by `limit`
-                property.  `False` by default.
+            whole: If `True`, return the RSS channel and all articles as
+                JSON.  Otherwise, return only articles limited by
+                :attr:`limit` property.
 
         Returns:
             Rss channel as json.
@@ -149,9 +149,9 @@ class RssChannel:
                 None,  # type: ignore
             )
             if current_channel:
-                # Convert news from file and from instance to dict
-                # with "title" as unique key.  Replace old news (from
-                # file) with news from instance
+                # Convert articles from file and from instance to dict
+                # with "title" as unique key.  Replace old articles
+                # (from file) with articles from instance
                 serialized_articles: List[Dict[str, Any]] = list(
                     {
                         **{
@@ -262,7 +262,7 @@ class RssChannel:
         return articles
 
     def filter(self, function: Filter, /) -> List[Article]:
-        """Return news for witch `function` return `True`."""
+        """Return articles for witch `function` return `True`."""
         return list(filter(function, self._articles))
 
     @classmethod
@@ -330,12 +330,12 @@ class RssChannel:
         """Represent RssChannel using python primitive types.
 
         Args:
-            whole: If `True`, return the RSS channel and all news as
-                JSON. Otherwise, return only news limited by `limit`
-                property.  `False` by default.
+            whole: If `True`, return the RSS channel and all articles as
+                JSON.  Otherwise, return only articles limited by
+                :attr:`limit` property.
 
         Returns:
-            Rss channel as dict object.
+            Rss channel as :obj:`dict` object.
 
         """
         articles = self._articles if whole else self.articles
