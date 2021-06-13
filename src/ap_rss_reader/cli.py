@@ -11,6 +11,7 @@ import ap_rss_reader
 from ap_rss_reader import ap_constants as const
 from ap_rss_reader.log import logger
 from ap_rss_reader.rss_channel import RssChannel
+from ap_rss_reader.utils import validate_url
 
 __all__ = ("main", "create_parser")
 
@@ -85,6 +86,9 @@ def main(arguments: Optional[List[str]] = None) -> None:
     print_args(args)
 
     if args.source or args.date:
+        if not validate_url(args.source):
+            logger.info(const.ERROR_INCORRECT_SOURCE_ARG, {"url": args.source})
+
         channel = RssChannel(
             url=args.source, limit=args.limit, fetch=not args.date
         )

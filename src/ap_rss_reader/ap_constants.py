@@ -47,6 +47,7 @@ DUMP_FILE: Final[str] = "ap-rss-reader-dump.json"
 # Error messages
 ERROR_CODE = "Error code: [{code}]"
 ERROR_FAILED_DECODE = "ERROR: Failed to decode content."
+ERROR_INCORRECT_SOURCE_ARG = "'source' argument is incorrect url: %(url)s!"
 ERROR_JSON_LOAD = "ERROR: File cannot be read: decoding JSON has failed."
 ERROR_NO_ADDRESS = "ERROR: No address associated with host%(host)s."
 ERROR_NO_DATA = "Sorry! There's no data that can be parsed."
