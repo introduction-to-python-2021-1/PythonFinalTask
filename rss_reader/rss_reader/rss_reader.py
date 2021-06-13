@@ -10,8 +10,6 @@ import dateparser
 import os
 from datetime import datetime
 from os import sep as os_sep
-from xhtml2pdf import pisa
-import time
 
 
 def command_arguments_parser(args):
