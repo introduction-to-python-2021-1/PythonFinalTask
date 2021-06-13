@@ -54,11 +54,8 @@ def server_answer(source):
         elif answer.status_code == 200:
             print(f"Starting reading link {source}")
         return answer
-    except requests.exceptions.ConnectionError:
-        print("ConnectionError, try again, please")
-        sys.exit()
-    except requests.exceptions.InvalidURL:
-        print("Wrong link, try again, please")
+    except (requests.exceptions.ConnectionError, requests.exceptions.InvalidURL):
+        print("ConnectionError or wrong link, try again, please")
         sys.exit()
     except requests.exceptions.MissingSchema:
         print("Incorrect URL. This is not the rss feed address")
