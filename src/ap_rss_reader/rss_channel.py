@@ -106,8 +106,8 @@ class RssChannel:
         )
         if not articles:
             logger.info("There's no data!")
-
-        self._print_articles(articles)
+        else:
+            self._print_articles(self.articles)
 
     def as_json(self, *, whole: bool = False) -> str:
         """Convert `Channel` to json.
