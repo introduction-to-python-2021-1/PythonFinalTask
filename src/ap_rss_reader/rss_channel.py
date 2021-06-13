@@ -300,7 +300,12 @@ class RssChannel:
         if os.path.isfile(full_path):
             with open(full_path) as fr:
                 logger.debug(f"\nRead data from file as json ({full_path}).")
-                data = json.load(fr)
+                try:
+                    data = json.load(fr)
+                except ValueError:
+                    logger.info(
+                        "ERROR: File cannot be read: decoding JSON has failed."
+                    )
         return full_path, data
 
     @staticmethod
