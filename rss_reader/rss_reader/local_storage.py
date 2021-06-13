@@ -1,5 +1,4 @@
 import json
-import os
 from itertools import islice
 from datetime import datetime
 
@@ -15,6 +14,8 @@ class local_storage:
     def __init__(self, path="../tmp/news.json"):
         with open(path) as file:
             self.news_from_storage = json.load(file)
+            with open(path) as file:
+                self.news_from_storage = json.load(file)
 
     # return news by date in list
     def get_news_by_date_from_locale_storage(self, date, limit=50):
