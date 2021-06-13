@@ -1,7 +1,7 @@
 import unittest
 from io import StringIO
-from unittest.mock import patch
 from unittest import TestCase
+from unittest.mock import patch
 
 from src.rss_reader import main, __version__
 

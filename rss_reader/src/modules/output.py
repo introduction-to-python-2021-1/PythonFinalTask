@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 
 class ConsoleOutput(ABC):
-    """ABSTRACT CLASS THAT DESCRIBES OUTPUT LOGIC"""
+    """ Abstract console output class. """
 
     @abstractmethod
     def output(self, data):
@@ -11,7 +11,7 @@ class ConsoleOutput(ABC):
 
 
 class DefaultOutput(ConsoleOutput):
-    """DEFAULT CONSOLE OUTPUT CLASS"""
+    """ Default console output class. """
 
     def output(self, data) -> None:
         for news in data:
@@ -28,7 +28,7 @@ class DefaultOutput(ConsoleOutput):
 
 
 class JSONOutput(ConsoleOutput):
-    """JSON CONSOLE OUTPUT CLASS"""
+    """ Json console output class. """
 
     def output(self, data) -> None:
         print(json.dumps(data, ensure_ascii=False, indent=2))

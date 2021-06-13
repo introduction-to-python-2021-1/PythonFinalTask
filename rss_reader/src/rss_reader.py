@@ -6,11 +6,11 @@ from src.modules.output import DefaultOutput, JSONOutput
 from src.modules.rss_parser import RSSParser
 from src.modules.url_validator import RssUrlValidator
 
-__version__ = 1.0
+__version__ = 2.0
 
 
 def create_logger() -> logging.getLogger:
-    """FUNCTION FOR CREATING LOGGER OBJECT"""
+    """ Function for creating logger object. """
     logging.basicConfig(level=logging.ERROR)
     logger = logging.getLogger()
     return logger
@@ -26,10 +26,7 @@ def main(argv=None) -> None:
         logger.setLevel(logging.DEBUG)
     logger.info('Started main')
 
-    if parser.limit:
-        limit = parser.limit
-    else:
-        limit = 0
+    limit = parser.limit if parser.limit else 0
 
     if parser.version:
         print(f'Version is {__version__}')
@@ -38,11 +35,13 @@ def main(argv=None) -> None:
         url = RssUrlValidator(parser.source, logger).get_validated_url()
         if url:
             if parser.json:
+                parsed_feed = RSSParser(url, logger, limit).parse()
                 handler = JSONOutput()
-                handler.output(RSSParser(url, logger, limit).parse())
+                print(handler.output(parsed_feed))
             else:
+                parsed_feed = RSSParser(url, logger, limit).parse()
                 handler = DefaultOutput()
-                handler.output(RSSParser(url, logger, limit).parse())
+                print(handler.output(parsed_feed))
             logger.info('Main ended successfully')
         else:
             logger.info('Main ended unsuccessfully')
