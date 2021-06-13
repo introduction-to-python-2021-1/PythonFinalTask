@@ -237,8 +237,7 @@ def main():
             data = creating_cashing_news_data(args.date, args.source)
         except (ValueError, TypeError, AttributeError, FileNotFoundError) as e:
             logger.error(f"{e} in parsing date '{args.date}'")
-            print("Incorrect date (insert date like '20210601', please) or no news from this date or cashed news"
-                  "was not found.")
+            print("Incorrect date (insert date like'20210601') or no news from this date or cashed news was not found.")
             sys.exit()
 
     else:
