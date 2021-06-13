@@ -8,15 +8,17 @@ import json
 import os
 from pathlib import Path
 import re
+from typing import cast
 from typing import TYPE_CHECKING
 
 from bs4 import BeautifulSoup  # type: ignore
-from dateutil import parser
 import requests
 from requests import Response
 
 from ap_rss_reader import ap_constants as const
-from ap_rss_reader.ap_collections import Article
+from ap_rss_reader import utils
+from ap_rss_reader.ap_collections import Media
+from ap_rss_reader.ap_typing import Article
 from ap_rss_reader.ap_typing import Filter
 from ap_rss_reader.log import logger
 
@@ -61,6 +63,7 @@ class RssChannel:
         self._limit = limit
         self._articles: List[Article] = []
         self._title: str = ""
+        self._description: str = ""
         self._url: str = url or ""
 
         if fetch:
@@ -108,7 +111,12 @@ class RssChannel:
             pubdate: date of publication.
 
         """
-        self._print(filter_func=lambda article: article.date >= pubdate)
+        self._print(
+            filter_func=lambda article: cast(
+                datetime, article[const.FIELD_PUBDATE]
+            )
+            >= pubdate
+        )
 
     def as_json(self, *, whole: bool = False) -> str:
         """Convert `Channel` to json.
@@ -122,21 +130,7 @@ class RssChannel:
             Rss channel as json.
 
         """
-        return json.dumps(
-            dict(
-                title=self._title,
-                url=self._url,
-                articles=[
-                    {
-                        **article._asdict(),
-                        "date": article.date.strftime("%Y-%m-%d %H:%M:%S"),
-                    }
-                    for article in (self._articles if whole else self.articles)
-                ],
-            ),
-            indent=4,
-            sort_keys=True,
-        )
+        return json.dumps(self._serialize(whole), indent=4, sort_keys=True)
 
     def dump(self, file: str = "") -> None:
         """Write the rss channel on the file (as JSON)."""
@@ -156,22 +150,17 @@ class RssChannel:
             )
             if current_channel:
                 # Convert news from file and from instance to dict
-                # with "link" as unique key.  Replace old news (from
+                # with "title" as unique key.  Replace old news (from
                 # file) with news from instance
-                all_news: List[Dict[str, Any]] = list(
+                serialized_articles: List[Dict[str, Any]] = list(
                     {
                         **{
-                            article["link"]: article
+                            article[const.FIELD_TITLE]: article
                             for article in current_channel["articles"]
                         },
                         **{
-                            article.link: {
-                                **article._asdict(),
-                                "date": article.date.strftime(
-                                    "%Y-%m-%d %H:%M:%S"
-                                ),
-                            }
-                            for article in self._articles
+                            article[const.FIELD_TITLE]: article
+                            for article in self._serialize()["articles"]
                         },
                     }.values()
                 )
@@ -180,28 +169,15 @@ class RssChannel:
                     dict(
                         title=self._title,
                         url=self._url,
-                        articles=all_news,
+                        description=self._description,
+                        articles=serialized_articles,
                     )
                     if channel["url"] == self._url
                     else channel
                     for channel in data
                 ]
             else:
-                data.append(
-                    dict(
-                        title=self._title,
-                        url=self._url,
-                        articles=[
-                            {
-                                **article._asdict(),
-                                "date": article.date.strftime(
-                                    "%Y-%m-%d %H:%M:%S"
-                                ),
-                            }
-                            for article in self._articles
-                        ],
-                    )
-                )
+                data.append(self._serialize())
             json.dump(
                 data,
                 df,
@@ -213,87 +189,171 @@ class RssChannel:
         """Fetch and parse data using url."""
         logger.debug(f"\nFetch data with {self._url}...")
 
-        beautiful_soup = self._get_beautiful_soup()
-        if beautiful_soup:
-            self._title = beautiful_soup.select_one("title").string
+        content = self._request()
+        # lxml doesn't support pseudo-classes. So we fix it:
+        content = self._fix_pseudo_classes(content)
+        beautiful_soup = self._get_beautiful_soup(content)
+
+        if beautiful_soup and (
+            feed_title := utils.retrieve_title(beautiful_soup)
+        ):
+            self._title = feed_title
+            description = beautiful_soup.select_one("description")
+            self._description = description.string if description else None
             articles = beautiful_soup.select(self.ARTICLE_SELECTOR)
             logger.debug(f"\n{len(articles)} was(were) downloaded.")
             return [
-                Article(
-                    title=article.title.string,
-                    link=article.link.next,
-                    date=parser.parse(article.pubdate.string),
-                    source=article.source.string,
-                    source_url=article.source and article.source["url"],
-                    media_content_url=article.media_content
-                    and article.media_content["url"],
-                )
+                utils.parse_article(article)
                 for article in articles
+                if utils.retrieve_title(article)
             ]
         logger.info(const.ERROR_NO_DATA)
         return []
 
     def read(self, filename: str = "") -> List[Article]:
-        """Read the rss channel from the JSON file."""
-        logger.debug("\nLoad rss-channel from file...")
-        _, data = self._read_file(filename)
+        """Read the rss channel from the JSON file.
 
-        all_news: List[Dict[str, Any]]
+        When there's no saved url in :attr:`_url`, read *all* articles
+        from *all* channels in file.
+
+        Args:
+            filename: name of file from which attempts to read data.
+
+        Returns:
+            List of articles.
+
+        """
+        logger.debug("\nLoad rss-channel from file...")
+
+        serialized_articles: List[Dict[str, Any]]
+
+        _, data = self._read_file(filename)
         if self._url:
-            current_channel: Dict[str, Any] = next(
+            serialized_channel: Dict[str, Any] = next(
                 filter(lambda channel: channel["url"] == self._url, data),
                 None,  # type: ignore
             )
-            if current_channel is not None:
-                self._title = current_channel["title"]
-                all_news = current_channel["articles"]
+            if serialized_channel:
+                self._title = serialized_channel["title"]
+                self._description = serialized_channel["description"]
+                serialized_articles = serialized_channel["articles"]
             else:
-                all_news = []
+                serialized_articles = []
         else:
-            all_news = list(
-                chain.from_iterable([channel["articles"] for channel in data])
+            # Read *all* articles from *all* feeds in file
+            serialized_articles = list(
+                chain.from_iterable(
+                    [channel["serialized_articles"] for channel in data]
+                )
             )
-        return [
-            Article(
-                **{
-                    **current_news,  # type: ignore
-                    "date": datetime.strptime(
-                        current_news["date"], "%Y-%m-%d %H:%M:%S"
-                    ),
-                }
-            )
-            for current_news in all_news
-        ]
+
+        articles: List[Article] = []
+        for serialized_article in serialized_articles:
+            article = serialized_article
+            if const.FIELD_PUBDATE in article:
+                article[const.FIELD_PUBDATE] = datetime.strptime(
+                    article[const.FIELD_PUBDATE], "%Y-%m-%d %H:%M:%S"
+                )
+            if const.FIELD_MEDIA in article:
+                article[const.FIELD_MEDIA] = [
+                    Media(*media) for media in article[const.FIELD_MEDIA]
+                ]
+            articles.append(cast(Article, article))
+        return articles
 
     def filter(self, function: Filter, /) -> List[Article]:
         """Return news for witch `function` return `True`."""
         return list(filter(function, self._articles))
 
-    def _get_beautiful_soup(self) -> BeautifulSoup:
-        """Download and convert data to beautiful soup.
+    @classmethod
+    def _get_beautiful_soup(cls, content: str) -> BeautifulSoup:
+        """Convert content to soup and return rss channel.
+
+        Args:
+            content: text with xml formatted rss channel.
 
         Returns:
-            Content of rss channel.
+            Content of rss channel as soup.
 
         """
-        response: Response = requests.request(
-            "GET", self._url, timeout=(3.0, 5.0)
-        )
-        if not response:
-            response.raise_for_status()
-        # lxml doesn't support pseudo-classes. So we fix it:
-        content = RssChannel._fix_pseudo_classes(response.text)
-        beautiful_soup = BeautifulSoup(content, features="lxml").select_one(
-            RssChannel.SELECTOR
-        )
-        return beautiful_soup
+        return BeautifulSoup(content, features="lxml").select_one(cls.SELECTOR)
+
+    def _request(self) -> str:  # noqa: C901
+        """Send request and return response as text."""
+        if not self._url:
+            logger.info(const.ERROR_NO_URL)
+            return ""
+
+        try:
+            logger.debug(f"Send request to {self._url}...")
+            response: Response = requests.request(
+                "GET", self._url, timeout=(3.0, 5.0)
+            )
+            if not response:
+                response.raise_for_status()
+        except requests.HTTPError as e:
+            status_code = e.response.status_code
+            logger.info(
+                const.REQUEST_ERROR_MESSAGES.get(
+                    status_code,
+                    " ".join(
+                        (const.ERROR_SOMETHING_GOES_WRONG, const.ERROR_CODE)
+                    ),
+                ).format(code=status_code, url=self._url)
+            )
+        except requests.ConnectionError as e:
+            host: str = f": {e.args[0].pool.host}" if "pool" in e.args else ""
+            logger.info(const.ERROR_NO_ADDRESS, host)
+        except requests.ReadTimeout as e:
+            host = f": {e.args[0].pool.host}" if "pool" in e.args else ""
+            logger.info(const.ERROR_TIME_OUT, host)
+        except requests.TooManyRedirects:
+            logger.info(const.ERROR_TOO_MANY_REDIRECTS)
+        except requests.exceptions.ContentDecodingError:
+            logger.info(const.ERROR_FAILED_DECODE)
+        except requests.RequestException:
+            logger.info(const.ERROR_SOMETHING_GOES_WRONG)
+        else:
+            return response.text
+        return ""
 
     def _print_feed_title(self) -> None:
         """Print title and url current rss feed if data exists."""
         if self._title:
             logger.info(f"\n\nFeed: {self._title}")
         if self._url:
-            logger.info(f"Url: {self._url}\n")
+            logger.info(f"Url: {self._url}")
+        if self._description:
+            logger.info(f"Description: {self._description}\n")
+
+    def _serialize(self, whole: bool = True) -> Dict[str, Any]:
+        """Represent RssChannel using python primitive types.
+
+        Args:
+            whole: If `True`, return the RSS channel and all news as
+                JSON. Otherwise, return only news limited by `limit`
+                property.  `False` by default.
+
+        Returns:
+            Rss channel as dict object.
+
+        """
+        articles = self._articles if whole else self.articles
+        return dict(
+            title=self._title,
+            url=self._url,
+            description=self._description,
+            articles=[
+                {
+                    **article,
+                    const.FIELD_PUBDATE: cast(
+                        datetime, article[const.FIELD_PUBDATE]
+                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                }
+                for article in articles
+                if isinstance(article[const.FIELD_PUBDATE], datetime)
+            ],
+        )
 
     def _print(self, *, filter_func: Optional[Filter] = None) -> None:
         """Print channel title and all channel articles.
@@ -351,23 +411,4 @@ class RssChannel:
     @staticmethod
     def _print_articles(articles: List[Article]) -> None:
         for article in articles:
-            logger.info(
-                f"Title: {article.title}\n"
-                f"Date: {article.date}\n"
-                f"Link: {article.link}\n"
-            )
-            if article.media_content_url or article.source_url:
-                logger.info("Links:")
-                counter = 0
-                if article.source_url:
-                    counter += 1
-                    logger.info(
-                        f"[{counter}]: {article.source_url} "
-                        f'"{article.source}" (link)'
-                    )
-                if article.media_content_url:
-                    counter += 1
-                    logger.info(
-                        f"[{counter}]: {article.media_content_url} " f"(image)"
-                    )
-                logger.info("\n")
+            utils.print_article(article)
