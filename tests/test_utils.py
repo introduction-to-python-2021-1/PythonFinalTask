@@ -3,34 +3,22 @@
 from __future__ import annotations
 
 from typing import cast
-from typing import NamedTuple
 from typing import TYPE_CHECKING
 
 from bs4 import Tag  # type: ignore
 import pytest  # type: ignore
 
+from ap_rss_reader import ap_constants as const
 from ap_rss_reader import utils
-from ap_rss_reader.utils import retrieve_title
+from tests.mocks.conftest import MiniSoupMock
+from tests.mocks.conftest import TextTagMock
 
 if TYPE_CHECKING:
     from typing import Any
-    from typing import Optional
 
     from ap_rss_reader.ap_collections import Media
     from ap_rss_reader.ap_typing import Article
-
-
-class TextTagMock(NamedTuple):
-    """Mock of text field of bs4 :obj:`Tag`"""
-
-    string: Optional[str]
-
-
-class SoupMock(NamedTuple):
-    """Mock of bs4 :obj:`Tag`."""
-
-    title: Optional[TextTagMock]
-    description: Optional[TextTagMock]
+    from ap_rss_reader.ap_typing import FieldName
 
 
 def test_validate_url_valid_data(valid_url: str) -> None:
@@ -83,18 +71,18 @@ def test_text_field_print_valid_data(
     ("soup", "result"),
     [
         (
-            SoupMock(
+            MiniSoupMock(
                 title=TextTagMock(string="title"),
                 description=TextTagMock(string="description"),
             ),
             "title",
         ),
         (
-            SoupMock(title=TextTagMock(string="title"), description=None),
+            MiniSoupMock(title=TextTagMock(string="title"), description=None),
             "title",
         ),
         (
-            SoupMock(
+            MiniSoupMock(
                 title=None, description=TextTagMock(string="description")
             ),
             "description",
@@ -102,5 +90,24 @@ def test_text_field_print_valid_data(
     ],
     ids=lambda arg: f"{arg}",
 )
-def test_retrieve_title_valid_data(soup: SoupMock, result: str) -> None:
-    assert result == retrieve_title(cast(Tag, soup))
+def test_retrieve_title_valid_data(soup: MiniSoupMock, result: str) -> None:
+    assert result == utils.retrieve_title(cast(Tag, soup))
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        const.FIELD_TITLE,
+        const.FIELD_LINK,
+        const.FIELD_DESCRIPTION,
+        const.FIELD_AUTHOR,
+        const.FIELD_COMMENTS,
+        const.FIELD_SOURCE,
+    ],
+    ids=lambda arg: f"{arg}",
+)
+def test_parse_article_valid_data(
+    field: FieldName, valid_article: Article, valid_soup: MiniSoupMock
+) -> None:
+    soup = cast(Tag, valid_soup)
+    assert valid_article[field] == utils.parse_article(soup)[field]

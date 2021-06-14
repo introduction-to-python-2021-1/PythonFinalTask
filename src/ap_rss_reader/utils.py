@@ -186,7 +186,7 @@ PARSER_MAP: Dict[Tuple[FieldName, ...], FieldParser] = {
 }
 
 
-def parse_article(soup: Tag) -> Article:
+def parse_article(soup: Tag) -> Article:  # noqa: C901
     """Parse item from rss channel.
 
     Args:
@@ -205,18 +205,25 @@ def parse_article(soup: Tag) -> Article:
     result[const.FIELD_TITLE] = title
     for field_names in PARSER_MAP:
         for field_name in field_names:
-            if getattr(soup, field_name):
-                field_parser = PARSER_MAP[field_names]
-                key, value = field_parser(soup, field_name)
-                if (
-                    key in result
-                    and isinstance(result[key], list)
-                    and isinstance(value, list)
-                    and (values := cast(List[Union[Media, str]], result[key]))
-                ):
-                    values.extend(value)
-                else:
-                    result[key] = value
+            try:
+                if getattr(soup, field_name):
+                    field_parser = PARSER_MAP[field_names]
+                    key, value = field_parser(soup, field_name)
+                    if (
+                        key in result
+                        and isinstance(result[key], list)
+                        and isinstance(value, list)
+                        and (
+                            values := cast(
+                                List[Union[Media, str]], result[key]
+                            )
+                        )
+                    ):
+                        values.extend(value)
+                    else:
+                        result[key] = value
+            except AttributeError:
+                logger.debug(f"Attribute ({field_name}) not found!")
     return result
 
 

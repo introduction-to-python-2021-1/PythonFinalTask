@@ -1,3 +1,3 @@
 # pylint: disable=missing-module-docstring
 
-__all__ = ("mocks",)
+__all__ = ("conftest",)

@@ -11,6 +11,9 @@ import pytest  # type: ignore
 from ap_rss_reader import ap_constants as const
 from ap_rss_reader.ap_collections import Media
 from ap_rss_reader.ap_typing import Article
+from tests.mocks.conftest import SoupMock
+from tests.mocks.conftest import TextTagMock
+from tests.mocks.conftest import UrlTagsMock
 
 if TYPE_CHECKING:
     from typing import Any
@@ -105,4 +108,17 @@ def valid_article(date_datetime: datetime, media: Media) -> Article:
             const.FIELD_PUBDATE: date_datetime,
             const.FIELD_SOURCE: "source",
         },
+    )
+
+
+@pytest.fixture()
+def valid_soup(date_str: str) -> SoupMock:
+    return SoupMock(
+        title=TextTagMock(string="title"),
+        link=UrlTagsMock(next="link"),
+        description=TextTagMock(string="description"),
+        author=TextTagMock(string="author"),
+        comments=UrlTagsMock(next="comments"),
+        pubdate=TextTagMock(string=date_str),
+        source=UrlTagsMock(next="source"),
     )
