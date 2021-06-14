@@ -125,6 +125,7 @@ def main():
 
         if content is not None:
             data = extract_data_from_xml(content.text, args.limit)
+
         else:
             logger.error(f"Parsing xml was failed. Check the RSS URL you have entered.")
             raise SystemExit
