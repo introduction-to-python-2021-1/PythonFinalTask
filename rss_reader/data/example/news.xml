@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <language>ru</language>
+    <title>Lenta.ru : Новости</title>
+    <description>Новости, статьи, фотографии, видео. Семь дней в неделю, 24 часа в сутки.</description>
+    <link>https://lenta.ru</link>
+    <image>
+      <url>https://lenta.ru/images/small_logo.png</url>
+      <title>Lenta.ru</title>
+      <link>https://lenta.ru</link>
+      <width>134</width>
+      <height>22</height>
+    </image>
+    <atom:link rel="self" type="application/rss+xml" href="http://lenta.ru/rss/news"/>
+    <item>
+      <guid>https://lenta.ru/news/2021/06/12/malovato/</guid>
+      <author>Платон Щукин</author>
+      <title>Путин раскрыл число привившихся россиян</title>
+      <link>https://lenta.ru/news/2021/06/12/malovato/</link>
+      <description>
+        <![CDATA[Президент России Владимир Путин заявил, что с начала вакцинации в России привились 18 миллионов человек]]>
+      </description>
+      <pubDate>Sat, 12 Jun 2020 16:48:07 +0300</pubDate>
+      <enclosure url="https://icdn.lenta.ru/images/" type="image/jpeg" length="79484"/>
+      <category>Россия</category>
+    </item>
+    <item>
+      <guid>https://lenta.ru/news/2021/06/12/niz/</guid>
+      <author>Варвара Кошечкина</author>
+      <title>В центре Гамалеи рассказали о влиянии индийского штамма на привитых от COVID-19</title>
+      <link>https://lenta.ru/news/2021/06/12/niz/</link>
+      <description>
+        <![CDATA[Индийский штамм коронавируса снижает в несколько раз иммунный ответ у привившихся от коронавируса]]>
+      </description>
+      <pubDate>Sat, 12 Jun 2020 16:42:17 +0300</pubDate>
+      <enclosure url="https://icdn.lenta.ru/images/2021/06/12/16" type="image/jpeg" length="74595"/>
+      <category>Россия</category>
+    </item>
+    <item>
+      <guid>https://lenta.ru/news/2021/06/12/b21/</guid>
+      <author>Иван Потапов</author>
+      <title>Раскрыта готовность двух первых «самых крутых» самолетов в мире</title>
+      <link>https://lenta.ru/news/2021/06/12/b21/</link>
+      <description>
+        <![CDATA[Американская военно-промышленная корпорация Northrop Grumman практически завершила производство]]>
+      </description>
+      <pubDate>Sat, 12 Jun 2020 16:34:00 +0300</pubDate>
+      <enclosure url="https://icdn.lenta.ru/images/2021/06/11/12/" type="image/jpeg" length="90533"/>
+      <category>Наука и техника</category>
+    </item>
+    <
+
+  </channel>
+</rss>

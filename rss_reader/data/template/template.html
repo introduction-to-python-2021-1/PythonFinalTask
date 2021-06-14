@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News</title>
+</head>
+<body>
+
+<div class="container mt-1 mb-1">
+
+
+    {% for onews in news %}
+
+    <P>Feed: {{ onews.feed }}</P>
+    <p>Title: {{ onews.title }}</p>
+    {% if onews.feed %}
+    <p>Date: {{ onews.date }}</p>
+    {% endif %}
+    <p>Link: <a href={{ onews.link }}>{{ onews.link }}</a></p>
+
+    {% if onews.description %}
+    <p>{{ onews.description }}</p>
+    {% endif %}
+
+    {% if onews.links %}
+    <p>Links:</p>
+    {% for link in onews.links %}
+    {% if link.type == 'image' %}
+    <img src={{ link.link }} alt={{ onews.title }}>
+    {% else %}
+    <p><a href={{ link.link }}>{{ link.link }}</a></p>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    {% endfor %}
+</div>
+
+</body>
+</html>
