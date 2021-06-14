@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import patch
 from contextlib import contextmanager
 from io import StringIO
-from rss_reader import rss_reader
+from rss_reader.rss_reader import rss_reader
 
 
 @contextmanager
