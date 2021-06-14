@@ -43,6 +43,7 @@ SUPPORTED_FIELDS: List[FieldName] = [
 DATE_OR_SOURCE_IS_REQUIRED: Final[
     str
 ] = "At least one of the 'date' or 'source' arguments must be specified!\n"
+DATETIME_FORMAT: Final[str] = "%Y-%m-%d %H:%M:%S"
 DUMP_FILE: Final[str] = "ap-rss-reader-dump.json"
 
 # Error messages

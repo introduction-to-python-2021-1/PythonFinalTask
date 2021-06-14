@@ -34,7 +34,7 @@ def validate_url(url: str) -> bool:
     """Check if 'url' string valid URL."""
     try:
         result = urlparse(url)
-        return all([result.scheme, result.netloc, result.path])
+        return all((result.scheme, result.netloc))
     except (AttributeError, ValueError):
         return False
 
@@ -223,7 +223,7 @@ def parse_article(soup: Tag) -> Article:
 def _date_print(article: Article, key: FieldName) -> None:
     if key in article and isinstance(article[key], datetime):
         date = cast(datetime, article[key])
-        logger.info(f"Date: {date.strftime('%Y-%m-%d %H:%M:%S')}")
+        logger.info(f"Date: {date.strftime(const.DATETIME_FORMAT)}")
 
 
 def _multiple_print(article: Article, key: FieldName) -> None:

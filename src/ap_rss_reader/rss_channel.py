@@ -256,7 +256,7 @@ class RssChannel:
             article = serialized_article
             if const.FIELD_PUBDATE in article:
                 article[const.FIELD_PUBDATE] = datetime.strptime(
-                    article[const.FIELD_PUBDATE], "%Y-%m-%d %H:%M:%S"
+                    article[const.FIELD_PUBDATE], const.DATETIME_FORMAT
                 )
             if const.FIELD_MEDIA in article:
                 article[const.FIELD_MEDIA] = [
@@ -352,7 +352,7 @@ class RssChannel:
                     **article,
                     const.FIELD_PUBDATE: cast(
                         datetime, article[const.FIELD_PUBDATE]
-                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                    ).strftime(const.DATETIME_FORMAT),
                 }
                 for article in articles
                 if isinstance(article[const.FIELD_PUBDATE], datetime)
