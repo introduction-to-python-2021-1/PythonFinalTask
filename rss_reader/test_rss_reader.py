@@ -22,7 +22,7 @@ def captured_output():
 class TestRssReader(unittest.TestCase):
     """Test functions from the module 'rss_reader.py'"""
 
-    @patch("rss_reader.get_response")
+    @patch("rss_reader.rss_reader.rss_reader.get_response")
     def test_get_response(self, mock_make_request):
         """Test the function 'get_response' with correct URL"""
         mock_make_request.return_value.status_code = 200
