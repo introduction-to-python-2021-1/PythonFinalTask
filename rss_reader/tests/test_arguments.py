@@ -56,7 +56,7 @@ class TestRssArguments(unittest.TestCase):
         select = reader.selection_from_url(self.soup)
         news, items = reader.collect_and_format_news(select, parsed_arg)
         with StringIO() as buf, redirect_stdout(buf):
-            reader.print_news(parsed_arg.json, news)
+            reader.print_news(parsed_arg.json, parsed_arg.colorize, news)
             result_news_dates_and_links = findall('Date: .+\nLink: .+\n', buf.getvalue())
             self.assertEqual(len(result_news_dates_and_links), res)
 
@@ -67,7 +67,7 @@ class TestRssArguments(unittest.TestCase):
         select = reader.selection_from_url(self.soup)
         news, items = reader.collect_and_format_news(select, parsed_arg)
         with StringIO() as buf, redirect_stdout(buf):
-            reader.print_news(parsed_arg.json, news)
+            reader.print_news(parsed_arg.json, parsed_arg.colorize, news)
             loads(buf.getvalue())
 
     @ddt_data((['https://news.yahoo.com/rss', '--limit', '5', '--json', ], 5),
@@ -81,7 +81,7 @@ class TestRssArguments(unittest.TestCase):
         select = reader.selection_from_url(self.soup)
         news, items = reader.collect_and_format_news(select, parsed_arg)
         with StringIO() as buf, redirect_stdout(buf):
-            reader.print_news(parsed_arg.json, news)
+            reader.print_news(parsed_arg.json, parsed_arg.colorize, news)
             load = loads(buf.getvalue())
             self.assertEqual(len(load), res)
 

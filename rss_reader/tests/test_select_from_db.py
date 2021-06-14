@@ -45,7 +45,7 @@ class TestRssReaderDB(unittest.TestCase):
         news, items = reader.collect_and_format_news(storage, parsed_arg)
         with StringIO() as buf, redirect_stdout(buf):
             reader.selection_from_db(parsed_arg.date)
-            reader.print_news(parsed_arg.json, news)
+            reader.print_news(parsed_arg.json, parsed_arg.colorize, news)
             result_news_dates_and_links = findall('Date: .+\nLink: .+\n', buf.getvalue())
             self.assertEqual(len(result_news_dates_and_links), res)
 
@@ -57,7 +57,7 @@ class TestRssReaderDB(unittest.TestCase):
         news, items = reader.collect_and_format_news(storage, parsed_arg)
         with StringIO() as buf, redirect_stdout(buf):
             reader.selection_from_db(parsed_arg.date)
-            reader.print_news(parsed_arg.json, news)
+            reader.print_news(parsed_arg.json, parsed_arg.colorize, news)
             loads(buf.getvalue())
 
     @ddt_data((['--date=20210530', '--limit', '5', '--json', ], 5),
@@ -72,7 +72,7 @@ class TestRssReaderDB(unittest.TestCase):
         news, items = reader.collect_and_format_news(storage, parsed_arg)
         with StringIO() as buf, redirect_stdout(buf):
             reader.selection_from_db(parsed_arg.date)
-            reader.print_news(parsed_arg.json, news)
+            reader.print_news(parsed_arg.json, parsed_arg.colorize, news)
             load = loads(buf.getvalue())
             self.assertEqual(len(load), res)
 

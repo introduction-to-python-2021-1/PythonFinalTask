@@ -131,6 +131,8 @@ def print_news(arg_json, arg_color, news):
     if arg_json:
         if arg_color:
             print(colored(json.dumps(news, indent=4, sort_keys=False, default=str), "green", "on_grey"))
+        else:
+            print(json.dumps(news, indent=4, sort_keys=False, default=str))
 
     else:
         print(*news.values())
