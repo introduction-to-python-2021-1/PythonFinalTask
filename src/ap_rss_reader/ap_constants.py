@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from typing import Dict
     from typing import Final
     from typing import List
     from typing import Literal
@@ -45,17 +46,23 @@ DATE_OR_SOURCE_IS_REQUIRED: Final[
 DUMP_FILE: Final[str] = "ap-rss-reader-dump.json"
 
 # Error messages
-ERROR_CODE = "Error code: [{code}]"
-ERROR_FAILED_DECODE = "ERROR: Failed to decode content."
-ERROR_INCORRECT_SOURCE_ARG = "'source' argument is incorrect url: %(url)s!"
-ERROR_JSON_LOAD = "ERROR: File cannot be read: decoding JSON has failed."
-ERROR_NO_ADDRESS = "ERROR: No address associated with host%(host)s."
-ERROR_NO_DATA = "Sorry! There's no data that can be parsed."
-ERROR_NO_URL = "Data cannot be loaded, because there's no 'url'!"
-ERROR_SOMETHING_GOES_WRONG = "ERROR: Sorry! Something goes wrong."
-ERROR_TIME_OUT = "ERROR: Read timed out from host%(host)s."
-ERROR_TOO_MANY_REDIRECTS = "ERROR: Too many redirects."
-REQUEST_ERROR_MESSAGES = {
+ERROR_CODE: Final[str] = "Error code: [{code}]"
+ERROR_FAILED_DECODE: Final[str] = "ERROR: Failed to decode content."
+ERROR_INCORRECT_SOURCE_ARG: Final[
+    str
+] = "'source' argument is incorrect url: %(url)s!"
+ERROR_JSON_LOAD: Final[
+    str
+] = "ERROR: File cannot be read: decoding JSON has failed."
+ERROR_NO_ADDRESS: Final[
+    str
+] = "ERROR: No address associated with host%(host)s."
+ERROR_NO_DATA: Final[str] = "Sorry! There's no data that can be parsed."
+ERROR_NO_URL: Final[str] = "Data cannot be loaded, because there's no 'url'!"
+ERROR_SOMETHING_GOES_WRONG: Final[str] = "ERROR: Sorry! Something goes wrong."
+ERROR_TIME_OUT: Final[str] = "ERROR: Read timed out from host%(host)s."
+ERROR_TOO_MANY_REDIRECTS: Final[str] = "ERROR: Too many redirects."
+REQUEST_ERROR_MESSAGES: Final[Dict[int, str]] = {
     400: "ERROR: Bad request to url: {url}.",
     403: "ERROR: Access to '{url}' is forbidden.",
     404: "ERROR: Page '{url}' not found.",
@@ -63,7 +70,9 @@ REQUEST_ERROR_MESSAGES = {
     503: "ERROR: Service unavailable for url: {url}.",
 }
 
-INFO_CHANNEL_WAS_CREATED = "Rss channel was created with %(count)i article(s)!"
+INFO_CHANNEL_WAS_CREATED: Final[
+    str
+] = "Rss channel was created with %(count)i article(s)!"
 
 GREETING: Final[str] = (
     "The software is provided 'as is', without warranty of any kind,"
