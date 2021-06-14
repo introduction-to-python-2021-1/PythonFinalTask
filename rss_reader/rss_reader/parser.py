@@ -1,4 +1,5 @@
 from dateutil.parser import parse
+from termcolor import colored
 
 
 class RssParser:
@@ -6,7 +7,6 @@ class RssParser:
         soup (bs4.BeautifulSoup): Object of class bs4.BeautifulSoup containing data from xml file
     """
     def __init__(self, soup):
-
         self.soup = soup
 
     def select_news(self):
@@ -31,17 +31,25 @@ class RssParser:
     def json_format(data):
         """This method format data from xml file JSON style"""
         return {
-            'Title': data['title'],
+            'Title': data["title"],
             'Publication date': data['pubDate'],
             'News link': data['link'],
             'Image link': data['media'],
         }
 
     @staticmethod
-    def default_format(data):
+    def default_format(data, color):
         """This method format data from xml file default style"""
-        return '\n\n\nTitle: {0}\nDate: {1}\nLink: {2}\n\nImages links: {3}'.format(
-                                                                            data['title'],
-                                                                            data['pubDate'],
-                                                                            data['link'],
-                                                                            data['media'],)
+        if color:
+            out = '\n\n\nTitle: {0}\nDate: {1}\nLink: {2}\n\nImages links: {3}'.format(
+                                                                                    colored(data['title'], 'green'),
+                                                                                    data['pubDate'],
+                                                                                    colored(data['link'], 'blue'),
+                                                                                    colored(data['media'], 'blue'),)
+        else:
+            out = '\n\n\nTitle: {0}\nDate: {1}\nLink: {2}\n\nImages links: {3}'.format(
+                                                                                    data['title'],
+                                                                                    data['pubDate'],
+                                                                                    data['link'],
+                                                                                    data['media'],)
+        return out

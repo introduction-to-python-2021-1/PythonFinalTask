@@ -12,10 +12,12 @@ from rss_reader.parser import RssParser
 from rss_reader.db_worker import RssStorage, get_path
 from rss_reader.db_worker import db as rss_db
 from rss_reader.converter import save_html, save_pdf
+from termcolor import colored
 
 
 def main(args=sys.argv[1:]):
     """Main function. Entry point of program"""
+    args.append('--colorize')
     arg_parser = get_arg_parser()
     parsed_arg = arg_parser.parse_args(args)
     if parsed_arg.verbose:
@@ -35,7 +37,7 @@ def main(args=sys.argv[1:]):
         select = selection_from_url(soup)
         news, items = collect_and_format_news(select, parsed_arg)
 
-    print_news(parsed_arg.json, news)
+    print_news(parsed_arg.json, parsed_arg.colorize, news)
     if parsed_arg.to_html:
         save_html(items, parsed_arg.to_html, datetime.now().strftime("%m.%d %H.%M.%S"))
 
@@ -54,6 +56,7 @@ def get_arg_parser():
     parser.add_argument('--date', type=str, help='Print cached news')
     parser.add_argument('--to_html', type=str, help='Convert news to html file. Path example "d:/folder')
     parser.add_argument('--to_pdf', type=str, help='Convert news to html file. Path example "d:/folder')
+    parser.add_argument('--colorize', help='Print colorize result', action='store_true')
     return parser
 
 
@@ -118,15 +121,17 @@ def collect_and_format_news(select, parsed_arg):
                 news[num] = RssParser.json_format(item)
 
             else:
-                news[num] = RssParser.default_format(item)
+                news[num] = RssParser.default_format(item, parsed_arg.colorize)
     return news, collected_items
 
 
-def print_news(arg_json, news):
+def print_news(arg_json, arg_color, news):
     """Function which print news"""
     logging.info('Printing news.')
     if arg_json:
-        print(json.dumps(news, indent=4, sort_keys=False, default=str))
+        if arg_color:
+            print(colored(json.dumps(news, indent=4, sort_keys=False, default=str), "green", "on_grey"))
+
     else:
         print(*news.values())
 

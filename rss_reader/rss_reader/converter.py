@@ -35,7 +35,8 @@ def save_pdf(data, input_path, date):
                 '''.format(i['title'],
                            i['link'],
                            i['pubDate'],
-                           f'<img src="{i["media"]}" height="344" width="520">' if can_add_img else 'Can\'t display image')
+                           f'<img src="{i["media"]}" '
+                           f'height="344" width="520">' if can_add_img else 'Can\'t display image')
         pdf_string += '''
             </Body>
         </Html>
