@@ -6,13 +6,13 @@ from xhtml2pdf import pisa
 
 def save_pdf(data, input_path, date):
     path = r'{0}rss_feed_time {1}.pdf'.format(input_path + os_sep, date)
-    img = False
+    can_add_img = False
     if not os.path.exists(input_path):
         os.makedirs(input_path)
 
     try:
         code = requests.get(data[0]['media'])
-        img = True
+        can_add_img = True
 
     except requests.exceptions.ConnectionError:
         pass
@@ -35,7 +35,7 @@ def save_pdf(data, input_path, date):
                 '''.format(i['title'],
                            i['link'],
                            i['pubDate'],
-                           f'<img src="{i["media"]}" height="344" width="520">' if img else 'Can\'t display image')
+                           f'<img src="{i["media"]}" height="344" width="520">' if can_add_img else 'Can\'t display image')
         pdf_string += '''
             </Body>
         </Html>
@@ -45,7 +45,7 @@ def save_pdf(data, input_path, date):
     print(f'File with news was created in path {path}')
 
 
-def save_html(data, input_path, date):
+def save_html(news, input_path, date):
     path = r'{0}rss_feed_time {1}.html'.format(input_path + os_sep, date)
     if not os.path.exists(input_path):
         os.makedirs(input_path)
@@ -58,14 +58,14 @@ def save_html(data, input_path, date):
             </Head>
             <Body>
         ''')
-        for i in data:
+        for item in news:
             file.write('''
                 <h3>{}</h1>
                 <a href = {}>Feed URL</a>
                 <p>Publication date: {}</p>
                 <img src="{}" height="344" width="520" alt="Can\'t display the image">
                 <hr>
-                '''.format(i['title'], i['link'], i['pubDate'], i['media']))
+                '''.format(item['title'], item['link'], item['pubDate'], item['media']))
         file.write('''
             </Body>
         </Html>
