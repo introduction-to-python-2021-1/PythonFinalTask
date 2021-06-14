@@ -42,3 +42,19 @@ def test_reader_print_json():
     assert len(entries) == 2
     app.print_entries(entries, json_fmt=True)
     pass
+
+
+def test_reader_make_cache():
+    app = RssReaderApp()
+    path = os.path.dirname(__file__)
+    sample = os.path.join(path, 'sample.xml')
+    entries = app.rss_reader(sample)
+    assert entries is not None
+    s = app.make_cache('sample.xml', entries)
+    print(s)
+
+
+def test_reader_read_cache():
+    app = RssReaderApp()
+    entries = app.read_from_cache('sample.xml', '20041019')
+    assert entries is not None
