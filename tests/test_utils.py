@@ -2,15 +2,35 @@
 
 from __future__ import annotations
 
+from typing import cast
+from typing import NamedTuple
 from typing import TYPE_CHECKING
 
+from bs4 import Tag  # type: ignore
+import pytest  # type: ignore
+
 from ap_rss_reader import utils
+from ap_rss_reader.utils import retrieve_title
 
 if TYPE_CHECKING:
     from typing import Any
+    from typing import Optional
 
     from ap_rss_reader.ap_collections import Media
     from ap_rss_reader.ap_typing import Article
+
+
+class TextTagMock(NamedTuple):
+    """Mock of text field of bs4 :obj:`Tag`"""
+
+    string: Optional[str]
+
+
+class SoupMock(NamedTuple):
+    """Mock of bs4 :obj:`Tag`."""
+
+    title: Optional[TextTagMock]
+    description: Optional[TextTagMock]
 
 
 def test_validate_url_valid_data(valid_url: str) -> None:
@@ -57,3 +77,30 @@ def test_text_field_print_valid_data(
     utils.print_article(valid_article_title)
     first, *_ = (r.message for r in caplog.records)
     assert first == "Title: title"
+
+
+@pytest.mark.parametrize(
+    ("soup", "result"),
+    [
+        (
+            SoupMock(
+                title=TextTagMock(string="title"),
+                description=TextTagMock(string="description"),
+            ),
+            "title",
+        ),
+        (
+            SoupMock(title=TextTagMock(string="title"), description=None),
+            "title",
+        ),
+        (
+            SoupMock(
+                title=None, description=TextTagMock(string="description")
+            ),
+            "description",
+        ),
+    ],
+    ids=lambda arg: f"{arg}",
+)
+def test_retrieve_title_valid_data(soup: SoupMock, result: str) -> None:
+    assert result == retrieve_title(cast(Tag, soup))
