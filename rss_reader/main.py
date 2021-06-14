@@ -4,10 +4,13 @@ import os
 import argparse
 import logging
 
+import pdfkit
+
 from rss_reader.xml_downloader import XmlDownloader
 from rss_reader.xml_to_json import XmlJsonConverter
 from rss_reader.json_to_json import HtmlJsonToTextJson
 from rss_reader.json_io import JsonIO
+from rss_reader.json_to_html import HtmlJsonToHtml
 
 
 def main():
@@ -28,6 +31,8 @@ def main():
     parser.add_argument("--verbose", action="store_true", help="Output verbose status messages")
     parser.add_argument("--limit", type=int, help="Limit news topics if this parameter provided")
     parser.add_argument("--date", type=str, help="Print news from specified date YYYYMMDD")
+    parser.add_argument("--to-html", type=str, help="Save news as html")
+    parser.add_argument("--to-pdf", type=str, help="Save news as pdf")
     # Positional (mandatory) arguments:
     parser.add_argument("source", type=str, nargs="?",  help="RSS URL")
     # Parsing arguments
@@ -43,7 +48,7 @@ def main():
         logging.disable(logging.CRITICAL)
 
     if args.version:  # [--version] argument passed - print version and exit
-        print("Version 1.3", flush=True)
+        print("Version 1.4", flush=True)
         exit(0)
 
     logging.info(f"URL: {args.source}")
@@ -109,6 +114,29 @@ def main():
     if not args.date:
         storage.save_raw_rss(html_json_list)
         storage.download_images(html_json_list, args.source)
+
+    if args.to_html:
+        logging.info(f"Save to html. Path {args.to_html}")
+        html_converter = HtmlJsonToHtml(limit=args.limit)
+        # if args.date provided - replace links
+        html_converter.raw_rss2html_file(args.to_html, html_json_list, bool(args.date))
+
+    if args.to_pdf:
+        temporary_html_file = "tmp_file_838974359854u73.html"
+        logging.info(f"Save to temporary html file: {temporary_html_file}")
+
+        html_converter = HtmlJsonToHtml(limit=args.limit)
+        html_converter.raw_rss2html_file(temporary_html_file, html_json_list, bool(args.date))
+
+        try:  # Catching conversion errors.
+            pdfkit.from_file(temporary_html_file, args.to_pdf, options={"quiet": "", 'encoding': "UTF-8",
+                                                                        'page-size': 'A4'})
+        except TypeError as ioe:
+            logging.info(f"main: wkhtmltopdf error: {ioe}")
+            print(f"\nError:Conversion to PDF failed: {ioe}\nPlease correct save file path.")
+
+        logging.info(f"Save to pdf. Path {args.to_pdf}")
+        os.remove(temporary_html_file)
 
     # Program finished successfully
     exit(0)

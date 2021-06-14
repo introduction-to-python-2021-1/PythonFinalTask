@@ -94,6 +94,7 @@ class TestJsonPrintMethods(unittest.TestCase):
         </channel>
         </rss>
         """
+        # expected text output in JSON format
         expected = """{
   "Feed": "BuzzFeed News",
   "Title": "Debt Didn’t Disappear During The Pandemic.",
@@ -105,15 +106,17 @@ class TestJsonPrintMethods(unittest.TestCase):
   },
   "URL": "https://www.buzzfeed.com/world.xml"
 }"""
+        #  converting Date string to datetime and changing time zone to local time zone
         published_date = datetime.datetime.fromisoformat("2021-05-30 05:11:05+03:00")
         local_tzinfo = pytz.timezone(str(get_localzone()))
 
+        #  substituting Date string with properly converted to local time ISO string
         published_date_local = str(published_date.astimezone(local_tzinfo))
         expected = expected.replace("2021-05-30 05:11:05+03:00", published_date_local)
 
         xjc = XmlJsonConverter(xml, "https://www.buzzfeed.com/world.xml")
-        xjc.dump_json()
-        actual = stdout.getvalue()
+        xjc.dump_json()  # printing in JSON format
+        actual = stdout.getvalue()  # and saving printed text
 
         self.assertEqual(actual, expected, "dump_json wrong output")
 
