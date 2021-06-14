@@ -148,6 +148,8 @@ disable=abstract-method,
         zip-builtin-not-iterating,
         # TODO: rewrite logger messages
         logging-fstring-interpolation,
+        # contradict black
+        ungrouped-imports,
 
 
 [REPORTS]
