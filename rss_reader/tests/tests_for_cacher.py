@@ -3,6 +3,9 @@
 """
 import os
 import unittest
+from io import StringIO
+from unittest.mock import patch, MagicMock
+
 from rss_core.cacher import DbCacher
 from rss_core.rss_classes import RssNews
 
@@ -14,14 +17,23 @@ class TestCacher(unittest.TestCase):
     Test DbCacher
     """
 
-    def tearDown(self):
-        os.remove(DB_NAME)
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_load_from_cache(self, mock_stdout):
+        """
+        Test load_from_cache function
+        """
+        cache = DbCacher()
+        cache._get_channels_info_from_db = MagicMock(return_value=[])
+        cache.load_from_cache(rss_link="http://a", date="20210613", show_logs=True)
+        self.assertIn("News was restored from cache", mock_stdout.getvalue())
 
-    def test_cache_rss_news(self):
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_cache_rss_news(self, mock_stdout):
         """
-        Test cache_rss_news
+        Test cache_rss_news function
         """
-        cacher = DbCacher(DB_NAME)
-        news = RssNews(**{})
-        cacher.cache_rss_news(news, "http://a")
-        cacher.db_processor.close_connection()
+        cache = DbCacher()
+        cache._create_channel_cache = MagicMock(return_value=-1)
+        cache._create_news_cache = MagicMock(return_value=None)
+        cache.cache_rss_news(rss_news=None, rss_link="", show_logs=True)
+        self.assertIn("Nes was cached successfully", mock_stdout.getvalue())
