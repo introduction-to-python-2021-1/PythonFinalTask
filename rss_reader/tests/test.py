@@ -200,6 +200,11 @@ class TestReader(unittest.TestCase):
         with self.assertRaises(SystemExit):
             rss_reader.server_answer('4556547112')
 
+    def test_no_cashed_news(self):
+        """ Test AttributeError raises, if we give a date which is absent in the file with cashed news. """
+        print = rss_reader.creating_cashing_news_data("20210506")
+        self.assertLogs(print, "Cashing news starts from June 1, 2021")
+
 
 if __name__ == "__main__":
     unittest.main()

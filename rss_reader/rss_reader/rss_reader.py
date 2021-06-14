@@ -182,7 +182,6 @@ def to_html(data, save_path, date):
             </Body>
         </Html>
         ''')
-    print(f"The news file was created in path {path}")
 
 
 def to_pdf(data, save_path, date):
@@ -221,7 +220,6 @@ def to_pdf(data, save_path, date):
         </Html>
         '''
         pisa.CreatePDF(pdf_news, dest=path_file)
-    print(f"The news file was created in path {path}")
 
 
 def main():
