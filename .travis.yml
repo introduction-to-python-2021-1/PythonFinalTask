@@ -6,7 +6,8 @@ install:
   - pip install pycodestyle
   - pip install termcolor
   - pip install .
-  - sudo apt install wkhtmltopdf
+  - apt-get update
+  - sudo apt-get install wkhtmltopdf
 script:
   - cd rss_reader
   - nosetests --cover-branches --with-coverage --cover-min-percentage=50 --cover-package=rss_reader
