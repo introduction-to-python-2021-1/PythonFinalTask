@@ -22,7 +22,7 @@ class TestParser(unittest.TestCase):
         SiteReader.get_data = MagicMock(return_value=XML_INFO.replace("\n", ""))
         parser = XmlParser(SiteReader())
         news_dict = parser.parse_news("http://abc")
-        self.assertTrue(isinstance(news_dict, dict))
+        self.assertEqual("Chanel title", news_dict["title"])
 
     def test_strip_text(self):
         """
