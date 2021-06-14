@@ -242,7 +242,6 @@ def main():
 
     else:
         try:
-            logger.info("Getting access to the RSS")
             answer = server_answer(args.source)
             data = parses_data(answer.text, args.source)
             if args.limit:
