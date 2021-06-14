@@ -55,6 +55,7 @@ Links:
 
 
 class TestMain(unittest.TestCase):
+    """ Class for testing the main function """
     @classmethod
     def tearDownClass(cls):
         remove(join(detect(), 'rss_reader', 'data', 'cache', 'cache.json'))

@@ -18,16 +18,19 @@ with open(good_example_path, 'r') as file:
 
 
 class TestConnector(TestCase):
+    """ Class for testing the module responsible for checking the Internet connection """
     def setUp(self) -> None:
         self.logger = create_logger()
 
     def test_bad_url(self):
+        """ Check with a non-existent url address """
         with self.assertLogs(logger='root', level='ERROR') as logs:
             Connector(url='https://www.lenntta.ru/', logger=self.logger)
         self.assertIn('ERROR:root:Connection not detected.', logs.output)
 
     @patch('requests.get')
     def test_url_without_rss(self, mock_get):
+        """ Checking url address without RSS feed """
         mock_get.return_value = Mock()
         mock_get.return_value.status = 200
         mock_get.return_value.text = bad_data
@@ -37,6 +40,7 @@ class TestConnector(TestCase):
 
     @patch('requests.get')
     def test_url_with_rss(self, mock_get):
+        """ Checking url address with RSS feed """
         mock_get.return_value = Mock()
         mock_get.return_value.status = 200
         mock_get.return_value.text = good_data

@@ -10,6 +10,7 @@ from modules.argparser import Argparser
 
 
 class TestArgprser(TestCase):
+    """ Class for testing the module for parsing arguments """
     def setUp(self) -> None:
         self.argparser = Argparser(logger=Mock())
         self.parser = ArgumentParser()
@@ -19,6 +20,7 @@ class TestArgprser(TestCase):
 
     @patch('sys.stderr', new_callable=StringIO)
     def test_empty_source(self, mock_stderr):
+        """ Check for passing an empty string instead of url """
         args = ['']
         with self.assertRaises(SystemExit):
             self.argparser.parse_arguments(args)
@@ -26,6 +28,7 @@ class TestArgprser(TestCase):
 
     @patch('sys.stderr', new_callable=StringIO)
     def test_wrong_date_format(self, mock_stderr):
+        """ Check for passing date of incorrect format """
         args = ['--date=2021-05-31']
         with self.assertRaises(SystemExit):
             self.argparser.parse_arguments(args)
@@ -33,6 +36,7 @@ class TestArgprser(TestCase):
 
     @patch('sys.stderr', new_callable=StringIO)
     def test_wrong_date(self, mock_stderr):
+        """ Check for transmission of the future date """
         args = ['--date={}'.format(self.tomorrow_date)]
         with self.assertRaises(SystemExit):
             self.argparser.parse_arguments(args)
@@ -40,6 +44,7 @@ class TestArgprser(TestCase):
 
     @patch('sys.stderr', new_callable=StringIO)
     def test_wrong_directory(self, mock_stderr):
+        """ Check for a non-existent directory """
         args = ['https://news.yahoo.com/rss/', '--to-html={}'.format(self.random_dir)]
         with self.assertRaises(SystemExit):
             self.argparser.parse_arguments(args)

@@ -53,6 +53,11 @@ class ConsoleOutput:
                     print('[{}] {} ({})'.format(i + 1, links[i].get('link'), links[i].get('type')))
 
     def output_json(self, data, limit):
+        """
+        Function for displaying news in the console in JSON format
+        :param data: news list
+        :param limit: given limit
+        """
 
         limit = self.__validate_limit(data, limit)
         news = data[:limit]
