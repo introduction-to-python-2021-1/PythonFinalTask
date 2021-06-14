@@ -72,7 +72,7 @@ class XmlDownloader:
         Prints to stdout error message when XML data at RSS feed URL not available.
         """
         try:
-            response = requests.get(url, stream=True, headers={'user-agent': 'rss_reader/1.4'})
+            response = requests.get(url, stream=True, headers={'user-agent': 'rss_reader/1.5'})
         except Exception as e:
             print(f"RSS feed with URL {url} Not responding\n\nError: {e}")
             return ""

@@ -33,6 +33,7 @@ def main():
     parser.add_argument("--date", type=str, help="Print news from specified date YYYYMMDD")
     parser.add_argument("--to-html", type=str, help="Save news as html")
     parser.add_argument("--to-pdf", type=str, help="Save news as pdf")
+    parser.add_argument("--colorize", action="store_true", help="Print news in colorized mode")
     # Positional (mandatory) arguments:
     parser.add_argument("source", type=str, nargs="?",  help="RSS URL")
     # Parsing arguments
@@ -48,7 +49,7 @@ def main():
         logging.disable(logging.CRITICAL)
 
     if args.version:  # [--version] argument passed - print version and exit
-        print("Version 1.4", flush=True)
+        print("Version 1.5", flush=True)
         exit(0)
 
     logging.info(f"URL: {args.source}")
@@ -72,6 +73,9 @@ def main():
         print("DATE must be 8 digits", flush=True)
         exit(1)
 
+    if args.json and args.colorize:
+        print("--json and --colorize arguments are not compatible")
+        exit(1)
     # argparse parameters were checked. Now start processing RSS feed
 
     storage = JsonIO()  # instance of JSON storage to load or save JSON data
@@ -107,7 +111,7 @@ def main():
         text_json_list.dump_json()
     else:  # by default: news are printed to stdout as formatted text
         logging.info("Print RSS in plain text")
-        text_json_list.print_json()
+        text_json_list.print_json(color=args.colorize)
 
     # When we are working with Internet downloaded data must be saved to storage. It may take some time, so it's better
     # to do it in the end, not to disturb the user.

@@ -25,6 +25,7 @@ import logging
 import datetime
 
 from bs4 import BeautifulSoup
+from colored import fg, bg, attr
 
 
 class HtmlJsonToTextJson:
@@ -310,12 +311,14 @@ class HtmlJsonToTextJson:
 
         return None
 
-    def print_json(self, limit: int = None) -> None:
+    def print_json(self, limit: int = None, color: bool = False) -> None:
         """print_json() - Prints to stdout RSS feed in user readable JSON format as formatted plain text.
 
         Parameters:
         arg1: int
             limit - Number of dictionaries from the self._text_json_list to print. By default None - no limit.
+        arg2: bool
+            color - Print news in colorized mode.
 
         Side effects:
         ------------
@@ -331,17 +334,37 @@ class HtmlJsonToTextJson:
             print("RSS feed data not available")
             return None
 
+        if not color:
+            color_reset = ""
+            line_color = ""
+            feed_color = ""
+            title_color = ""
+            date_color = ""
+            link_color = ""
+            summary_color = ""
+            links_color = ""
+        else:
+            color_reset = attr("reset")
+            line_color = fg("grey_54")
+            feed_color = fg("slate_blue_1")
+            title_color = fg("yellow")
+            date_color = fg("green")
+            link_color = fg("cyan")
+            summary_color = fg("grey_54")
+            links_color = fg("cyan")
+
         logging.info("print_json: Printing news in plain text format")
         for entry in self.text_json_list[:limit]:
-            print("-" * 80, flush=True)
-            print(f'Feed: {entry["Feed"]}', flush=True)
-            print(f'Title: {entry["Title"]}', flush=True)
-            print(f'Date: {entry["Date"]}', flush=True)
-            print(f'Link: {entry["Link"]}', flush=True)
+            print(line_color + "-" * 80, flush=True)
+            print(feed_color + f'Feed: {entry["Feed"]}', flush=True)
+            print(title_color + f'Title: {entry["Title"]}', flush=True)
+            print(date_color + f'Date: {entry["Date"]}', flush=True)
+            print(link_color + f'Link: {entry["Link"]}', flush=True)
             if entry["Summary"]:
-                print(f'\nSummary: {entry["Summary"]}', flush=True)
-            print("\nLinks:")
+                print(color_reset + f'\nSummary: ' + summary_color + f'{entry["Summary"]}', flush=True)
+            print(color_reset + "\nLinks:" + links_color)
             for link, i in entry["Links"].items():
                 print(f"[{i}] {link}")
 
+        print(color_reset, end="", flush=True)  # reset text color and background back to normal
         return None
