@@ -1,6 +1,15 @@
 import pytest
 import os
 from rss_reader import RssReaderApp
+from rss_reader.args import RssReaderArgs
+
+
+def test_argparser():
+    parser = RssReaderArgs(['--json', '--verbose', '--limit', '10', 'http://tut.by/rss.xml'])
+    assert parser.args.json
+    assert parser.args.verbose
+    assert parser.args.limit == 10
+    assert parser.args.source == 'http://tut.by/rss.xml'
 
 
 def test_reader():
