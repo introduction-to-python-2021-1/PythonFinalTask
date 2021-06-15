@@ -1,12 +1,17 @@
 import json
 import logging
+import os
 import ssl
 import sys
+from hashlib import sha1
 from sqlite3 import IntegrityError
 
 import feedparser
+import requests
 from dateutil.parser import parse, ParserError
 
+from rss_reader.constants import PROJECT_ROOT
+from rss_reader.converter import Converter
 from rss_reader.db import DB
 from rss_reader.parser import parse_args
 
@@ -20,21 +25,33 @@ def parse_feed(source):
     result = feedparser.parse(source)
     logging.info(f"Starting parse {source}")
     if not result.entries:
-        logging.error(f"Unable to parse source {source}. Error: {e}")
+        logging.error(f"Unable to parse source {source}.")
         exit(1)
     else:
         return feedparser.parse(source)
+
+
+def save_image(image_url):
+    image_url_hash = sha1(image_url.encode()).hexdigest()
+    image_path = os.path.join(PROJECT_ROOT, "images", image_url_hash)
+    if not os.path.exists(image_path):
+        image = requests.get(image_url).content
+        with open(image_path, "bw") as f:
+            f.write(image)
+    return image_path
 
 
 def get_content(source):
     feed = parse_feed(source)
     content = []
     for entry in feed.entries:
-        try:
+        if hasattr(entry, "media_content"):
             image_url = entry.media_content[0]["url"]
-        except Exception:
+            image_path = save_image(image_url)
+        else:
             #  if no image in media content then image is None
             image_url = None
+            image_path = None
         pubdate = parse(entry.published).date()
         title = entry.title
         link = entry.link
@@ -43,12 +60,12 @@ def get_content(source):
             "pubdate": str(pubdate),
             "title": title,
             "image_url": image_url,
+            "image_path": image_path,
             "link": link
         })
 
     if len(content) < 1:
         logging.error("Length of your feed = 0, try correct link or choose another rss-feed")
-        exit(1)
     return content
 
 
@@ -107,6 +124,9 @@ def get_news_from_cache(pubdate, source):
 def main():
     db_obj.create_schema()
 
+    os.makedirs(os.path.join(PROJECT_ROOT, "converted_news"), exist_ok=True)
+    os.makedirs(os.path.join(PROJECT_ROOT, "images"), exist_ok=True)
+
     args = parse_args(sys.argv[1:])
     logging.basicConfig(level=logging.INFO if args.verbose else logging.ERROR)
 
@@ -120,7 +140,13 @@ def main():
         logging.warning("Limit is set by default = length feed")
         args.limit = len(content)
     content = content[:args.limit]
-    print_news(content=content, json_state=args.json)
+    if args.convert_type:
+        if args.json:
+            print_news_json(content=content)
+        converter = Converter(convert_type=args.convert_type, path=PROJECT_ROOT)
+        converter.execute(content=content)
+    else:
+        print_news(content=content, json_state=args.json)
 
 
 if __name__ == "__main__":

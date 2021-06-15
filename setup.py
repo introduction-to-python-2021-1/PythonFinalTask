@@ -6,7 +6,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="rss_reader",
-    version="3.1",
+    version="4.1",
     description="Pure Python RSS reader",
     url="https://github.com/jesuisbourrasque/PythonFinalTask",
     author="Nikita Isakov",

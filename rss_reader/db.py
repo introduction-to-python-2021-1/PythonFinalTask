@@ -38,7 +38,8 @@ class DB:
             pubdate TEXT NOT NULL,
             title TEXT NOT NULL,
             link TEXT UNIQUE,
-            image_url TEXT NOT NULL
+            image_url TEXT NOT NULL,
+            image_path TEXT NOT NULL
             )
         """
         self.execute(query, self.connection, commit=True)
@@ -49,7 +50,7 @@ class DB:
                 Parameters:
                     news: tuple with news parameters(rss_source, pubdate, title, image(url), link)
         """
-        query = "INSERT INTO News(rss_source, pubdate, title, image_url, link) VALUES(?, ?, ?, ?, ?)"
+        query = "INSERT INTO News(rss_source, pubdate, title, image_url, image_path, link) VALUES(?, ?, ?, ?, ?, ?)"
         self.execute(query, self.connection, news, commit=True)
 
     def select_news_from_cache(self, rss_source=None, pubdate=None):
@@ -61,9 +62,9 @@ class DB:
                 Return list of dicts with news parameters(pubdate, title, link, image(url))
         """
         if not rss_source:
-            query = "SELECT rss_source, pubdate, title, image_url, link FROM News WHERE pubdate = ?"
+            query = "SELECT rss_source, pubdate, title, image_url, image_path, link FROM News WHERE pubdate = ?"
             parameters = (pubdate,)
         else:
-            query = "SELECT pubdate, title, image_url, link FROM News WHERE rss_source = ? AND pubdate = ?"
+            query = "SELECT pubdate, title, image_url, image_path, link FROM News WHERE rss_source = ? AND pubdate = ?"
             parameters = (rss_source, pubdate,)
         return self.execute(query, self.connection, parameters, fetchall=True)

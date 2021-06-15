@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News in HTML-format</title>
+</head>
+<body>
+    {% for news in content %}
+        <h2>{{ news.pubdate }}</h2>
+        <h2><a href="{{ news.link }}">{{ news.title }}</a></h2>
+        {% if news.image_path %}
+            <img src="file://{{ news.image_path }}" alt="{{ news.title }}" height="300">
+            <br><br>
+        {% endif %}
+        <br>
+    {% endfor %}
+</body>
+</html>

@@ -17,4 +17,6 @@ def parse_args(args):
                                                              "it is set by default = length feed).")
     parser.add_argument("--date", type=str, default=None, help="Outputs news by date from cache"
                                                                "(It should take a date in YYYYMMDD format.).")
+    parser.add_argument("--to-html", action="store_const", const="html", dest="convert_type", default=None)
+    parser.add_argument("--to-pdf", action="store_const", const="pdf", dest="convert_type", default=None)
     return parser.parse_args(args)
