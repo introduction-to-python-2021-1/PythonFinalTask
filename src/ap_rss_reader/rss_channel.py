@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     from typing import Optional
     from typing import Tuple
 
-__all__ = ("get_rss_channel",)
+__all__ = ("get_rss_channel", "RssChannel")
 
 
 def get_rss_channel(  # noqa: C901
