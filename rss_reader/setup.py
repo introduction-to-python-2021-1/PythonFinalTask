@@ -1,7 +1,6 @@
 from setuptools import setup
 from reader_app.rss_reader import VERSION
 
-
 setup(
     name='rss-reader',
     version=f'{VERSION}',
