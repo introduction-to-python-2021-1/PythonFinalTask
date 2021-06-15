@@ -8,4 +8,4 @@ install:
   - pip install tox
 
 script:
-  - tox -v -e py38,coverage
+  - tox -v -e clean,py38,coverage
