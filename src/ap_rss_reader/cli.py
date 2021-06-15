@@ -107,7 +107,7 @@ def write_to_file(filename: str, text: str) -> None:
         logger.info(const.ERROR_OPEN_FILE, {"filename": filename})
 
 
-def main(arguments: Optional[List[str]] = None) -> None:
+def main(arguments: Optional[List[str]] = None) -> None:  # noqa: C901
     """The main public interface of application.
 
     Args:
@@ -121,6 +121,10 @@ def main(arguments: Optional[List[str]] = None) -> None:
         logger.setLevel(logging.DEBUG)
     print_args(args)
 
+    if not any(vars(args).values()):
+        logger.info(parser.format_help())
+        return
+
     channel = get_rss_channel(
         url=args.source, limit=args.limit, date=args.date
     )
@@ -132,7 +136,7 @@ def main(arguments: Optional[List[str]] = None) -> None:
         if filename := args.to_pdf:
             channel.save_pdf(filename)
 
-        if args.json and not args.date:
+        if args.json:
             logger.info(channel.json())
         else:
             channel.print()
