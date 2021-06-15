@@ -134,6 +134,7 @@ class RssChannel:
 
     @limit.setter
     def limit(self, limit: int) -> None:
+        """Set new limit."""
         if isinstance(limit, int) and limit >= 0:
             self._limit = limit
 
@@ -143,28 +144,9 @@ class RssChannel:
         return self._articles[: self._limit] if self._limit else self._articles
 
     @property
-    def title(self) -> str:
-        """Title of rss channel."""
-        return self._title
-
-    def load(self) -> None:
-        """Load articles from file or Internet using 'url'."""
-        if self._date:
-            self.read()
-            return
-        self.fetch()
-        self.dump()
-
-    def print(self) -> None:
-        """Print channel title and limited article list.
-
-        If :attr:`date` exists, only articles after this date printed,
-        otherwise if :attr:`limit` exists, only first 'n' articles
-        printed.  When no :attr:`date` and :attr:`limit` print all
-        articles.
-
-        """
-        articles: List[Article] = (
+    def articles_by_date(self) -> List[Article]:
+        """Articles are published after :attr:`date`."""
+        return (
             list(
                 filter(
                     lambda article: cast(  # type: ignore
@@ -178,11 +160,27 @@ class RssChannel:
             else self.articles
         )
 
-        self._print_feed_title()
-        if not articles:
-            logger.info("There's no data!")
+    @property
+    def title(self) -> str:
+        """Title of rss channel."""
+        return self._title
+
+    def load(self) -> None:
+        """Load articles from file or Internet using 'url'."""
+        if self._date:
+            self.read()
         else:
-            self._print_articles(articles)
+            self.fetch()
+            self.dump()
+
+    def print(self) -> None:
+        """Print channel title and limited article list."""
+        self._print_feed_title()
+        if articles := self.articles_by_date:
+            for article in articles:
+                utils.print_article(article)
+        else:
+            logger.info("There's no data!")
 
     def json(self, *, whole: bool = False) -> str:
         """Convert `Channel` to json.
@@ -448,8 +446,3 @@ class RssChannel:
             r"<\g<tag>_\g<pseudo_class>",
             text,
         )
-
-    @staticmethod
-    def _print_articles(articles: List[Article]) -> None:
-        for article in articles:
-            utils.print_article(article)
