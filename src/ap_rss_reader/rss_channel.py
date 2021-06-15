@@ -445,7 +445,7 @@ class RssChannel:
             Rss channel as :obj:`dict` object.
 
         """
-        articles = self._articles if whole else self.articles
+        articles = self._articles if whole else self.articles_by_date
         return dict(
             title=self._title,
             url=self._url,
