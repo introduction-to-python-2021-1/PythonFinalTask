@@ -210,6 +210,7 @@ class RssChannel:
         self._print_feed_title()
         if articles := self.articles_by_date:
             for article in articles:
+                logger.info("\n")
                 utils.print_article(article)
         else:
             logger.info("There's no data!")
