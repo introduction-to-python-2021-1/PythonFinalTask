@@ -201,7 +201,7 @@ class RssChannel:
         """
         try:
             logger.debug(f"Open file {filename}...")
-            with open(filename, "w") as f:
+            with open(filename, "w+b") as f:
                 pisa.CreatePDF(src=self.html, dest=f)
             logger.debug("Close file.")
         except OSError:
