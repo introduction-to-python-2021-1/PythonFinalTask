@@ -52,10 +52,6 @@ def get_rss_channel(  # noqa: C901
         logger.info(const.DATE_OR_SOURCE_IS_REQUIRED)
         return None
 
-    if date and not url:
-        logger.info("Using 'date' argument without 'url' is prohibited!")
-        return None
-
     if limit and (
         not isinstance(limit, int) or (isinstance(limit, int) and limit < 0)
     ):
@@ -65,15 +61,16 @@ def get_rss_channel(  # noqa: C901
         )
         return None
 
-    try:
-        limit_date = datetime.strptime(date, "%Y%m%d")  # type: ignore
-    except (TypeError, ValueError):
-        logger.info(
-            "The 'date' argument must be string and match format '%Y%m%d'."
-        )
-        return None
+    if date:
+        try:
+            limit_date = datetime.strptime(date, "%Y%m%d")
+        except (TypeError, ValueError):
+            logger.info(
+                "The 'date' argument must be string and match format '%Y%m%d'."
+            )
+            return None
 
-    if not utils.validate_url(url):
+    if url and not utils.validate_url(url):
         logger.info(const.ERROR_INCORRECT_SOURCE_ARG, {"url": url})
         return None
 
