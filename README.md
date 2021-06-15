@@ -32,60 +32,66 @@ You can find source code of this package on [github][]. See
 
 ```shell
 $ ap_rss_reader "https://news.yahoo.com/rss/" --limit 1
-
-
 Feed: Yahoo News - Latest News & Headlines
 Url: https://news.yahoo.com/rss/
+Description: The latest news and headlines from Yahoo! News. Get breaking news stories and in-depth coverage with videos and photos.
 
-Title: No mass protests after Honolulu police shoot, kill Black man
-Date: 2021-06-06 15:56:33
-Link: https://news.yahoo.com/no-mass-protests-honolulu-police-155633667.html
-
+Title: California finally lifts its last big COVID restrictions. Did the state play it too safe?
+Link: https://news.yahoo.com/california-finally-lifts-its-last-big-covid-restrictions-did-the-state-play-it-too-safe-133838908.html
+Date: 2021-06-15 13:38:38
+Source: Yahoo News
 Links:
-[1]: http://www.ap.org/ "Associated Press" (link)
-[2]: https://s.yimg.com/uu/api/res/1.2/7CNq3PcjbHikuOrWqNFt.Q--~B/aD00ODA7dz02NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/ap.org/e2ddde5376d7a2e161502e283f689a5f (image)
+[1]: https://s.yimg.com/os/creatr-uploaded-images/2021-06/28ddb610-cddc-11eb-8e72-e3afb144a08a (content).
 
 ```
 
 Utility provides the following interface:
 
 ```shell
-usage: ap_rss_reader [-h] [--date DATE] [--limit LIMIT] [--verbose] [--version] [--json] [source]
+usage: ap_rss_reader [-h] [--date DATE] [--limit LIMIT] [--verbose] [--version] [--json] [--to-html TO_HTML] [--to-pdf TO_PDF] [source]
 
 AP RSS-reader with CLI.
 
 positional arguments:
-  source         RSS URL
+  source             RSS URL
 
 optional arguments:
-  -h, --help     show this help message and exit
-  --date DATE    Limit news topics by publishing date: YYYYMMDD
-  --limit LIMIT  Limit news topics if this parameter provided
-  --verbose      Provides additional details as to what the program is doing
-  --version      Shows the version of the program and exits
-  --json         Print result as JSON in stdout
+  -h, --help         show this help message and exit
+  --date DATE        Limit news topics by publishing date: YYYYMMDD
+  --limit LIMIT      Limit news topics if this parameter provided
+  --verbose          Provides additional details as to what the program is doing
+  --version          Shows the version of the program and exits
+  --json             Print result as JSON in stdout
+  --to-html TO_HTML  Save rss channel as html file with given path: 'C:\rss.html' or '/home/user/rss.html'.
+  --to-pdf TO_PDF    Save rss channel as pdf file with given path: 'C:\rss.html' or '/home/user/rss.html'.
+
 ```
 
 In case of using `--json` argument utility converts the news into
 [JSON](https://en.wikipedia.org/wiki/JSON) format:
 
 ```json
-[
-  {
-    "channel_items": [
-      {
-        "date": "2021-06-06 15:56:33",
-        "link": "https://news.yahoo.com/no-mass-protests-honolulu-police-155633667.html",
-        "media_content_url": "https://s.yimg.com/uu/api/res/1.2/7CNq3PcjbHikuOrWqNFt.Q--~B/aD00ODA7dz02NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/ap.org/e2ddde5376d7a2e161502e283f689a5f",
-        "source": "Associated Press",
-        "source_url": "http://www.ap.org/",
-        "title": "No mass protests after Honolulu police shoot, kill Black man"
-      }
-    ],
-    "title": "Yahoo News - Latest News & Headlines",
-    "url": "https://news.yahoo.com/rss/"
-  }
-]
+{
+  "articles": [
+    {
+      "link": "https://news.yahoo.com/california-finally-lifts-its-last-big-covid-restrictions-did-the-state-play-it-too-safe-133838908.html",
+      "media": [
+        [
+          "content",
+          "https://s.yimg.com/os/creatr-uploaded-images/2021-06/28ddb610-cddc-11eb-8e72-e3afb144a08a",
+          "86",
+          "130"
+        ]
+      ],
+      "pubdate": "2021-06-15 13:38:38",
+      "source": "Yahoo News",
+      "title": "California finally lifts its last big COVID restrictions. Did the state play it too safe?"
+    }
+  ],
+  "description": "The latest news and headlines from Yahoo! News. Get breaking news stories and in-depth coverage with videos and photos.",
+  "title": "Yahoo News - Latest News & Headlines",
+  "url": "https://news.yahoo.com/rss/"
+}
 ```
 
 With the argument `--verbose` program prints all logs in stdout.
