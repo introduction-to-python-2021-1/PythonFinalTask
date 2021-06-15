@@ -166,7 +166,6 @@ class RssChannel:
     @property
     def html(self) -> str:
         """Rss channel as html representation."""
-        articles = self.articles_by_date if self._date else self.articles
         return """
         <!doctype html>
         <html lang="en">
@@ -188,7 +187,8 @@ class RssChannel:
             url=self._url,
             description=self._description,
             body="<br>".join(
-                utils.article2html(article) for article in articles
+                utils.article2html(article)
+                for article in self.articles_by_date
             ),
         )
 
