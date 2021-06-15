@@ -56,6 +56,14 @@ def create_parser() -> ArgumentParser:
             r" 'C:\rss.html' or '/home/user/rss.html'."
         ),
     )
+    parser.add_argument(
+        "--to-pdf",
+        type=str,
+        help=(
+            "Save rss channel as pdf file with given path:"
+            r" 'C:\rss.html' or '/home/user/rss.html'."
+        ),
+    )
     return parser
 
 
@@ -91,7 +99,7 @@ def write_to_file(filename: str, text: str) -> None:
             f.write(text)
         logger.debug("Close file.")
     except OSError:
-        logger.info(f"Sorry could not open or write to file ({filename}).")
+        logger.info(const.ERROR_OPEN_FILE, {"filename": filename})
 
 
 def main(arguments: Optional[List[str]] = None) -> None:
@@ -113,8 +121,11 @@ def main(arguments: Optional[List[str]] = None) -> None:
     )
 
     if channel:
+        filename: str
         if filename := args.to_html:
             write_to_file(filename, channel.html)
+        if filename := args.to_pdf:
+            channel.save_pdf(filename)
 
         if args.json and not args.date:
             logger.info(channel.json())

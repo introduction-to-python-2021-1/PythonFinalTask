@@ -62,6 +62,9 @@ ERROR_NO_DATA: Final[str] = "Sorry! There's no data that can be parsed."
 ERROR_NO_URL: Final[str] = "Data cannot be loaded, because there's no 'url'!"
 ERROR_SOMETHING_GOES_WRONG: Final[str] = "ERROR: Sorry! Something goes wrong."
 ERROR_TIME_OUT: Final[str] = "ERROR: Read timed out from host%(host)s."
+ERROR_OPEN_FILE: Final[
+    str
+] = "Sorry could not open or write to file (%(filename)s)."
 ERROR_TOO_MANY_REDIRECTS: Final[str] = "ERROR: Too many redirects."
 REQUEST_ERROR_MESSAGES: Final[Dict[int, str]] = {
     400: "ERROR: Bad request to url: {url}.",

@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 from bs4 import BeautifulSoup  # type: ignore
 import requests
 from requests import Response
+from xhtml2pdf import pisa  # type: ignore
 
 from ap_rss_reader import ap_constants as const
 from ap_rss_reader import utils
@@ -193,6 +194,21 @@ class RssChannel:
                 utils.article2html(article) for article in articles
             ),
         )
+
+    def save_pdf(self, filename: str) -> Any:
+        """Saved rss channel to pdf file.
+
+        Args:
+            filename: name of pdf file where data will be saved.
+
+        """
+        try:
+            logger.debug(f"Open file {filename}...")
+            with open(filename, "w") as f:
+                pisa.CreatePDF(src=self.html, dest=f)
+            logger.debug("Close file.")
+        except OSError:
+            logger.info(const.ERROR_OPEN_FILE, {"filename": filename})
 
     def load(self) -> None:
         """Load articles from file or Internet using 'url'."""
