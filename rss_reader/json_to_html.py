@@ -95,6 +95,10 @@ class HtmlJsonToHtml:
             except TypeError:
                 logging.info("change_img_url:<img src= > not available")
                 continue
+
+            if os.name == "nt":  # for proper conversion to pdf with wkhtmltopdf
+                new_url = "file:\\\\\\" + new_url
+
             # image urls are keys, replacement text is new url + filename.
             # Replacement text formatting: url\filename.ext
             if re.match(r".*\.(gif|jpe?g|bmp|png|apng|avif|svg|webp|ico|cur|tif|tiff)", image_url):
@@ -180,5 +184,5 @@ class HtmlJsonToHtml:
 
                 html_outfile.write("\n</body>\n</html>\n")
 
-        except FileNotFoundError as e:
+        except (FileNotFoundError, IsADirectoryError, PermissionError) as e:
             print(f"\nraw_rss2html_file:Error:\n{e}\nPlease correct save file path.")

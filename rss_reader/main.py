@@ -134,10 +134,13 @@ def main():
 
         try:  # Catching conversion errors.
             pdfkit.from_file(temporary_html_file, args.to_pdf, options={"quiet": "", 'encoding': "UTF-8",
-                                                                        'page-size': 'A4'})
+                                                                        'page-size': 'A4',
+                                                                        "enable-local-file-access": ""})
         except TypeError as ioe:
             logging.info(f"main: wkhtmltopdf error: {ioe}")
             print(f"\nError:Conversion to PDF failed: {ioe}\nPlease correct save file path.")
+        except OSError as ose:
+            logging.info(f"main: wkhtmltopdf error: {ose}")
 
         logging.info(f"Save to pdf. Path {args.to_pdf}")
         os.remove(temporary_html_file)
