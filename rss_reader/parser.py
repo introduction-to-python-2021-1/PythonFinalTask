@@ -1,6 +1,6 @@
 import argparse
 
-from constants import VERSION
+from rss_reader.constants import VERSION
 
 
 def parse_args(args):
@@ -15,4 +15,6 @@ def parse_args(args):
     parser.add_argument("--limit", type=int, default=0, help="Limit news topics if this parameter provided "
                                                              "(If limit more or less then length of feed "
                                                              "it is set by default = length feed).")
+    parser.add_argument("--date", type=str, default=None, help="Outputs news by date from cache"
+                                                               "(It should take a date in YYYYMMDD format.).")
     return parser.parse_args(args)
