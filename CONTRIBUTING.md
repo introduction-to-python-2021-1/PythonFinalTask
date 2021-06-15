@@ -141,7 +141,7 @@ source .venv/bin/activate
 - Run the tests and generate a coverage report:
 
   ```shell
-  tox -e py,coverage
+  tox -e clean,py38,coverage
   ```
 
   Please add or update tests to ensure the coverage doesn't drop.
