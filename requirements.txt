@@ -11,3 +11,6 @@ lxml==4.6.3
 validators==0.18.2
 pytest==6.2.4
 pytest-cov==2.12.1
+fpdf==1.7.2
+Pillow==8.2.0
+Jinja2==3.0.1

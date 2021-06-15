@@ -3,354 +3,554 @@
     "Items count": 50,
     "Items": [
         {
-            "Title": "Tiananmen: Hong Kong vigil organiser arrested on 32nd anniversary",
-            "Date": "2021-06-07",
-            "Time": "02:35:00",
-            "Link": "https://news.yahoo.com/tiananmen-hong-kong-vigil-organiser-023310321.html",
-            "Source": "BBC"
+            "Title": "Ousted Myanmar leader on trial; critics say charges bogus",
+            "Date": "2021-06-14",
+            "Time": "06:01:24",
+            "Link": "https://news.yahoo.com/ousted-myanmar-leader-trial-critics-060124083.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/nDICfvNaH_eSV2.5ctja2Q--~B/aD0zMzMzO3c9NTAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/28244a5ae9c81a7f491a1ff3bdf8309b",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/00.png"
+            }
         },
         {
-            "Title": "Turkish mafia boss dishes dirt, becomes YouTube phenomenon",
-            "Date": "2021-06-07",
-            "Time": "06:35:40",
-            "Link": "https://news.yahoo.com/turkish-mafia-boss-dishes-dirt-063540382.html",
-            "Source": "Associated Press"
+            "Title": "Caution on Iran nuclear deal as G7 leaders vow to stop bomb",
+            "Date": "2021-06-13",
+            "Time": "17:11:58",
+            "Link": "https://news.yahoo.com/caution-iran-nuclear-deal-g7-171158510.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/QGaYbcbvVR9NfM68XUlRPg--~B/aD00MzI5O3c9NjQ5MzthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/cedc0a2bb4c823319b4427f349bc42fc",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/01.png"
+            }
         },
         {
-            "Title": "Naftali Bennett: The many faces of Israel's prime minister in waiting",
-            "Date": "2021-06-05",
-            "Time": "11:07:58",
-            "Link": "https://news.yahoo.com/naftali-bennett-many-faces-israels-110758694.html",
-            "Source": "The Telegraph"
+            "Title": "Officer shot in Wise County as search underway for suspect, according to media reports",
+            "Date": "2021-06-14",
+            "Time": "02:46:37",
+            "Link": "https://news.yahoo.com/officer-shot-wise-county-search-024637873.html",
+            "Source": "Fort Worth Star-Telegram",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/emzIJOmua4w1jrolgNlsGA--~B/aD02NzA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/fort_worth_star_telegram_mcclatchy_952/21cdcfd28d03c5e98747735d5ae6beda",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/02.png"
+            }
         },
         {
-            "Title": "Democratic congressman accuses Manchin of voting to 'preserve Jim Crow'",
-            "Date": "2021-06-06",
-            "Time": "18:05:12",
-            "Link": "https://news.yahoo.com/democratic-accuses-manchin-voting-preserve-180512871.html",
-            "Source": "The Week"
+            "Title": "Afghan IS group claims sticky bomb attacks in western Kabul",
+            "Date": "2021-06-13",
+            "Time": "07:39:17",
+            "Link": "https://news.yahoo.com/afghan-group-claims-sticky-bomb-073917927.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/KB2KHKX0piMtcnKEzkMsUQ--~B/aD00NDgwO3c9NjcyMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/8bda7e541b125ca94d5baddd3efb7e5d",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/03.png"
+            }
         },
         {
-            "Title": "2 arrested in road rage shooting death of 6-year-old",
-            "Date": "2021-06-07",
-            "Time": "03:41:44",
-            "Link": "https://news.yahoo.com/police-2-arrested-road-rage-034144148.html",
-            "Source": "Associated Press"
+            "Title": "Is Joe Manchin overlooking a 'middle ground' filibuster solution?",
+            "Date": "2021-06-13",
+            "Time": "17:21:30",
+            "Link": "https://news.yahoo.com/joe-manchin-overlooking-middle-ground-172130365.html",
+            "Source": "The Week",
+            "Image": {
+                "URL": null,
+                "Path": null
+            }
         },
         {
-            "Title": "Palestinian mom fights to stave off punitive home demolition",
-            "Date": "2021-06-07",
-            "Time": "06:05:42",
-            "Link": "https://news.yahoo.com/palestinian-mom-fights-stave-off-060542200.html",
-            "Source": "Associated Press"
+            "Title": "Benjamin Netanyahu ruled Israel as a man of many faces",
+            "Date": "2021-06-13",
+            "Time": "18:05:36",
+            "Link": "https://news.yahoo.com/benjamin-netanyahu-ruled-israel-man-180536193.html",
+            "Source": "LA Times",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/Hg4SSW4wILb53i9qAQhg0A--~B/aD01NjA7dz04NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/la_times_articles_853/169aaee8a1e2c5a1a018a60ade14cd5d",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/05.png"
+            }
         },
         {
-            "Title": "Mexico elections: Obrador's majority to shrink after vote marred by violence",
-            "Date": "2021-06-07",
-            "Time": "08:10:32",
-            "Link": "https://news.yahoo.com/mexico-elections-polls-close-vote-051434046.html",
-            "Source": "BBC"
+            "Title": "Rash of mass shootings stirs US fears heading into summer",
+            "Date": "2021-06-12",
+            "Time": "20:42:01",
+            "Link": "https://news.yahoo.com/rash-mass-shootings-stirs-us-204201953.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/5QqBQLYAlgXaQ7xSz0QNZA--~B/aD0xMzgzO3c9MjUwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/c8be77af7c83ac114db4d7e989ca852f",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/06.png"
+            }
         },
         {
-            "Title": "At least 30 killed and dozens injured after two trains collide in Pakistan",
-            "Date": "2021-06-07",
-            "Time": "05:36:02",
-            "Link": "https://news.yahoo.com/least-30-killed-dozens-injured-053602648.html",
-            "Source": "The Telegraph"
+            "Title": "Evidence in Mexico serial killer's house suggests 17 victims",
+            "Date": "2021-06-13",
+            "Time": "00:01:31",
+            "Link": "https://news.yahoo.com/evidence-mexico-serial-killers-house-000131370.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/nTRNRUt4oEB4CsLhA9X83w--~B/aD0zNTA1O3c9NDkzMzthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/617a16264d5a2e796847d6c556c60b56",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/07.png"
+            }
         },
         {
-            "Title": "Woman dies after fall at US national park; body recovered",
-            "Date": "2021-06-07",
-            "Time": "04:44:36",
-            "Link": "https://news.yahoo.com/woman-dies-fall-us-national-044436297.html",
-            "Source": "Associated Press"
+            "Title": "Trump Justice Department reportedly subpoenaed records of Trump's White House counsel in 2018",
+            "Date": "2021-06-14",
+            "Time": "04:45:39",
+            "Link": "https://news.yahoo.com/trump-justice-department-reportedly-subpoenaed-044539100.html",
+            "Source": "The Week",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/kYhuhLvNUBxMZITuDNeI2w--~B/aD0yMDA7dz0zMDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_week_574/f2e4e5c3d46853fa1cfddb63970de64d",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/08.png"
+            }
         },
         {
-            "Title": "2 stabbed multiple times in Visalia bar",
-            "Date": "2021-06-06",
-            "Time": "17:54:07",
-            "Link": "https://news.yahoo.com/2-stabbed-multiple-times-visalia-175407733.html",
-            "Source": "KFSN – Fresno"
+            "Title": "Boris Johnson to urge public to accept ‘one last heave’ to freedom as he prepares to delay June 21",
+            "Date": "2021-06-13",
+            "Time": "20:19:06",
+            "Link": "https://news.yahoo.com/boris-johnson-urge-public-accept-201906349.html",
+            "Source": "The Telegraph",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/oaDrdNvy74dwZDUQ61N1PQ--~B/aD0xNTYzO3c9MjUwMTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/the_telegraph_258/8034a05d66746c4c652310d7f8f940f0",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/09.png"
+            }
         },
         {
-            "Title": "Time ticking away, Democrats face wrenching test on agenda",
-            "Date": "2021-06-07",
-            "Time": "04:54:01",
-            "Link": "https://news.yahoo.com/time-ticking-away-democrats-face-045401685.html",
-            "Source": "Associated Press"
+            "Title": "Americans stand trial in Japan, accused in Ghosn's escape",
+            "Date": "2021-06-14",
+            "Time": "01:55:21",
+            "Link": "https://news.yahoo.com/americans-stand-trial-japan-accused-015521482.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/WfKDbj7j3tZoDE.5WQU6Iw--~B/aD0zNTMyO3c9NTIxMzthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/f18cd8f187dd792e75a5fbcb3c845eb0",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/10.png"
+            }
         },
         {
-            "Title": "Kansas City police officer of 22 years dies Sunday of COVID-19, KCPD says",
-            "Date": "2021-06-06",
-            "Time": "23:33:28",
-            "Link": "https://news.yahoo.com/kansas-city-police-officer-22-233328274.html",
-            "Source": "Kansas City Star"
+            "Title": "Biden nominee scrutinized over links to activists convicted of sabotage",
+            "Date": "2021-06-12",
+            "Time": "15:56:26",
+            "Link": "https://news.yahoo.com/biden-nominee-scrutinized-over-links-155626763.html",
+            "Source": "Yahoo News Video",
+            "Image": {
+                "URL": "https://s.yimg.com/hd/cp-video-transcode/prod/2021-06/12/60c4d92d8346ba25ea68870a/60c4d92d8346ba25ea68870b_o_U_v2.jpg",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/11.png"
+            }
         },
         {
-            "Title": "Qantas 'disturbed' by claims of gang infiltration",
-            "Date": "2021-06-07",
-            "Time": "03:16:07",
-            "Link": "https://news.yahoo.com/qantas-disturbed-claims-gang-infiltration-031607007.html",
-            "Source": "BBC"
+            "Title": "EXPLAINER: Who is Naftali Bennett, Israel's new leader?",
+            "Date": "2021-06-13",
+            "Time": "19:07:12",
+            "Link": "https://news.yahoo.com/explainer-naftali-bennett-israels-incoming-190712058.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/GJCzPRvarTu9qH2dRcds8g--~B/aD0zNjQ4O3c9NTQ3MjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/2e687c62e3546c841cc6ed13cc432118",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/12.png"
+            }
         },
         {
-            "Title": "Illegal Serb church on Bosniak woman's land is demolished",
-            "Date": "2021-06-05",
-            "Time": "10:20:24",
-            "Link": "https://news.yahoo.com/illegal-serb-church-bosniak-womans-102024705.html",
-            "Source": "Associated Press"
+            "Title": "Sri Lanka seeks initial $40M from stricken ship's operator",
+            "Date": "2021-06-12",
+            "Time": "09:38:37",
+            "Link": "https://news.yahoo.com/sri-lanka-seeks-initial-40m-093837241.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/Rj_nIzmKMPDuw5PnEcPJ.A--~B/aD0xMTI1O3c9MjAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/ae94c10f61fccc9e2a09962547d4cabf",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/13.png"
+            }
         },
         {
-            "Title": "Lauded Australian veteran: Jealousy fueled Afghan defamation",
-            "Date": "2021-06-07",
-            "Time": "08:03:10",
-            "Link": "https://news.yahoo.com/lauded-australian-veteran-jealousy-fueled-080310684.html",
-            "Source": "Associated Press"
+            "Title": "Allied Democratic Forces: The Ugandan rebels working with IS in DR Congo",
+            "Date": "2021-06-13",
+            "Time": "23:14:24",
+            "Link": "https://news.yahoo.com/allied-democratic-forces-ugandan-rebels-231424250.html",
+            "Source": "BBC",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/iqAXUNrBOnNPlM031RRB0Q--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/fec2900d53770c1f0d20c1054c73a93c",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/14.png"
+            }
         },
         {
-            "Title": "Pope voices 'pain' over Canadian deaths, doesn't apologize",
-            "Date": "2021-06-06",
-            "Time": "11:29:56",
-            "Link": "https://news.yahoo.com/pope-voices-sorrow-over-canadian-112956984.html",
-            "Source": "Associated Press"
+            "Title": "Malaysia expels Frenchman accused of inspiring kidnapping",
+            "Date": "2021-06-13",
+            "Time": "15:31:48",
+            "Link": "https://news.yahoo.com/malaysia-expels-frenchman-accused-inspiring-153148481.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": null,
+                "Path": null
+            }
         },
         {
-            "Title": "India cautiously starts to open up as virus cases decline",
-            "Date": "2021-06-07",
-            "Time": "06:18:10",
-            "Link": "https://news.yahoo.com/india-cautiously-starts-open-virus-061810416.html",
-            "Source": "Associated Press"
+            "Title": "New Zealand apologizes for 1970s raids on Pacific people",
+            "Date": "2021-06-14",
+            "Time": "06:26:54",
+            "Link": "https://news.yahoo.com/zealand-apologizes-1970s-raids-pacific-062654258.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/aET_cJN2y3Io_Iq5XcDzyQ--~B/aD0yODk4O3c9NDM0NzthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/32aea06eecf840c50d713af6267dfa83",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/16.png"
+            }
         },
         {
-            "Title": "A conservative talk radio host once backed the Arizona GOP election recount. Now he's warning Republicans against it",
-            "Date": "2021-06-06",
-            "Time": "13:00:14",
-            "Link": "https://news.yahoo.com/conservative-talk-radio-host-once-130014093.html",
-            "Source": "LA Times"
+            "Title": "McManus: Why the Democrats' voting rights bill will fail and what they can do about it",
+            "Date": "2021-06-13",
+            "Time": "11:00:12",
+            "Link": "https://news.yahoo.com/mcmanus-why-democrats-voting-rights-110012742.html",
+            "Source": "LA Times",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/2oxXrwkvFhYvgGnGAno5_g--~B/aD01NjA7dz04NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/la_times_articles_853/3c6c214d9b09984207ce07aa680924c9",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/17.png"
+            }
         },
         {
-            "Title": "Wisconsin priest digs in to refuse bishop's demand to resign",
-            "Date": "2021-06-05",
-            "Time": "13:34:01",
-            "Link": "https://news.yahoo.com/wisconsin-priest-digs-refuse-bishops-133401805.html",
-            "Source": "Associated Press"
+            "Title": "The buzzwords reflecting the frustration of China's young generation",
+            "Date": "2021-06-14",
+            "Time": "05:15:37",
+            "Link": "https://news.yahoo.com/buzzwords-reflecting-frustration-chinas-young-230208072.html",
+            "Source": "BBC",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/6FUOOIGe6vyv4dMXHSArsg--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/359fc124a88a2bea94c785ad27c38d8f",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/18.png"
+            }
         },
         {
-            "Title": "Cheetah: The world's fastest cat is returning to India",
-            "Date": "2021-06-07",
-            "Time": "04:08:08",
-            "Link": "https://news.yahoo.com/cheetah-worlds-fastest-cat-returning-234319882.html",
-            "Source": "BBC"
+            "Title": "At least 6 injured in cargo ship fire at Manila wharf",
+            "Date": "2021-06-12",
+            "Time": "08:45:08",
+            "Link": "https://news.yahoo.com/least-6-injured-cargo-ship-084508611.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/5vmlu.zgN5VyvIR0GkTAVQ--~B/aD00MDAxO3c9NjAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/00681c53dcdf299e612f89497438a0ea",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/19.png"
+            }
         },
         {
-            "Title": "Harris targets corruption, immigration on Latin America trip",
-            "Date": "2021-06-06",
-            "Time": "12:00:08",
-            "Link": "https://news.yahoo.com/harris-visits-latin-america-tackle-120008073.html",
-            "Source": "Associated Press"
+            "Title": "Shootout between Kashmir rebels, Indian police kills 4",
+            "Date": "2021-06-12",
+            "Time": "14:22:53",
+            "Link": "https://news.yahoo.com/shootout-between-kashmir-rebels-indian-142253230.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/I4xM69pwT.KHIwClKt1uSg--~B/aD0zNDU2O3c9NTE4NDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d19e1dd097e9543077d6c3204fcb09d0",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/20.png"
+            }
         },
         {
-            "Title": "Watch North Texas police officers use ‘incredible’ motorcycle skills to help rescue dog",
-            "Date": "2021-06-06",
-            "Time": "22:39:18",
-            "Link": "https://news.yahoo.com/watch-police-officers-incredible-motorcycle-223918905.html",
-            "Source": "Fort Worth Star-Telegram"
+            "Title": "1MDB: Jho Low faces new charges in scheme involving Trump",
+            "Date": "2021-06-14",
+            "Time": "06:05:45",
+            "Link": "https://news.yahoo.com/1mdb-jho-low-faces-charges-053415902.html",
+            "Source": "BBC",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/DQA2FMUS1Jz8np_wPVDJHQ--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/9bba628ae0752252235da354de569282",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/21.png"
+            }
         },
         {
-            "Title": "The mom of a teen accused of murder was caught on video scrubbing blood off her son's jeans, prosecutors say",
-            "Date": "2021-06-07",
-            "Time": "01:33:30",
-            "Link": "https://news.yahoo.com/mom-teen-accused-murder-caught-013330104.html",
-            "Source": "INSIDER"
+            "Title": "Another company’s diabetes medicine recalled for having too much of a carcinogen",
+            "Date": "2021-06-13",
+            "Time": "13:15:24",
+            "Link": "https://news.yahoo.com/another-company-diabetes-medicine-recalled-131524537.html",
+            "Source": "Kansas City Star",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/Iz_h6YJ4uTwf7HVzFSA8eg--~B/aD04NTU7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/kansas_city_star_mcclatchy_articles_677/c61e0844ee61666b8f2d0d224e03ac6e",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/22.png"
+            }
         },
         {
-            "Title": "Oldest male chimpanzee in US dies at San Francisco zoo",
-            "Date": "2021-06-06",
-            "Time": "20:14:41",
-            "Link": "https://news.yahoo.com/oldest-male-chimpanzee-us-dies-201441628.html",
-            "Source": "Associated Press"
+            "Title": "Southern Baptists meet amid controversy over leaked letters",
+            "Date": "2021-06-13",
+            "Time": "12:21:26",
+            "Link": "https://news.yahoo.com/southern-baptists-meet-amid-controversy-122126290.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/.HjZGUF4cce1dlUUVeT47w--~B/aD00MTY2O3c9NjI2MTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/7df0a23823d5e407aa6b8d5104676e55",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/23.png"
+            }
         },
         {
-            "Title": "'Get used to me:' Postmaster evokes Trump style in Biden era",
-            "Date": "2021-06-07",
-            "Time": "04:57:31",
-            "Link": "https://news.yahoo.com/used-postmaster-evokes-trump-style-045731686.html",
-            "Source": "Associated Press"
+            "Title": "Exodus of election officials raises concerns of partisanship",
+            "Date": "2021-06-13",
+            "Time": "14:52:31",
+            "Link": "https://news.yahoo.com/exodus-election-officials-raises-concerns-145231551.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/.j_7R7Sj.gLcWuWNB9jr9Q--~B/aD0zMjkwO3c9NDkzNTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/bdba64f8734e4bd59e825dc9a1c42dff",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/24.png"
+            }
         },
         {
-            "Title": "Stay-at-home holidaymakers warned of summer essentials shortage",
-            "Date": "2021-06-07",
-            "Time": "08:16:43",
-            "Link": "https://news.yahoo.com/stay-home-holidaymakers-warned-summer-015706722.html",
-            "Source": "BBC"
+            "Title": "G7 summit: Joe Biden gifts Boris Johnson custom-made bike",
+            "Date": "2021-06-12",
+            "Time": "15:43:32",
+            "Link": "https://news.yahoo.com/g7-summit-joe-biden-gifts-151904933.html",
+            "Source": "BBC",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/8_BhXAiBUqcHO93DLyHHBg--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/6713dd4460f44fa6c1b0103dbb0fc12b",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/25.png"
+            }
         },
         {
-            "Title": "A Florida police officer caught a 2-month-old baby that a suspect in a high-speed chase threw at him",
-            "Date": "2021-06-06",
-            "Time": "06:48:48",
-            "Link": "https://news.yahoo.com/florida-police-officer-caught-2-064848092.html",
-            "Source": "INSIDER"
+            "Title": "Tourist visiting Florida charged with hate crime for attacking Asian family",
+            "Date": "2021-06-12",
+            "Time": "18:12:31",
+            "Link": "https://news.yahoo.com/tourist-visiting-florida-charged-hate-181231788.html",
+            "Source": "The Independent",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/hqYDLvitVxKeCRyIA9KbRA--~B/aD0xMzY1O3c9MTAyNDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/the_independent_635/98b93574a609c66dfd50add04fe3e357",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/26.png"
+            }
         },
         {
-            "Title": "As India's surge wanes, families deal with the devastation",
-            "Date": "2021-06-07",
-            "Time": "04:42:10",
-            "Link": "https://news.yahoo.com/indias-surge-wanes-families-deal-044210652.html",
-            "Source": "Associated Press"
+            "Title": "Trump admin pushed limits, DOJ secretly obtained lawmakers' data",
+            "Date": "2021-06-12",
+            "Time": "15:22:53",
+            "Link": "https://news.yahoo.com/trump-admin-pushed-limits-doj-152253131.html",
+            "Source": "Yahoo News Video",
+            "Image": {
+                "URL": "https://s.yimg.com/hd/cp-video-transcode/prod/2021-06/12/60c4d14e540ba3264839bc9f/60c4d14e540ba3264839bca0_o_U_v2.jpg",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/27.png"
+            }
         },
         {
-            "Title": "Fox News anchor Chris Wallace grilled Democrat Sen. Joe Manchin for 'being naive' about bipartisanship in his filibuster stance",
-            "Date": "2021-06-07",
-            "Time": "03:20:41",
-            "Link": "https://news.yahoo.com/fox-news-anchor-chris-wallace-032041720.html",
-            "Source": "Business Insider"
+            "Title": "Voices of Iranians ahead of the presidential election",
+            "Date": "2021-06-14",
+            "Time": "06:07:55",
+            "Link": "https://news.yahoo.com/voices-iranians-ahead-presidential-election-060755588.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/gUAKYliRvicRe5IbzwGv6w--~B/aD00MzUyO3c9NjUxNjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/7971e838efbd0eb65a6a1dfee9197f16",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/28.png"
+            }
         },
         {
-            "Title": "The Latest: New limits in Chinese city with growing outbreak",
-            "Date": "2021-06-07",
-            "Time": "06:14:09",
-            "Link": "https://news.yahoo.com/latest-limits-chinese-city-growing-061409045.html",
-            "Source": "Associated Press"
+            "Title": "Saudi Arabia says hajj to be limited to 60,000 in kingdom",
+            "Date": "2021-06-12",
+            "Time": "10:25:12",
+            "Link": "https://news.yahoo.com/saudi-arabia-says-hajj-limited-102512854.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/UKppIw7Su5r9u67nfxlXlw--~B/aD0zOTk0O3c9NjAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/a7e8ed33aa54b795fbca89f946ad3cc1",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/29.png"
+            }
         },
         {
-            "Title": "A notorious poacher suspected of killing up to 70 rare Bengal tigers captured after 20-year pursuit",
-            "Date": "2021-06-06",
-            "Time": "14:36:28",
-            "Link": "https://news.yahoo.com/notorious-poacher-suspected-killing-70-143628944.html",
-            "Source": "INSIDER"
+            "Title": "Biden will warn Putin the US will respond 'forcefully' if Russia continues its 'reckless and aggressive actions,' Blinken says",
+            "Date": "2021-06-13",
+            "Time": "15:13:41",
+            "Link": "https://news.yahoo.com/biden-warn-putin-us-respond-151341719.html",
+            "Source": "Business Insider",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/dbcrvj05bevk4oVbe.v7.g--~B/aD0xNDcwO3c9MTk1OTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/business_insider_articles_888/fdfdd48534599697af901a92e5a4668d",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/30.png"
+            }
         },
         {
-            "Title": "Last of Soviet soldiers who liberated Auschwitz dies at 98",
-            "Date": "2021-06-06",
-            "Time": "19:43:51",
-            "Link": "https://news.yahoo.com/david-dushman-helped-liberate-auschwitz-194351822.html",
-            "Source": "Associated Press"
+            "Title": "SLS: First view of Nasa's assembled 'megarocket'",
+            "Date": "2021-06-12",
+            "Time": "20:31:14",
+            "Link": "https://news.yahoo.com/sls-first-view-nasas-assembled-194436958.html",
+            "Source": "BBC",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/OLaYEwZwSA4KGrNmAyJw2w--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/c614fb3cad11ead0e936843354f8b3c3",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/31.png"
+            }
         },
         {
-            "Title": "Lottery winner speeds away from store, but forgot he was pumping gas, MI officials say",
-            "Date": "2021-06-06",
-            "Time": "21:26:22",
-            "Link": "https://news.yahoo.com/lottery-winner-speeds-away-store-212622077.html",
-            "Source": "Kansas City Star"
+            "Title": "The Latest: Germany records fewest virus cases in 9 months",
+            "Date": "2021-06-14",
+            "Time": "06:30:54",
+            "Link": "https://news.yahoo.com/latest-germany-records-fewest-virus-063054120.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/BhtVy8uvyfYsXBi3h4Ipmw--~B/aD00NTIwO3c9NzA0NjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/38e7913c5c935d2fff606a06bad78caf",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/32.png"
+            }
         },
         {
-            "Title": "Violent, deadly weekend in Chicago",
-            "Date": "2021-06-07",
-            "Time": "03:43:52",
-            "Link": "https://news.yahoo.com/violent-deadly-weekend-chicago-034352249.html",
-            "Source": "WLS – Chicago"
+            "Title": "US documents solve mystery of war criminal Tojo's remains",
+            "Date": "2021-06-14",
+            "Time": "04:54:22",
+            "Link": "https://news.yahoo.com/us-documents-solve-mystery-war-045422917.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/gVA6Qhe46i5AeiUjQixRnA--~B/aD0yNzc4O3c9NDA3MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/83d58f26ddfb5e163a6681e39a71e891",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/33.png"
+            }
         },
         {
-            "Title": "A Texas woman was arrested after posing as her 13-year-old daughter for a day of a middle school",
-            "Date": "2021-06-06",
-            "Time": "19:50:13",
-            "Link": "https://news.yahoo.com/texas-woman-arrested-posing-her-195013772.html",
-            "Source": "INSIDER"
+            "Title": "Blob of ‘creepy critters’ writhes in Texas state park, video shows. What are they?",
+            "Date": "2021-06-13",
+            "Time": "15:57:30",
+            "Link": "https://news.yahoo.com/blob-creepy-critters-writhes-texas-155730063.html",
+            "Source": "Idaho Statesman",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/c3GUk4.ysvVvqPNcIVjOeg--~B/aD03ODE7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/idaho_statesman_mcclatchy_articles_842/3e9aef4cf46caa52be1fc645694d4617",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/34.png"
+            }
         },
         {
-            "Title": "Democratic Sen. Joe Manchin will oppose the sweeping voting rights legislation backed by his party",
-            "Date": "2021-06-06",
-            "Time": "17:57:47",
-            "Link": "https://news.yahoo.com/democratic-sen-joe-manchin-oppose-175747362.html",
-            "Source": "Business Insider"
+            "Title": "Ziona Chana: Head of 'world's largest family' dies in India's Mizoram state",
+            "Date": "2021-06-14",
+            "Time": "06:19:16",
+            "Link": "https://news.yahoo.com/ziona-chana-head-worlds-largest-055819341.html",
+            "Source": "BBC",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/kSqKC.XlOaARLw01gaX91w--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/ed719b01914da0b71e34dbbf8767e872",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/35.png"
+            }
         },
         {
-            "Title": "American Legion official resigns after censoring speech acknowledging Black history of Memorial Day",
-            "Date": "2021-06-06",
-            "Time": "17:31:38",
-            "Link": "https://news.yahoo.com/american-legion-official-resigns-censoring-173138656.html",
-            "Source": "The Independent"
+            "Title": "Police union PACs have spent $510,000 targeting The Squad, but may not be aiming to unseat them as much as raise funds for themselves, report says",
+            "Date": "2021-06-14",
+            "Time": "00:37:23",
+            "Link": "https://news.yahoo.com/police-union-pacs-spent-510-003723259.html",
+            "Source": "Business Insider",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/od4YyXeKAcy.lU0tA3Q66g--~B/aD0yMDU3O3c9Mjc0MjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/business_insider_articles_888/b603e1b87e56e9b36455f31ae897346d",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/36.png"
+            }
         },
         {
-            "Title": "Progressive PAC says Fox News refused to air its ad about how law enforcement were treated by rioters on January 6",
-            "Date": "2021-06-06",
-            "Time": "18:11:54",
-            "Link": "https://news.yahoo.com/progressive-pac-says-fox-news-181154097.html",
-            "Source": "Business Insider"
+            "Title": "Internet Reportedly Shut Off as G7 Leaders Squabble With Biden Over China",
+            "Date": "2021-06-12",
+            "Time": "20:27:36",
+            "Link": "https://news.yahoo.com/internet-reportedly-shut-off-g7-202736064.html",
+            "Source": "The Daily Beast",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/K0gAlk8OK0AK3mg_OZLjQA--~B/aD02NTg7dz0xMTcwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/thedailybeast.com/e83a8ecdbae80752d5df730512df377f",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/37.png"
+            }
         },
         {
-            "Title": "A Texas man pleaded guilty to federal hate crime charges after using Grindr to target gay men for carjacking and kidnapping",
-            "Date": "2021-06-06",
-            "Time": "14:02:59",
-            "Link": "https://news.yahoo.com/texas-man-pleaded-guilty-federal-140259189.html",
-            "Source": "INSIDER"
+            "Title": "Baba Ka Dhaba: The year in the life of a viral Delhi eatery owner",
+            "Date": "2021-06-12",
+            "Time": "23:10:12",
+            "Link": "https://news.yahoo.com/baba-ka-dhaba-life-viral-231012337.html",
+            "Source": "BBC",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/nOT63MJQJpHBlH7iWez_IA--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/067852e36d19572aa7881528a85142f7",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/38.png"
+            }
         },
         {
-            "Title": "Three US senators to visit Taiwan in trip expected to anger China",
-            "Date": "2021-06-06",
-            "Time": "19:43:06",
-            "Link": "https://news.yahoo.com/three-us-senators-visit-taiwan-194306445.html",
-            "Source": "The Independent"
+            "Title": "Daughter of Mexican cartel boss sentenced to US prison for violation of Kingpin Act",
+            "Date": "2021-06-13",
+            "Time": "16:39:17",
+            "Link": "https://news.yahoo.com/daughter-mexican-cartel-boss-sentenced-163917860.html",
+            "Source": "USA TODAY",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/gp_5J2vbCLKUUildFtlPxQ--~B/aD0zNzA7dz01NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/usa_today_news_641/15f43e2e8036eb379dd5e56e16205b41",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/39.png"
+            }
         },
         {
-            "Title": "Oregon Republican told group how to get into state Capitol days before violent breach",
-            "Date": "2021-06-06",
-            "Time": "19:40:11",
-            "Link": "https://news.yahoo.com/oregon-republican-told-group-state-194011985.html",
-            "Source": "The Independent"
+            "Title": "More than 69 pounds of cocaine bricks worth over $5 million were seized from a Florida cruise liner's cargo",
+            "Date": "2021-06-14",
+            "Time": "03:31:47",
+            "Link": "https://news.yahoo.com/more-69-pounds-cocaine-bricks-033147647.html",
+            "Source": "INSIDER",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/CSINvFe4kxk7RFlxOiAdIA--~B/aD00Mzc7dz01ODM7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insider_articles_922/6f698eb46a4c557a7a689962175d3fa7",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/40.png"
+            }
         },
         {
-            "Title": "Facebook exec implied Trump's suspension would continue past 2023 if he encouraged violence but not if he spread lies",
-            "Date": "2021-06-06",
-            "Time": "16:05:42",
-            "Link": "https://news.yahoo.com/facebook-exec-implied-trumps-suspension-160542350.html",
-            "Source": "Business Insider"
+            "Title": "Russian President Vladimir Putin laughs at a reporter who asked if he was a 'killer'",
+            "Date": "2021-06-13",
+            "Time": "13:22:33",
+            "Link": "https://news.yahoo.com/russian-president-vladimir-putin-laughs-132233280.html",
+            "Source": "Business Insider",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/w_0OYnzU9pLzBmrZ06YBoA--~B/aD0xMzI2O3c9MTc2NzthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/business_insider_articles_888/c5daf25a1ebf856cafcc2973e374b909",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/41.png"
+            }
         },
         {
-            "Title": "'Every weekend, it's the same thing': At least 3 dead, 6 injured in Florida graduation party shooting",
-            "Date": "2021-06-07",
-            "Time": "04:22:26",
-            "Link": "https://news.yahoo.com/every-weekend-same-thing-least-214219565.html",
-            "Source": "USA TODAY"
+            "Title": "Top US diplomat says ‘China has to cooperate’ with investigation into Covid’s origins",
+            "Date": "2021-06-13",
+            "Time": "18:55:10",
+            "Link": "https://news.yahoo.com/top-us-diplomat-says-china-181100366.html",
+            "Source": "The Independent",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/Ao_c_MK4x40AOtHF41wVAQ--~B/aD03Njg7dz0xMDI0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/the_independent_635/4fff4fd726690a358fb542244c9d6afb",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/42.png"
+            }
         },
         {
-            "Title": "A top COVID-19 scientist is being hunted by a far-right sniper who has gone AWOL from the army",
-            "Date": "2021-06-06",
-            "Time": "11:02:45",
-            "Link": "https://news.yahoo.com/top-covid-19-scientist-being-110245312.html",
-            "Source": "INSIDER"
+            "Title": "Driver beaten in West Dundee road rage incident dies, police say",
+            "Date": "2021-06-14",
+            "Time": "03:17:05",
+            "Link": "https://news.yahoo.com/west-dundee-road-rage-incident-002527372.html",
+            "Source": "WLS – Chicago",
+            "Image": {
+                "URL": "https://s.yimg.com/hd/cp-video-transcode/prod/2021-06/14/60c6a2c0ddb40d25f92e8fdc/60c6cb738346ba25ea688a70_o_U_v3.jpg",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/43.png"
+            }
         },
         {
-            "Title": "‘We all said a little prayer’: US vice president Kamala Harris’s plane forced to land shortly after take-off",
-            "Date": "2021-06-06",
-            "Time": "20:24:16",
-            "Link": "https://news.yahoo.com/said-little-prayer-us-vice-202416061.html",
-            "Source": "The Independent"
+            "Title": "California teen holds up sign ‘rapists don’t belong @ graduation’ after classmates accused of misconduct allowed to attend ceremony",
+            "Date": "2021-06-13",
+            "Time": "19:03:27",
+            "Link": "https://news.yahoo.com/california-teen-holds-sign-rapists-190327297.html",
+            "Source": "The Independent",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/tV5iMi0xxx4jK9ZM1neErQ--~B/aD02ODQ7dz0xMDI0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/the_independent_635/0e851d4afe4ba5787bae43031d5457b0",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/44.png"
+            }
         },
         {
-            "Title": "An Amazon delivery driver was caught on camera repeatedly punching an elderly woman during an argument in California",
-            "Date": "2021-06-06",
-            "Time": "11:35:07",
-            "Link": "https://news.yahoo.com/amazon-delivery-driver-caught-camera-113507945.html",
-            "Source": "Business Insider"
+            "Title": "A British woman saved her twin sister's life after repeatedly punching a crocodile in the face",
+            "Date": "2021-06-12",
+            "Time": "08:50:00",
+            "Link": "https://news.yahoo.com/british-woman-saved-her-twin-085000238.html",
+            "Source": "INSIDER",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/ycQQ4Yd6iYV7hXUAeD3c7A--~B/aD05MDA7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insider_articles_922/121e3adf8378bbc2899070ba3ef0c9a7",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/45.png"
+            }
         },
         {
-            "Title": "1 of 2 wounded Braintree police officers released from hospital one day after shooting",
-            "Date": "2021-06-05",
-            "Time": "22:27:18",
-            "Link": "https://news.yahoo.com/1-2-wounded-braintree-police-222718164.html",
-            "Source": "WCVB - Boston"
+            "Title": "With a backlog of over 1.3 million cases, the 500 immigration judges in the US feel overburdened and pressured to deport",
+            "Date": "2021-06-14",
+            "Time": "02:36:14",
+            "Link": "https://news.yahoo.com/backlog-over-1-3-million-023614818.html",
+            "Source": "Business Insider",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/Pujt5MQ_wVEHZA66fyAASA--~B/aD0xNjY2O3c9MjIyMzthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/business_insider_articles_888/27058056fec07e5ccc3ba5c1e39c2b1e",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/46.png"
+            }
         },
         {
-            "Title": "Trump disputes that the US is a 50-50 nation, says he 'can't believe' that some states are blue",
-            "Date": "2021-06-06",
-            "Time": "16:02:04",
-            "Link": "https://news.yahoo.com/trump-disputes-us-50-50-160204450.html",
-            "Source": "Business Insider"
+            "Title": "Doctor: Eriksen 'was gone' before being resuscitated",
+            "Date": "2021-06-13",
+            "Time": "09:23:29",
+            "Link": "https://news.yahoo.com/eriksen-sends-greetings-teammates-collapse-092329410.html",
+            "Source": "Associated Press",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/hZ4TA_8aByMTRWXBPRVZYg--~B/aD0zNjQ4O3c9NTQ3MjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/424ee3947858860f0b8bbbc559f1334d",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/47.png"
+            }
         },
         {
-            "Title": "After cotton cleaning project, mom said Washington school suggested Black twins be 'segregated'",
-            "Date": "2021-06-06",
-            "Time": "23:29:44",
-            "Link": "https://news.yahoo.com/cotton-cleaning-project-mom-said-121617954.html",
-            "Source": "USA TODAY"
+            "Title": "2 people dead after being swept out by currents in Florida; 'hero' who tried to save them also missing, authorities say",
+            "Date": "2021-06-13",
+            "Time": "22:25:55",
+            "Link": "https://news.yahoo.com/2-people-dead-being-swept-222555425.html",
+            "Source": "USA TODAY",
+            "Image": {
+                "URL": null,
+                "Path": null
+            }
         },
         {
-            "Title": "A North Carolina student's diploma was withheld after he draped a Mexican flag over his high school graduation robes",
-            "Date": "2021-06-07",
-            "Time": "03:05:44",
-            "Link": "https://news.yahoo.com/north-carolina-students-diploma-withheld-030544125.html",
-            "Source": "INSIDER"
+            "Title": "Christian terrorist who mowed down Muslim family ‘was laughing’ as he got out of blood covered truck",
+            "Date": "2021-06-12",
+            "Time": "08:22:15",
+            "Link": "https://www.independent.co.uk/news/world/americas/nathaniel-veltman-muslim-family-canada-b1862845.html",
+            "Source": "The Independent",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/OHP6fXZ6aPn8ShnXmGiz.A--~B/aD02ODQ7dz0xMDI0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/the_independent_635/67bdf496faa0a6ab3508a394f0c25f3c",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/49.png"
+            }
         }
     ]
 }

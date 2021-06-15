@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RSS feed "{{ title }}"</title>
+</head>
+<body>
+<div class="container">
+    <div class="heading">
+        <h1>{{ title }}</h1>
+    </div>
+    <div class="news-items">
+        {% for n_item in news_items %}
+        <h2>{{ n_item['Title'] }}</h2>
+        <p>
+            <img src="{{ n_item['Image']['Html Template Path'] }}" alt="Img alt text: {{ n_item['Title'] }}">
+        </p>
+        <p>
+            <b>Date published:</b> {{ n_item.Date }}, {{ n_item.Time }}
+        </p>
+        <p>
+            <b>Source:</b> <a href="{{ n_item.Link }}">{{ n_item.Source }}</a>
+        </p>
+        {% endfor %}
+        <p>===End===</p>
+    </div>
+</div>
+</body>
+</html>

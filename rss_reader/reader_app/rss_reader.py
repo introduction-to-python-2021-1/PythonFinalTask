@@ -8,9 +8,12 @@ import logging
 import os
 import pprint
 import sys
+import urllib.request
 
 from bs4 import BeautifulSoup
+from PIL import Image
 import requests
+import rss_conversion
 import validators
 import urllib.request
 from urllib.error import URLError
@@ -46,7 +49,7 @@ def run_parser(user_args):
     parser.add_argument('--limit', type=int, default=0, help='Limit news topics if this parameter provided')
     parser.add_argument('--date', type=int, help='Publishing date')
     parser.add_argument('--to-pdf', type=str, default='', help='Converts output to PDF format. Enter path')
-    parser.add_argument('--to-epub', type=str, default='', help='Converts output to EPUB format. Enter path')
+    parser.add_argument('--to-html', type=str, default='', help='Converts output to HTML format. Enter path')
     return parser.parse_args(user_args)
 
 
@@ -66,26 +69,53 @@ def get_soup_object(r_content):
     :return: soup (bs4.BeautifulSoup)
     """
     soup = BeautifulSoup(r_content, features='xml')
-    logging.info('Retrieved bs4 object from requested URL.')
-    return soup
+    try:
+        if 'Yahoo News - Latest News' in soup.rss.channel.title.text:
+            logging.info('Retrieved bs4 object from requested URL.')
+            return soup
+    except AttributeError:
+        logging.error('Provided URL is not Yahoo News RSS feed.')
+        force_close('Please, provide Yahoo News RSS feed URL.')
 
 
-def collect_news_items(soup_obj):
+def collect_news_items(soup_obj, real_cwd):
     """
     Function extracts news items from bs4 object and puts them in dict.
-    :param soup_obj:
+    Also saves images to news items to 'local_storage/images'
+    :param soup_obj: (bs4)
+    :param real_cwd: (str) real current working directory
     :return:
     """
+    # images new width
+    new_width = 300
+    # get image directory path
+    img_dir_path = os.path.join(real_cwd, 'local_storage', 'images')
+
     news_to_dict = {'Feed': soup_obj.channel.title.text, 'Items count': 0, 'Items': []}  # Initialize output dictionary
     # Loop through news items and add them to the dictionary, using limit
-    for i in soup_obj.find_all('item'):
+    logging.info('Looping through news items. Collecting them into dictionary. '
+                 'Resizing and saving images to local folder if available in news items. '
+                 'This may take a while...')
+    for img_id, item in enumerate(soup_obj.find_all('item')):
         item_dict = dict()  # initialize 1 news item dictionary and fill below
-        item_dict['Title'] = i.title.text
-        date_and_time = (i.pubDate.text.replace('T', ' ').replace('Z', '')).split(' ')
+        item_dict['Title'] = item.title.text
+        date_and_time = (item.pubDate.text.replace('T', ' ').replace('Z', '')).split(' ')
         item_dict['Date'] = date_and_time[0]
         item_dict['Time'] = date_and_time[1]
-        item_dict['Link'] = i.link.text
-        item_dict['Source'] = i.source.text
+        item_dict['Link'] = item.link.text
+        item_dict['Source'] = item.source.text
+        # get image URL
+        if item.content:
+            image_save_path = os.path.join(img_dir_path, f'{img_id:02d}.png')
+            item_dict['Image'] = {'URL': item.content['url'], 'Path': image_save_path}
+            # Retrieve, resize, and save image to local folder
+            im = Image.open(requests.get(item_dict['Image']['URL'], stream=True).raw)
+            new_height = int(im.height / (im.width / new_width))
+            im = im.resize((new_width, new_height))
+            im.save(item_dict['Image']['Path'], optimize=True)
+        else:
+            # If image is unavailable, leave None
+            item_dict['Image'] = {'URL': None, 'Path': None}
         news_to_dict['Items'].append(item_dict)
     news_to_dict['Items count'] = len(news_to_dict["Items"])
     return news_to_dict
@@ -109,7 +139,7 @@ def get_user_limit(news_items, requested_limit):
 def limit_news_items(news_complete, user_limit, filter_by_date=False, user_date=0):
     """
     Function takes complete news items dictionary and returns a copy containing news limited by date and --limit.
-    :param news_complete: (dict)
+    :param news_complete: (dict) all news items
     :param user_limit: (int)
     :param filter_by_date: (bool)
     :param user_date: (int)
@@ -121,7 +151,7 @@ def limit_news_items(news_complete, user_limit, filter_by_date=False, user_date=
         except ValueError:
             logging.error("Couldn't get date object from user input.")
             force_close('Unable to parse date from the specified value. Please, check your date input.')
-            return None
+            # return None
 
         result_news_items = list()
         # Loop through news items and include only by date and up to the limit.
@@ -163,23 +193,29 @@ def print_news_in_terminal(dict_to_print, json_mode):
         for i in dict_to_print['Items']:
             print()
             for key, value in i.items():
-                print(f'{key}: {value}')
+                if key == 'Image':
+                    print(f'{key}:')
+                    for key1, val1 in value.items():
+                        print(f'\t{key1}: {val1}')
+                else:
+                    print(f'{key}: {value}')
 
 
-def get_cache_path(current_work_dir):
+def get_conversion_paths(user_args):
     """
-    Function checks current working directory to determine the path to local cache.
-    If the program is launched as python3 rss_reader.py etc., then cwd is rss_reader.
-    If setup.py is used, cwd is PythonFinalTask.
-    :param current_work_dir: (str)
-    :return: path (str)
+    Function returns tuple: pdf_path, html_path
+    :param user_args: args from sys.argv
+    :return: (tuple)
     """
-    storage_dir = 'local_storage'
-    app_dir = os.path.dirname(current_work_dir)
-    if os.path.basename(app_dir) != 'rss_reader':
-        app_dir = os.path.join(app_dir, 'rss_reader')
-    path = os.path.join(app_dir, storage_dir, 'rss_cache.json')
-    return path
+    if '--to-pdf' in user_args:
+        pdf_path = user_args[user_args.index("--to-pdf") + 1]
+    else:
+        pdf_path = ''
+    if '--to-html' in user_args:
+        html_path = user_args[user_args.index("--to-html") + 1]
+    else:
+        html_path = ''
+    return pdf_path, html_path
 
 
 def get_date_obj(user_date):
@@ -229,7 +265,18 @@ def main():
     Runs the program.
     :return: None
     """
-    path_cache = get_cache_path(os.getcwd())
+    # determine real working directory
+    # depends on how the program is launched
+    # if from "reader_app", then real work dir is one level up
+    # otherwise it's os.getcwd()
+    if os.path.basename(os.getcwd()) == 'reader_app':
+        real_work_dir = os.path.dirname(os.getcwd())
+    else:
+        real_work_dir = os.getcwd()
+
+    # determine path to local rss cache (json file)
+    path_cache = os.path.join(real_work_dir, 'local_storage', 'rss_cache.json')
+
     # initialize logging
     logging.basicConfig(**logging_settings('--verbose' in sys.argv))
     logging.info('Starting program.')
@@ -260,6 +307,7 @@ def main():
             or
             ('--date' in sys.argv and not src_ok)
     ):
+        # DO SMALL CYCLE
         logging.info('Doing SMALL cycle: Fetching news from local cache.')
         input_date = int(sys.argv[sys.argv.index("--date") + 1])
         with open(path_cache, 'r') as f_obj:
@@ -277,10 +325,13 @@ def main():
         else:
             user_limit = 0
 
+        # get conversion paths from user's arguments
+        pdf_path, html_path = get_conversion_paths(sys.argv)
+
         # limit news by date and number
         limited_news_to_print = limit_news_items(news_from_local, user_limit, filter_by_date=True, user_date=input_date)
     else:
-        # Do full cycle.
+        # DO FULL CYCLE
         logging.info('Doing FULL cycle: download news to cache, limit with "--limit" and "--date" and print out.')
 
         # check internet connection
@@ -292,6 +343,9 @@ def main():
         # PARSE ARGUMENTS WITH argparse
         args = run_parser(sys.argv[1:])
 
+        # get pdf & html paths
+        pdf_path, html_path = args.to_pdf, args.to_html
+
         # ensure the limit is positive
         if args.limit < 0:
             logging.error('User enters negative or zero limit.')
@@ -302,7 +356,7 @@ def main():
         bs4_obj = get_soup_object(request_content)
 
         # collect news items
-        all_news_dict = collect_news_items(bs4_obj)
+        all_news_dict = collect_news_items(bs4_obj, real_work_dir)
 
         # determine user_limit
         user_limit = get_user_limit(all_news_dict, args.limit)
@@ -312,25 +366,34 @@ def main():
             json.dump(all_news_dict, f_object, indent=4, ensure_ascii=False)
         logging.info('Dumped news items to local cache.')
 
+        # get arguments to be used below in 'limit_news_items' function
         args_to_limit_news = {'news_complete': all_news_dict, 'user_limit': user_limit}
 
         # print news for specific date
-        if args.date:  # expand kwargs for 'limit_news_items' function
+        if args.date:  # add to kwargs for 'limit_news_items' function
             args_to_limit_news['filter_by_date'] = True
             args_to_limit_news['user_date'] = args.date
 
-        # save limited news items to print in stdout: as text or as json
+        # SAVE LIMITED NEWS ITEMS to print in stdout: as text or as json
         limited_news_to_print = limit_news_items(**args_to_limit_news)
 
-    # print limited news items to stdout: as json or as test
+    # print limited news items to stdout: as json or as text
     if limited_news_to_print['Items count'] == 0:
         logging.error('No news items for specified quantity and date.')
         force_close('Sorry, unable to find news items for specified date and limit.')
     else:
         print_news_in_terminal(limited_news_to_print, '--json' in sys.argv)
+        # print in PDF if path provided
+        if pdf_path:
+            logging.info(f'Printing to pdf file at {pdf_path}.')
+            rss_conversion.print_to_pdf(limited_news_to_print, real_work_dir, pdf_path)
+        if html_path:
+            logging.info(f'Printing to HTML file at {html_path}.')
+            rss_conversion.print_to_html(limited_news_to_print, real_work_dir, html_path)
+
     logging.info('Closing program.')
 
 
-VERSION = '1.61'
+VERSION = '1.63'
 if __name__ == '__main__':
     main()
