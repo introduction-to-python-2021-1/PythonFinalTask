@@ -114,7 +114,7 @@ def valid_article(date_datetime: datetime, media: Media) -> Article:
 @pytest.fixture()
 def valid_article_html() -> str:
     return (
-        "<h2>title</h2><p><strong>Link</strong>: link</p>"
+        '<h2>title</h2><p><a href="link">Link</a></p>'
         "<i>2020-06-06 00:00:01</i><p><strong>Author</strong>: author</p>"
         "<p><strong>Source</strong>: source</p>"
         "<p><strong>Description</strong>: description</p>"

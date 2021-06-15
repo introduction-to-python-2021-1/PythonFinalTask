@@ -347,8 +347,14 @@ def _media_convert(article: Article, key: FieldName) -> str:
             f'<img src="{media.url}" width="{media.width}"'
             f' height="{media.height}">'
             for media in medias
-            if media.type == "media"
+            if media.type == "media" or media.type == "content"
         )
+    return ""
+
+
+def _link_convert(article: Article, key: FieldName) -> str:
+    if key in article and article[key]:
+        return f'<p><a href="{article[key]}">{key.capitalize()}</a></p>'
     return ""
 
 
@@ -371,10 +377,10 @@ HTML_CONVERTER_MAP: Dict[Tuple[FieldName, ...], FieldHtmlConverter] = {
     (
         const.FIELD_DESCRIPTION,
         const.FIELD_AUTHOR,
-        const.FIELD_LINK,
         const.FIELD_COMMENTS,
         const.FIELD_SOURCE,
     ): _text_field_convert,
+    (const.FIELD_LINK,): _link_convert,
     (const.FIELD_TITLE,): _header_covert,
 }
 
