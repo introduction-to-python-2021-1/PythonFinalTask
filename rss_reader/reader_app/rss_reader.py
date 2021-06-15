@@ -394,6 +394,6 @@ def main():
     logging.info('Closing program.')
 
 
-VERSION = '1.67'
+VERSION = '1.68'
 if __name__ == '__main__':
     main()
