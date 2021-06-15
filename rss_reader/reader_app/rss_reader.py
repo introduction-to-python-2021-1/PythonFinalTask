@@ -13,7 +13,7 @@ import urllib.request
 from bs4 import BeautifulSoup
 from PIL import Image
 import requests
-import rss_conversion
+from reader_app import rss_conversion
 import validators
 import urllib.request
 from urllib.error import URLError
@@ -394,6 +394,6 @@ def main():
     logging.info('Closing program.')
 
 
-VERSION = '1.63'
+VERSION = '1.65'
 if __name__ == '__main__':
     main()
