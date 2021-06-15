@@ -148,7 +148,7 @@ class RssChannel:
     @property
     def articles_by_date(self) -> List[Article]:
         """Articles are published after :attr:`date`."""
-        return (
+        articles = (
             list(
                 filter(
                     lambda article: cast(  # type: ignore
@@ -161,6 +161,8 @@ class RssChannel:
             if self._date
             else self.articles
         )
+
+        return articles[: self._limit] if self._limit else articles
 
     @property
     def title(self) -> str:
