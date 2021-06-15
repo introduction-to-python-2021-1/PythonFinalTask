@@ -2,6 +2,7 @@
 from argparse import ArgumentParser
 from argparse import Namespace
 import logging
+from pathlib import Path
 import sys
 from typing import List
 from typing import Optional
@@ -93,9 +94,13 @@ def write_to_file(filename: str, text: str) -> None:
         text: text that will be written.
 
     """
+    path: Path = Path(filename)
+    if path.exists():
+        logger.info(f"{filename} file exists and will be re-written!")
+
     try:
         logger.debug(f"Open file {filename}...")
-        with open(filename, "w") as f:
+        with path.open(mode="w") as f:
             f.write(text)
         logger.debug("Close file.")
     except OSError:
