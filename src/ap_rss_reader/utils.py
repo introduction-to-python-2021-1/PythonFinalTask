@@ -19,6 +19,7 @@ from ap_rss_reader.log import logger
 
 if TYPE_CHECKING:
     from typing import Dict
+    from typing import Optional
     from typing import Tuple
 
     from ap_rss_reader.ap_typing import Article
@@ -30,7 +31,7 @@ if TYPE_CHECKING:
 __all__ = ("parse_article", "print_article", "retrieve_title", "validate_url")
 
 
-def validate_url(url: str) -> bool:
+def validate_url(url: Optional[str]) -> bool:
     """Check if 'url' string valid URL."""
     try:
         result = urlparse(url)

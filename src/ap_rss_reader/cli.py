@@ -1,7 +1,6 @@
 """Single point of application run."""
 from argparse import ArgumentParser
 from argparse import Namespace
-from datetime import datetime
 import logging
 import sys
 from typing import List
@@ -10,8 +9,7 @@ from typing import Optional
 import ap_rss_reader
 from ap_rss_reader import ap_constants as const
 from ap_rss_reader.log import logger
-from ap_rss_reader.rss_channel import RssChannel
-from ap_rss_reader.utils import validate_url
+from ap_rss_reader.rss_channel import get_rss_channel
 
 __all__ = ("main", "create_parser")
 
@@ -85,23 +83,16 @@ def main(arguments: Optional[List[str]] = None) -> None:
         logger.setLevel(logging.DEBUG)
     print_args(args)
 
-    if args.source or args.date:
-        if not validate_url(args.source):
-            logger.info(const.ERROR_INCORRECT_SOURCE_ARG, {"url": args.source})
+    channel = get_rss_channel(
+        url=args.source, limit=args.limit, date=args.date
+    )
 
-        channel = RssChannel(
-            url=args.source, limit=args.limit, fetch=not args.date
-        )
-        logger.debug(const.INFO_CHANNEL_WAS_CREATED, {"count": len(channel)})
-
-        if args.date:
-            channel.print_after_date(datetime.strptime(args.date, "%Y%m%d"))
-        elif args.json:
+    if channel:
+        if args.json and not args.date:
             logger.info(channel.json())
         else:
             channel.print()
     else:
-        logger.info(const.DATE_OR_SOURCE_IS_REQUIRED)
         logger.info(parser.format_help())
 
 

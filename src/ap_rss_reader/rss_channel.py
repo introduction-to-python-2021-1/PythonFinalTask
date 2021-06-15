@@ -19,7 +19,6 @@ from ap_rss_reader import ap_constants as const
 from ap_rss_reader import utils
 from ap_rss_reader.ap_collections import Media
 from ap_rss_reader.ap_typing import Article
-from ap_rss_reader.ap_typing import Filter
 from ap_rss_reader.log import logger
 
 if TYPE_CHECKING:
@@ -30,7 +29,59 @@ if TYPE_CHECKING:
     from typing import Optional
     from typing import Tuple
 
-__all__ = ("RssChannel",)
+__all__ = ("get_rss_channel",)
+
+
+def get_rss_channel(  # noqa: C901
+    url: Optional[str] = None, limit: int = 0, date: Optional[str] = None
+) -> Optional[RssChannel]:
+    """Check arguments and return RssChannel instance if no errors.
+
+    Args:
+        url:  Url of rss channel.
+        limit:  Max count of displayed articles.
+        date:  Articles before given date will be hidden.
+
+    Returns:
+        RssChannel instance when all parameters are correct, `None`
+            otherwise.
+
+    """
+    if not date and not url:
+        logger.info(const.DATE_OR_SOURCE_IS_REQUIRED)
+        return None
+
+    if date and not url:
+        logger.info("Using 'date' argument without 'url' is prohibited!")
+        return None
+
+    if limit and (
+        not isinstance(limit, int) or (isinstance(limit, int) and limit < 0)
+    ):
+        logger.info(
+            "'limit' must be number and greater than 0. "
+            "Or equal to 0 if there is no limit."
+        )
+        return None
+
+    try:
+        limit_date = datetime.strptime(date, "%Y%m%d")  # type: ignore
+    except (TypeError, ValueError):
+        logger.info(
+            "The 'date' argument must be string and match format '%Y%m%d'."
+        )
+        return None
+
+    if not utils.validate_url(url):
+        logger.info(const.ERROR_INCORRECT_SOURCE_ARG, {"url": url})
+        return None
+
+    logger.debug("\nCreate rss-channel instance.")
+    rss_channel = RssChannel(url=url, limit=limit, date=limit_date)
+    logger.debug("\nLoad data...")
+    rss_channel.load()
+    logger.debug(const.INFO_CHANNEL_WAS_CREATED, {"count": len(rss_channel)})
+    return rss_channel
 
 
 class RssChannel:
@@ -40,37 +91,29 @@ class RssChannel:
     ARTICLE_SELECTOR: Final[str] = "item"
 
     def __init__(
-        self, *, url: Optional[str] = None, limit: int = 0, fetch: bool = True
+        self,
+        *,
+        url: Optional[str] = None,
+        limit: int = 0,
+        date: Optional[datetime] = None,
     ):
-        """Create new rss channel and load all articles with given url.
+        """Create new rss channel.
 
         Args:
             url:  Url of rss channel.  When `url` is not given, try to
                 read data from file.
             limit:  Max count of displayed articles.  0 - when there's
                 no limits.
-            fetch: When `True` data will loaded using `url` argument.
-                Otherwise data will be read from file.
+            date: Only articles after given date will be displayed.  If
+                date passed, articles are loaded from file.
 
         """
-        logger.debug("\nCreate rss-channel instance.")
-
-        if fetch and not url:
-            raise ValueError(
-                "Using 'fetch' argument without 'url' is prohibited!"
-            )
-
-        self._limit = limit
+        self._limit = limit or 0
         self._articles: List[Article] = []
         self._title: str = ""
         self._description: str = ""
         self._url: str = url or ""
-
-        if fetch:
-            self._articles = self.fetch()
-            self.dump()
-        else:
-            self._articles = self.read()
+        self._date: Optional[datetime] = date
 
     def __len__(self) -> int:
         return len(self._articles)
@@ -104,23 +147,42 @@ class RssChannel:
         """Title of rss channel."""
         return self._title
 
+    def load(self) -> None:
+        """Load articles from file or Internet using 'url'."""
+        if self._date:
+            self.read()
+            return
+        self.fetch()
+        self.dump()
+
     def print(self) -> None:
-        """Print current feed and limited list of articles."""
-        self._print()
+        """Print channel title and limited article list.
 
-    def print_after_date(self, pubdate: datetime) -> None:
-        """Print articles for specific date.
-
-        Args:
-            pubdate: date of publication.
+        If :attr:`date` exists, only articles after this date printed,
+        otherwise if :attr:`limit` exists, only first 'n' articles
+        printed.  When no :attr:`date` and :attr:`limit` print all
+        articles.
 
         """
-        self._print(
-            filter_func=lambda article: cast(
-                datetime, article[const.FIELD_PUBDATE]
+        articles: List[Article] = (
+            list(
+                filter(
+                    lambda article: cast(  # type: ignore
+                        datetime, article[const.FIELD_PUBDATE]
+                    )
+                    >= self._date,
+                    self._articles,
+                )
             )
-            >= pubdate
+            if self._date
+            else self.articles
         )
+
+        self._print_feed_title()
+        if not articles:
+            logger.info("There's no data!")
+        else:
+            self._print_articles(articles)
 
     def json(self, *, whole: bool = False) -> str:
         """Convert `Channel` to json.
@@ -189,7 +251,7 @@ class RssChannel:
                 sort_keys=True,
             )
 
-    def fetch(self) -> List[Article]:
+    def fetch(self) -> None:
         """Fetch and parse data using url."""
         logger.debug(f"\nFetch data with {self._url}...")
 
@@ -206,15 +268,15 @@ class RssChannel:
             self._description = description.string if description else None
             articles = beautiful_soup.select(self.ARTICLE_SELECTOR)
             logger.debug(f"\n{len(articles)} was(were) downloaded.")
-            return [
+            self._articles = [
                 utils.parse_article(article)
                 for article in articles
                 if utils.retrieve_title(article)
             ]
-        logger.info(const.ERROR_NO_DATA)
-        return []
+        else:
+            logger.info(const.ERROR_NO_DATA)
 
-    def read(self, filename: str = "") -> List[Article]:
+    def read(self, filename: str = "") -> None:
         """Read the rss channel from the JSON file.
 
         When there's no saved url in :attr:`_url`, read *all* articles
@@ -222,9 +284,6 @@ class RssChannel:
 
         Args:
             filename: name of file from which attempts to read data.
-
-        Returns:
-            List of articles.
 
         """
         logger.debug("\nLoad rss-channel from file...")
@@ -263,11 +322,7 @@ class RssChannel:
                     Media(*media) for media in article[const.FIELD_MEDIA]
                 ]
             articles.append(cast(Article, article))
-        return articles
-
-    def filter(self, function: Filter, /) -> List[Article]:
-        """Return articles for witch `function` return `True`."""
-        return list(filter(function, self._articles))
+        self._articles = articles
 
     @classmethod
     def _get_beautiful_soup(cls, content: str) -> BeautifulSoup:
@@ -358,24 +413,6 @@ class RssChannel:
                 if isinstance(article[const.FIELD_PUBDATE], datetime)
             ],
         )
-
-    def _print(self, *, filter_func: Optional[Filter] = None) -> None:
-        """Print channel title and all channel articles.
-
-        Args:
-            filter_func: function by which it is determined which articles
-                should be printed.
-
-        """
-        articles: List[Article] = (
-            self.filter(filter_func) if filter_func else self.articles
-        )
-
-        self._print_feed_title()
-        if not articles:
-            logger.info("There's no data!")
-        else:
-            self._print_articles(articles)
 
     @classmethod
     def _read_file(cls, filename: str) -> Tuple[Path, List[Dict[str, Any]]]:
