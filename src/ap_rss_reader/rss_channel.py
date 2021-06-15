@@ -197,7 +197,12 @@ class RssChannel:
         return json.dumps(self._serialize(whole), indent=4, sort_keys=True)
 
     def dump(self, file: str = "") -> None:
-        """Write the rss channel on the file (as JSON)."""
+        """Write the rss channel on the file (as JSON).
+
+        Args:
+            file: filename where data will be saved.
+
+        """
         logger.debug("\nDump data to file.")
 
         if not self._url:
@@ -336,7 +341,12 @@ class RssChannel:
         return BeautifulSoup(content, features="lxml").select_one(cls.SELECTOR)
 
     def _request(self) -> str:  # noqa: C901
-        """Send request and return response as text."""
+        """Send request and return response as text.
+
+        Returns:
+            Text of rss feed.
+
+        """
         if not self._url:
             logger.info(const.ERROR_NO_URL)
             return ""
@@ -414,6 +424,15 @@ class RssChannel:
 
     @classmethod
     def _read_file(cls, filename: str) -> Tuple[Path, List[Dict[str, Any]]]:
+        """Read json-data from file.
+
+        Args:
+            filename: name of file from which data will be read.
+
+        Returns:
+            Tuple with two items: full path to file and json-data.
+
+        """
         full_path: Path = cls._get_full_path(filename)
         data: List[Dict[str, Any]] = []
         if os.path.isfile(full_path):
@@ -427,7 +446,15 @@ class RssChannel:
 
     @staticmethod
     def _get_full_path(filename: str = "") -> Path:
-        """Build full path with given `file` and return :obj:`Path`."""
+        """Build full path with given `file` and return :obj:`Path`.
+
+        Args:
+            filename: name of file from which data will be read.
+
+        Returns:
+            Full path to file.
+
+        """
         if not filename:
             filename = (
                 os.environ.get("AP_RSS_READER_DUMP_FILE") or const.DUMP_FILE
@@ -440,7 +467,15 @@ class RssChannel:
 
     @staticmethod
     def _fix_pseudo_classes(text: str) -> str:
-        """Replace ':' in pseudo classes with '_'."""
+        """Replace ':' in pseudo classes with '_'.
+
+        Args:
+            text: Text that will be parsed.
+
+        Returns:
+            Text with replaced pseudo classes.
+
+        """
         return re.sub(
             "<(?P<tag>[a-z]+):(?P<pseudo_class>[a-z]+)",
             r"<\g<tag>_\g<pseudo_class>",
