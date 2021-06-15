@@ -353,9 +353,7 @@ class RssChannel:
         else:
             # Read *all* articles from *all* feeds in file
             serialized_articles = list(
-                chain.from_iterable(
-                    [channel["serialized_articles"] for channel in data]
-                )
+                chain.from_iterable([channel["articles"] for channel in data])
             )
 
         articles: List[Article] = []
