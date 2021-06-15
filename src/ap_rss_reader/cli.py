@@ -48,6 +48,14 @@ def create_parser() -> ArgumentParser:
         action="store_true",
         help="Print result as JSON in stdout",
     )
+    parser.add_argument(
+        "--to-html",
+        type=str,
+        help=(
+            "Save rss channel as html file with given path:"
+            r" 'C:\rss.html' or '/home/user/rss.html'."
+        ),
+    )
     return parser
 
 
@@ -69,6 +77,23 @@ def get_sys_argv() -> List[str]:
     return sys.argv[1:]
 
 
+def write_to_file(filename: str, text: str) -> None:
+    """Write text to file with given filename.
+
+    Args:
+        filename: name of file where text will be written.
+        text: text that will be written.
+
+    """
+    try:
+        logger.debug(f"Open file {filename}...")
+        with open(filename, "w") as f:
+            f.write(text)
+        logger.debug("Close file.")
+    except OSError:
+        logger.info(f"Sorry could not open or write to file ({filename}).")
+
+
 def main(arguments: Optional[List[str]] = None) -> None:
     """The main public interface of application.
 
@@ -88,6 +113,9 @@ def main(arguments: Optional[List[str]] = None) -> None:
     )
 
     if channel:
+        if filename := args.to_html:
+            write_to_file(filename, channel.html)
+
         if args.json and not args.date:
             logger.info(channel.json())
         else:

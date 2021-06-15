@@ -23,12 +23,19 @@ if TYPE_CHECKING:
     from typing import Tuple
 
     from ap_rss_reader.ap_typing import Article
+    from ap_rss_reader.ap_typing import FieldHtmlConverter
     from ap_rss_reader.ap_typing import FieldName
     from ap_rss_reader.ap_typing import FieldParser
     from ap_rss_reader.ap_typing import FieldPrinter
     from ap_rss_reader.ap_typing import FieldValue
 
-__all__ = ("parse_article", "print_article", "retrieve_title", "validate_url")
+__all__ = (
+    "article2html",
+    "parse_article",
+    "print_article",
+    "retrieve_title",
+    "validate_url",
+)
 
 
 def validate_url(url: Optional[str]) -> bool:
@@ -307,3 +314,85 @@ def retrieve_title(soup: Tag) -> str:
     ) and description.string:
         return cast(str, description.string)
     return ""
+
+
+def _date_convert(article: Article, key: FieldName) -> str:
+    if key in article and isinstance(article[key], datetime):
+        date = cast(datetime, article[key])
+        return f"<i>{date.strftime(const.DATETIME_FORMAT)}</i>"
+    return ""
+
+
+def _multiple_convert(article: Article, key: FieldName) -> str:
+    if key in article and isinstance(article[key], list) and article[key]:
+        values = cast(List[Union[Media, str]], article[key])
+        return (
+            f"<p>{key.capitalize()}:</p><ul>"
+            + "".join(
+                (
+                    f'<li><a href="{value}">{count}'
+                    f'{";" if count != len(values) else "."}</a></li>'
+                    for count, value in enumerate(values, start=1)
+                )
+            )
+            + "</ul>"
+        )
+    return ""
+
+
+def _media_convert(article: Article, key: FieldName) -> str:
+    if key in article and isinstance(article[key], list) and article[key]:
+        medias = cast(List[Media], article[key])
+        return "".join(
+            f'<img src="{media.url}" width="{media.width}"'
+            f' height="{media.height}">'
+            for media in medias
+            if media.type == "media"
+        )
+    return ""
+
+
+def _text_field_convert(article: Article, key: FieldName) -> str:
+    if key in article and article[key]:
+        return f"<p><strong>{key.capitalize()}</strong>: {article[key]}</p>"
+    return ""
+
+
+def _header_covert(article: Article, key: FieldName) -> str:
+    if key in article and article[key]:
+        return f"<h2>{article[key]}</h2>"
+    return ""
+
+
+HTML_CONVERTER_MAP: Dict[Tuple[FieldName, ...], FieldHtmlConverter] = {
+    (const.FIELD_PUBDATE,): _date_convert,
+    (const.FIELD_CATEGORY,): _multiple_convert,
+    (const.FIELD_MEDIA,): _media_convert,
+    (
+        const.FIELD_DESCRIPTION,
+        const.FIELD_AUTHOR,
+        const.FIELD_LINK,
+        const.FIELD_COMMENTS,
+        const.FIELD_SOURCE,
+    ): _text_field_convert,
+    (const.FIELD_TITLE,): _header_covert,
+}
+
+
+def article2html(article: Article) -> str:
+    """Convert rss channel article to html.
+
+    Args:
+        article: rss channel article.
+
+    Returns:
+        Article as html representation.
+
+    """
+    result: str = ""
+    for field_name in SUPPORTED_FIELDS:
+        for converted_fields in HTML_CONVERTER_MAP:
+            if field_name in converted_fields:
+                field_converter = HTML_CONVERTER_MAP[converted_fields]
+                result += field_converter(article, field_name)
+    return result

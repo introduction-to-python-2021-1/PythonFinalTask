@@ -31,5 +31,6 @@ FieldName = Literal[
 ]
 FieldValue = Optional[Union[datetime, str, List[Media], List[str]]]
 Article = Dict[FieldName, FieldValue]
+FieldHtmlConverter = Callable[[Article, FieldName], str]
 FieldParser = Callable[[Tag, FieldName], Tuple[FieldName, FieldValue]]
 FieldPrinter = Callable[[Article, FieldName], None]

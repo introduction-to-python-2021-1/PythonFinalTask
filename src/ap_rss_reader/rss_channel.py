@@ -165,6 +165,35 @@ class RssChannel:
         """Title of rss channel."""
         return self._title
 
+    @property
+    def html(self) -> str:
+        """Rss channel as html representation."""
+        articles = self.articles_by_date if self._date else self.articles
+        return """
+        <!doctype html>
+        <html lang="en">
+        <head>
+        <meta charset="utf-8">
+         <meta name="viewport" content="width=device-width, user-scalable=1>
+         <meta http-equiv="X-UA-Compatible">
+         <title>{title}</title>
+        </head>
+        <body>
+        <h1><a href="{url}">{title}</a></h1>
+        <p>{description}</p>
+        <br>
+          {body}
+        </body>
+        </html>
+        """.format(
+            title=self._title,
+            url=self._url,
+            description=self._description,
+            body="<br>".join(
+                utils.article2html(article) for article in articles
+            ),
+        )
+
     def load(self) -> None:
         """Load articles from file or Internet using 'url'."""
         if self._date:
