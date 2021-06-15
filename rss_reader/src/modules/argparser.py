@@ -11,4 +11,6 @@ def arg_parser() -> ArgumentParser:
     parser.add_argument('--limit', type=int, default=False,
                         help='Limit news topics if this parameter provided.'
                              ' If limit parameter is invalid, parser will output all news.')
+    parser.add_argument('--date', type=str, metavar='YYYYMMDD', help='Print news for the specified date',
+                        default=False)
     return parser

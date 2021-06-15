@@ -1,50 +1,31 @@
-import urllib
-
-import feedparser
+from src.modules.localcache import Cache
 
 
 class RSSParser:
     """ Class describes parser object for rss """
 
-    def __init__(self, url, logger, limit, ):
+    def __init__(self, channel, logger):
         self.__logger = logger
-        self.url = url
-        self.channel = self.get_rss_channel()
-        self.limit = limit
-
-    def get_rss_channel(self) -> feedparser:
-        try:
-            channel = feedparser.parse(self.url)
-        except urllib.error.URLError:
-            return ""
-        if len(channel.entries) > 0:
-            self.__logger.debug('Checking response body for the rss existing ended successfully')
-            return channel
-        else:
-            self.__logger.debug('RSS does not detected in the response body')
-            return ""
+        self.channel = channel
 
     def parse(self) -> dict:
         """ Function parses channel and packs it into the dictionary. """
         self.__logger.debug('RSS Channel parsing started')
-        self.__logger.debug(f'News limit is: {self.limit}')
         news_dict = dict()
-        news = self.channel.entries
-        if self.limit <= 0 or self.limit >= len(news):
-            self.limit = len(news)
-        for index in range(self.limit):
-            news_dict[f'new {index}'] = dict()
-            news_dict[f'new {index}']['feed'] = self.channel['feed']['title']
-            news_dict[f'new {index}']['title'] = news[index].title
-            news_dict[f'new {index}']['date'] = news[index].published
-            news_dict[f'new {index}']['link'] = news[index].link
-            if news[index].get('description'):
-                news_dict[f'new {index}']['description'] = news[index].description
-            if news[index].get('links'):
-                for link in enumerate(news[index].links):
-                    news_dict[f'new {index}']['links'] = dict()
-                    news_dict[f'new {index}']['links'][f'link {link[0]}'] = dict()
-                    news_dict[f'new {index}']['links'][f'link {link[0]}']['href'] = link[1].href
-                    news_dict[f'new {index}']['links'][f'link {link[0]}']['type'] = link[1].type
+        for news in enumerate(self.channel.entries):
+            news_dict[f'new {news[0]}'] = dict()
+            news_dict[f'new {news[0]}']['feed'] = self.channel['feed']['title']
+            news_dict[f'new {news[0]}']['title'] = news[1].title
+            news_dict[f'new {news[0]}']['date'] = news[1].published
+            news_dict[f'new {news[0]}']['link'] = news[1].link
+            if news[1].get('description'):
+                news_dict[f'new {news[0]}']['description'] = news[1].description
+            if news[1].get('links'):
+                for link in enumerate(news[1].links):
+                    news_dict[f'new {news[0]}']['links'] = dict()
+                    news_dict[f'new {news[0]}']['links'][f'link {link[0]}'] = dict()
+                    news_dict[f'new {news[0]}']['links'][f'link {link[0]}']['href'] = link[1].href
+                    news_dict[f'new {news[0]}']['links'][f'link {link[0]}']['type'] = link[1].type
         self.__logger.debug('RSS Channel parsing ended')
+        Cache(self.__logger).cache_news(news_dict)
         return news_dict

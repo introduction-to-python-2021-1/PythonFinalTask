@@ -10,7 +10,8 @@ source RSS URL
 
 optional arguments:
 -h, --help show this help message and exit --version Print version info --json Print result as JSON in stdout --verbose
-Outputs verbose status messages --limit LIMIT Limit news topics if this parameter provided
+Outputs verbose status messages --limit LIMIT Limit news topics if this parameter provided --date YYYYMMDD Print all
+news for the specified date
 
 **JSON STRUCTURE**
 

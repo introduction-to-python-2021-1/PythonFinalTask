@@ -2,11 +2,12 @@ import logging
 import sys
 
 from src.modules.argparser import arg_parser
+from src.modules.localcache import Cache
 from src.modules.output import DefaultOutput, JSONOutput
 from src.modules.rss_parser import RSSParser
-from src.modules.url_validator import RssUrlValidator
+from src.modules.url_validator import RssUrlManager
 
-__version__ = 2.0
+__version__ = 1.3
 
 
 def create_logger() -> logging.getLogger:
@@ -28,23 +29,31 @@ def main(argv=None) -> None:
 
     limit = parser.limit if parser.limit else 0
 
+    output_data = None
+
     if parser.version:
         print(f'Version is {__version__}')
         logger.info('Main ended successfully')
     else:
-        url = RssUrlValidator(parser.source, logger).get_validated_url()
-        if url:
-            if parser.json:
-                parsed_feed = RSSParser(url, logger, limit).parse()
-                handler = JSONOutput()
-                print(handler.output(parsed_feed))
-            else:
-                parsed_feed = RSSParser(url, logger, limit).parse()
-                handler = DefaultOutput()
-                print(handler.output(parsed_feed))
-            logger.info('Main ended successfully')
+        if parser.date:
+            output_data = Cache(logger, parser.date, parser.source).get_from_cached_news()
         else:
-            logger.info('Main ended unsuccessfully')
+            validator = RssUrlManager(parser.source, logger)
+            url = validator.get_validated_url()
+            rss_channel = validator.get_rss_from_url()
+            if url and rss_channel:
+                parsed_feed = RSSParser(rss_channel, logger).parse()
+                output_data = parsed_feed
+                logger.info('Main ended successfully')
+            else:
+                logger.info('Main ended unsuccessfully')
+
+        if parser.json:
+            handler = JSONOutput(limit)
+            handler.output(*output_data) if parser.date else handler.output(output_data)
+        else:
+            handler = DefaultOutput(limit)
+            handler.output(*output_data) if parser.date else handler.output(output_data)
 
 
 if __name__ == '__main__':
