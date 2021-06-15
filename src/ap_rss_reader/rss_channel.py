@@ -61,6 +61,7 @@ def get_rss_channel(  # noqa: C901
         )
         return None
 
+    limit_date: Optional[datetime] = None
     if date:
         try:
             limit_date = datetime.strptime(date, "%Y%m%d")
