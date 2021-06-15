@@ -129,7 +129,7 @@ def main(arguments: Optional[List[str]] = None) -> None:  # noqa: C901
         url=args.source, limit=args.limit, date=args.date
     )
 
-    if channel:
+    if channel is not None:
         filename: str
         if filename := args.to_html:
             write_to_file(filename, channel.html)

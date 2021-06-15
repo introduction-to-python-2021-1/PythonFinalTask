@@ -120,6 +120,9 @@ class RssChannel:
         """Return Article by index."""
         return self._articles[index]
 
+    def __bool__(self) -> bool:
+        return bool(self._title or self._url)
+
     @property
     def url(self) -> str:
         """Url of rss channel."""
@@ -166,23 +169,7 @@ class RssChannel:
     @property
     def html(self) -> str:
         """Rss channel as html representation."""
-        return """
-        <!doctype html>
-        <html lang="en">
-        <head>
-        <meta charset="utf-8">
-         <meta name="viewport" content="width=device-width, user-scalable=1>
-         <meta http-equiv="X-UA-Compatible">
-         <title>{title}</title>
-        </head>
-        <body>
-        <h1><a href="{url}">{title}</a></h1>
-        <p>{description}</p>
-        <br>
-          {body}
-        </body>
-        </html>
-        """.format(
+        return const.HTML_TEMPLATE.format(
             title=self._title,
             url=self._url,
             description=self._description,

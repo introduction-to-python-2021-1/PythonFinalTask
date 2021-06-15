@@ -77,7 +77,23 @@ REQUEST_ERROR_MESSAGES: Final[Dict[int, str]] = {
 INFO_CHANNEL_WAS_CREATED: Final[
     str
 ] = "Rss channel was created with %(count)i article(s)!"
-
+HTML_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, user-scalable=1>
+ <meta http-equiv="X-UA-Compatible">
+ <title>{title}</title>
+</head>
+<body>
+<h1><a href="{url}">{title}</a></h1>
+<p>{description}</p>
+<br>
+  {body}
+</body>
+</html>
+"""
 GREETING: Final[str] = (
     "The software is provided 'as is', without warranty of any kind,"
     " express or implied."

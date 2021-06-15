@@ -112,6 +112,19 @@ def valid_article(date_datetime: datetime, media: Media) -> Article:
 
 
 @pytest.fixture()
+def valid_article_html() -> str:
+    return (
+        "<h2>title</h2><p><strong>Link</strong>: link</p>"
+        "<i>2020-06-06 00:00:01</i><p><strong>Author</strong>: author</p>"
+        "<p><strong>Source</strong>: source</p>"
+        "<p><strong>Description</strong>: description</p>"
+        '<p>Category:</p><ul><li><a href="category">1;</a></li>'
+        '<li><a href="category">2.</a></li></ul>'
+        "<p><strong>Comments</strong>: comments</p>"
+    )
+
+
+@pytest.fixture()
 def valid_soup(date_str: str) -> SoupMock:
     return SoupMock(
         title=TextTagMock(string="title"),

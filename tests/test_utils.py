@@ -111,3 +111,9 @@ def test_parse_article_valid_data(
 ) -> None:
     soup = cast(Tag, valid_soup)
     assert valid_article[field] == utils.parse_article(soup)[field]
+
+
+def test_article2html_valid_data(
+    valid_article: Article, valid_article_html: str
+) -> None:
+    assert valid_article_html == utils.article2html(valid_article)
