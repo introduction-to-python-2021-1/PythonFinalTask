@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import ssl
 import sys
 from hashlib import sha1
 from sqlite3 import IntegrityError
@@ -16,8 +15,6 @@ from rss_reader.db import DB
 from rss_reader.parser import parse_args
 
 db_obj = DB()
-
-ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def parse_feed(source):
