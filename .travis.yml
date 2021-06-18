@@ -8,4 +8,5 @@ script:
   - pip install .
   - pytest --cov=rss_reader rss_reader/tests/test.py
   - pycodestyle --max-line-length=120 .
+  - python ./../rss_reader_checker.py
   - cd -
