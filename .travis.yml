@@ -8,3 +8,4 @@ script:
   - python setup.py nosetests --cover-branches --with-coverage --cover-min-percentage=50 --cover-package=. --nologcapture
   - pycodestyle --max-line-length=120 .
   - cd -
+  
