@@ -10,6 +10,10 @@ setup(
     author_email="jesuisbourrasque@gmail.com",
     packages=find_packages(include=["rss_reader"]),
     install_requires=[
+        "pycodestyle==2.4.0",
+        "nose==1.3.7",
+        "coverage==5.5",
+        "termcolor==1.1.0"
         "feedparser==6.0.2",
         "pytest==6.2.4",
         "pytest-mock==3.6.1",
