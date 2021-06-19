@@ -4,9 +4,9 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  - cd rss_reader
   - pip install .
-  - nosetests --cover-branches --with-coverage --cover-min-percentage=50 .
+  - cd rss_reader
+  - pytest --cov=rss_reader tests/test.py
   - pycodestyle --max-line-length=120 .
   - python ./../rss_reader_checker.py
-  - cd -
+  - cd ./..
