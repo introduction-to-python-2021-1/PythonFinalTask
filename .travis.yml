@@ -4,7 +4,6 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  - cd -
   - pip install .
   - cd rss_reader
   - pytest --cov=rss_reader tests/test.py
