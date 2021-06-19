@@ -6,7 +6,7 @@ import requests
 
 from rss_reader.main import db_obj, cache_news, get_news_from_cache, format_news_to_print, parse_feed
 from rss_reader.parser import parse_args
-from rss_reader.converter import Converter, FPDF, Image, Template
+from rss_reader.converter import Converter, FPDF, Image
 
 
 def test_parse_args():
@@ -46,20 +46,46 @@ def test_format_news_to_print1():
             }
         ]
     )
-    assert content == [{"source": "source", "pubdate": "20210101", "title": "title", "image": "image", "link": "link"}]
+    assert content == [{"source": "source",
+                        "pubdate": "20210101",
+                        "title": "title",
+                        "image": "image",
+                        "link": "link"}]
 
 
 def test_format_news_to_print():
     content = format_news_to_print(
-        [{"source": "source", "pubdate": "20210101", "title": "title", "image": None, "link": "link"}]
+        [
+            {
+                "source": "source",
+                "pubdate": "20210101",
+                "title": "title",
+                "image": None,
+                "link": "link"}
+        ]
     )
-    assert content == [{"source": "source", "pubdate": "20210101", "title": "title", "link": "link"}]
+    assert content == [
+        {
+            "source": "source",
+            "pubdate": "20210101",
+            "title": "title",
+            "link": "link"
+        }
+    ]
 
 
 def test_cache_news1(mocker):
     mocker.patch.object(db_obj, "add_news", return_value=None)
     assert cache_news(
-        [{"source": "source", "pubdate": "20210101", "title": "title", "image": "image", "link": "link"}]
+        [
+            {
+                "source": "source",
+                "pubdate": "20210101",
+                "title": "title",
+                "image": "image",
+                "link": "link"
+            }
+        ]
     ) is None
 
 
@@ -68,11 +94,21 @@ def test_get_news_from_cache1(mocker):
         db_obj,
         "select_news_from_cache",
         return_value=[
-            {"date": "20210101", "title": "title", "image": "image", "link": "link"}
+            {
+             "date": "20210101",
+             "title": "title",
+             "image": "image",
+             "link": "link"
+            }
         ]
     )
     assert get_news_from_cache("20210101", None) == [
-        {"date": "20210101", "title": "title", "image": "image", "link": "link"}
+        {
+            "date": "20210101",
+            "title": "title",
+            "image": "image",
+            "link": "link"
+        }
     ]
 
 
@@ -97,7 +133,12 @@ def test_converter_pdf(mocker):
     mocker.patch.object(Image, "open", return_value=None)
     mocker.patch.object(FPDF, "output", return_value=None)
 
-    content = [{"pubdate": "20210101", "title": "title", "image": "image", "image_path": "image_path", "link": "link"}]
+    content = [{"pubdate": "20210101",
+                "title": "title",
+                "image": "image",
+                "image_path": "image_path",
+                "link": "link"}]
+
     converter = Converter("pdf", "/some/path")
     converter.execute(content)
 
