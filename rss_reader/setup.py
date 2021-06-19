@@ -20,5 +20,5 @@ setup(
         "Pillow==8.2.0",
         "jinja2==3.0.1",
                       ],
-    entry_points={"console_scripts": ["rss-reader=rss_reader.main:main"]},
+    entry_points={"console_scripts": ["rss-reader=main:main"]},
 )
