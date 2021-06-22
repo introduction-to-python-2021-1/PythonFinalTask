@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='rss_reader',
-    version='1.2',
+    version='1.3',
     packages=['rss_reader'],
     install_requires=[
         'feedparser',

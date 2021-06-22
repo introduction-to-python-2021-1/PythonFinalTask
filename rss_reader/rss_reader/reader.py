@@ -50,10 +50,16 @@ class RssReaderApp:
         entries = [{
             'title': x.title,
             'link': x.link,
-            'summary': x.summary,
+            'summary': self.__get_summary(x),
             'pubdate': time.strftime('%Y%m%d', x.published_parsed)
         } for x in feed.entries[0:limit]]
         return entries
+
+    def __get_summary(self, entry):
+        if 'summary' in entry:
+            return entry['summary']
+        else:
+            return ''
 
     def __source_to_cache_name(self, source):
         cache_name = 'r'+md5(source.lower().encode('utf-8')).hexdigest()
