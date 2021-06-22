@@ -1,0 +1,19 @@
+exclude .bumpversion.cfg
+exclude .env
+exclude .gitignore
+exclude .gitlint
+exclude .pre-commit-config.yaml
+exclude .prettierrc.yaml
+exclude .pylintrc
+exclude FinalTask.md
+exclude requirements-dev.txt
+exclude tox.ini
+include CHANGELOG.md
+include CODE_OF_CONDUCT.md
+include CONTRIBUTING.md
+recursive-exclude .github *
+recursive-exclude .idea *
+recursive-exclude scripts *.py
+recursive-exclude src .pydocstyle.ini
+recursive-exclude tests *
+recursive-include src *.typed

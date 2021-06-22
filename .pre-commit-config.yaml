@@ -1,0 +1,77 @@
+default_language_version:
+  python: python3.8
+repos:
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.15.1
+    hooks:
+      - id: gitlint
+  #  - repo: https://github.com/mgedmin/check-manifest
+  #    rev: "0.46"
+  #    hooks:
+  #      - id: check-manifest
+  - repo: https://github.com/psf/black
+    rev: 21.5b1
+    hooks:
+      - id: black
+        args: [--safe, --quiet]
+        exclude: &fixtures tests/input/|tests/data/
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.8.0
+    hooks:
+      - id: isort
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.19.0
+    hooks:
+      - id: pyupgrade
+        args: [--py38-plus, --keep-runtime-typing]
+        exclude: *fixtures
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-added-large-files
+        args: ["--maxkb=100"]
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: name-tests-test
+        args: ["--django"]
+      - id: pretty-format-json
+        args: [--autofix]
+      - id: requirements-txt-fixer
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+        exclude: .bumpversion.cfg
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.3.0
+    hooks:
+      - id: prettier
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 6.1.1
+    hooks:
+      - id: pydocstyle
+  - repo: https://github.com/PyCQA/flake8
+    rev: 3.8.4
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-bugbear
+          - flake8-pytest-style
+          - flake8-typing-imports
+  - repo: https://github.com/terrencepreilly/darglint
+    rev: v1.8.0
+    hooks:
+      - id: darglint
+  - repo: https://github.com/pycqa/pylint
+    rev: pylint-2.8.0
+    hooks:
+      - id: pylint
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.812
+    hooks:
+      - id: mypy
+        args: [--strict]
+        additional_dependencies: [mypy-extensions]

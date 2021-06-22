@@ -1,0 +1,23 @@
+name: Run tests
+
+on: [push, pull_request]
+
+jobs:
+  test-latest:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8, 3.9]
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@master
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pytest
+        run: python -m pip install --upgrade pip pytest pytest-cov
+      - name: Install requirements
+        run: python -m pip install -r requirements.txt
+      - name: Export PYTHONPATH and run tests
+        run: source .env && pytest

@@ -1,12 +1,11 @@
 language: python
+sudo: false
+
 python:
-  - "3.9"
+  - "3.8"
+
 install:
-  - pip install -r requirements.txt
+  - pip install tox
+
 script:
-  - cd rss_reader
-  - pip install .
-  - nosetests --cover-branches --with-coverage --cover-min-percentage=50 .
-  - pycodestyle --max-line-length=120 .
-  - python ./../rss_reader_checker.py
-  - cd -
+  - tox -v -e clean,py38,coverage

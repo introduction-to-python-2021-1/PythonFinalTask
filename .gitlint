@@ -1,0 +1,19 @@
+[general]
+# https://jorisroovers.com/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits
+contrib=contrib-title-conventional-commits,contrib-body-requires-signed-off-by,CT1
+
+verbosity = 2
+
+ignore-revert-commits=false
+ignore-fixup-commits=false
+ignore-squash-commits=false
+
+[title-max-length]
+line-length=72
+
+[title-min-length]
+min-length=10
+
+[ignore-by-title]
+regex=^Release v(.*)
+ignore=CT1,CC1
