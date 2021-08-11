@@ -3,230 +3,131 @@
     "Items count": 50,
     "Items": [
         {
-            "Title": "Stolen Army assault rifles keep showing up in California",
-            "Date": "2021-06-15",
-            "Time": "04:59:15",
-            "Link": "https://news.yahoo.com/stolen-army-assault-rifles-keep-045915445.html",
-            "Source": "Associated Press",
+            "Title": "Kathy Hochul to become New York's 1st female governor after Cuomo resigns",
+            "Date": "2021-08-10",
+            "Time": "16:35:05",
+            "Link": "https://news.yahoo.com/who-is-kathy-hochul-cuomos-potential-successor-as-ny-governor-180817376.html",
+            "Source": "Yahoo News",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/2W1.xgFOYbqfjMoVCj7jHg--~B/aD0xMDgwO3c9MTkyMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/a30a5d96c65f2d697e5a66f606a947ad",
+                "URL": "https://s.yimg.com/os/creatr-uploaded-images/2021-08/139dc700-f617-11eb-ba78-0fbc5f783dce",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/00.png"
             }
         },
         {
-            "Title": "McConnell: \"Highly unlikely\" he would allow Biden to fill Supreme Court vacancy in 2024",
-            "Date": "2021-06-14",
-            "Time": "15:58:25",
-            "Link": "https://news.yahoo.com/mcconnell-highly-unlikely-allow-biden-155825838.html",
-            "Source": "Axios",
+            "Title": "Maskless California man bullies the wrong 'Korean Uncle' as H Mart Ahjummas come to his defense",
+            "Date": "2021-08-10",
+            "Time": "22:38:54",
+            "Link": "https://news.yahoo.com/maskless-california-man-bullies-wrong-223854449.html",
+            "Source": "NextShark",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/pyNdstv0dhrr9DmpOTbJng--~B/aD03MjA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/axios_articles_623/e4adfe61ea63592f70c63446a5bcf64b",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/x5YFqQmLXtd1HMUYlBMnvQ--~B/aD00MjU7dz04MDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/nextshark_articles_509/924254b192adca529d4aebfd04613e63",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/01.png"
             }
         },
         {
-            "Title": "Massachusetts Public School District Encourages Students to Report Peers, Teachers for ‘Bias’ Violations",
-            "Date": "2021-06-15",
-            "Time": "12:16:41",
-            "Link": "https://news.yahoo.com/massachusetts-public-school-district-encourages-121641755.html",
-            "Source": "National Review",
+            "Title": "Bank of America exec's ex-boyfriend accused of beating her to death at California home",
+            "Date": "2021-08-10",
+            "Time": "23:56:00",
+            "Link": "https://news.yahoo.com/bank-america-execs-ex-boyfriend-235600174.html",
+            "Source": "NBC News",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/8TbqLMayYffhT3wz5DPMzg--~B/aD00NjQ7dz03OTU7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_national_review_738/b9ac80b03f24d11104b997b2a0a3a8b0",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/aYIv1SCumduo49zKvEURqQ--~B/aD0xMjE0O3c9MTgyMTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/nbc_news_122/1a0f3eb8d42a5e734941452d1ae7a8f0",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/02.png"
             }
         },
         {
-            "Title": "Belarus ‘pressured hijacked Ryanair captain to say he landed in Minsk voluntarily’",
-            "Date": "2021-06-15",
-            "Time": "11:12:02",
-            "Link": "https://news.yahoo.com/belarus-pressured-hijacked-ryanair-captain-111202466.html",
-            "Source": "The Telegraph",
+            "Title": "Pregnant woman killed in Southern California road rage incident",
+            "Date": "2021-08-09",
+            "Time": "21:08:18",
+            "Link": "https://news.yahoo.com/pregnant-woman-killed-southern-california-210818438.html",
+            "Source": "Yahoo News Video",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/59yIHoMQQk09vCLQ9Cq8vg--~B/aD0xNTYzO3c9MjUwMTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/the_telegraph_258/6c1fbe5bb079e7e3af61298a31a98a43",
+                "URL": "https://s.yimg.com/hd/cp-video-transcode/prod/2021-08/09/6111994333777a63f0e2520f/6111994333777a63f0e25210_o_U_v2.jpg",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/03.png"
             }
         },
         {
-            "Title": "South Carolina community reeling after double murder of mother and son from legal dynasty",
-            "Date": "2021-06-14",
-            "Time": "22:23:00",
-            "Link": "https://news.yahoo.com/slaying-mother-son-highlights-legacy-222300156.html",
-            "Source": "NBC News",
+            "Title": "U.S. officials are reportedly lowering their estimates for how long the Afghan government can hold on",
+            "Date": "2021-08-10",
+            "Time": "21:07:46",
+            "Link": "https://news.yahoo.com/u-officials-reportedly-lowering-estimates-210746464.html",
+            "Source": "The Week",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/hryM_3h9HBzqRLk41WICdw--~B/aD00NDQ7dz02Nzg7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/nbc_news_122/648390fb169ebea9c9324e29ec0e466b",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/tkqLQRuZpSK0OJRq7jX32A--~B/aD01NjQ7dz04NDU7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_week_574/f25a8e2f7ebb2b868195616501f3c9be",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/04.png"
             }
         },
         {
-            "Title": "China sends record 28 fighter jets toward Taiwan",
-            "Date": "2021-06-15",
-            "Time": "13:08:57",
-            "Link": "https://news.yahoo.com/china-sends-record-28-fighter-130857759.html",
-            "Source": "Associated Press",
+            "Title": "Texas Supreme Court to Allow Arrest of Democrats Who Fled State to Block Election Reform",
+            "Date": "2021-08-10",
+            "Time": "23:27:12",
+            "Link": "https://news.yahoo.com/texas-supreme-court-allow-arrest-232712141.html",
+            "Source": "National Review",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/nvQoUNymqB0dHrXr25qn4w--~B/aD0zMzk0O3c9NTkyMjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/0975be09cccd9022d4eeb965fa7df79f",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/vCs7VbQFhMraydOnTDzZGg--~B/aD00NjQ7dz03OTU7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_national_review_738/33df4f4af51db88442d095275adfdc9c",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/05.png"
             }
         },
         {
-            "Title": "\"Pure insanity\": Emails reveal Trump pressured top DOJ officials to overturn election results",
-            "Date": "2021-06-15",
-            "Time": "12:54:37",
-            "Link": "https://news.yahoo.com/pure-insanity-emails-reveal-trump-125437908.html",
-            "Source": "Axios",
+            "Title": "Subway franchisees want to drop Megan Rapinoe’s new ad amid Olympic controversy",
+            "Date": "2021-08-10",
+            "Time": "20:46:00",
+            "Link": "https://news.yahoo.com/subway-franchisees-want-drop-megan-204600342.html",
+            "Source": "Washington Examiner",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/Cqy_K6ZVl9uk8NnhDDqySQ--~B/aD03MjA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/axios_articles_623/b47ca5165fcc1c59be1e7d120e1bc54a",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/KcpBqLDPjisqRfpHvisR8Q--~B/aD05NDA7dz0xNTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/washington_examiner_articles_265/56df04546ddf13b3bbb65de9e82fa771",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/06.png"
             }
         },
         {
-            "Title": "Bidens surprise UK churchgoers by showing up to Mass",
-            "Date": "2021-06-14",
-            "Time": "14:04:13",
-            "Link": "https://news.yahoo.com/bidens-surprise-uk-churchgoers-showing-140413281.html",
-            "Source": "CBS News",
+            "Title": "Powerful heat wave to cause 100-degree temperatures for 25 million in the U.S. this week",
+            "Date": "2021-08-10",
+            "Time": "10:59:41",
+            "Link": "https://news.yahoo.com/powerful-heat-wave-cause-100-105941426.html",
+            "Source": "Axios",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/lGgqZl77R6q_N8AXRll3HA--~B/aD0yNDk4O3c9MzgyNjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/cbs_news_897/2c2a3226c5b5fa9706c89ff499deb9a9",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/O4GFBTIOTcrfq0ULMVyAxw--~B/aD03MjA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/axios_articles_623/6fd696e6ed3493caf4529fc1c934253f",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/07.png"
             }
         },
         {
-            "Title": "Cashier killed, deputy hurt by man arguing about face mask at Georgia store, cops say",
-            "Date": "2021-06-15",
-            "Time": "11:49:26",
-            "Link": "https://news.yahoo.com/cashier-killed-deputy-hurt-man-114926024.html",
-            "Source": "Idaho Statesman",
+            "Title": "Biden: Cuomo Did a ‘Hell of a Job’ as Governor, ‘So Sad’ He Resigned",
+            "Date": "2021-08-10",
+            "Time": "20:45:19",
+            "Link": "https://news.yahoo.com/biden-cuomo-did-hell-job-204519224.html",
+            "Source": "National Review",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/Q_g46MogOtmx20Rrs9DzJg--~B/aD02NDE7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/idaho_statesman_mcclatchy_articles_842/6d45640308534a547b68fb19f01fda36",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/ap8zRJ_s0qUyh.RlDX_Fzw--~B/aD00NjQ7dz03OTU7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_national_review_738/02030956e482212ff06ebe4f457f2f45",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/08.png"
             }
         },
         {
-            "Title": "16 of the Most Charming Lake House Rentals on Airbnb",
-            "Date": "2021-06-14",
-            "Time": "15:33:03",
-            "Link": "https://news.yahoo.com/16-most-charming-lake-house-153303141.html",
-            "Source": "Architectural Digest",
+            "Title": "Schumer outlines $107 billion plan for legal status for immigrants as part of massive Democratic spending bill",
+            "Date": "2021-08-09",
+            "Time": "14:48:00",
+            "Link": "https://news.yahoo.com/schumer-outlines-107-billion-plan-144800482.html",
+            "Source": "Washington Examiner",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/tFO6QORsMZ.T2w8bCh1geA--~B/aD04MDA7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/architectural_digest_422/fb4c0830cdd429640d0ed17d0fc0a5b3",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/QHdMD3539Iyvnpl6VjMgbQ--~B/aD05NDA7dz0xNTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/washington_examiner_articles_265/93269b763ae66e1b0228a3d3bec07c51",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/09.png"
             }
         },
         {
-            "Title": "Hong Kong watching Chinese nuclear plant after leak reported",
-            "Date": "2021-06-15",
-            "Time": "04:42:06",
-            "Link": "https://news.yahoo.com/hong-kong-leader-concerned-chinese-044206527.html",
-            "Source": "Associated Press",
+            "Title": "Black Lives Matter Utah chapter president steps down after death threats for comments about US flag",
+            "Date": "2021-08-11",
+            "Time": "00:36:38",
+            "Link": "https://news.yahoo.com/black-lives-matter-utah-chapter-003638540.html",
+            "Source": "TheGrio",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/ZxOn96Ul9bl9hvBjGyLR2A--~B/aD00MDAwO3c9NjAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/ea4e0540fafd86b0b061903eb282b897",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/MrrcloYFE3DBijE535Lx7w--~B/aD01Mjg7dz0xMDI0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/thegrio_yahoo_articles_946/db8784e3feee216d717b400e8e7e1100",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/10.png"
             }
         },
         {
-            "Title": "Kamala Harris is the first sitting VP to attend a Pride parade",
-            "Date": "2021-06-14",
-            "Time": "16:04:43",
-            "Link": "https://news.yahoo.com/kamala-harris-first-sitting-vp-160443189.html",
-            "Source": "Yahoo News Video",
-            "Image": {
-                "URL": "https://s.yimg.com/hd/cp-video-transcode/prod/2021-06/14/60c77e1d2f6b902841de1d91/60c77e271fb3d700019f3800_1280x720_FES_v1.jpg",
-                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/11.png"
-            }
-        },
-        {
-            "Title": "SCOTUS deals a gutting blow to federal criminal justice reform",
-            "Date": "2021-06-14",
-            "Time": "17:35:24",
-            "Link": "https://news.yahoo.com/scotus-deals-gutting-blow-federal-173524476.html",
-            "Source": "The Week",
-            "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/AvFWaoEF.69AhsfgODJytQ--~B/aD0xNjk7dz0zMDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_week_574/97a23ae1c5be26f2cd3d08fc2bf95743",
-                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/12.png"
-            }
-        },
-        {
-            "Title": "Shamima Begum: I was ‘just a dumb kid’ when I joined Islamic State",
-            "Date": "2021-06-15",
-            "Time": "09:58:18",
-            "Link": "https://news.yahoo.com/shamima-begum-insists-she-just-095818577.html",
-            "Source": "The Telegraph",
-            "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/vdayd7ZAfqacXR0m0um.YQ--~B/aD0xNTYzO3c9MjUwMTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/the_telegraph_258/f62c801d48c0120ab713c21bd494ff30",
-                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/13.png"
-            }
-        },
-        {
-            "Title": "Podcast: Netanyahu is out as Israel's prime minister. What's next?",
-            "Date": "2021-06-14",
-            "Time": "12:00:56",
-            "Link": "https://news.yahoo.com/podcast-netanyahu-israels-prime-minister-120056606.html",
-            "Source": "LA Times",
-            "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/le0BnSvd9o8bjn5JAET4Hw--~B/aD01NjA7dz04NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/la_times_articles_853/ad9e202366056dd4d38e92df44c1e17e",
-                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/14.png"
-            }
-        },
-        {
-            "Title": "Evidence mounts Wuhan lab studied live bats despite denials",
-            "Date": "2021-06-14",
-            "Time": "19:37:00",
-            "Link": "https://news.yahoo.com/evidence-mounts-wuhan-lab-studied-193700731.html",
-            "Source": "Washington Examiner",
-            "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/o_HSd7EhDgIbTYdoUUBeAQ--~B/aD05NDA7dz0xNTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/washington_examiner_articles_265/d50ca5026202cc6c4e45270c28e6e251",
-                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/15.png"
-            }
-        },
-        {
-            "Title": "Rep. Greene apologizes for comparing safety masks, Holocaust",
-            "Date": "2021-06-14",
-            "Time": "23:41:08",
-            "Link": "https://news.yahoo.com/rep-greene-apologizes-comparing-safety-234108269.html",
-            "Source": "Associated Press",
-            "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/zHBYi55RxlTCld10.0ZIAQ--~B/aD00MDAwO3c9NjAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/ac1a902f75514b534781fd67a74b10fa",
-                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/16.png"
-            }
-        },
-        {
-            "Title": "Fire at Illinois chemical plant could cause 'environmental nightmare'",
-            "Date": "2021-06-14",
-            "Time": "22:57:25",
-            "Link": "https://news.yahoo.com/video-shows-flames-engulfing-chemical-172848948.html",
-            "Source": "NBC News",
-            "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/thDZDHwkfnfztUB.HoxBAQ--~B/aD0xMDgwO3c9MTkyMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/nbc_news_122/850ab4cdc9edaa3fd9dac492e2574e2e",
-                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/17.png"
-            }
-        },
-        {
-            "Title": "The Delta variant is producing different COVID-19 symptoms than usual, researchers say",
-            "Date": "2021-06-14",
-            "Time": "18:16:53",
-            "Link": "https://news.yahoo.com/delta-variant-producing-different-covid-181653096.html",
-            "Source": "The Week",
-            "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/Oglqkeh13ClXMYMGSv5VEA--~B/aD0yMDA7dz0zMDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_week_574/fe0265d921b1ff6e289c72ea570a8e48",
-                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/18.png"
-            }
-        },
-        {
-            "Title": "Rights groups urge UN probe mission for Beirut port blast",
-            "Date": "2021-06-15",
-            "Time": "09:45:53",
-            "Link": "https://news.yahoo.com/rights-groups-urge-un-probe-094553926.html",
-            "Source": "Associated Press",
-            "Image": {
-                "URL": null,
-                "Path": null
-            }
-        },
-        {
-            "Title": "North Korean defector says 'even North Korea was not this nuts' after attending Ivy League school",
-            "Date": "2021-06-14",
-            "Time": "15:07:20",
-            "Link": "https://news.yahoo.com/north-korean-defector-says-apos-150720135.html",
+            "Title": "Virginia teacher resigns at school board meeting, denounces 'highly politicized agendas'",
+            "Date": "2021-08-11",
+            "Time": "03:02:46",
+            "Link": "https://news.yahoo.com/virginia-teacher-resigns-school-board-030246065.html",
             "Source": "Fox News",
             "Image": {
                 "URL": null,
@@ -234,321 +135,420 @@
             }
         },
         {
-            "Title": "Southern Baptists quash expanded sex abuse probe, for now",
-            "Date": "2021-06-14",
-            "Time": "21:12:14",
-            "Link": "https://news.yahoo.com/southern-baptists-quash-expanded-sex-211214239.html",
-            "Source": "Associated Press",
+            "Title": "Andrew Cuomo once reportedly made an 'impeachable' call to the Obama White House to complain about a federal prosecutor",
+            "Date": "2021-08-10",
+            "Time": "18:47:47",
+            "Link": "https://news.yahoo.com/andrew-cuomo-once-reportedly-made-184747773.html",
+            "Source": "The Week",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/P5IcpJuwOBc2iyoQcXvnYQ--~B/aD0yOTkxO3c9NDQ4NzthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/09b51b2b6955474bed3b922fe8de997c",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/PBe8SMeytSgUkoxZYxJAnw--~B/aD01NjQ7dz04NDU7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_week_574/a0aac0ee8d137f02aa7de8fd671f6add",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/12.png"
+            }
+        },
+        {
+            "Title": "Most GOP Senators Sign Pledge to Force Dems to Raise Debt Ceiling without Republican Votes",
+            "Date": "2021-08-11",
+            "Time": "01:16:10",
+            "Link": "https://news.yahoo.com/most-gop-senators-sign-pledge-011610430.html",
+            "Source": "National Review",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/wUuHOuBI_dQ3LNdrC2PY.g--~B/aD00NjQ7dz03OTU7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_national_review_738/42380f0d1a4079d1fcd1f5d049d982e4",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/13.png"
+            }
+        },
+        {
+            "Title": "A Bistro Table Will Make the Most of Small Spaces",
+            "Date": "2021-08-10",
+            "Time": "14:21:00",
+            "Link": "https://news.yahoo.com/buy-table-dining-room-corner-185023883.html",
+            "Source": "Architectural Digest",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/IgDHbOoPOgbz0WdtMefcLw--~B/aD03MTA7dz03MTA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/architectural_digest_422/813f68cdf335fc116d7e22d01b3bf469",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/14.png"
+            }
+        },
+        {
+            "Title": "Oregon governor signs bill ending reading and math proficiency requirements for graduation",
+            "Date": "2021-08-10",
+            "Time": "15:41:00",
+            "Link": "https://news.yahoo.com/oregon-governor-signs-bill-ending-154100667.html",
+            "Source": "Washington Examiner",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/l2Bp3nx3FEQfQKj3O98XsA--~B/aD05NDA7dz0xNTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/washington_examiner_articles_265/d76d0fc8f09b488723ac8bc87a49e267",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/15.png"
+            }
+        },
+        {
+            "Title": "Former US Attorney Preet Bharara wonders if 'mischief' afoot in Andrew Cuomo waiting 14 days to resign",
+            "Date": "2021-08-11",
+            "Time": "00:41:00",
+            "Link": "https://news.yahoo.com/former-us-attorney-preet-bharara-004100910.html",
+            "Source": "Washington Examiner",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/WoBlXKiFfkwbQJKvWQUdGg--~B/aD05NDA7dz0xNTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/washington_examiner_articles_265/04b03e29c9008c592e1613150dd48de5",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/16.png"
+            }
+        },
+        {
+            "Title": "Wyoming GOP leaders will no longer recognize Liz Cheney over Trump impeachment vote",
+            "Date": "2021-08-11",
+            "Time": "02:08:37",
+            "Link": "https://news.yahoo.com/wyoming-gop-lead-no-longer-020837144.html",
+            "Source": "Axios",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/cFTPklc3jh21DvXx87GoGw--~B/aD03MjA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/axios_articles_623/b610d863e34121871dd950d3bb6c9fb2",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/17.png"
+            }
+        },
+        {
+            "Title": "Ghislaine Maxwell prepared to give evidence on behalf of Prince Andrew",
+            "Date": "2021-08-10",
+            "Time": "16:23:48",
+            "Link": "https://news.yahoo.com/ghislaine-maxwell-prepared-evidence-behalf-162348712.html",
+            "Source": "The Telegraph",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/q4vK6ypOQlvKthz4g7_3vg--~B/aD0xMjAwO3c9MTkyODthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/the_telegraph_258/05ba965b54abd1951d5c69c96aa0313a",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/18.png"
+            }
+        },
+        {
+            "Title": "These countries have warned they face extinction. They hope climate report is a 'major alert.'",
+            "Date": "2021-08-10",
+            "Time": "12:28:00",
+            "Link": "https://news.yahoo.com/island-nations-risk-climate-extinction-122800797.html",
+            "Source": "NBC News",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/uYWMM5yTCKp3Pi.XTCTiaQ--~B/aD0xNjY3O3c9MjUwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/nbc_news_122/9ad0ced56c025aa77495f6d42044a143",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/19.png"
+            }
+        },
+        {
+            "Title": "Anger as Nigerian diplomat manhandled in Indonesia",
+            "Date": "2021-08-10",
+            "Time": "15:33:19",
+            "Link": "https://news.yahoo.com/anger-nigerian-diplomat-manhandled-indonesia-140034692.html",
+            "Source": "BBC",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/qCVyKYsAtHj8LBnXo8oTFg--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/a70d032afe74b59d1154416b26123b76",
+                "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/20.png"
+            }
+        },
+        {
+            "Title": "Oregon to order indoor mask mandate for vaccinated and unvaccinated residents across state",
+            "Date": "2021-08-11",
+            "Time": "00:28:57",
+            "Link": "https://news.yahoo.com/oregon-order-indoor-mask-mandate-002857280.html",
+            "Source": "Axios",
+            "Image": {
+                "URL": "https://s.yimg.com/uu/api/res/1.2/om3MuxTGpP5PQ5S3Ai0vUw--~B/aD03MjA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/axios_articles_623/aca4b19ca41ca6c7bc4e33b00584c856",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/21.png"
             }
         },
         {
-            "Title": "Protests continue outside of D.C. bar after a woman is dragged down stairs by her hair",
-            "Date": "2021-06-14",
-            "Time": "21:35:00",
-            "Link": "https://news.yahoo.com/protests-continue-outside-d-c-213500580.html",
-            "Source": "TheGrio",
+            "Title": "NY lawmaker: Content of Cuomo sexual misconduct report ‘deeply disturbing’",
+            "Date": "2021-08-09",
+            "Time": "17:18:40",
+            "Link": "https://news.yahoo.com/ny-lawmaker-content-cuomo-sexual-171840054.html",
+            "Source": "Yahoo News Video",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/FBvUNpw0ZghNrCqwrdx81A--~B/aD01NzY7dz0xMDI0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/thegrio_yahoo_articles_946/58f44602569daef315c377e06d9d9397",
+                "URL": "https://s.yimg.com/hd/cp-video-transcode/prod/2021-08/09/61116372ddb40d636a653161/61116372ddb40d636a653162_o_U_v2.jpg",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/22.png"
             }
         },
         {
-            "Title": "Hundreds protest Manchin's opposition to voting law overhaul",
-            "Date": "2021-06-14",
-            "Time": "10:46:37",
-            "Link": "https://news.yahoo.com/hundreds-protest-manchins-opposition-voting-104637561.html",
-            "Source": "Associated Press",
+            "Title": "Tropical Storm Fred forecast to form soon in the Caribbean Sea. Where is it heading?",
+            "Date": "2021-08-10",
+            "Time": "11:00:09",
+            "Link": "https://news.yahoo.com/tropical-storm-fred-forecast-form-110009918.html",
+            "Source": "Miami Herald",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/KBpOut3w6PHtu1sdDTfSNg--~B/aD0yNDAyO3c9MzIwMjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/52a31bfe1c0686c56462b4aeb1cd208b",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/od5dkzoA4zsyhtkwCREIkQ--~B/aD05MzU7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/d595408aad7e1ef252e84bd9b4aa1bea",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/23.png"
             }
         },
         {
-            "Title": "U.S. documents reveal site where World War II war criminal Tojo’s remains were scattered",
-            "Date": "2021-06-14",
-            "Time": "10:48:05",
-            "Link": "https://news.yahoo.com/u-documents-reveal-where-world-104805683.html",
-            "Source": "Yahoo News Video",
+            "Title": "Herschel Walker’s wife voted in Georgia despite living in Texas: report",
+            "Date": "2021-08-10",
+            "Time": "23:59:00",
+            "Link": "https://news.yahoo.com/herschel-walker-wife-voted-georgia-235900629.html",
+            "Source": "TheGrio",
             "Image": {
-                "URL": "https://s.yimg.com/hd/cp-video-transcode/prod/2021-06/14/60c733e7d024e625dc93ab66/60c733e7d024e625dc93ab67_o_U_v2.jpg",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/QuvO_sDFfnjjsFV5CwUXrw--~B/aD01NzY7dz0xMDI0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/thegrio_yahoo_articles_946/09f6299e749af3291f139c471d95b295",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/24.png"
             }
         },
         {
-            "Title": "17 Last-Minute Father’s Day Gifts From Amazon He’ll Actually Want",
-            "Date": "2021-06-14",
-            "Time": "20:15:00",
-            "Link": "https://news.yahoo.com/15-last-minute-fathers-day-212002273.html",
-            "Source": "Architectural Digest",
+            "Title": "Hackers steal $600m in major cryptocurrency heist",
+            "Date": "2021-08-10",
+            "Time": "22:05:39",
+            "Link": "https://news.yahoo.com/hackers-steal-600m-major-cryptocurrency-213033235.html",
+            "Source": "BBC",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/u4PDvmRzrG3AIB2FXjoL0A--~B/aD04Nzk7dz0xNTAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/architectural_digest_422/0353f2d249f2ddcc4ad818f9ed1ee315",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/JyzP5_BnTH3w1ypBiOWYrw--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/d063777db0dc816757a3a163aa1845e2",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/25.png"
             }
         },
         {
-            "Title": "Airlines report 3,000 unruly passengers this year in US",
-            "Date": "2021-06-15",
-            "Time": "09:25:09",
-            "Link": "https://news.yahoo.com/airlines-report-3-000-unruly-092509790.html",
-            "Source": "BBC",
+            "Title": "Criminal Justice Prof Set Blazes Across NorCal as Dixie Fire Raged: Cops",
+            "Date": "2021-08-11",
+            "Time": "01:17:37",
+            "Link": "https://news.yahoo.com/criminal-justice-prof-set-blazes-011737724.html",
+            "Source": "The Daily Beast",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/EqkU6D8t1HJT1iuLLMjkOg--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/e62c469c7d9a399c1931f10ebce3a4f8",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/9yUd.R.T6X2mJXehm._0AA--~B/aD02NTg7dz0xMTcwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/thedailybeast.com/0b8ff44050cac7532dfa6da2438889c6",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/26.png"
             }
         },
         {
-            "Title": "'Unplanned' outages hit Texas power plants in soaring temperatures",
-            "Date": "2021-06-15",
-            "Time": "01:19:00",
-            "Link": "https://news.yahoo.com/unplanned-outages-hit-texas-power-011956291.html",
-            "Source": "NBC News",
+            "Title": "‘Best meteor shower of year’ peaks this week. You may see 100 per hour — and fireballs",
+            "Date": "2021-08-09",
+            "Time": "19:32:27",
+            "Link": "https://news.yahoo.com/best-meteor-shower-peaks-week-193227551.html",
+            "Source": "Miami Herald",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/PkSYqcOnQ.mbf55Nyrnm.A--~B/aD0xNjY3O3c9MjUwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/nbc_news_122/194dbf2b32fa2cd918ceb20a513ff838",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/Rf93SkwsypFrUHFRCSPnXA--~B/aD05MDY7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/3e51f4443eefed89f35cfcaa7e45dbf2",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/27.png"
             }
         },
         {
-            "Title": "Tropical Storm Bill forms in Atlantic, making it the second named storm of the season",
-            "Date": "2021-06-15",
-            "Time": "11:50:11",
-            "Link": "https://news.yahoo.com/tropical-storm-bill-forms-atlantic-115011146.html",
-            "Source": "Miami Herald",
+            "Title": "‘My child, my choice’: Dozens of parents protest Boise School District’s mask mandate",
+            "Date": "2021-08-10",
+            "Time": "17:29:55",
+            "Link": "https://news.yahoo.com/child-choice-dozens-parents-protest-172955797.html",
+            "Source": "Idaho Statesman",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/aU3n7ulWF1K5JgSHUJUUow--~B/aD04NDI7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/7f6ebb1795338a08941ff7b6e1386ba6",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/TRmJatwYEzwMWJ6uJIRPdA--~B/aD02NDE7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/idaho_statesman_mcclatchy_articles_842/0a74607c3d89934a1e02b3482ca3369c",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/28.png"
             }
         },
         {
-            "Title": "New Israel government vows change, but not for Palestinians",
-            "Date": "2021-06-15",
-            "Time": "06:06:55",
-            "Link": "https://news.yahoo.com/israel-government-vows-change-not-060655906.html",
-            "Source": "Associated Press",
+            "Title": "Wagner: Scale of Russian mercenary mission in Libya exposed",
+            "Date": "2021-08-10",
+            "Time": "21:09:57",
+            "Link": "https://news.yahoo.com/wagner-scale-russian-mercenary-mission-210957360.html",
+            "Source": "BBC",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/M2mGZdD6SBJI.CofHxbqfQ--~B/aD0zMzk1O3c9NTAyNDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/0b1df826525342f9d702a6c96da9bee4",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/LGz981Kl2SglOTRZjf_Pxw--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/0d5f354e9d8c78468f3c40373710034b",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/29.png"
             }
         },
         {
-            "Title": "WW2: Unearthing Taiwan's forgotten prisoner of war camps",
-            "Date": "2021-06-15",
-            "Time": "11:33:33",
-            "Link": "https://news.yahoo.com/ww2-unearthing-taiwans-forgotten-prisoner-004422193.html",
-            "Source": "BBC",
+            "Title": "'I believed I was going to die': Trump supporter sentenced to prison for shooting after rally that injured Black teen",
+            "Date": "2021-08-10",
+            "Time": "11:42:13",
+            "Link": "https://news.yahoo.com/believed-going-die-trump-supporter-114213670.html",
+            "Source": "USA TODAY",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/YXcGYg0LoVFdI10XjE2mlQ--~B/aD01NDk7dz05NzY7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/bbc_us_articles_995/c1d8dc81902677972dd32d0591650347",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/X6AJb.pE22c6n3Gqd_5lVg--~B/aD0yMDAyO3c9MzAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/usa_today_news_641/c7fcc91d07ef7ae3ff0d7be89b49dcd0",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/30.png"
             }
         },
         {
-            "Title": "America needs to change how we think about housing",
-            "Date": "2021-06-15",
-            "Time": "09:52:11",
-            "Link": "https://news.yahoo.com/america-needs-change-think-housing-095211351.html",
-            "Source": "The Week",
+            "Title": "This Pet Gear Rivals My Best Home Decor",
+            "Date": "2021-08-10",
+            "Time": "18:39:28",
+            "Link": "https://news.yahoo.com/pet-gear-rivals-best-home-183928435.html",
+            "Source": "Architectural Digest",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/5HrBYHGEzONE57k6DcpOaw--~B/aD0xNjk7dz0zMDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_week_574/14b77a93775a77301843e42825b6675e",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/HP83X4Zko10tTw5SwIxOCQ--~B/aD05MDA7dz0xNTAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/architectural_digest_422/3c6277b0d4a1e544c094551143401c8d",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/31.png"
             }
         },
         {
-            "Title": "Telegraph readers on the freedom day delay: 'When will it end?'",
-            "Date": "2021-06-15",
-            "Time": "11:23:53",
-            "Link": "https://news.yahoo.com/telegraph-readers-freedom-day-delay-112353345.html",
-            "Source": "The Telegraph",
+            "Title": "96,000 fish killed after chlorine leak at seafood facility",
+            "Date": "2021-08-10",
+            "Time": "23:40:14",
+            "Link": "https://news.yahoo.com/96-000-fish-killed-chlorine-234014125.html",
+            "Source": "CBS News",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/BRoyHlfYgCHuYxeGiVuT4g--~B/aD0xNTYzO3c9MjUwMTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/the_telegraph_258/adb3792034520e027cce62f41ec30dd9",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/eNa71REm3VaaKR_Aqjdruw--~B/aD0yMzM3O3c9MzUwNjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/cbs_news_897/0817c184a84c7b2028506bd4d4ad5829",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/32.png"
             }
         },
         {
-            "Title": "Australia, Britain reach free trade deal to cut many tariffs",
-            "Date": "2021-06-15",
-            "Time": "03:49:53",
-            "Link": "https://news.yahoo.com/australia-says-reached-free-trade-034953476.html",
-            "Source": "Associated Press",
+            "Title": "For the first time, immigrants can now get a green card and Social Security number at once",
+            "Date": "2021-08-10",
+            "Time": "21:29:40",
+            "Link": "https://news.yahoo.com/first-time-immigrants-now-green-212940234.html",
+            "Source": "Miami Herald",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/eJ88mIWik8gQZNZLx5sbCQ--~B/aD0xNDgwO3c9MjIyMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/d31b7e23e982a78dc4f83b761b0fba9f",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/iWMBMbAnn.J43D3RreivjQ--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/9c64012d2ff806b1a942762c9c80c8d0",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/33.png"
             }
         },
         {
-            "Title": "Putin called a former US Marine imprisoned in Russia a 'drunk' who 'got himself s---faced' in an interview ahead of his first meeting with Biden",
-            "Date": "2021-06-15",
-            "Time": "09:44:52",
-            "Link": "https://news.yahoo.com/putin-called-former-us-marine-094452641.html",
-            "Source": "Business Insider",
+            "Title": "Troops may soon be required to get a COVID vaccine. What happens if they refuse?",
+            "Date": "2021-08-09",
+            "Time": "20:11:58",
+            "Link": "https://news.yahoo.com/troops-may-soon-required-covid-201158446.html",
+            "Source": "Miami Herald",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/OwPEg26I4AszfTh.BGKEtQ--~B/aD0xNTAwO3c9MjAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/business_insider_articles_888/489a8a8093d11c881193bead9ebfb012",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/YV70_4Ox9xKtGHSGVmxBWw--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/b6c981fddf9eb23f522fcd3fce5df7fe",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/34.png"
             }
         },
         {
-            "Title": "Pedestrian killed in an early-morning Lexington crash. No charges expected, cops say",
-            "Date": "2021-06-15",
-            "Time": "11:06:02",
-            "Link": "https://news.yahoo.com/pedestrian-killed-early-morning-lexington-110602098.html",
-            "Source": "Lexington Herald-Leader",
+            "Title": "A white woman confronted her Black neighbor about a 'Winnie the Pooh' flag on her porch, according to a viral TikTok",
+            "Date": "2021-08-10",
+            "Time": "23:36:29",
+            "Link": "https://news.yahoo.com/white-woman-confronted-her-black-233629692.html",
+            "Source": "INSIDER",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/MLZMvB5FrVNesH07ev7Q6A--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/lexington_herald_leader_mcclatchy_articles_314/515e1ab21de52ea2088fdcdd924ab82a",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/d38WwgDWEDQ2P8KvR0_2KA--~B/aD0xNTAwO3c9MjAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/insider_articles_922/abc9d9ea7d2c76338ead993d7419e81d",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/35.png"
             }
         },
         {
-            "Title": "Military stumped by stolen box of armor-piercing grenades",
-            "Date": "2021-06-15",
-            "Time": "04:58:06",
-            "Link": "https://news.yahoo.com/military-stumped-stolen-box-armor-045806569.html",
-            "Source": "Associated Press",
+            "Title": "Newsom wants voters to ignore the recall ballot's second question. They don't have to",
+            "Date": "2021-08-09",
+            "Time": "12:00:33",
+            "Link": "https://news.yahoo.com/newsom-wants-voters-ignore-recall-120033657.html",
+            "Source": "LA Times",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/gg5GQkVz3xWBZ0AoDyFPAQ--~B/aD0xMDgwO3c9MTkyMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/37b6e7bdfc48ee61111bf0d5124985b4",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/ddYUeMgIZyKld6UbAMMBDw--~B/aD01NjA7dz04NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/la_times_articles_853/35d6fe77a39aa7ef77cca008b8e164b6",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/36.png"
             }
         },
         {
-            "Title": "Biden COVID Adviser: Americans Should Have ‘Sacrificed A Little Bit’ More during Pandemic",
-            "Date": "2021-06-14",
-            "Time": "16:29:29",
-            "Link": "https://news.yahoo.com/biden-covid-advisor-americans-sacrificed-162929779.html",
-            "Source": "National Review",
+            "Title": "Trump's Surgeon General slammed Florida's ban on mask mandates: 'We're letting politics get in the way of protecting our youth'",
+            "Date": "2021-08-10",
+            "Time": "18:40:02",
+            "Link": "https://news.yahoo.com/trumps-surgeon-general-slammed-floridas-184002938.html",
+            "Source": "Business Insider",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/eo6abalG3YeQkS5pFAa73g--~B/aD00NjQ7dz03OTU7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/the_national_review_738/d00bd179fab04c2bd8d183d2af33a6da",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/urxbR4B5IY.Z.P7pgfhqZQ--~B/aD0xMDUyO3c9MTQwMjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/business_insider_articles_888/15142d9d5709cbabbb306874ce03edd1",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/37.png"
             }
         },
         {
-            "Title": "‘Wow’: See the damage caused after lightning struck this SUV during storm in Broward",
-            "Date": "2021-06-14",
-            "Time": "20:13:15",
-            "Link": "https://news.yahoo.com/wow-see-damage-caused-lightning-201315810.html",
-            "Source": "Miami Herald",
+            "Title": "A man died in West Africa of a virus that causes internal bleeding and organ failure. The WHO says it has the potential to 'spread far and wide.'",
+            "Date": "2021-08-11",
+            "Time": "03:14:51",
+            "Link": "https://news.yahoo.com/man-died-west-africa-virus-031451002.html",
+            "Source": "INSIDER",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/uBHuLgX466mwms5edGPpYw--~B/aD02NDE7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/miami_herald_mcclatchy_975/bc66cad7d263b043455949c2ed034c81",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/U_v_BKN4Mq6LXX26mVt0LQ--~B/aD0xMDc5O3c9MTQzOTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/insider_articles_922/6c49fa9d2c9ab55e9f51f6896338d2a4",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/38.png"
             }
         },
         {
-            "Title": "From stubborn belly fat to exercising with achy knees, all your midlife fitness questions answered",
-            "Date": "2021-06-14",
-            "Time": "14:16:56",
-            "Link": "https://news.yahoo.com/stubborn-belly-fat-exercising-achy-141656919.html",
-            "Source": "The Telegraph",
+            "Title": "Former Houston pastor accused of molesting teen for 5 years",
+            "Date": "2021-08-10",
+            "Time": "17:24:04",
+            "Link": "https://news.yahoo.com/former-houston-pastor-accused-molesting-151607082.html",
+            "Source": "KTRK – Houston",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/bwrpng1pjv3Ft0bZF4yiyg--~B/aD03NTA7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/the_telegraph_258/57924cb7007e4ca5eb9079e119308c76",
+                "URL": "https://s.yimg.com/hd/cp-video-transcode/prod/2021-08/10/61129953540ba36579b8adb6/61129953540ba36579b8adb7_o_U_v2.jpg",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/39.png"
             }
         },
         {
-            "Title": "Gains for some tech giants nudge S&P to another record high",
-            "Date": "2021-06-14",
-            "Time": "08:41:15",
-            "Link": "https://news.yahoo.com/global-stocks-higher-wall-st-084115712.html",
-            "Source": "Associated Press",
+            "Title": "Federal surveillance machine looking through your bank accounts and cryptocurrency",
+            "Date": "2021-08-10",
+            "Time": "09:01:47",
+            "Link": "https://news.yahoo.com/federal-surveillance-machine-looking-bank-090147565.html",
+            "Source": "USA TODAY",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/jjA3qkKTxuDB3qNDBI0kKA--~B/aD0zODQwO3c9NTc2MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/ap.org/8806f85bc3c50744199ef832adbf4cb1",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/EYqriV_IRdhwkrghTPgMiw--~B/aD0zMDk3O3c9NDU5MzthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/usa_today_opinion_532/0a8b44eeac017911b637aaf58e5cb840",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/40.png"
             }
         },
         {
-            "Title": "Boise area’s biggest home builder just paid 6 times appraised value for land to build on",
-            "Date": "2021-06-15",
-            "Time": "10:00:00",
-            "Link": "https://news.yahoo.com/boise-area-biggest-home-builder-100000784.html",
-            "Source": "Idaho Statesman",
+            "Title": "A Russian model claims Wall Street billionaire Leon Black flew her to Palm Beach to 'satisfy the sex needs' of Jeffrey Epstein",
+            "Date": "2021-08-10",
+            "Time": "12:24:40",
+            "Link": "https://news.yahoo.com/russian-model-claims-wall-street-122440881.html",
+            "Source": "Business Insider",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/JOmkaD_RcVqnBqfaZRbfJQ--~B/aD03NjA7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/idaho_statesman_mcclatchy_articles_842/2521d49e3499723c550bfe0c43a36d1f",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/rWL616AxrhlFktTvGH_tEA--~B/aD0zMjUzO3c9NDMzODthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/business_insider_articles_888/e48367c3b744732f36c39b5d56086d95",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/41.png"
             }
         },
         {
-            "Title": "Vodafone picks Samsung for 5G network",
-            "Date": "2021-06-14",
-            "Time": "14:12:07",
-            "Link": "https://news.yahoo.com/vodafone-picks-samsung-5g-network-122230155.html",
-            "Source": "BBC",
+            "Title": "How many Garth Brooks fans got COVID vaccine at Kansas City show? It may surprise you",
+            "Date": "2021-08-10",
+            "Time": "15:52:11",
+            "Link": "https://news.yahoo.com/many-garth-brooks-fans-got-155211929.html",
+            "Source": "Kansas City Star",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/DJGReEUCizpNKY8JIyLWlg--~B/aD0xMTUyO3c9MjA0ODthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/bbc_us_articles_995/4a1e900ea616037d11b295b7e7901063",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/xlEa_wMJ76jrfD6A6FAdEw--~B/aD03NTk7dz0xMTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/kansas_city_star_mcclatchy_articles_677/efa698de5d3afd188db4a04b6b06d620",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/42.png"
             }
         },
         {
-            "Title": "Letters to the Editor: Unvaccinated and unmasked — what to do about these people?",
-            "Date": "2021-06-15",
-            "Time": "10:00:52",
-            "Link": "https://news.yahoo.com/letters-editor-unvaccinated-unmasked-people-100052839.html",
-            "Source": "Los Angeles Times Opinion",
+            "Title": "The former employer of 'Central Park Karen' Amy Cooper is trying to get her wrongful termination lawsuit against them thrown out",
+            "Date": "2021-08-10",
+            "Time": "16:35:27",
+            "Link": "https://news.yahoo.com/former-employer-central-park-karen-163527250.html",
+            "Source": "INSIDER",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/AalpfLtxfjR1MpDJizhp3Q--~B/aD01NjA7dz04NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/los_angeles_times_opinion_902/644190decb3b6b193676aa00ebac2d20",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/p2RIy7RpdCTZ3.w8UUoHew--~B/aD0xMDI2O3c9MTM2ODthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/insider_articles_922/da062a9540ad5c6eaa12dcbc03526d07",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/43.png"
             }
         },
         {
-            "Title": "Man shot 7 times during armed robbery in SW Houston, HPD says",
-            "Date": "2021-06-14",
-            "Time": "19:44:17",
-            "Link": "https://news.yahoo.com/man-shot-7-times-during-194417656.html",
-            "Source": "KTRK – Houston",
+            "Title": "As Senate Republicans Ignore Trump on Infrastructure, House GOP Falls in Line",
+            "Date": "2021-08-10",
+            "Time": "08:55:56",
+            "Link": "https://news.yahoo.com/senate-republicans-ignore-trump-infrastructure-085556441.html",
+            "Source": "The Daily Beast",
             "Image": {
-                "URL": "https://s.yimg.com/hd/cp-video-transcode/prod/2021-06/14/60c7b24f89e9c7271316b5ad/60c7b24f89e9c7271316b5ae_o_U_v2.jpg",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/W9Xtjy6HJXHmJT7lH4whZQ--~B/aD02NTg7dz0xMTcwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/thedailybeast.com/4e0b03b8fd3bde6302916c4ec1bdd5ac",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/44.png"
             }
         },
         {
-            "Title": "SpaceX president Gwynne Shotwell explains the company's 'no a--hole' policy, which she says prevents a hostile work environment and allows big ideas to flourish",
-            "Date": "2021-06-15",
-            "Time": "09:15:23",
-            "Link": "https://news.yahoo.com/spacex-president-gwynne-shotwell-explains-091523601.html",
+            "Title": "Nearly 9,000 people in Germany have to be vaccinated again after a nurse swapped vaccines for salt water",
+            "Date": "2021-08-10",
+            "Time": "14:06:21",
+            "Link": "https://news.yahoo.com/nearly-9-000-people-germany-140621197.html",
             "Source": "Business Insider",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/jZ9TtkLuRQxb.T8gVFGvUA--~B/aD0xNTE2O3c9MjAyMTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/business_insider_articles_888/792fc5c70a6a30bad92b4c5e89d913fc",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/ydcijsBIHTiAVJAPJCLyhA--~B/aD0yMjIyO3c9NDQ0NDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/business_insider_articles_888/6bfc594a58e0caf567faab039d038a86",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/45.png"
             }
         },
         {
-            "Title": "Biden administration calls for death penalty to be reinstated against Boston bomber despite promising to end executions",
-            "Date": "2021-06-15",
-            "Time": "09:34:58",
-            "Link": "https://news.yahoo.com/biden-administration-calls-death-penalty-093458013.html",
-            "Source": "The Independent",
+            "Title": "More Inside Fashion Entrepreneur Reni Folawiyo’s Stunning Lagos Penthouse",
+            "Date": "2021-08-09",
+            "Time": "12:00:00",
+            "Link": "https://news.yahoo.com/more-inside-fashion-entrepreneur-reni-120000377.html",
+            "Source": "Architectural Digest",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/AhiEAsK_viSd9YKATPb9Dg--~B/aD03NzM7dz0xMDI0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/the_independent_635/58c0b40f3bbea855ea90346f8fd306ab",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/u8Tn5OCV5vGVV7t3YvoHIg--~B/aD0yOTAwO3c9NDM1MDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/architectural_digest_422/14245906aae2b9f06d7e1292865874de",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/46.png"
             }
         },
         {
-            "Title": "Letters to the Editor: This isn't a drought or a heat wave — this is normal",
-            "Date": "2021-06-15",
-            "Time": "10:00:51",
-            "Link": "https://news.yahoo.com/letters-editor-isnt-drought-heat-100051641.html",
-            "Source": "Los Angeles Times Opinion",
+            "Title": "Tom Hanks and Rita Wilson's son Chet calls COVID-19 the 'flu' in anti-vaccine rant",
+            "Date": "2021-08-11",
+            "Time": "03:12:00",
+            "Link": "https://news.yahoo.com/tom-hanks-rita-wilsons-son-031200202.html",
+            "Source": "TODAY",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/Z26MHMUr_qfDEofhhZ0Cpg--~B/aD01NjA7dz04NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/los_angeles_times_opinion_902/0fb78725b053d2792b9244c8603a2333",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/WMSJ1h.HsVGcFHxn2OBLhg--~B/aD0xMjAwO3c9MjQwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/nbc_today_217/017bfa36f81ac082260e40cdf6118ae3",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/47.png"
             }
         },
         {
-            "Title": "Tayla Parx Just Made Newspaper Boxes Relevant Again",
-            "Date": "2021-06-14",
-            "Time": "16:04:51",
-            "Link": "https://news.yahoo.com/tayla-parx-just-made-newspaper-160451201.html",
-            "Source": "Architectural Digest",
+            "Title": "Hawaii tightens COVID restrictions for restaurants, bars but no changes to visitor entry requirements",
+            "Date": "2021-08-11",
+            "Time": "00:55:48",
+            "Link": "https://news.yahoo.com/hawaii-tightens-covid-restrictions-restaurants-005548844.html",
+            "Source": "USA TODAY",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/ogQTB185df5QTh6KjCggtA--~B/aD00MjQwO3c9MjgzMjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/architectural_digest_422/f18f60f0b95882cf982f7dd41b23c4cb",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/F8vGrO_m0hR_ZBsgCwhAaQ--~B/aD0zMDI0O3c9NDAzMjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/usa_today_travel_320/8760ad3157689812df4dc45caaaf2ee0",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/48.png"
             }
         },
         {
-            "Title": "A Capitol rioter agreed to a plea deal after posting extensively on Facebook about her time at the insurrection with her husband",
-            "Date": "2021-06-15",
-            "Time": "10:50:16",
-            "Link": "https://news.yahoo.com/capitol-rioter-agreed-plea-deal-105016511.html",
-            "Source": "Business Insider",
+            "Title": "Vendors at the Sturgis Motorcycle Rally in South Dakota are selling merchandise bearing Nazi imagery",
+            "Date": "2021-08-10",
+            "Time": "22:38:20",
+            "Link": "https://news.yahoo.com/vendors-sturgis-motorcycle-rally-south-223820978.html",
+            "Source": "INSIDER",
             "Image": {
-                "URL": "https://s.yimg.com/uu/api/res/1.2/MKPC2fKfgIq8mANr2_zRbA--~B/aD0xNTAwO3c9MjAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/business_insider_articles_888/0a2adf7e56b59c90c39ed4778755f9db",
+                "URL": "https://s.yimg.com/uu/api/res/1.2/6_z09ksqKqp8e.tjRYzpew--~B/aD0xNjY5O3c9MjIyNjthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/insider_articles_922/bb33c24ce2351bd00da7530641c627f7",
                 "Path": "/home/rmaladziashyn/PycharmProjects/PythonFinalTask/rss_reader/local_storage/images/49.png"
             }
         }

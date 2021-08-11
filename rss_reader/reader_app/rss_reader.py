@@ -1,5 +1,8 @@
 """
 Program parses RSS feed https://news.yahoo.com/rss/
+
+rss_reader.py https://news.yahoo.com/rss/ --limit 2
+
 """
 import argparse
 import datetime
@@ -13,7 +16,8 @@ import urllib.request
 from bs4 import BeautifulSoup
 from PIL import Image
 import requests
-from reader_app import rss_conversion
+# from reader_app import rss_conversion
+import rss_conversion
 import validators
 import urllib.request
 from urllib.error import URLError
@@ -265,6 +269,12 @@ def main():
     Runs the program.
     :return: None
     """
+    print('hi')
+
+
+
+
+
     # determine real working directory
     # depends on how the program is launched
     # if from "reader_app", then real work dir is one level up
